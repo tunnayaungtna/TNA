@@ -14,9 +14,12 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="လာဘ်ရွှင်">
 
+  <!-- Web App Manifest for PWA & GitHub Pages -->
+  <link rel="manifest" href="manifest.json">
+
   <!-- Dynamic Self-Contained App Icon Favicon -->
-  <link rel="icon" type="image/svg+xml" id="appFavicon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%230d47a8'/%3E%3Ctext x='256' y='320' font-size='180' text-anchor='middle' fill='%23fde047'%3E%E1%80%9C%E1%80%AC%E1%80%87%E1%80%BA%3C/text%3E%3C/svg%3E">
-  <link rel="apple-touch-icon" id="appleTouchIconLink" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%230d47a8'/%3E%3Ctext x='256' y='320' font-size='180' text-anchor='middle' fill='%23fde047'%3E%E1%80%9C%E1%80%AC%E1%80%87%E1%80%BA%3C/text%3E%3C/svg%3E">
+  <link rel="icon" type="image/svg+xml" id="appFavicon" href="icon.svg">
+  <link rel="apple-touch-icon" id="appleTouchIconLink" href="icon.svg">
 
   <!-- Google Fonts: Noto Sans Myanmar & Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1490,6 +1493,19 @@
       const touch = document.getElementById('appleTouchIconLink');
       if (fav) fav.href = blobUrl;
       if (touch) touch.href = blobUrl;
+    }
+
+    // --- SERVICE WORKER REGISTRATION (PWA) ---
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then((reg) => {
+            console.log('PWA ServiceWorker registered:', reg.scope);
+          })
+          .catch((err) => {
+            console.warn('ServiceWorker registration note:', err);
+          });
+      });
     }
 
     // --- PWA INSTALL PROMPT ---
