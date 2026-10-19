@@ -393,6 +393,71 @@
         </button>
       </div>
 
+      <!-- Visual Profit Trends Bar Chart Section -->
+      <div class="theme-card border rounded-2xl p-4 space-y-3.5 shadow-sm">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b pb-2.5">
+          <div>
+            <h3 class="text-xs sm:text-sm font-bold theme-text-heading flex items-center gap-1.5">
+              <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+              အမြတ်ငွေ တိုးတက်မှု ပြဇယား (Profit Trends)
+            </h3>
+            <p class="text-[11px] theme-text-muted mt-0.5" id="profitChartSubtitle">ပြီးခဲ့သော ၇ ရက်အတွင်း နေ့စဉ်ရရှိသော အမြတ်ငွေ နှိုင်းယှဉ်ချက်</p>
+          </div>
+
+          <div class="flex items-center gap-1 theme-card-sub p-1 rounded-xl border text-[11px] self-start sm:self-auto">
+            <button type="button" onclick="setProfitChartMode('daily')" id="chart-mode-daily" class="px-3 py-1 rounded-lg font-bold transition bg-emerald-600 text-white shadow-sm">
+              နေ့စဉ် (၇ ရက်)
+            </button>
+            <button type="button" onclick="setProfitChartMode('monthly')" id="chart-mode-monthly" class="px-3 py-1 rounded-lg font-medium transition theme-text-muted hover:text-emerald-500">
+              လစဉ် (၆ လ)
+            </button>
+          </div>
+        </div>
+
+        <!-- Chart Summary KPI Strip -->
+        <div class="grid grid-cols-3 gap-2">
+          <div class="theme-card-sub border rounded-xl p-2.5">
+            <span class="text-[10px] theme-text-muted block">ကာလအတွင်း စုစုပေါင်းအမြတ်</span>
+            <div class="text-xs sm:text-sm font-extrabold font-mono text-emerald-500 mt-0.5" id="chartPeriodTotalMMK">+0 Ks</div>
+            <div class="text-[10px] font-mono text-blue-500 font-semibold" id="chartPeriodTotalTHB">+0 THB</div>
+          </div>
+          <div class="theme-card-sub border rounded-xl p-2.5">
+            <span class="text-[10px] theme-text-muted block" id="chartAvgLabel">တစ်ရက် ပျမ်းမျှအမြတ်</span>
+            <div class="text-xs sm:text-sm font-extrabold font-mono theme-text-heading mt-0.5" id="chartPeriodAvgMMK">+0 Ks</div>
+            <div class="text-[10px] theme-text-muted" id="chartActiveCountText">အရောင်းအဝယ် 0 ခု</div>
+          </div>
+          <div class="theme-card-sub border rounded-xl p-2.5">
+            <span class="text-[10px] theme-text-muted block">အမြတ်အများဆုံး</span>
+            <div class="text-xs sm:text-sm font-extrabold font-mono text-amber-500 mt-0.5" id="chartPeakAmountMMK">+0 Ks</div>
+            <div class="text-[10px] theme-text-muted truncate" id="chartPeakDateLabel">-</div>
+          </div>
+        </div>
+
+        <!-- Bar Chart Visual Canvas -->
+        <div class="theme-card-sub border rounded-xl p-3 pt-4">
+          <div id="profitBarChartContainer" class="grid grid-cols-7 gap-1.5 sm:gap-3 items-end h-44 pt-6 pb-1 px-1">
+            <!-- Bars rendered dynamically by JS -->
+          </div>
+          <div class="flex flex-wrap items-center justify-between gap-2 pt-2.5 mt-2 border-t text-[10px] theme-text-muted">
+            <div class="flex flex-wrap items-center gap-3">
+              <span class="flex items-center gap-1">
+                <span class="w-2.5 h-2.5 rounded-sm bg-blue-500 inline-block"></span>
+                <span>ထိုင်း-မြန်မာ ငွေလွှဲအမြတ်</span>
+              </span>
+              <span class="flex items-center gap-1">
+                <span class="w-2.5 h-2.5 rounded-sm bg-emerald-500 inline-block"></span>
+                <span>KPay / ငွေထုတ်အမြတ်</span>
+              </span>
+              <span class="flex items-center gap-1">
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-400 inline-block"></span>
+                <span>ဘတ်အမြတ် (THB)</span>
+              </span>
+            </div>
+            <span id="profitChartSelectedInfo" class="font-mono text-[10px] text-emerald-500 font-semibold">တိုင်တစ်ခုချင်းစီကို နှိပ်၍ အသေးစိတ်ကြည့်နိုင်သည်</span>
+          </div>
+        </div>
+      </div>
+
       <!-- Recent Transactions Section -->
       <div class="theme-card border rounded-2xl p-4 space-y-3 shadow-sm">
         <div class="flex items-center justify-between">
@@ -773,20 +838,20 @@
           </div>
 
           <div>
-            <label class="block text-xs font-semibold theme-text-heading mb-1">ငွေပေးချေမှု အခြေအနေ</label>
+            <label id="cashoutStatusSectionLabel" class="block text-xs font-semibold theme-text-heading mb-1">ငွေထုတ်ပေးမှု အခြေအနေ</label>
             <div class="grid grid-cols-2 gap-2">
               <label class="cursor-pointer">
-                <input type="radio" name="cashoutStatus" value="PAID" checked class="peer sr-only">
+                <input type="radio" name="cashoutStatus" value="PAID" checked class="peer sr-only" onchange="calcCashoutLive(false)">
                 <div class="p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 theme-card-sub peer-checked:border-emerald-500 peer-checked:bg-emerald-600/20 peer-checked:text-emerald-500 text-center font-bold text-xs flex items-center justify-center gap-1.5 transition">
                   <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                  လက်ငင်းရရှိ (Paid)
+                  <span id="cashoutStatusPaidLabel">လက်ငင်းထုတ်ပေးပြီး</span>
                 </div>
               </label>
               <label class="cursor-pointer">
-                <input type="radio" name="cashoutStatus" value="UNPAID" class="peer sr-only">
-                <div class="p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 theme-card-sub peer-checked:border-rose-500 peer-checked:bg-rose-600/20 peer-checked:text-rose-500 text-center font-bold text-xs flex items-center justify-center gap-1.5 transition">
-                  <span class="w-2 h-2 rounded-full bg-rose-500"></span>
-                  အကြွေး (Credit)
+                <input type="radio" name="cashoutStatus" value="UNPAID" class="peer sr-only" onchange="calcCashoutLive(false)">
+                <div class="p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 theme-card-sub peer-checked:border-amber-500 peer-checked:bg-amber-500/20 peer-checked:text-amber-500 text-center font-bold text-xs flex items-center justify-center gap-1.5 transition">
+                  <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                  <span id="cashoutStatusUnpaidLabel">မထုတ်ပေးရသေးဘူး</span>
                 </div>
               </label>
             </div>
@@ -818,17 +883,17 @@
             <div class="space-y-2 text-xs font-mono">
               <div class="p-2.5 rounded-xl theme-card-sub border flex justify-between items-center">
                 <span class="theme-text-muted text-[11px] font-sans">လက်ကျန် ငွေသား:</span>
-                <span id="previewCashDelta" class="font-bold text-rose-500">- 100,000 Ks</span>
+                <span id="previewCashDelta" class="font-bold text-rose-500">0 Ks</span>
               </div>
               <div class="p-2.5 rounded-xl theme-card-sub border flex justify-between items-center">
                 <span class="theme-text-muted text-[11px] font-sans">KPay / ဘဏ်လက်ကျန်:</span>
-                <span id="previewBankDelta" class="font-bold text-emerald-500">+ 100,000 Ks</span>
+                <span id="previewBankDelta" class="font-bold text-emerald-500">+ 0 Ks</span>
               </div>
             </div>
 
             <div class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-center space-y-1">
               <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold block uppercase tracking-wider">ရရှိမည့် အသားတင်အမြတ်</span>
-              <div class="text-xl font-black text-emerald-500 font-mono" id="previewNetProfitMMK">+ 1,000 Ks</div>
+              <div class="text-xl font-black text-emerald-500 font-mono" id="previewNetProfitMMK">+ 0 Ks</div>
             </div>
 
             <p class="text-[10px] theme-text-muted leading-relaxed text-center">
@@ -837,6 +902,64 @@
           </div>
         </div>
 
+      </div>
+
+      <!-- Separate Cashout Payout Check Section (ထုတ်ပေးပြီး vs မထုတ်ပေးရသေး စာရင်းစစ်ရန်) -->
+      <div class="theme-card border border-emerald-500/30 rounded-2xl p-4 sm:p-5 space-y-3.5 shadow-sm">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b pb-2.5">
+          <div>
+            <h3 class="text-xs sm:text-sm font-bold theme-text-heading flex items-center gap-1.5">
+              <span class="w-6 h-6 rounded-lg bg-amber-500/20 text-amber-500 flex items-center justify-center text-xs">📋</span>
+              KPay / ငွေထုတ် စာရင်းစစ်ရန် (ထုတ်ပေးပြီး / မထုတ်ပေးရသေး)
+            </h3>
+            <p class="text-[11px] theme-text-muted mt-0.5">KPay ဝင်ထားပြီး ငွေသားလာမထုတ်သေးသည့် စာရင်းနှင့် ထုတ်ပေးပြီးသား စာရင်းများကို သီးသန့်စီ ခွဲခြားစစ်ဆေးနိုင်ပါသည်</p>
+          </div>
+        </div>
+
+        <!-- Summary Cards for Unpaid (Not yet paid out) vs Paid Out -->
+        <div class="grid grid-cols-2 gap-2.5">
+          <div onclick="setCashoutPayoutFilter('UNPAID')" class="cursor-pointer theme-card-sub border border-amber-500/40 hover:border-amber-500 p-3 rounded-xl transition">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold text-amber-500">⏳ မထုတ်ပေးရသေး</span>
+              <span id="cashoutPendingCountBadge" class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-500 font-bold">0 ခု</span>
+            </div>
+            <div id="cashoutPendingTotalMMK" class="text-sm sm:text-base font-extrabold font-mono text-amber-500 mt-1">0 Ks</div>
+            <span class="text-[10px] theme-text-muted block">ထုတ်ပေးရန်ကျန် စုစုပေါင်း</span>
+          </div>
+
+          <div onclick="setCashoutPayoutFilter('PAID')" class="cursor-pointer theme-card-sub border border-emerald-500/40 hover:border-emerald-500 p-3 rounded-xl transition">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold text-emerald-500">✓ လက်ငင်းထုတ်ပေးပြီး</span>
+              <span id="cashoutPaidCountBadge" class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-500 font-bold">0 ခု</span>
+            </div>
+            <div id="cashoutPaidTotalMMK" class="text-sm sm:text-base font-extrabold font-mono text-emerald-500 mt-1">0 Ks</div>
+            <span class="text-[10px] theme-text-muted block">ထုတ်ပေးပြီး စုစုပေါင်း</span>
+          </div>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="flex gap-1.5 p-1 theme-card-sub rounded-xl border text-xs">
+          <button type="button" id="cashout-payout-tab-unpaid" onclick="setCashoutPayoutFilter('UNPAID')" class="flex-1 py-2 px-2 rounded-lg font-bold bg-amber-500 text-slate-950 transition text-center shadow">
+            ⏳ မထုတ်ပေးရသေး
+          </button>
+          <button type="button" id="cashout-payout-tab-paid" onclick="setCashoutPayoutFilter('PAID')" class="flex-1 py-2 px-2 rounded-lg font-semibold theme-text-muted hover:text-emerald-500 transition text-center">
+            ✓ ထုတ်ပေးပြီး
+          </button>
+          <button type="button" id="cashout-payout-tab-all" onclick="setCashoutPayoutFilter('ALL')" class="flex-1 py-2 px-2 rounded-lg font-semibold theme-text-muted hover:text-blue-500 transition text-center">
+            အားလုံး
+          </button>
+        </div>
+
+        <!-- Search Input -->
+        <div class="relative">
+          <input type="text" id="cashoutPayoutSearchInput" oninput="renderCashoutPayoutList()" placeholder="Customer အမည်၊ ဖုန်းနံပါတ် သို့မဟုတ် မှတ်ချက်ဖြင့် ရှာရန်..." class="w-full theme-input border rounded-xl px-3.5 py-2 pl-9 text-xs">
+          <svg class="w-4 h-4 theme-text-muted absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        </div>
+
+        <!-- Filtered List Container -->
+        <div id="cashoutPayoutListContainer" class="space-y-2.5 max-h-[460px] overflow-y-auto pr-1">
+          <!-- Rendered by JS -->
+        </div>
       </div>
     </section>
 
@@ -1607,9 +1730,12 @@
     ];
 
     let dashboardPeriod = 'today';
+    let profitChartMode = 'daily';
     let customSelectedDate = new Date().toISOString().split('T')[0];
     let remitDirection = 'THB_TO_MMK';
+    let remitPayoutFilter = 'UNPAID';
     let cashoutType = 'CASHOUT';
+    let cashoutPayoutFilter = 'UNPAID';
     let creditFilter = 'UNPAID';
     let ledgerTypeFilter = 'ALL';
     let currentVoucherTx = null;
@@ -2836,6 +2962,7 @@
 
       if (tabId === 'dashboard') updateDashboardUI();
       else if (tabId === 'remit') renderRemitPayoutList();
+      else if (tabId === 'cashout') renderCashoutPayoutList();
       else if (tabId === 'credit') renderCreditList();
       else if (tabId === 'capital') {
         updateCapitalInputs();
@@ -2902,11 +3029,11 @@
       return { senderName, receiverName, displayTitle, senderLabel, receiverLabel };
     }
 
-    // Helper for status text ("လက်ငင်းထုတ်ပေးပြီး" / "မထုတ်ပေးရသေးဘူး" for THB->MMK remittance)
+    // Helper for status text ("လက်ငင်းထုတ်ပေးပြီး" / "မထုတ်ပေးရသေးဘူး" for Remittance & Cashout)
     function getTxStatusDisplay(tx) {
-      const isThbToMmkRemit = tx.type === 'REMIT' && tx.direction !== 'MMK_TO_THB';
+      const isPayoutFlow = (tx.type === 'REMIT' && tx.direction !== 'MMK_TO_THB') || tx.type === 'CASHOUT';
       const isPaid = tx.status === 'PAID';
-      if (isThbToMmkRemit) {
+      if (isPayoutFlow) {
         return {
           text: isPaid ? 'လက်ငင်းထုတ်ပေးပြီး' : 'မထုတ်ပေးရသေးဘူး',
           shortText: isPaid ? 'ထုတ်ပေးပြီး' : 'မထုတ်ပေးရသေး',
@@ -2927,6 +3054,7 @@
     function updateAllUI() {
       updateDashboardUI();
       renderRemitPayoutList();
+      renderCashoutPayoutList();
       renderCreditList();
       renderLedgerList();
       updateCapitalInputs();
@@ -2954,8 +3082,214 @@
       if (lbl) {
         lbl.textContent = period === 'today' ? 'ယနေ့' : period === 'month' ? 'ယခုလ' : period === 'custom' ? customSelectedDate : 'စုစုပေါင်း';
       }
+      if (period === 'month' || period === 'all') {
+        setProfitChartMode('monthly', false);
+      } else {
+        setProfitChartMode('daily', false);
+      }
       updateDashboardUI();
     };
+
+    const setProfitChartMode = window.setProfitChartMode = function(mode, shouldRender = true) {
+      profitChartMode = mode === 'monthly' ? 'monthly' : 'daily';
+      const btnDaily = document.getElementById('chart-mode-daily');
+      const btnMonthly = document.getElementById('chart-mode-monthly');
+      const subEl = document.getElementById('profitChartSubtitle');
+      const avgLbl = document.getElementById('chartAvgLabel');
+
+      if (btnDaily) {
+        btnDaily.className = profitChartMode === 'daily'
+          ? 'px-3 py-1 rounded-lg font-bold transition bg-emerald-600 text-white shadow-sm'
+          : 'px-3 py-1 rounded-lg font-medium transition theme-text-muted hover:text-emerald-500';
+      }
+      if (btnMonthly) {
+        btnMonthly.className = profitChartMode === 'monthly'
+          ? 'px-3 py-1 rounded-lg font-bold transition bg-emerald-600 text-white shadow-sm'
+          : 'px-3 py-1 rounded-lg font-medium transition theme-text-muted hover:text-emerald-500';
+      }
+      if (subEl) {
+        subEl.textContent = profitChartMode === 'daily'
+          ? 'ပြီးခဲ့သော ၇ ရက်အတွင်း နေ့စဉ်ရရှိသော အမြတ်ငွေ နှိုင်းယှဉ်ချက်'
+          : 'ပြီးခဲ့သော ၆ လအတွင်း လစဉ်ရရှိသော အမြတ်ငွေ နှိုင်းယှဉ်ချက်';
+      }
+      if (avgLbl) {
+        avgLbl.textContent = profitChartMode === 'daily' ? 'တစ်ရက် ပျမ်းမျှအမြတ်' : 'တစ်လ ပျမ်းမျှအမြတ်';
+      }
+
+      if (shouldRender) renderProfitTrendChart();
+    };
+
+    function formatCompactMMK(num) {
+      const n = Math.round(Number(num) || 0);
+      if (n === 0) return '0';
+      if (Math.abs(n) >= 100000) {
+        return (n / 100000).toFixed(n % 100000 === 0 ? 0 : 1) + 'သိန်း';
+      }
+      if (Math.abs(n) >= 1000) {
+        return (n / 1000).toFixed(n % 1000 === 0 ? 0 : 1) + 'k';
+      }
+      return n.toLocaleString('en-US');
+    }
+
+    const selectProfitBarDetails = window.selectProfitBarDetails = function(label, totalMMK, remitMMK, cashoutMMK, totalTHB, txCount) {
+      const infoEl = document.getElementById('profitChartSelectedInfo');
+      if (!infoEl) return;
+      infoEl.textContent = `${label}: စုစုပေါင်း +${formatMMK(totalMMK)} (ငွေလွှဲ +${formatMMK(remitMMK)} • KPay +${formatMMK(cashoutMMK)}${totalTHB > 0 ? ` • +${formatTHB(totalTHB)}` : ''}) [${txCount} ခု]`;
+    };
+
+    function renderProfitTrendChart() {
+      const container = document.getElementById('profitBarChartContainer');
+      if (!container) return;
+
+      const buckets = [];
+      const baseDate = (dashboardPeriod === 'custom' && customSelectedDate)
+        ? new Date(customSelectedDate + 'T12:00:00')
+        : new Date();
+
+      if (profitChartMode === 'daily') {
+        container.className = 'grid grid-cols-7 gap-1.5 sm:gap-3 items-end h-44 pt-6 pb-1 px-1';
+        for (let i = 6; i >= 0; i--) {
+          const d = new Date(baseDate);
+          d.setDate(baseDate.getDate() - i);
+          const yyyy = d.getFullYear();
+          const mm = String(d.getMonth() + 1).padStart(2, '0');
+          const dd = String(d.getDate()).padStart(2, '0');
+          const key = `${yyyy}-${mm}-${dd}`;
+          const shortLabel = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+          const isToday = i === 0 && dashboardPeriod !== 'custom';
+          buckets.push({
+            key,
+            label: isToday ? 'ယနေ့' : shortLabel,
+            fullLabel: d.toLocaleDateString('my-MM', { month: 'short', day: 'numeric' }),
+            isCurrent: i === 0,
+            remitProfitMMK: 0,
+            cashoutProfitMMK: 0,
+            totalProfitMMK: 0,
+            totalProfitTHB: 0,
+            count: 0
+          });
+        }
+
+        transactions.forEach(tx => {
+          if (!tx.date) return;
+          const d = new Date(tx.date);
+          if (isNaN(d.getTime())) return;
+          const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+          const b = buckets.find(item => item.key === key);
+          if (b) {
+            const pMmk = Number(tx.profitMMK) || 0;
+            const pThb = Number(tx.profitTHB) || 0;
+            if (tx.type === 'CASHOUT') b.cashoutProfitMMK += pMmk;
+            else b.remitProfitMMK += pMmk;
+            b.totalProfitMMK += pMmk;
+            b.totalProfitTHB += pThb;
+            b.count++;
+          }
+        });
+      } else {
+        container.className = 'grid grid-cols-6 gap-2 sm:gap-4 items-end h-44 pt-6 pb-1 px-1';
+        const now = new Date();
+        for (let i = 5; i >= 0; i--) {
+          const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+          const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+          const shortLabel = d.toLocaleDateString('en-US', { month: 'short' });
+          const fullLabel = d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+          buckets.push({
+            key,
+            label: i === 0 ? `${shortLabel} (ယခုလ)` : shortLabel,
+            fullLabel,
+            isCurrent: i === 0,
+            remitProfitMMK: 0,
+            cashoutProfitMMK: 0,
+            totalProfitMMK: 0,
+            totalProfitTHB: 0,
+            count: 0
+          });
+        }
+
+        transactions.forEach(tx => {
+          if (!tx.date) return;
+          const d = new Date(tx.date);
+          if (isNaN(d.getTime())) return;
+          const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+          const b = buckets.find(item => item.key === key);
+          if (b) {
+            const pMmk = Number(tx.profitMMK) || 0;
+            const pThb = Number(tx.profitTHB) || 0;
+            if (tx.type === 'CASHOUT') b.cashoutProfitMMK += pMmk;
+            else b.remitProfitMMK += pMmk;
+            b.totalProfitMMK += pMmk;
+            b.totalProfitTHB += pThb;
+            b.count++;
+          }
+        });
+      }
+
+      const maxMMK = Math.max(...buckets.map(b => b.totalProfitMMK), 1);
+      let periodTotalMMK = 0;
+      let periodTotalTHB = 0;
+      let periodTxCount = 0;
+      let peakBucket = buckets[0];
+
+      buckets.forEach(b => {
+        periodTotalMMK += b.totalProfitMMK;
+        periodTotalTHB += b.totalProfitTHB;
+        periodTxCount += b.count;
+        if (b.totalProfitMMK >= (peakBucket?.totalProfitMMK || 0)) {
+          peakBucket = b;
+        }
+      });
+
+      const avgMMK = buckets.length > 0 ? Math.round(periodTotalMMK / buckets.length) : 0;
+
+      const totMmkEl = document.getElementById('chartPeriodTotalMMK');
+      const totThbEl = document.getElementById('chartPeriodTotalTHB');
+      const avgMmkEl = document.getElementById('chartPeriodAvgMMK');
+      const countEl = document.getElementById('chartActiveCountText');
+      const peakAmtEl = document.getElementById('chartPeakAmountMMK');
+      const peakDateEl = document.getElementById('chartPeakDateLabel');
+
+      if (totMmkEl) totMmkEl.textContent = '+' + formatMMK(periodTotalMMK);
+      if (totThbEl) totThbEl.textContent = '+' + formatTHB(periodTotalTHB);
+      if (avgMmkEl) avgMmkEl.textContent = '+' + formatMMK(avgMMK);
+      if (countEl) countEl.textContent = `အရောင်းအဝယ် ${periodTxCount} ခု`;
+      if (peakAmtEl) peakAmtEl.textContent = '+' + formatMMK(peakBucket ? peakBucket.totalProfitMMK : 0);
+      if (peakDateEl) peakDateEl.textContent = (peakBucket && peakBucket.totalProfitMMK > 0) ? peakBucket.fullLabel : 'မှတ်တမ်းမရှိသေးပါ';
+
+      container.innerHTML = buckets.map(b => {
+        const totalHeightPct = b.totalProfitMMK > 0
+          ? Math.max(12, Math.round((b.totalProfitMMK / maxMMK) * 100))
+          : 4;
+        const remitSharePct = b.totalProfitMMK > 0
+          ? Math.round((b.remitProfitMMK / b.totalProfitMMK) * 100)
+          : 0;
+        const cashoutSharePct = 100 - remitSharePct;
+
+        const safeLabel = b.fullLabel.replace(/'/g, "\\'");
+        return `
+          <div onclick="selectProfitBarDetails('${safeLabel}', ${b.totalProfitMMK}, ${b.remitProfitMMK}, ${b.cashoutProfitMMK}, ${b.totalProfitTHB}, ${b.count})" class="cursor-pointer flex flex-col items-center justify-end h-full group select-none">
+            <div class="text-[9px] sm:text-[10px] font-mono font-bold ${b.totalProfitMMK > 0 ? 'text-emerald-500' : 'theme-text-muted opacity-60'} mb-1 text-center leading-tight">
+              ${b.totalProfitMMK > 0 ? '+' + formatCompactMMK(b.totalProfitMMK) : '0'}
+              ${b.totalProfitTHB > 0 ? `<span class="block text-[8px] text-amber-500">+${Math.round(b.totalProfitTHB)}฿</span>` : ''}
+            </div>
+            <div class="w-full max-w-[38px] bg-slate-500/10 rounded-t-lg h-24 flex flex-col justify-end overflow-hidden p-0.5 border border-transparent group-hover:border-emerald-500/50 transition">
+              <div class="w-full rounded-t-md overflow-hidden flex flex-col justify-end transition-all duration-500" style="height: ${totalHeightPct}%">
+                ${b.totalProfitMMK > 0 ? `
+                  <div class="w-full bg-emerald-500 transition-all duration-300" style="height: ${cashoutSharePct}%" title="KPay အမြတ်: ${formatMMK(b.cashoutProfitMMK)}"></div>
+                  <div class="w-full bg-blue-500 transition-all duration-300" style="height: ${remitSharePct}%" title="ငွေလွှဲ အမြတ်: ${formatMMK(b.remitProfitMMK)}"></div>
+                ` : `
+                  <div class="w-full h-full bg-slate-400/30 rounded-t-sm"></div>
+                `}
+              </div>
+            </div>
+            <div class="mt-1.5 text-[9px] sm:text-[10px] font-bold ${b.isCurrent ? 'text-blue-500' : 'theme-text-muted'} text-center truncate w-full">
+              ${b.label}
+            </div>
+            <div class="text-[8px] theme-text-muted opacity-75 font-mono">${b.count} ခု</div>
+          </div>
+        `;
+      }).join('');
+    }
 
     function filterTransactionsByPeriod(list, period) {
       const now = new Date();
@@ -3046,6 +3380,7 @@
       document.getElementById('ratioBarCash').style.width = `${cashPercent}%`;
       document.getElementById('ratioBarBank').style.width = `${bankPercent}%`;
 
+      renderProfitTrendChart();
       renderRecentTransactions(periodTx.slice(0, 8));
     }
 
@@ -3108,8 +3443,6 @@
     }
 
     // --- TAB 2: REMITTANCE LOGIC ---
-    let remitPayoutFilter = 'UNPAID';
-
     const setRemitDirection = window.setRemitDirection = function(dir) {
       remitDirection = dir;
       const b1 = document.getElementById('remit-dir-thb2mmk');
@@ -3602,15 +3935,18 @@
       const amtFmt = document.getElementById('cashoutAmountFormatted');
       if (amtFmt) amtFmt.textContent = formatMMK(amount);
 
+      const statusEl = document.querySelector('input[name="cashoutStatus"]:checked');
+      const status = statusEl ? statusEl.value : 'PAID';
+
       let cashDelta = 0;
       let bankDelta = 0;
 
       if (cashoutType === 'CASHOUT') {
-        cashDelta = -amount;
+        cashDelta = status === 'PAID' ? -amount : 0;
         bankDelta = amount + fee;
       } else {
         cashDelta = amount + fee;
-        bankDelta = -amount;
+        bankDelta = status === 'PAID' ? -amount : 0;
       }
 
       const cashEl = document.getElementById('previewCashDelta');
@@ -3618,12 +3954,22 @@
       const profitEl = document.getElementById('previewNetProfitMMK');
 
       if (cashEl) {
-        cashEl.textContent = (cashDelta >= 0 ? '+' : '') + formatMMK(cashDelta);
-        cashEl.className = `font-bold font-mono ${cashDelta >= 0 ? 'text-emerald-500' : 'text-rose-500'}`;
+        if (cashoutType === 'CASHOUT' && status === 'UNPAID') {
+          cashEl.textContent = `0 Ks (မထုတ်ပေးရသေး: ${formatMMK(amount)})`;
+          cashEl.className = 'font-bold font-mono text-amber-500';
+        } else {
+          cashEl.textContent = (cashDelta >= 0 ? '+' : '') + formatMMK(cashDelta);
+          cashEl.className = `font-bold font-mono ${cashDelta >= 0 ? 'text-emerald-500' : 'text-rose-500'}`;
+        }
       }
       if (bankEl) {
-        bankEl.textContent = (bankDelta >= 0 ? '+' : '') + formatMMK(bankDelta);
-        bankEl.className = `font-bold font-mono ${bankDelta >= 0 ? 'text-emerald-500' : 'text-rose-500'}`;
+        if (cashoutType === 'TRANSFER' && status === 'UNPAID') {
+          bankEl.textContent = `0 Ks (မထုတ်ပေးရသေး: ${formatMMK(amount)})`;
+          bankEl.className = 'font-bold font-mono text-amber-500';
+        } else {
+          bankEl.textContent = (bankDelta >= 0 ? '+' : '') + formatMMK(bankDelta);
+          bankEl.className = `font-bold font-mono ${bankDelta >= 0 ? 'text-emerald-500' : 'text-rose-500'}`;
+        }
       }
       if (profitEl) profitEl.textContent = '+' + formatMMK(fee);
 
@@ -3659,10 +4005,13 @@
       };
 
       if (status === 'UNPAID') {
-        newTx.amountOwed = calc.amount + calc.fee;
+        newTx.amountOwed = calc.amount;
         newTx.owedCurrency = 'MMK';
         newTx.paidAmount = 0;
+        capital.cashMMK = (Number(capital.cashMMK) || 0) + calc.cashDelta;
+        capital.bankMMK = (Number(capital.bankMMK) || 0) + calc.bankDelta;
       } else {
+        newTx.paidAmount = calc.amount;
         capital.cashMMK = (Number(capital.cashMMK) || 0) + calc.cashDelta;
         capital.bankMMK = (Number(capital.bankMMK) || 0) + calc.bankDelta;
       }
@@ -3671,7 +4020,12 @@
       saveTransactionsToStorage();
       saveCapitalToStorage();
 
-      showToast('ငွေထုတ်/ငွေလွှဲ စာရင်း အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ!', 'success');
+      if (status === 'UNPAID') {
+        setCashoutPayoutFilter('UNPAID');
+        showToast('မထုတ်ပေးရသေးသည့် ငွေထုတ်စာရင်းအဖြစ် သိမ်းဆည်းပြီးပါပြီ!', 'warning');
+      } else {
+        showToast('ငွေထုတ်/ငွေလွှဲ စာရင်း အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ!', 'success');
+      }
       resetCashoutForm();
       updateAllUI();
       openVoucherModal(newTx.id);
@@ -3685,6 +4039,184 @@
       document.getElementById('cashoutFee').value = '0';
       initDefaultDateTimeInputs();
       calcCashoutLive(true);
+    };
+
+    // --- Separate Cashout Payout Check List (ထုတ်ပေးပြီး vs မထုတ်ပေးရသေး) ---
+    const setCashoutPayoutFilter = window.setCashoutPayoutFilter = function(filter) {
+      cashoutPayoutFilter = filter;
+      const bUnpaid = document.getElementById('cashout-payout-tab-unpaid');
+      const bPaid = document.getElementById('cashout-payout-tab-paid');
+      const bAll = document.getElementById('cashout-payout-tab-all');
+
+      if (bUnpaid) {
+        bUnpaid.className = filter === 'UNPAID'
+          ? 'flex-1 py-2 px-2 rounded-lg font-bold bg-amber-500 text-slate-950 transition text-center shadow'
+          : 'flex-1 py-2 px-2 rounded-lg font-semibold theme-text-muted hover:text-amber-500 transition text-center';
+      }
+      if (bPaid) {
+        bPaid.className = filter === 'PAID'
+          ? 'flex-1 py-2 px-2 rounded-lg font-bold bg-emerald-600 text-white transition text-center shadow'
+          : 'flex-1 py-2 px-2 rounded-lg font-semibold theme-text-muted hover:text-emerald-500 transition text-center';
+      }
+      if (bAll) {
+        bAll.className = filter === 'ALL'
+          ? 'flex-1 py-2 px-2 rounded-lg font-bold bg-blue-600 text-white transition text-center shadow'
+          : 'flex-1 py-2 px-2 rounded-lg font-semibold theme-text-muted hover:text-blue-500 transition text-center';
+      }
+
+      renderCashoutPayoutList();
+    };
+
+    const toggleCashoutPayoutStatus = window.toggleCashoutPayoutStatus = function(txId) {
+      const tx = transactions.find(t => t.id === txId);
+      if (!tx) return;
+
+      const amt = Number(tx.amountMMK) || 0;
+      if (tx.status === 'UNPAID') {
+        tx.status = 'PAID';
+        tx.settledDate = new Date().toISOString();
+        tx.paidAmount = amt;
+        if (tx.cashoutType === 'TRANSFER') {
+          capital.bankMMK = (Number(capital.bankMMK) || 0) - amt;
+        } else {
+          capital.cashMMK = (Number(capital.cashMMK) || 0) - amt;
+        }
+        showToast('✓ လက်ငင်းထုတ်ပေးပြီး အဖြစ် ပြောင်းလဲမှတ်တမ်းတင်ပြီးပါပြီ!', 'success');
+      } else {
+        tx.status = 'UNPAID';
+        tx.settledDate = '';
+        tx.paidAmount = 0;
+        if (tx.cashoutType === 'TRANSFER') {
+          capital.bankMMK = (Number(capital.bankMMK) || 0) + amt;
+        } else {
+          capital.cashMMK = (Number(capital.cashMMK) || 0) + amt;
+        }
+        showToast('⏳ မထုတ်ပေးရသေးဘူး အဖြစ် ပြန်လည်သတ်မှတ်ပြီးပါပြီ', 'warning');
+      }
+
+      saveTransactionsToStorage();
+      saveCapitalToStorage();
+      updateAllUI();
+    };
+
+    const renderCashoutPayoutList = window.renderCashoutPayoutList = function() {
+      const container = document.getElementById('cashoutPayoutListContainer');
+      if (!container) return;
+
+      const search = (document.getElementById('cashoutPayoutSearchInput')?.value || '').toLowerCase().trim();
+      const allCashouts = transactions.filter(t => t.type === 'CASHOUT');
+
+      let pendingCount = 0;
+      let pendingMMK = 0;
+      let paidCount = 0;
+      let paidMMK = 0;
+
+      allCashouts.forEach(t => {
+        if (t.status === 'UNPAID') {
+          pendingCount++;
+          pendingMMK += Number(t.amountMMK) || 0;
+        } else {
+          paidCount++;
+          paidMMK += Number(t.amountMMK) || 0;
+        }
+      });
+
+      const pendBadge = document.getElementById('cashoutPendingCountBadge');
+      const pendTotal = document.getElementById('cashoutPendingTotalMMK');
+      const paidBadge = document.getElementById('cashoutPaidCountBadge');
+      const paidTotal = document.getElementById('cashoutPaidTotalMMK');
+
+      if (pendBadge) pendBadge.textContent = `${pendingCount} ခု`;
+      if (pendTotal) pendTotal.textContent = formatMMK(pendingMMK);
+      if (paidBadge) paidBadge.textContent = `${paidCount} ခု`;
+      if (paidTotal) paidTotal.textContent = formatMMK(paidMMK);
+
+      let filtered = [...allCashouts];
+      if (cashoutPayoutFilter === 'UNPAID') {
+        filtered = filtered.filter(t => t.status === 'UNPAID');
+      } else if (cashoutPayoutFilter === 'PAID') {
+        filtered = filtered.filter(t => t.status === 'PAID');
+      }
+
+      if (search) {
+        filtered = filtered.filter(t =>
+          (t.custName && t.custName.toLowerCase().includes(search)) ||
+          (t.custPhone && t.custPhone.toLowerCase().includes(search)) ||
+          (t.id && t.id.toLowerCase().includes(search)) ||
+          (t.note && t.note.toLowerCase().includes(search))
+        );
+      }
+
+      if (filtered.length === 0) {
+        const emptyMsg = cashoutPayoutFilter === 'UNPAID'
+          ? 'မထုတ်ပေးရသေးသည့် ငွေထုတ်စာရင်း မရှိပါ (အားလုံး ထုတ်ပေးပြီးဖြစ်ပါသည်)'
+          : cashoutPayoutFilter === 'PAID'
+          ? 'လက်ငင်းထုတ်ပေးပြီးသည့် ငွေထုတ်မှတ်တမ်း မရှိသေးပါ'
+          : 'KPay / ငွေထုတ် မှတ်တမ်း မရှိသေးပါ';
+        container.innerHTML = `
+          <div class="text-center py-8 theme-card-sub rounded-xl border theme-text-muted text-xs">
+            ${emptyMsg}
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(tx => {
+        const isPaid = tx.status === 'PAID';
+        const isTransfer = tx.cashoutType === 'TRANSFER';
+
+        return `
+          <div class="theme-card-sub border ${isPaid ? 'border-emerald-500/30' : 'border-amber-500/50'} p-3 rounded-xl space-y-2 text-xs">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-1.5">
+                <span class="font-mono text-[10px] text-emerald-500 font-bold">${tx.id}</span>
+                <span class="text-[10px] theme-text-muted">• ${formatDateTime(tx.date)}</span>
+              </div>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isPaid ? 'bg-emerald-500/20 text-emerald-500 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-500 border border-amber-500/40'}">
+                ${isPaid ? '✓ လက်ငင်းထုတ်ပေးပြီး' : '⏳ မထုတ်ပေးရသေးဘူး'}
+              </span>
+            </div>
+
+            <div class="flex items-start justify-between gap-2">
+              <div class="space-y-0.5">
+                <div class="font-bold theme-text-heading text-xs">${tx.custName || 'အမည်မသိ'}</div>
+                <div class="text-[10px] theme-text-muted">
+                  အမျိုးအစား: <span class="font-semibold">${isTransfer ? '🔺 ငွေလွှဲ (Transfer)' : '🔻 ငွေထုတ် (Cash-Out)'}</span>
+                  • ချန်နယ်: <span class="font-semibold">${tx.channel || 'KPay'}</span>
+                  ${tx.custPhone ? ` • ဖုန်း: <span class="font-mono">${tx.custPhone}</span>` : ''}
+                  ${tx.note ? ` • မှတ်ချက်: ${tx.note}` : ''}
+                </div>
+              </div>
+              <div class="text-right shrink-0">
+                <div class="text-xs sm:text-sm font-extrabold font-mono ${isPaid ? 'text-emerald-500' : 'text-amber-500'}">
+                  ${formatMMK(tx.amountMMK)}
+                </div>
+                <div class="text-[10px] text-emerald-500 font-mono">
+                  အမြတ်: +${formatMMK(tx.profitMMK || tx.fee || 0)}
+                </div>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-between gap-1.5 pt-2 border-t">
+              <div>
+                ${!isPaid ? `
+                  <button type="button" onclick="toggleCashoutPayoutStatus('${tx.id}')" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold shadow flex items-center gap-1 transition">
+                    <span>✓ ယခု ထုတ်ပေးပြီးကြောင်း မှတ်မည်</span>
+                  </button>
+                ` : `
+                  <button type="button" onclick="toggleCashoutPayoutStatus('${tx.id}')" class="px-2.5 py-1 rounded-lg theme-card border text-[10px] theme-text-muted hover:text-amber-500 font-semibold transition">
+                    ⏳ မထုတ်ပေးရသေးသို့ ပြန်ပြောင်းရန်
+                  </button>
+                `}
+              </div>
+              <div class="flex items-center gap-1.5">
+                <button type="button" onclick="openVoucherModal('${tx.id}')" class="px-2.5 py-1 rounded-lg theme-card border text-[10px] font-semibold">ဘောက်ချာ</button>
+                <button type="button" onclick="openEditModal('${tx.id}')" class="px-2.5 py-1 rounded-lg bg-blue-600/15 text-blue-500 text-[10px] font-bold">ပြင်မည်</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
     };
 
     // --- TAB 4: CREDIT LEDGER ---
@@ -3965,8 +4497,8 @@
 
       let list = [...transactions];
       if (ledgerTypeFilter === 'REMIT') list = list.filter(t => t.type === 'REMIT');
-      else if (ledgerTypeFilter === 'REMIT_UNPAID') list = list.filter(t => t.type === 'REMIT' && t.status === 'UNPAID');
-      else if (ledgerTypeFilter === 'REMIT_PAID') list = list.filter(t => t.type === 'REMIT' && t.status === 'PAID');
+      else if (ledgerTypeFilter === 'REMIT_UNPAID') list = list.filter(t => (t.type === 'REMIT' || t.type === 'CASHOUT') && t.status === 'UNPAID');
+      else if (ledgerTypeFilter === 'REMIT_PAID') list = list.filter(t => (t.type === 'REMIT' || t.type === 'CASHOUT') && t.status === 'PAID');
       else if (ledgerTypeFilter === 'CASHOUT') list = list.filter(t => t.type === 'CASHOUT');
       else if (ledgerTypeFilter === 'CREDIT') list = list.filter(t => t.status === 'UNPAID' || t.type === 'DIRECT_CREDIT');
 
@@ -3991,6 +4523,7 @@
 
       container.innerHTML = list.map(tx => {
         const isRemit = tx.type === 'REMIT';
+        const isCashout = tx.type === 'CASHOUT';
         const names = getTxNames(tx);
         const stDisp = getTxStatusDisplay(tx);
         const remitSub = isRemit
@@ -4027,6 +4560,9 @@
               <div>
                 ${isRemit && tx.status === 'UNPAID' ? `
                   <button onclick="toggleRemitPayoutStatus('${tx.id}')" class="px-2 py-1 rounded-lg bg-emerald-600 text-white text-[10px] font-bold">✓ ထုတ်ပေးပြီးမှတ်မည်</button>
+                ` : ''}
+                ${isCashout && tx.status === 'UNPAID' ? `
+                  <button onclick="toggleCashoutPayoutStatus('${tx.id}')" class="px-2 py-1 rounded-lg bg-emerald-600 text-white text-[10px] font-bold">✓ ထုတ်ပေးပြီးမှတ်မည်</button>
                 ` : ''}
               </div>
               <div class="flex items-center gap-1.5">
@@ -4078,8 +4614,8 @@
         if (remitGroup) remitGroup.classList.add('hidden');
         document.getElementById('editCustName').value = tx.custName || '';
         if (statusSel) {
-          statusSel.options[0].textContent = 'လက်ငင်းရရှိ (PAID)';
-          statusSel.options[1].textContent = 'အကြွေး (UNPAID)';
+          statusSel.options[0].textContent = 'လက်ငင်းထုတ်ပေးပြီး (PAID)';
+          statusSel.options[1].textContent = 'မထုတ်ပေးရသေးဘူး (UNPAID)';
         }
       }
 
@@ -4219,12 +4755,12 @@
       }
 
       const statusBadge = document.getElementById('vouchStatusBadge');
-      const isThbToMmkRemit = isRemit && tx.direction !== 'MMK_TO_THB';
+      const isPayoutFlow = (isRemit && tx.direction !== 'MMK_TO_THB') || tx.type === 'CASHOUT';
       if (tx.status === 'PAID') {
-        statusBadge.textContent = isThbToMmkRemit ? '✓ လက်ငင်းထုတ်ပေးပြီး' : '✓ လက်ငင်း ပေးချေပြီး';
+        statusBadge.textContent = isPayoutFlow ? '✓ လက်ငင်းထုတ်ပေးပြီး' : '✓ လက်ငင်း ပေးချေပြီး';
         statusBadge.className = 'inline-block px-2.5 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800';
       } else {
-        statusBadge.textContent = isThbToMmkRemit ? '⏳ မထုတ်ပေးရသေးဘူး' : '⚠️ မပေးချေရသေး (အကြွေး)';
+        statusBadge.textContent = isPayoutFlow ? '⏳ မထုတ်ပေးရသေးဘူး' : '⚠️ မပေးချေရသေး (အကြွေး)';
         statusBadge.className = 'inline-block px-2.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800';
       }
 
