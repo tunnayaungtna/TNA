@@ -1,0 +1,164 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <!-- Royal Blue Squircle Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1959c7" />
+      <stop offset="50%" stop-color="#0d47a8" />
+      <stop offset="100%" stop-color="#052970" />
+    </linearGradient>
+    <radialGradient id="bgGlow" cx="50%" cy="38%" r="48%">
+      <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.45" />
+      <stop offset="100%" stop-color="#0d47a8" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- 3D Gold Pot Gradient -->
+    <radialGradient id="potGold" cx="42%" cy="38%" r="58%">
+      <stop offset="0%" stop-color="#fff6b3" />
+      <stop offset="28%" stop-color="#facc15" />
+      <stop offset="68%" stop-color="#d97706" />
+      <stop offset="100%" stop-color="#78350f" />
+    </radialGradient>
+
+    <!-- Linear Gold Gradient for Rim & Coins -->
+    <linearGradient id="goldLinear" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="40%" stop-color="#f59e0b" />
+      <stop offset="80%" stop-color="#b45309" />
+      <stop offset="100%" stop-color="#78350f" />
+    </linearGradient>
+
+    <linearGradient id="coinFace" x1="20%" y1="10%" x2="80%" y2="90%">
+      <stop offset="0%" stop-color="#fef9c3" />
+      <stop offset="45%" stop-color="#facc15" />
+      <stop offset="100%" stop-color="#ca8a04" />
+    </linearGradient>
+
+    <linearGradient id="textGold" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="50%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#b45309" />
+    </linearGradient>
+
+    <!-- Emerald Green Gradient -->
+    <linearGradient id="emeraldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#064e3b" />
+      <stop offset="50%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#064e3b" />
+    </linearGradient>
+
+    <filter id="dropShadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#021030" flood-opacity="0.65" />
+    </filter>
+    <filter id="softShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000000" flood-opacity="0.45" />
+    </filter>
+  </defs>
+
+  <!-- Squircle Background -->
+  <rect x="8" y="8" width="496" height="496" rx="110" ry="110" fill="url(#bgGrad)" stroke="#3b82f6" stroke-width="6" stroke-opacity="0.4" />
+  <rect x="16" y="16" width="480" height="480" rx="102" ry="102" fill="url(#bgGlow)" />
+
+  <!-- Sparkles & Stars -->
+  <g fill="#fef08a" opacity="0.9">
+    <!-- Left Star -->
+    <path d="M170 115 L174 126 L185 130 L174 134 L170 145 L166 134 L155 130 L166 126 Z" />
+    <!-- Right Star -->
+    <path d="M350 120 L353 128 L361 131 L353 134 L350 142 L347 134 L339 131 L347 128 Z" />
+    <!-- Top Sparkle -->
+    <path d="M256 48 L258 55 L265 57 L258 59 L256 66 L254 59 L247 57 L254 55 Z" />
+    <circle cx="195" cy="70" r="3" />
+    <circle cx="320" cy="68" r="3.5" />
+    <circle cx="152" cy="100" r="2.5" />
+    <circle cx="362" cy="102" r="2.5" />
+  </g>
+
+  <!-- Floating Top Coins -->
+  <!-- Top Left Coin (฿) -->
+  <g transform="translate(215, 92) rotate(-22)" filter="url(#softShadow)">
+    <ellipse cx="0" cy="0" rx="28" ry="26" fill="url(#goldLinear)" />
+    <ellipse cx="0" cy="0" rx="22" ry="20" fill="url(#coinFace)" stroke="#b45309" stroke-width="1.5" />
+    <text x="0" y="8" font-family="Arial, sans-serif" font-weight="900" font-size="24" fill="#92400e" text-anchor="middle">฿</text>
+  </g>
+
+  <!-- Top Center Tilted Coin -->
+  <g transform="translate(272, 62) rotate(32)" filter="url(#softShadow)">
+    <ellipse cx="0" cy="0" rx="24" ry="13" fill="url(#goldLinear)" />
+    <ellipse cx="0" cy="-2" rx="20" ry="10" fill="url(#coinFace)" stroke="#b45309" stroke-width="1.2" />
+  </g>
+
+  <!-- Top Right Coin (฿) -->
+  <g transform="translate(316, 100) rotate(25)" filter="url(#softShadow)">
+    <ellipse cx="0" cy="0" rx="28" ry="26" fill="url(#goldLinear)" />
+    <ellipse cx="0" cy="0" rx="22" ry="20" fill="url(#coinFace)" stroke="#b45309" stroke-width="1.5" />
+    <text x="0" y="8" font-family="Arial, sans-serif" font-weight="900" font-size="24" fill="#92400e" text-anchor="middle">฿</text>
+  </g>
+
+  <!-- Coins Sitting Inside the Pot Rim -->
+  <!-- Left Ks Coin -->
+  <g transform="translate(202, 155) rotate(-18)" filter="url(#softShadow)">
+    <circle cx="0" cy="0" r="32" fill="url(#goldLinear)" />
+    <circle cx="0" cy="0" r="26" fill="url(#coinFace)" stroke="#b45309" stroke-width="1.5" />
+    <text x="0" y="8" font-family="Arial, sans-serif" font-weight="900" font-size="21" fill="#92400e" text-anchor="middle">Ks</text>
+  </g>
+
+  <!-- Right Ks Coin -->
+  <g transform="translate(310, 155) rotate(18)" filter="url(#softShadow)">
+    <circle cx="0" cy="0" r="32" fill="url(#goldLinear)" />
+    <circle cx="0" cy="0" r="26" fill="url(#coinFace)" stroke="#b45309" stroke-width="1.5" />
+    <text x="0" y="8" font-family="Arial, sans-serif" font-weight="900" font-size="21" fill="#92400e" text-anchor="middle">Ks</text>
+  </g>
+
+  <!-- Center Prominent Baht Coin (฿) -->
+  <g transform="translate(256, 148)" filter="url(#softShadow)">
+    <circle cx="0" cy="0" r="36" fill="url(#goldLinear)" />
+    <circle cx="0" cy="0" r="29" fill="url(#coinFace)" stroke="#b45309" stroke-width="1.8" />
+    <text x="0" y="11" font-family="Arial, sans-serif" font-weight="900" font-size="32" fill="#92400e" text-anchor="middle">฿</text>
+  </g>
+
+  <!-- GOLDEN TREASURE POT (ရွှေအိုး) -->
+  <g filter="url(#dropShadow)">
+    <!-- Pot Main Belly -->
+    <path d="M172 195
+             C128 228, 128 310, 185 342
+             C212 356, 300 356, 327 342
+             C384 310, 384 228, 340 195
+             Z" fill="url(#potGold)" stroke="#b45309" stroke-width="2" />
+
+    <!-- Top Lotus Petals Around Shoulder -->
+    <path d="M175 202 Q195 230 215 202 Q235 232 256 202 Q277 232 297 202 Q317 230 337 202"
+          fill="none" stroke="#fef08a" stroke-width="4" opacity="0.85" />
+    <path d="M185 204 L195 220 L205 204 Z M225 204 L235 222 L245 204 Z M267 204 L277 222 L287 204 Z M307 204 L317 220 L327 204 Z"
+          fill="#059669" stroke="#fef08a" stroke-width="1.5" />
+
+    <!-- Emerald Green Neck Collar -->
+    <rect x="170" y="186" width="172" height="15" rx="7" fill="url(#emeraldGrad)" stroke="#fef08a" stroke-width="1.8" />
+
+    <!-- Flared Wavy Gold Pot Rim -->
+    <path d="M156 160
+             Q180 152, 206 162
+             Q232 170, 256 162
+             Q280 170, 306 162
+             Q332 152, 356 160
+             L342 188
+             L170 188
+             Z" fill="url(#goldLinear)" stroke="#fef08a" stroke-width="2" />
+
+    <!-- Bottom Lotus Petals with Emerald Accents -->
+    <path d="M175 335 Q195 302 215 340 Q235 298 256 344 Q277 298 297 340 Q317 302 337 335"
+          fill="none" stroke="#fef08a" stroke-width="3.5" opacity="0.85" />
+    <path d="M206 340 Q215 318 224 340 Z M246 344 Q256 316 266 344 Z M288 340 Q297 318 306 340 Z"
+          fill="#059669" stroke="#fef08a" stroke-width="1.5" />
+
+    <!-- Embossed "လာဘ်" Text on Pot Belly -->
+    <text x="256" y="286" font-family="'Noto Sans Myanmar', sans-serif" font-weight="800" font-size="52"
+          fill="#fef08a" stroke="#92400e" stroke-width="2" text-anchor="middle" filter="url(#softShadow)">လာဘ်</text>
+  </g>
+
+  <!-- BOTTOM BRAND TITLE: လာဘ်ရွှင် (Lab Shwin) -->
+  <g filter="url(#dropShadow)">
+    <text x="256" y="422" font-family="'Noto Sans Myanmar', sans-serif" font-weight="900" font-size="60"
+          fill="url(#textGold)" stroke="#78350f" stroke-width="1.5" text-anchor="middle">လာဘ်ရွှင်</text>
+    <text x="235" y="468" font-family="Inter, Arial, sans-serif" font-weight="800" font-size="28"
+          fill="#fde047" letter-spacing="1" text-anchor="middle">Lab Shwin</text>
+  </g>
+</svg>
