@@ -1,26 +1,21 @@
 {
-  "id": "./",
-  "name": "လာဘ်ရွှင် (Lab Shwin) - ထိုင်း-မြန်မာ ငွေလွှဲနှင့် ငွေထုတ်စာရင်း",
+  "name": "လာဘ်ရွှင် - ငွေလွှဲစာရင်း",
   "short_name": "လာဘ်ရွှင်",
-  "description": "ထိုင်းဘတ်နှင့် မြန်မာကျပ် ငွေလွှဲ၊ KPay/Wave ငွေထုတ်/ငွေလွှဲ လုပ်ငန်းသုံး မိုဘိုင်း စာရင်းကိုင်စနစ်",
-  "start_url": "./",
-  "scope": "./",
+  "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#090d16",
-  "theme_color": "#0d47a8",
-  "orientation": "portrait-primary",
+  "background_color": "#ffffff",
+  "theme_color": "#1d4ed8",
+  "orientation": "portrait",
   "icons": [
     {
-      "src": "icon.svg",
-      "sizes": "192x192 512x512",
-      "type": "image/svg+xml",
-      "purpose": "any"
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
     },
     {
-      "src": "icon.svg",
-      "sizes": "192x192 512x512",
-      "type": "image/svg+xml",
-      "purpose": "maskable"
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
     }
   ]
 }
