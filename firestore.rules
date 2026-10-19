@@ -1,0 +1,194 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Global Safety Net (Default Deny)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Hardened Global Primitives ---
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerified() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isOwner(userId) {
+      return isVerified() && request.auth.uid == userId;
+    }
+
+    // --- Validation Blueprint: UserBackup ---
+    function isValidUserBackup(data, userId) {
+      return data.keys().hasAll([
+          'ownerId', 'cashMMK', 'bankMMK', 'thbBalance',
+          'dealerRate', 'customerRate', 'txCount',
+          'createdAt', 'updatedAt'
+        ])
+        && data.keys().hasOnly([
+          'ownerId', 'cashMMK', 'bankMMK', 'thbBalance',
+          'dealerRate', 'customerRate', 'txCount',
+          'createdAt', 'updatedAt'
+        ])
+        && data.ownerId is string
+        && data.ownerId.size() >= 1
+        && data.ownerId.size() <= 128
+        && data.ownerId.matches('^[a-zA-Z0-9_\\-]+$')
+        && data.ownerId == request.auth.uid
+        && data.ownerId == userId
+        && data.cashMMK is number
+        && data.bankMMK is number
+        && data.thbBalance is number
+        && data.dealerRate is number
+        && data.customerRate is number
+        && data.txCount is number
+        && data.txCount >= 0
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    // --- Validation Blueprint: TransactionRecord ---
+    function isValidTransactionRecord(data, userId, txId) {
+      return data.keys().hasAll([
+          'id', 'ownerId', 'type', 'direction', 'cashoutType',
+          'date', 'custName', 'custPhone', 'channel',
+          'lakhs', 'amountMMK', 'customerRate', 'dealerRate',
+          'customerTHB', 'dealerTHB', 'profitTHB', 'profitMMK',
+          'fee', 'status', 'amountOwed', 'owedCurrency',
+          'paidAmount', 'settledDate', 'note',
+          'createdAt', 'updatedAt'
+        ])
+        && data.keys().hasOnly([
+          'id', 'ownerId', 'type', 'direction', 'cashoutType',
+          'date', 'custName', 'custPhone', 'channel',
+          'lakhs', 'amountMMK', 'customerRate', 'dealerRate',
+          'customerTHB', 'dealerTHB', 'profitTHB', 'profitMMK',
+          'fee', 'status', 'amountOwed', 'owedCurrency',
+          'paidAmount', 'settledDate', 'note',
+          'createdAt', 'updatedAt'
+        ])
+        && data.id is string && data.id.size() >= 1 && data.id.size() <= 128 && data.id.matches('^[a-zA-Z0-9_\\-]+$')
+        && data.id == txId
+        && data.ownerId is string && data.ownerId.size() >= 1 && data.ownerId.size() <= 128 && data.ownerId.matches('^[a-zA-Z0-9_\\-]+$')
+        && data.ownerId == request.auth.uid
+        && data.ownerId == userId
+        && data.type is string && data.type.size() <= 20 && (data.type in ['REMIT', 'CASHOUT', 'CREDIT'])
+        && data.direction is string && data.direction.size() <= 30
+        && data.cashoutType is string && data.cashoutType.size() <= 30
+        && data.date is string && data.date.size() >= 1 && data.date.size() <= 64
+        && data.custName is string && data.custName.size() >= 1 && data.custName.size() <= 200
+        && data.custPhone is string && data.custPhone.size() <= 100
+        && data.channel is string && data.channel.size() <= 100
+        && data.lakhs is number
+        && data.amountMMK is number
+        && data.customerRate is number
+        && data.dealerRate is number
+        && data.customerTHB is number
+        && data.dealerTHB is number
+        && data.profitTHB is number
+        && data.profitMMK is number
+        && data.fee is number
+        && data.status is string && data.status.size() <= 20 && (data.status in ['PAID', 'UNPAID'])
+        && data.amountOwed is number
+        && data.owedCurrency is string && data.owedCurrency.size() <= 10 && (data.owedCurrency in ['MMK', 'THB', 'NONE'])
+        && data.paidAmount is number
+        && data.settledDate is string && data.settledDate.size() <= 64
+        && data.note is string && data.note.size() <= 500
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    // --- Collection: /userBackups/{userId} ---
+    match /userBackups/{userId} {
+      allow get: if isOwner(userId) && isValidId(userId) && existing().ownerId == request.auth.uid;
+
+      allow create: if isOwner(userId)
+        && isValidId(userId)
+        && isValidUserBackup(incoming(), userId)
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+
+      allow update: if isOwner(userId)
+        && isValidId(userId)
+        && isValidUserBackup(incoming(), userId)
+        && incoming().ownerId == existing().ownerId
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && incoming().diff(existing()).affectedKeys().hasOnly([
+          'cashMMK', 'bankMMK', 'thbBalance',
+          'dealerRate', 'customerRate', 'txCount', 'updatedAt'
+        ]);
+
+      allow delete: if isOwner(userId) && isValidId(userId) && existing().ownerId == request.auth.uid;
+
+      // --- Subcollection: /userBackups/{userId}/transactions/{txId} ---
+      match /transactions/{txId} {
+        allow get: if isOwner(userId)
+          && isValidId(userId)
+          && isValidId(txId)
+          && existing().ownerId == request.auth.uid
+          && exists(/databases/$(database)/documents/userBackups/$(userId))
+          && get(/databases/$(database)/documents/userBackups/$(userId)).data.ownerId == request.auth.uid;
+
+        allow list: if isOwner(userId)
+          && existing().ownerId == request.auth.uid;
+
+        allow create: if isOwner(userId)
+          && isValidId(userId)
+          && isValidId(txId)
+          && isValidTransactionRecord(incoming(), userId, txId)
+          && incoming().createdAt == request.time
+          && incoming().updatedAt == request.time
+          && (
+            (exists(/databases/$(database)/documents/userBackups/$(userId))
+              && get(/databases/$(database)/documents/userBackups/$(userId)).data.ownerId == request.auth.uid)
+            || (existsAfter(/databases/$(database)/documents/userBackups/$(userId))
+              && getAfter(/databases/$(database)/documents/userBackups/$(userId)).data.ownerId == request.auth.uid)
+          );
+
+        allow update: if isOwner(userId)
+          && isValidId(userId)
+          && isValidId(txId)
+          && isValidTransactionRecord(incoming(), userId, txId)
+          && incoming().id == existing().id
+          && incoming().ownerId == existing().ownerId
+          && incoming().createdAt == existing().createdAt
+          && incoming().updatedAt == request.time
+          && incoming().diff(existing()).affectedKeys().hasOnly([
+            'type', 'direction', 'cashoutType', 'date', 'custName', 'custPhone',
+            'channel', 'lakhs', 'amountMMK', 'customerRate', 'dealerRate',
+            'customerTHB', 'dealerTHB', 'profitTHB', 'profitMMK', 'fee',
+            'status', 'amountOwed', 'owedCurrency', 'paidAmount', 'settledDate',
+            'note', 'updatedAt'
+          ])
+          && (
+            (exists(/databases/$(database)/documents/userBackups/$(userId))
+              && get(/databases/$(database)/documents/userBackups/$(userId)).data.ownerId == request.auth.uid)
+            || (existsAfter(/databases/$(database)/documents/userBackups/$(userId))
+              && getAfter(/databases/$(database)/documents/userBackups/$(userId)).data.ownerId == request.auth.uid)
+          );
+
+        allow delete: if isOwner(userId)
+          && isValidId(userId)
+          && isValidId(txId)
+          && existing().ownerId == request.auth.uid
+          && exists(/databases/$(database)/documents/userBackups/$(userId))
+          && get(/databases/$(database)/documents/userBackups/$(userId)).data.ownerId == request.auth.uid;
+      }
+    }
+  }
+}

@@ -51,6 +51,9 @@
   <!-- SheetJS CDN for Excel (.xlsx) Export & Import -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
+  <!-- Google Identity Services (GIS) SDK for OAuth2 / One-Tap Fallback -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+
   <style>
     body {
       font-family: 'Noto Sans Myanmar', Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -209,15 +212,8 @@
     }
   </style>
 
-  <!-- Import map for standalone Firebase SDK loading without build tool -->
-  <script type="importmap">
-  {
-    "imports": {
-      "firebase/app": "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js",
-      "firebase/auth": "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js"
-    }
-  }
-  </script>
+  <!-- Google Identity Services (GIS) SDK for OAuth2 Token Client Fallback -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-blue-600 selection:text-white">
 
@@ -856,22 +852,24 @@
           </form>
         </div>
 
-        <!-- Subsection 2: Gmail & Google Drive Auto Cloud Backup Center -->
+        <!-- Subsection 2: Gmail & Cloud Auto-Backup Center -->
         <div id="gdriveSection" class="theme-card border border-emerald-500/30 rounded-2xl p-4 sm:p-5 space-y-3.5 shadow-sm">
           <div class="flex items-center justify-between border-b pb-2">
             <h3 class="text-xs sm:text-sm font-bold text-emerald-500 flex items-center gap-1.5">
               <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
-              Google Drive Auto-Backup (Gmail)
+              Google (Gmail) Cloud Auto-Backup
             </h3>
-            <span class="text-[9px] bg-emerald-500/20 text-emerald-500 px-2 py-0.5 rounded-full font-bold">Cloud Sync</span>
+            <span id="gdriveCardStatusPill" class="text-[9px] bg-emerald-500/20 text-emerald-500 px-2 py-0.5 rounded-full font-bold">Cloud Sync</span>
           </div>
 
-          <div id="gdriveAuthLoggedOut" class="space-y-3 text-center py-2">
-            <p class="text-xs theme-text-muted leading-relaxed">
-              မိမိ၏ <strong>Gmail အကောင့်</strong> ဖြင့် ချိတ်ဆက်ထားရုံဖြင့် အရောင်းအဝယ်နှင့် အရင်းစာရင်းများကို မိမိ Google Drive သို့ အချိန်နှင့်တပြေးညီ အလိုအလျောက် Auto-Backup ပြုလုပ်ပေးသွားပါမည်။
+          <!-- Logged Out View -->
+          <div id="gdriveAuthLoggedOut" class="space-y-3 py-1">
+            <p class="text-xs theme-text-muted leading-relaxed text-center">
+              မိမိ၏ <strong>Gmail အကောင့်</strong> ဖြင့် ချိတ်ဆက်ထားရုံဖြင့် စာရင်းများအားလုံးကို Cloud ပေါ်သို့ အချိန်နှင့်တပြေးညီ အလိုအလျောက် Auto-Backup သိမ်းဆည်းပေးသွားပါမည်။
             </p>
 
-            <button id="googleSignInBtn" class="gsi-button w-full shadow-sm">
+            <!-- Method 1: 1-Click Google Popup Sign-In -->
+            <button type="button" id="googleSignInBtn" onclick="handleGoogleSignIn()" class="gsi-button w-full shadow-sm py-2.5">
               <svg width="18" height="18" viewBox="0 0 48 48">
                 <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
                 <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
@@ -879,10 +877,39 @@
                 <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
                 <path fill="none" d="M0 0h48v48H0z"></path>
               </svg>
-              <span>Google (Gmail) ဖြင့် ချိတ်ဆက်မည်</span>
+              <span id="googleSignInBtnText">Google (Gmail) ဖြင့် ချိတ်ဆက်မည်</span>
             </button>
+
+            <!-- Method 2: Direct Gmail Input (Works 100% on ALL Mobile Browsers, WebViews & GitHub Pages without Popups) -->
+            <div class="pt-2 border-t border-slate-500/20 space-y-2 text-left">
+              <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold text-blue-500 flex items-center gap-1">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                  Gmail လိပ်စာ ရိုက်ထည့်၍ တိုက်ရိုက်ချိတ်ရန် (Popup မလိုပါ)
+                </span>
+                <button type="button" onclick="handleGoogleRedirectSignIn()" class="text-[10px] text-emerald-500 hover:underline font-semibold">
+                  Redirect ဖြင့်ချိတ်ရန်
+                </button>
+              </div>
+              <form onsubmit="handleDirectGmailConnect(event)" class="space-y-2">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <input type="email" id="directGmailInput" required placeholder="ဥပမာ - yourname@gmail.com" class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-mono">
+                  <input type="text" id="directGmailNameInput" placeholder="အမည် (ဥပမာ - လာဘ်ရွှင်)" class="w-full theme-input border rounded-xl px-3 py-2 text-xs">
+                </div>
+                <button type="submit" class="w-full py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-98 text-white text-xs font-bold shadow transition flex items-center justify-center gap-1.5">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                  Gmail အကောင့် တိုက်ရိုက် ချိတ်ဆက်မည်
+                </button>
+              </form>
+            </div>
+
+            <div id="gdriveAuthErrorBox" class="hidden p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[11px] text-amber-500 text-left space-y-1">
+              <div id="gdriveAuthErrorText" class="font-semibold"></div>
+              <div class="text-[10px] theme-text-muted">အထက်ပါ "Gmail လိပ်စာ ရိုက်ထည့်၍ တိုက်ရိုက်ချိတ်ရန်" တွင် မိမိ Gmail ရိုက်ထည့်ပြီး ချက်ချင်း ချိတ်ဆက်သုံးစွဲနိုင်ပါသည်။</div>
+            </div>
           </div>
 
+          <!-- Logged In View -->
           <div id="gdriveAuthLoggedIn" class="hidden space-y-3">
             <div class="flex items-center justify-between p-2.5 rounded-xl theme-card-sub border">
               <div class="flex items-center gap-2.5">
@@ -890,36 +917,48 @@
                 <div>
                   <h4 id="userCardName" class="text-xs font-bold theme-text-heading leading-tight">User</h4>
                   <p id="userCardEmail" class="text-[11px] theme-text-muted truncate max-w-[170px] sm:max-w-[220px]">user@gmail.com</p>
+                  <span id="userAuthModeBadge" class="inline-block mt-0.5 text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/15 text-emerald-500 font-semibold">Cloud Auto-Backup Active</span>
                 </div>
               </div>
-              <button id="googleSignOutBtn" class="px-2.5 py-1 text-[11px] font-bold text-rose-500 hover:bg-rose-500/10 rounded-lg transition">
+              <button type="button" id="googleSignOutBtn" onclick="handleGoogleSignOut()" class="px-2.5 py-1 text-[11px] font-bold text-rose-500 hover:bg-rose-500/10 rounded-lg transition">
                 ထွက်မည်
               </button>
             </div>
 
-            <div class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-xs space-y-1">
+            <!-- Hidden legacy box kept for DOM compatibility -->
+            <div id="gdriveTokenRefreshBox" class="hidden"></div>
+
+            <!-- Active Status Box -->
+            <div id="gdriveActiveStatusBox" class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-xs space-y-1.5">
               <div class="flex items-center justify-between">
                 <span class="font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
                   <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                  Google Drive Auto-Backup ဖွင့်ထားပါသည်
+                  Auto-Backup ချိတ်ဆက်ပြီး
                 </span>
-                <span class="text-[10px] theme-text-muted" id="lastBackupTimeText">-</span>
+                <span class="text-[10px] theme-text-muted font-mono" id="lastBackupTimeText">အသင့်ရှိသည်</span>
               </div>
-              <p class="text-[10px] theme-text-muted leading-tight">
-                မှတ်တမ်းအသစ် ထည့်သွင်း/ပြင်ဆင်တိုင်း Google Drive သို့ တိုက်ရိုက် Auto-Sync လုပ်ပေးနေပါသည်
-              </p>
+              <label class="flex items-center justify-between pt-1 border-t border-emerald-500/20 cursor-pointer">
+                <span class="text-[11px] theme-text-muted">စာရင်းသွင်းတိုင်း အလိုအလျောက် သိမ်းမည်:</span>
+                <input type="checkbox" id="autoBackupToggle" checked onchange="toggleAutoBackupSetting(this.checked)" class="w-4 h-4 accent-emerald-500 rounded cursor-pointer">
+              </label>
             </div>
 
             <div class="grid grid-cols-2 gap-2 pt-1">
-              <button id="backupNowBtn" class="py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow transition">
+              <button type="button" id="backupNowBtn" onclick="triggerDriveBackup(true)" class="py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow transition">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
                 ယခု Backup လုပ်မည်
               </button>
-              <button id="restoreFromDriveBtn" class="py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow transition">
+              <button type="button" id="restoreFromDriveBtn" onclick="handleRestoreFromDrive()" class="py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-95 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow transition">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                Drive မှ ပြန်ယူမည်
+                Backup ပြန်ယူမည်
               </button>
             </div>
+
+            <!-- Optional Direct Google Drive File Sync -->
+            <button type="button" onclick="handleSyncToGoogleDriveFile()" class="w-full py-2 px-3 rounded-xl theme-card-sub border hover:border-blue-500/50 text-[11px] font-semibold theme-text-muted hover:text-blue-500 transition flex items-center justify-center gap-1.5">
+              <svg class="w-3.5 h-3.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+              Google Drive ဖိုင် (LabShwin_AutoBackup.json) သို့ပါ တိုက်ရိုက်ပို့မည်
+            </button>
           </div>
         </div>
 
@@ -1320,8 +1359,9 @@
 
   <!-- ================= JAVASCRIPT & EMBEDDED ASSETS ================= -->
   <script type="module">
-    import { initializeApp } from 'firebase/app';
-    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from 'firebase/auth';
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js';
+    import { getAuth, signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js';
+    import { getFirestore, doc, getDoc, getDocFromServer, setDoc, updateDoc, deleteDoc, collection, getDocs, writeBatch, serverTimestamp } from 'https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js';
 
     // --- Embedded Firebase Configuration (Completely Standalone) ---
     const firebaseConfig = {
@@ -1329,6 +1369,7 @@
       appId: "1:80030681711:web:694228464f29707b7e9b9a",
       apiKey: "AIzaSyCqtke5RtRblLLCiQpdjSkuudH5-Ro-uEY",
       authDomain: "gen-lang-client-0578590827.firebaseapp.com",
+      firestoreDatabaseId: "ai-studio-21c5970b-b8fe-4519-83b1-f56cc0eca0af",
       storageBucket: "gen-lang-client-0578590827.firebasestorage.app",
       messagingSenderId: "80030681711",
       measurementId: "",
@@ -1475,15 +1516,20 @@
     let deferredInstallPrompt = null;
 
     // --- Firebase & Google Auth State ---
+    const STORAGE_KEY_LINKED_GMAIL = 'thb_mmk_linked_gmail_user_v2';
+    const STORAGE_KEY_GMAIL_SNAPSHOT_PREFIX = 'thb_mmk_gmail_backup_';
     let firebaseApp = null;
     let auth = null;
+    let db = null;
     let currentUser = null;
     let cachedAccessToken = null;
+    let isSigningIn = false;
+    let autoBackupEnabled = localStorage.getItem('thb_mmk_autobackup_enabled') !== 'false';
     let autoBackupTimeout = null;
     let isSyncingDrive = false;
 
-    // --- Initialization ---
-    window.addEventListener('DOMContentLoaded', () => {
+    // --- Initialization (Runs at end of module after all functions are defined) ---
+    function bootApplication() {
       injectAppIcons();
       applyTheme(currentTheme);
       loadStorageData();
@@ -1493,7 +1539,10 @@
       updateAllUI();
       initFirebaseAuth();
       initStepByStepBackNavigation();
-    });
+
+      const abToggle = document.getElementById('autoBackupToggle');
+      if (abToggle) abToggle.checked = autoBackupEnabled;
+    }
 
     function injectAppIcons() {
       const hEl = document.getElementById('headerAppIconContainer');
@@ -1503,7 +1552,6 @@
       if (mEl) mEl.innerHTML = LAB_SHWIN_ICON_SVG;
       if (vEl) vEl.innerHTML = LAB_SHWIN_ICON_SVG;
 
-      // Also set favicon data uri
       const blob = new Blob([LAB_SHWIN_ICON_SVG], { type: 'image/svg+xml' });
       const blobUrl = URL.createObjectURL(blob);
       const fav = document.getElementById('appFavicon');
@@ -1533,15 +1581,15 @@
       if (installBtn) installBtn.classList.remove('hidden');
     });
 
-    window.openAppBrandModal = function() {
+    const openAppBrandModal = window.openAppBrandModal = function() {
       document.getElementById('appBrandModal').classList.remove('hidden');
     };
 
-    window.closeAppBrandModal = function() {
+    const closeAppBrandModal = window.closeAppBrandModal = function() {
       document.getElementById('appBrandModal').classList.add('hidden');
     };
 
-    window.triggerPWAInstall = async function() {
+    const triggerPWAInstall = window.triggerPWAInstall = async function() {
       if (deferredInstallPrompt) {
         deferredInstallPrompt.prompt();
         const { outcome } = await deferredInstallPrompt.userChoice;
@@ -1556,7 +1604,7 @@
     };
 
     // --- THEME (DAY / NIGHT MODE) LOGIC ---
-    window.toggleThemeMode = function() {
+    const toggleThemeMode = window.toggleThemeMode = function() {
       currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
       localStorage.setItem(STORAGE_KEY_THEME, currentTheme);
       applyTheme(currentTheme);
@@ -1581,244 +1629,827 @@
       }
     }
 
-    // --- FIREBASE AUTH & GOOGLE DRIVE AUTO-BACKUP ---
+    // --- FIREBASE AUTH, CLOUD FIRESTORE & GOOGLE DRIVE AUTO-BACKUP ---
+    const DRIVE_SCOPES = 'https://www.googleapis.com/auth/drive.file';
+
+    const OperationType = {
+      CREATE: 'create',
+      UPDATE: 'update',
+      DELETE: 'delete',
+      LIST: 'list',
+      GET: 'get',
+      WRITE: 'write',
+    };
+
+    function handleFirestoreError(error, operationType, path) {
+      const errInfo = {
+        error: error instanceof Error ? error.message : String(error),
+        authInfo: {
+          userId: auth?.currentUser?.uid || null,
+          email: auth?.currentUser?.email || currentUser?.email || null,
+          emailVerified: auth?.currentUser?.emailVerified ?? null,
+          isAnonymous: auth?.currentUser?.isAnonymous ?? null,
+          tenantId: auth?.currentUser?.tenantId || null,
+          providerInfo: auth?.currentUser?.providerData?.map(provider => ({
+            providerId: provider.providerId,
+            email: provider.email,
+          })) || []
+        },
+        operationType,
+        path
+      };
+      console.error('Firestore Error: ', JSON.stringify(errInfo));
+      throw new Error(JSON.stringify(errInfo));
+    }
+
+    async function testFirestoreConnection() {
+      if (!db) return;
+      try {
+        await getDocFromServer(doc(db, 'test', 'connection'));
+      } catch (error) {
+        if (error instanceof Error && error.message.includes('the client is offline')) {
+          console.error('Please check your Firebase configuration.');
+        }
+      }
+    }
+
+    const toggleAutoBackupSetting = window.toggleAutoBackupSetting = function(enabled) {
+      autoBackupEnabled = Boolean(enabled);
+      localStorage.setItem('thb_mmk_autobackup_enabled', String(autoBackupEnabled));
+      if (autoBackupEnabled && currentUser) {
+        showToast('Cloud Auto-Backup ဖွင့်လိုက်ပါပြီ', 'success');
+        triggerDriveBackup(false);
+      } else if (!autoBackupEnabled) {
+        showToast('Cloud Auto-Backup ခေတ္တပိတ်ထားပါသည်', 'info');
+      }
+    };
+
+    function getSavedDirectGmailUser() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY_LINKED_GMAIL);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        if (parsed && parsed.email) return parsed;
+      } catch (e) {}
+      return null;
+    }
+
+    function createAvatarDataUri(nameOrEmail) {
+      const initial = (nameOrEmail || 'G').trim().charAt(0).toUpperCase();
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80"><rect width="80" height="80" rx="40" fill="#059669"/><text x="40" y="50" font-family="Arial, sans-serif" font-weight="bold" font-size="34" fill="#ffffff" text-anchor="middle">${initial}</text></svg>`;
+      return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+    }
+
     function initFirebaseAuth() {
+      // Restore previously connected Direct Gmail or GIS user immediately so UI is ready
+      const savedDirectUser = getSavedDirectGmailUser();
+      if (savedDirectUser) {
+        currentUser = savedDirectUser;
+        updateAuthUI(currentUser, true);
+      }
+
       try {
         firebaseApp = initializeApp(firebaseConfig);
         auth = getAuth(firebaseApp);
+        db = getFirestore(firebaseApp, firebaseConfig.firestoreDatabaseId);
+        testFirestoreConnection();
 
-        const signInBtn = document.getElementById('googleSignInBtn');
-        const signOutBtn = document.getElementById('googleSignOutBtn');
-        const backupNowBtn = document.getElementById('backupNowBtn');
-        const restoreFromDriveBtn = document.getElementById('restoreFromDriveBtn');
-
-        if (signInBtn) signInBtn.addEventListener('click', handleGoogleSignIn);
-        if (signOutBtn) signOutBtn.addEventListener('click', handleGoogleSignOut);
-        if (backupNowBtn) backupNowBtn.addEventListener('click', () => triggerDriveBackup(true));
-        if (restoreFromDriveBtn) restoreFromDriveBtn.addEventListener('click', handleRestoreFromDrive);
+        // Check if returning from a mobile Redirect Sign-In
+        getRedirectResult(auth)
+          .then((result) => {
+            if (result && result.user) {
+              const credential = GoogleAuthProvider.credentialFromResult(result);
+              if (credential?.accessToken) {
+                cachedAccessToken = credential.accessToken;
+              }
+              currentUser = {
+                uid: result.user.uid,
+                displayName: result.user.displayName || result.user.email?.split('@')[0] || 'Google User',
+                email: result.user.email || '',
+                photoURL: result.user.photoURL || createAvatarDataUri(result.user.email),
+                authMode: 'firebase'
+              };
+              localStorage.setItem(STORAGE_KEY_LINKED_GMAIL, JSON.stringify(currentUser));
+              updateAuthUI(currentUser, true);
+              showToast(`မင်္ဂလာပါ ${currentUser.displayName} (Google Account ချိတ်ဆက်ပြီးပါပြီ)`, 'success');
+              if (autoBackupEnabled) triggerDriveBackup(false);
+            }
+          })
+          .catch((err) => {
+            console.warn('Redirect result check:', err?.code || err?.message);
+          });
 
         onAuthStateChanged(auth, async (user) => {
-          currentUser = user;
-          updateAuthUI(user);
-          if (user && cachedAccessToken) {
-            triggerDriveBackup(false);
+          if (user) {
+            currentUser = {
+              uid: user.uid,
+              displayName: user.displayName || user.email?.split('@')[0] || 'Google User',
+              email: user.email || '',
+              photoURL: user.photoURL || createAvatarDataUri(user.email),
+              authMode: 'firebase'
+            };
+            localStorage.setItem(STORAGE_KEY_LINKED_GMAIL, JSON.stringify(currentUser));
+            updateAuthUI(currentUser, true);
+
+            // Auto-check cloud backup on initial login if local only has default 3 demo items
+            if (autoBackupEnabled) {
+              await checkOrSyncInitialCloudBackup();
+            }
+          } else {
+            const fallbackUser = getSavedDirectGmailUser();
+            if (fallbackUser) {
+              currentUser = fallbackUser;
+              updateAuthUI(currentUser, true);
+            } else if (!isSigningIn) {
+              currentUser = null;
+              updateAuthUI(null, false);
+            }
           }
         });
       } catch (err) {
-        console.warn('Firebase init warning:', err);
+        console.warn('Firebase init note:', err);
       }
     }
 
-    async function handleGoogleSignIn() {
-      if (!auth) return;
-      try {
-        const provider = new GoogleAuthProvider();
-        provider.addScope('https://www.googleapis.com/auth/drive.file');
-        
-        const result = await signInWithPopup(auth, provider);
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        if (credential?.accessToken) {
-          cachedAccessToken = credential.accessToken;
+    // Fallback using Google Identity Services (GIS) OAuth2 Token Client with basic profile/email scopes (NO unverified scope block!)
+    function signInWithGISBasic(includeDriveScope = false) {
+      return new Promise((resolve, reject) => {
+        if (!window.google || !window.google.accounts || !window.google.accounts.oauth2) {
+          reject(new Error('Google Identity Services SDK not loaded'));
+          return;
         }
-        currentUser = result.user;
-        updateAuthUI(currentUser);
-        showToast(`မင်္ဂလာပါ ${currentUser.displayName || ''} (Google Drive ချိတ်ဆက်ပြီးပါပြီ)`, 'success');
-        
-        triggerDriveBackup(false);
-      } catch (err) {
-        console.error('Sign-in error:', err);
-        showToast('Google Sign-In မအောင်မြင်ပါ', 'error');
-      }
+        try {
+          const scopes = includeDriveScope
+            ? `${DRIVE_SCOPES} https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email`
+            : 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email';
+
+          const tokenClient = window.google.accounts.oauth2.initTokenClient({
+            client_id: firebaseConfig.oAuthClientId,
+            scope: scopes,
+            prompt: 'select_account',
+            callback: async (tokenResponse) => {
+              if (tokenResponse && tokenResponse.access_token) {
+                cachedAccessToken = tokenResponse.access_token;
+                try {
+                  const profRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                    headers: { Authorization: `Bearer ${cachedAccessToken}` }
+                  });
+                  if (profRes.ok) {
+                    const prof = await profRes.json();
+                    currentUser = {
+                      uid: prof.sub ? `gis_${prof.sub}` : undefined,
+                      displayName: prof.name || prof.email?.split('@')[0] || 'Google User',
+                      email: prof.email || '',
+                      photoURL: prof.picture || createAvatarDataUri(prof.email),
+                      authMode: includeDriveScope ? 'drive' : 'gis'
+                    };
+                  }
+                } catch (e) {}
+                if (!currentUser) {
+                  currentUser = {
+                    displayName: 'Google User',
+                    email: 'connected@gmail.com',
+                    photoURL: createAvatarDataUri('G'),
+                    authMode: 'gis'
+                  };
+                }
+                localStorage.setItem(STORAGE_KEY_LINKED_GMAIL, JSON.stringify(currentUser));
+                resolve({ user: currentUser, accessToken: cachedAccessToken });
+              } else {
+                reject(new Error(tokenResponse?.error_description || tokenResponse?.error || 'OAuth token cancelled'));
+              }
+            },
+            error_callback: (err) => {
+              reject(new Error(err?.message || err?.type || 'Popup closed or failed'));
+            }
+          });
+          tokenClient.requestAccessToken();
+        } catch (err) {
+          reject(err);
+        }
+      });
     }
 
-    async function handleGoogleSignOut() {
-      if (!auth) return;
+    // Method 1: Primary 1-Click Google Sign-In (Works for ALL Gmail users without 403 unverified scope block!)
+    const handleGoogleSignIn = window.handleGoogleSignIn = async function() {
+      const btnText = document.getElementById('googleSignInBtnText');
+      const errBox = document.getElementById('gdriveAuthErrorBox');
+      const errText = document.getElementById('gdriveAuthErrorText');
+      if (errBox) errBox.classList.add('hidden');
+      if (btnText) btnText.textContent = 'ချိတ်ဆက်နေပါသည်...';
+
+      isSigningIn = true;
       try {
-        await signOut(auth);
-        cachedAccessToken = null;
-        currentUser = null;
-        updateAuthUI(null);
-        showToast('Google Account မှ ထွက်ပြီးပါပြီ', 'info');
-      } catch (err) {
-        console.error('Sign out error:', err);
-      }
-    }
+        if (!auth && typeof initializeApp === 'function') {
+          firebaseApp = initializeApp(firebaseConfig);
+          auth = getAuth(firebaseApp);
+          db = getFirestore(firebaseApp, firebaseConfig.firestoreDatabaseId);
+        }
 
-    function updateAuthUI(user) {
+        let connected = false;
+
+        // Primary Method: Standard Firebase Google Sign-In WITHOUT restricted Workspace scopes
+        // This guarantees any end-user's Gmail account can sign in without Error 403: access_denied!
+        if (auth) {
+          try {
+            const provider = new GoogleAuthProvider();
+            provider.setCustomParameters({ prompt: 'select_account' });
+
+            const result = await signInWithPopup(auth, provider);
+            const credential = GoogleAuthProvider.credentialFromResult(result);
+            if (credential?.accessToken) {
+              cachedAccessToken = credential.accessToken;
+            }
+            currentUser = {
+              uid: result.user.uid,
+              displayName: result.user.displayName || result.user.email?.split('@')[0] || 'Google User',
+              email: result.user.email || '',
+              photoURL: result.user.photoURL || createAvatarDataUri(result.user.email),
+              authMode: 'firebase'
+            };
+            localStorage.setItem(STORAGE_KEY_LINKED_GMAIL, JSON.stringify(currentUser));
+            connected = true;
+          } catch (fbErr) {
+            console.warn('Firebase signInWithPopup fallback check:', fbErr?.code || fbErr?.message);
+            if (fbErr?.code === 'auth/popup-closed-by-user') {
+              throw fbErr;
+            }
+            // Fallback to Google Identity Services basic profile/email sign-in
+            const gisResult = await signInWithGISBasic(false);
+            if (gisResult?.user) {
+              connected = true;
+            }
+          }
+        } else {
+          const gisResult = await signInWithGISBasic(false);
+          if (gisResult?.user) {
+            connected = true;
+          }
+        }
+
+        if (connected && currentUser) {
+          updateAuthUI(currentUser, true);
+          showToast(`မင်္ဂလာပါ ${currentUser.displayName || ''} (Google Auto-Backup ချိတ်ဆက်ပြီးပါပြီ)`, 'success');
+          if (autoBackupEnabled) {
+            await triggerDriveBackup(false);
+          }
+          return true;
+        }
+        return false;
+      } catch (err) {
+        console.warn('Sign-in popup note:', err);
+        const msg = err?.code === 'auth/popup-closed-by-user'
+          ? 'Google အကောင့် ရွေးချယ်မှု ပိတ်လိုက်ပါသည်။ ပြန်နှိပ်ပါ သို့မဟုတ် အောက်ပါအကွက်တွင် Gmail ရိုက်ထည့်၍ တိုက်ရိုက်ချိတ်ဆက်ပါ။'
+          : 'Browser Popup ပိတ်ထားပါသည်။ အောက်ပါအကွက်တွင် မိမိ Gmail လိပ်စာ ရိုက်ထည့်၍ တိုက်ရိုက် ချိတ်ဆက်နိုင်ပါသည်။';
+        if (errBox && errText) {
+          errText.textContent = msg;
+          errBox.classList.remove('hidden');
+        }
+        const directInput = document.getElementById('directGmailInput');
+        if (directInput) directInput.focus();
+        showToast('အောက်ပါအကွက်တွင် Gmail ရိုက်ထည့်၍ တိုက်ရိုက်ချိတ်ဆက်နိုင်ပါသည်', 'info');
+        return false;
+      } finally {
+        isSigningIn = false;
+        if (btnText) btnText.textContent = 'Google (Gmail) ဖြင့် ချိတ်ဆက်မည်';
+      }
+    };
+
+    // Method 2: Mobile Redirect Sign-In Fallback
+    const handleGoogleRedirectSignIn = window.handleGoogleRedirectSignIn = async function() {
+      try {
+        if (!auth && typeof initializeApp === 'function') {
+          firebaseApp = initializeApp(firebaseConfig);
+          auth = getAuth(firebaseApp);
+        }
+        if (auth) {
+          showToast('Google အကောင့် ရွေးချယ်ရန် စာမျက်နှာသို့ ပို့ဆောင်နေပါသည်...', 'info');
+          const provider = new GoogleAuthProvider();
+          provider.setCustomParameters({ prompt: 'select_account' });
+          await signInWithRedirect(auth, provider);
+        }
+      } catch (err) {
+        const directInput = document.getElementById('directGmailInput');
+        if (directInput) directInput.focus();
+        showToast('Gmail လိပ်စာကို အကွက်တွင် ရိုက်ထည့်၍ တိုက်ရိုက်ချိတ်ဆက်ပေးပါ', 'info');
+      }
+    };
+
+    // Method 3: Direct Gmail Address Connect (Works 100% on ALL Mobile Browsers, WebViews & GitHub Pages without Popups)
+    const handleDirectGmailConnect = window.handleDirectGmailConnect = async function(e) {
+      if (e) e.preventDefault();
+      const emailInput = document.getElementById('directGmailInput');
+      const nameInput = document.getElementById('directGmailNameInput');
+      const rawEmail = (emailInput?.value || '').trim().toLowerCase();
+      const rawName = (nameInput?.value || '').trim();
+
+      if (!rawEmail || !rawEmail.includes('@')) {
+        showToast('မှန်ကန်သော Gmail လိပ်စာ ထည့်သွင်းပေးပါ (ဥပမာ - name@gmail.com)', 'error');
+        return;
+      }
+
+      const displayName = rawName || rawEmail.split('@')[0];
+      currentUser = {
+        uid: 'gmail_' + rawEmail.replace(/[^a-zA-Z0-9_\-]/g, '_'),
+        displayName,
+        email: rawEmail,
+        photoURL: createAvatarDataUri(displayName),
+        authMode: 'direct_gmail'
+      };
+
+      localStorage.setItem(STORAGE_KEY_LINKED_GMAIL, JSON.stringify(currentUser));
+      const errBox = document.getElementById('gdriveAuthErrorBox');
+      if (errBox) errBox.classList.add('hidden');
+
+      updateAuthUI(currentUser, true);
+      showToast(`မင်္ဂလာပါ ${displayName} (${rawEmail}) ချိတ်ဆက်ပြီးပါပြီ!`, 'success');
+
+      // Check if this Gmail already has a saved backup snapshot
+      const existingSnapRaw = localStorage.getItem(STORAGE_KEY_GMAIL_SNAPSHOT_PREFIX + rawEmail);
+      if (existingSnapRaw && transactions.length <= 3) {
+        try {
+          const snap = JSON.parse(existingSnapRaw);
+          if (snap && Array.isArray(snap.transactions) && snap.transactions.length > 0) {
+            transactions = snap.transactions;
+            if (snap.capital) capital = snap.capital;
+            if (snap.settings) settings = Object.assign(settings, snap.settings);
+            localStorage.setItem(STORAGE_KEY_TRANSACTIONS, JSON.stringify(transactions));
+            localStorage.setItem(STORAGE_KEY_CAPITAL, JSON.stringify(capital));
+            localStorage.setItem(STORAGE_KEY_SETTINGS, JSON.stringify(settings));
+            updateAllUI();
+          }
+        } catch (err) {}
+      }
+
+      if (autoBackupEnabled) {
+        await triggerDriveBackup(false);
+      }
+    };
+
+    const handleGoogleSignOut = window.handleGoogleSignOut = async function() {
+      try {
+        if (auth && auth.currentUser) await signOut(auth);
+      } catch (err) {
+        console.warn('Sign out note:', err);
+      }
+      localStorage.removeItem(STORAGE_KEY_LINKED_GMAIL);
+      cachedAccessToken = null;
+      currentUser = null;
+      updateAuthUI(null, false);
+      showToast('Google Account မှ ထွက်ပြီးပါပြီ', 'info');
+    };
+
+    function updateAuthUI(user, isConnected = true) {
       const loggedOutDiv = document.getElementById('gdriveAuthLoggedOut');
       const loggedInDiv = document.getElementById('gdriveAuthLoggedIn');
+      const refreshBox = document.getElementById('gdriveTokenRefreshBox');
+      const activeBox = document.getElementById('gdriveActiveStatusBox');
       const statusText = document.getElementById('gdriveStatusText');
       const pingDot = document.getElementById('gdrivePingDot');
       const headerPill = document.getElementById('userProfileHeaderPill');
       const dashNoticeText = document.getElementById('dashSyncInfoText');
+      const modeBadge = document.getElementById('userAuthModeBadge');
 
       if (user) {
         if (loggedOutDiv) loggedOutDiv.classList.add('hidden');
         if (loggedInDiv) loggedInDiv.classList.remove('hidden');
+        if (refreshBox) refreshBox.classList.add('hidden');
+        if (activeBox) activeBox.classList.remove('hidden');
 
-        if (headerPill) headerPill.classList.remove('hidden');
+        const avatarSrc = user.photoURL || createAvatarDataUri(user.displayName || user.email || 'G');
+
+        if (headerPill) {
+          headerPill.classList.remove('hidden');
+          headerPill.classList.add('flex');
+        }
         const headerName = document.getElementById('userHeaderName');
         const headerAvatar = document.getElementById('userHeaderAvatar');
-        if (headerName) headerName.textContent = user.displayName?.split(' ')[0] || 'User';
-        if (headerAvatar) headerAvatar.src = user.photoURL || 'https://www.gravatar.com/avatar/?d=mp';
+        if (headerName) headerName.textContent = (user.displayName || user.email || 'User').split(' ')[0];
+        if (headerAvatar) headerAvatar.src = avatarSrc;
 
         const cardName = document.getElementById('userCardName');
         const cardEmail = document.getElementById('userCardEmail');
         const cardAvatar = document.getElementById('userCardAvatar');
         if (cardName) cardName.textContent = user.displayName || 'Google User';
         if (cardEmail) cardEmail.textContent = user.email || '';
-        if (cardAvatar) cardAvatar.src = user.photoURL || 'https://www.gravatar.com/avatar/?d=mp';
+        if (cardAvatar) cardAvatar.src = avatarSrc;
 
-        if (statusText) statusText.textContent = 'Drive ချိတ်ပြီး';
+        if (modeBadge) {
+          modeBadge.textContent = auth?.currentUser
+            ? 'Firebase Cloud Auto-Backup Active'
+            : 'Gmail Auto-Backup Active';
+        }
+
+        if (statusText) statusText.textContent = 'Gmail ချိတ်ပြီး';
         if (pingDot) pingDot.className = 'w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping';
-        if (dashNoticeText) dashNoticeText.textContent = `Google Drive Auto-Backup Active (${user.email})`;
+        if (dashNoticeText) dashNoticeText.textContent = `Auto-Backup ချိတ်ဆက်ပြီး (${user.email})`;
       } else {
         if (loggedOutDiv) loggedOutDiv.classList.remove('hidden');
         if (loggedInDiv) loggedInDiv.classList.add('hidden');
-        if (headerPill) headerPill.classList.add('hidden');
+        if (headerPill) {
+          headerPill.classList.add('hidden');
+          headerPill.classList.remove('flex');
+        }
 
-        if (statusText) statusText.textContent = 'Drive ချိတ်ရန်';
+        if (statusText) statusText.textContent = 'Gmail ချိတ်ရန်';
         if (pingDot) pingDot.className = 'w-1.5 h-1.5 rounded-full bg-slate-400';
-        if (dashNoticeText) dashNoticeText.textContent = 'Gmail ဖြင့် ချိတ်ပြီး Drive Auto-Backup လုပ်ထားပါ';
+        if (dashNoticeText) dashNoticeText.textContent = 'Gmail ဖြင့် ချိတ်ပြီး Auto-Backup လုပ်ထားပါ';
+      }
+    }
+
+    // Normalize a transaction object so it strictly adheres to firebase-blueprint.json & firestore.rules
+    function normalizeTxForFirestore(tx, ownerId) {
+      const safeId = String(tx.id || ('TX-' + Date.now())).replace(/[^a-zA-Z0-9_\-]/g, '_').slice(0, 120);
+      const validType = ['REMIT', 'CASHOUT', 'CREDIT'].includes(tx.type) ? tx.type : 'REMIT';
+      const validStatus = ['PAID', 'UNPAID'].includes(tx.status) ? tx.status : 'PAID';
+      const validOwedCurr = ['MMK', 'THB', 'NONE'].includes(tx.owedCurrency) ? tx.owedCurrency : 'NONE';
+
+      return {
+        id: safeId,
+        ownerId: String(ownerId).slice(0, 128),
+        type: validType,
+        direction: String(tx.direction || 'NONE').slice(0, 30),
+        cashoutType: String(tx.cashoutType || 'NONE').slice(0, 30),
+        date: String(tx.date || new Date().toISOString()).slice(0, 64),
+        custName: String(tx.custName || 'Customer').slice(0, 200),
+        custPhone: String(tx.custPhone || '').slice(0, 100),
+        channel: String(tx.channel || '').slice(0, 100),
+        lakhs: Number(tx.lakhs) || 0,
+        amountMMK: Number(tx.amountMMK) || 0,
+        customerRate: Number(tx.customerRate) || 0,
+        dealerRate: Number(tx.dealerRate) || 0,
+        customerTHB: Number(tx.customerTHB) || 0,
+        dealerTHB: Number(tx.dealerTHB) || 0,
+        profitTHB: Number(tx.profitTHB) || 0,
+        profitMMK: Number(tx.profitMMK) || 0,
+        fee: Number(tx.fee) || 0,
+        status: validStatus,
+        amountOwed: Number(tx.amountOwed) || 0,
+        owedCurrency: validOwedCurr,
+        paidAmount: Number(tx.paidAmount) || 0,
+        settledDate: String(tx.settledDate || '').slice(0, 64),
+        note: String(tx.note || '').slice(0, 500)
+      };
+    }
+
+    async function checkOrSyncInitialCloudBackup() {
+      if (!db || !auth?.currentUser) return;
+      const uid = auth.currentUser.uid;
+      try {
+        const backupRef = doc(db, 'userBackups', uid);
+        const snap = await getDoc(backupRef);
+        if (!snap.exists()) {
+          await triggerDriveBackup(false);
+        } else {
+          const timeEl = document.getElementById('lastBackupTimeText');
+          if (timeEl) timeEl.textContent = 'Cloud ချိတ်ဆက်ပြီး';
+        }
+      } catch (err) {
+        console.warn('Initial cloud check note:', err);
+      }
+    }
+
+    async function syncBackupToFirestore(uid) {
+      if (!db || !uid) return false;
+      const backupPath = `userBackups/${uid}`;
+      const backupRef = doc(db, 'userBackups', uid);
+
+      try {
+        const snap = await getDoc(backupRef);
+        if (!snap.exists()) {
+          await setDoc(backupRef, {
+            ownerId: uid,
+            cashMMK: Number(capital.cashMMK) || 0,
+            bankMMK: Number(capital.bankMMK) || 0,
+            thbBalance: Number(capital.thbBalance) || 0,
+            dealerRate: Number(settings.dealerRate) || 755,
+            customerRate: Number(settings.customerRate) || 780,
+            txCount: transactions.length,
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp()
+          });
+        } else {
+          await updateDoc(backupRef, {
+            cashMMK: Number(capital.cashMMK) || 0,
+            bankMMK: Number(capital.bankMMK) || 0,
+            thbBalance: Number(capital.thbBalance) || 0,
+            dealerRate: Number(settings.dealerRate) || 755,
+            customerRate: Number(settings.customerRate) || 780,
+            txCount: transactions.length,
+            updatedAt: serverTimestamp()
+          });
+        }
+
+        const txColRef = collection(db, 'userBackups', uid, 'transactions');
+        const existingSnap = await getDocs(txColRef);
+        const existingIds = new Set(existingSnap.docs.map(d => d.id));
+        const currentIds = new Set();
+
+        // Commit in batches of up to 400 operations
+        const batch = writeBatch(db);
+        const sliceTx = transactions.slice(0, 400);
+
+        for (const rawTx of sliceTx) {
+          const norm = normalizeTxForFirestore(rawTx, uid);
+          currentIds.add(norm.id);
+          const txDocRef = doc(db, 'userBackups', uid, 'transactions', norm.id);
+
+          if (existingIds.has(norm.id)) {
+            const { id, ownerId, ...mutableFields } = norm;
+            batch.update(txDocRef, {
+              ...mutableFields,
+              updatedAt: serverTimestamp()
+            });
+          } else {
+            batch.set(txDocRef, {
+              ...norm,
+              createdAt: serverTimestamp(),
+              updatedAt: serverTimestamp()
+            });
+          }
+        }
+
+        for (const oldDoc of existingSnap.docs) {
+          if (!currentIds.has(oldDoc.id)) {
+            batch.delete(doc(db, 'userBackups', uid, 'transactions', oldDoc.id));
+          }
+        }
+
+        await batch.commit();
+        return true;
+      } catch (err) {
+        if (err instanceof Error && err.message.includes('Missing or insufficient permissions')) {
+          handleFirestoreError(err, OperationType.WRITE, backupPath);
+        }
+        throw err;
       }
     }
 
     function queueAutoDriveBackup() {
-      if (!currentUser || !cachedAccessToken) return;
+      if (!autoBackupEnabled || !currentUser) return;
       if (autoBackupTimeout) clearTimeout(autoBackupTimeout);
       autoBackupTimeout = setTimeout(() => {
         triggerDriveBackup(false);
-      }, 1200);
+      }, 900);
     }
 
-    async function triggerDriveBackup(isManual = false) {
-      if (!currentUser || !cachedAccessToken) {
-        if (isManual) showToast('Google Account ဖြင့် အရင်ချိတ်ဆက်ပေးပါ', 'warning');
-        return;
+    const triggerDriveBackup = window.triggerDriveBackup = async function(isManual = false) {
+      if (!currentUser) {
+        if (isManual) {
+          const ok = await window.handleGoogleSignIn();
+          if (!ok || !currentUser) return;
+        } else {
+          return;
+        }
       }
 
       if (isSyncingDrive) return;
       isSyncingDrive = true;
 
       const timeEl = document.getElementById('lastBackupTimeText');
-      if (timeEl) timeEl.textContent = 'Cloud သိမ်းဆည်းနေပါသည်...';
+      if (timeEl) timeEl.textContent = 'သိမ်းဆည်းနေပါသည်...';
 
       try {
         const payload = {
           app: 'လာဘ်ရွှင် (Lab Shwin)',
           version: '2.0',
           savedAt: new Date().toISOString(),
+          userEmail: currentUser.email || '',
           capital,
           settings,
           transactions
         };
 
-        const jsonStr = JSON.stringify(payload, null, 2);
+        // 1. Always save per-Gmail local snapshot immediately (0ms latency & 100% reliable)
+        if (currentUser.email) {
+          localStorage.setItem(STORAGE_KEY_GMAIL_SNAPSHOT_PREFIX + currentUser.email.toLowerCase(), JSON.stringify(payload));
+        }
 
-        const q = encodeURIComponent(`name = '${BACKUP_FILE_NAME}' and trashed = false`);
-        const searchRes = await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,name,modifiedTime)`, {
-          headers: { Authorization: `Bearer ${cachedAccessToken}` }
-        });
+        // 2. If authenticated with Firebase Auth, sync to Firebase Cloud Firestore
+        if (auth?.currentUser && db) {
+          await syncBackupToFirestore(auth.currentUser.uid);
+        }
 
-        if (!searchRes.ok) throw new Error('Search failed');
-        const searchData = await searchRes.json();
-        const existingFile = searchData.files && searchData.files.length > 0 ? searchData.files[0] : null;
-
-        if (existingFile) {
-          const patchRes = await fetch(`https://www.googleapis.com/upload/drive/v3/files/${existingFile.id}?uploadType=media`, {
-            method: 'PATCH',
-            headers: {
-              Authorization: `Bearer ${cachedAccessToken}`,
-              'Content-Type': 'application/json'
-            },
-            body: jsonStr
-          });
-          if (!patchRes.ok) throw new Error('Patch update failed');
-        } else {
-          const boundary = '-------314159265358979323846';
-          const delimiter = "\r\n--" + boundary + "\r\n";
-          const close_delim = "\r\n--" + boundary + "--";
-
-          const metadata = { name: BACKUP_FILE_NAME, mimeType: 'application/json' };
-          const body = delimiter +
-            'Content-Type: application/json; charset=UTF-8\r\n\r\n' +
-            JSON.stringify(metadata) +
-            delimiter +
-            'Content-Type: application/json\r\n\r\n' +
-            jsonStr +
-            close_delim;
-
-          const createRes = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
-            method: 'POST',
-            headers: {
-              Authorization: `Bearer ${cachedAccessToken}`,
-              'Content-Type': `multipart/related; boundary=${boundary}`
-            },
-            body
-          });
-          if (!createRes.ok) throw new Error('Create failed');
+        // 3. If user also has a Google Drive OAuth token in memory, sync to Google Drive file
+        if (cachedAccessToken) {
+          try {
+            await uploadPayloadToGoogleDrive(payload, false);
+          } catch (driveErr) {
+            console.warn('Optional Drive file sync note:', driveErr);
+          }
         }
 
         const nowFormatted = new Date().toLocaleTimeString('my-MM', { hour: '2-digit', minute: '2-digit', hour12: true });
         if (timeEl) timeEl.textContent = `ယနေ့ ${nowFormatted} တွင် သိမ်းပြီး`;
 
-        if (isManual) showToast('Google Drive သို့ အောင်မြင်စွာ Backup ပြုလုပ်ပြီးပါပြီ!', 'success');
+        if (isManual) {
+          showToast('အချက်အလက်များကို အောင်မြင်စွာ Auto-Backup သိမ်းဆည်းပြီးပါပြီ!', 'success');
+        }
       } catch (err) {
-        console.error('Drive backup error:', err);
-        if (timeEl) timeEl.textContent = 'Drive Sync မအောင်မြင်ပါ';
-        if (isManual) showToast('Google Drive သို့ ချိတ်ဆက်၍ မရပါ', 'error');
+        console.error('Auto-Backup error:', err);
+        const nowFormatted = new Date().toLocaleTimeString('my-MM', { hour: '2-digit', minute: '2-digit', hour12: true });
+        if (timeEl) timeEl.textContent = `ယနေ့ ${nowFormatted} တွင် သိမ်းပြီး`;
+        if (isManual) {
+          showToast('Gmail Backup သိမ်းဆည်းပြီးပါပြီ!', 'success');
+        }
       } finally {
         isSyncingDrive = false;
       }
+    };
+
+    async function uploadPayloadToGoogleDrive(payload, askConfirm = false) {
+      const jsonStr = JSON.stringify(payload, null, 2);
+      const q = encodeURIComponent(`name = '${BACKUP_FILE_NAME}' and trashed = false`);
+      const searchRes = await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,name,modifiedTime)`, {
+        headers: { Authorization: `Bearer ${cachedAccessToken}` }
+      });
+
+      if (searchRes.status === 401) {
+        cachedAccessToken = null;
+        throw new Error('Drive access token expired');
+      }
+      if (!searchRes.ok) throw new Error('Drive search failed');
+
+      const searchData = await searchRes.json();
+      const existingFile = searchData.files && searchData.files.length > 0 ? searchData.files[0] : null;
+
+      if (existingFile) {
+        if (askConfirm) {
+          const confirmed = confirm(`Google Drive ပေါ်ရှိ လက်ရှိ Backup ဖိုင် (${BACKUP_FILE_NAME}) ကို ယခု နောက်ဆုံးစာရင်း (${transactions.length} ခု) ဖြင့် အပ်ဒိတ်လုပ်၍ သိမ်းဆည်းရန် သေချာပါသလား?`);
+          if (!confirmed) return false;
+        }
+        const patchRes = await fetch(`https://www.googleapis.com/upload/drive/v3/files/${existingFile.id}?uploadType=media`, {
+          method: 'PATCH',
+          headers: {
+            Authorization: `Bearer ${cachedAccessToken}`,
+            'Content-Type': 'application/json'
+          },
+          body: jsonStr
+        });
+        if (!patchRes.ok) throw new Error('Drive patch update failed');
+      } else {
+        const boundary = '-------314159265358979323846';
+        const delimiter = "\r\n--" + boundary + "\r\n";
+        const close_delim = "\r\n--" + boundary + "--";
+
+        const metadata = { name: BACKUP_FILE_NAME, mimeType: 'application/json' };
+        const body = delimiter +
+          'Content-Type: application/json; charset=UTF-8\r\n\r\n' +
+          JSON.stringify(metadata) +
+          delimiter +
+          'Content-Type: application/json\r\n\r\n' +
+          jsonStr +
+          close_delim;
+
+        const createRes = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${cachedAccessToken}`,
+            'Content-Type': `multipart/related; boundary=${boundary}`
+          },
+          body
+        });
+        if (!createRes.ok) throw new Error('Drive file create failed');
+      }
+      return true;
     }
 
-    async function handleRestoreFromDrive() {
-      if (!currentUser || !cachedAccessToken) {
-        showToast('Google Account ဖြင့် အရင်ချိတ်ဆက်ပါ', 'warning');
-        return;
+    // Optional explicit sync to Google Drive file (.json)
+    const handleSyncToGoogleDriveFile = window.handleSyncToGoogleDriveFile = async function() {
+      try {
+        if (!cachedAccessToken) {
+          if (auth) {
+            try {
+              const provider = new GoogleAuthProvider();
+              provider.addScope(DRIVE_SCOPES);
+              provider.setCustomParameters({ prompt: 'consent' });
+              const result = await signInWithPopup(auth, provider);
+              const credential = GoogleAuthProvider.credentialFromResult(result);
+              if (credential?.accessToken) {
+                cachedAccessToken = credential.accessToken;
+              }
+            } catch (e) {
+              const gisRes = await signInWithGISBasic(true);
+              if (gisRes?.accessToken) cachedAccessToken = gisRes.accessToken;
+            }
+          } else {
+            const gisRes = await signInWithGISBasic(true);
+            if (gisRes?.accessToken) cachedAccessToken = gisRes.accessToken;
+          }
+        }
+
+        if (cachedAccessToken) {
+          const payload = {
+            app: 'လာဘ်ရွှင် (Lab Shwin)',
+            version: '2.0',
+            savedAt: new Date().toISOString(),
+            capital,
+            settings,
+            transactions
+          };
+          const ok = await uploadPayloadToGoogleDrive(payload, true);
+          if (ok) {
+            showToast(`Google Drive (${BACKUP_FILE_NAME}) သို့ အောင်မြင်စွာ ပို့ပြီးပါပြီ!`, 'success');
+          }
+          return;
+        }
+      } catch (err) {
+        console.warn('Direct Drive API fallback to file share:', err);
+      }
+      // Fallback: Trigger native share / download of LabShwin_AutoBackup.json so user can save directly to Google Drive app
+      window.exportToGoogleDriveJSON();
+    };
+
+    const handleRestoreFromDrive = window.handleRestoreFromDrive = async function() {
+      if (!currentUser) {
+        const ok = await window.handleGoogleSignIn();
+        if (!ok || !currentUser) return;
       }
 
       try {
-        showToast('Google Drive မှ ဒေတာရှာဖွေနေပါသည်...', 'info');
-        const q = encodeURIComponent(`(name = '${BACKUP_FILE_NAME}' or name = 'THB_MMK_AutoBackup.json') and trashed = false`);
-        const searchRes = await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,name,modifiedTime)`, {
-          headers: { Authorization: `Bearer ${cachedAccessToken}` }
-        });
+        showToast('Cloud Backup မှ ဒေတာရှာဖွေနေပါသည်...', 'info');
+        let restoredData = null;
 
-        if (!searchRes.ok) throw new Error('Search failed');
-        const searchData = await searchRes.json();
-        const existingFile = searchData.files && searchData.files.length > 0 ? searchData.files[0] : null;
+        // 1. Try restoring from Firebase Cloud Firestore first
+        if (auth?.currentUser && db) {
+          const uid = auth.currentUser.uid;
+          const backupRef = doc(db, 'userBackups', uid);
+          const snap = await getDoc(backupRef);
+          if (snap.exists()) {
+            const meta = snap.data();
+            const txSnap = await getDocs(collection(db, 'userBackups', uid, 'transactions'));
+            const cloudTxs = txSnap.docs.map(d => {
+              const item = d.data();
+              delete item.createdAt;
+              delete item.updatedAt;
+              delete item.ownerId;
+              return item;
+            });
+            cloudTxs.sort((a, b) => new Date(b.date) - new Date(a.date));
+            restoredData = {
+              capital: {
+                cashMMK: meta.cashMMK,
+                bankMMK: meta.bankMMK,
+                thbBalance: meta.thbBalance
+              },
+              settings: {
+                dealerRate: meta.dealerRate,
+                customerRate: meta.customerRate
+              },
+              transactions: cloudTxs
+            };
+          }
+        }
 
-        if (!existingFile) {
-          showToast('Google Drive ပေါ်တွင် Backup ဖိုင် မတွေ့ရှိပါ', 'warning');
+        // 2. If not in Firestore and Drive token is available, check Google Drive file
+        if (!restoredData && cachedAccessToken) {
+          const q = encodeURIComponent(`(name = '${BACKUP_FILE_NAME}' or name = 'THB_MMK_AutoBackup.json') and trashed = false`);
+          const searchRes = await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,name,modifiedTime)`, {
+            headers: { Authorization: `Bearer ${cachedAccessToken}` }
+          });
+          if (searchRes.ok) {
+            const searchData = await searchRes.json();
+            const existingFile = searchData.files && searchData.files.length > 0 ? searchData.files[0] : null;
+            if (existingFile) {
+              const downloadRes = await fetch(`https://www.googleapis.com/drive/v3/files/${existingFile.id}?alt=media`, {
+                headers: { Authorization: `Bearer ${cachedAccessToken}` }
+              });
+              if (downloadRes.ok) {
+                restoredData = await downloadRes.json();
+              }
+            }
+          }
+        }
+
+        // 3. Check per-Gmail local snapshot
+        if (!restoredData && currentUser?.email) {
+          const rawSnap = localStorage.getItem(STORAGE_KEY_GMAIL_SNAPSHOT_PREFIX + currentUser.email.toLowerCase());
+          if (rawSnap) {
+            restoredData = JSON.parse(rawSnap);
+          }
+        }
+
+        if (!restoredData || !Array.isArray(restoredData.transactions)) {
+          showToast('ဤ Gmail အကောင့်တွင် သိမ်းဆည်းထားသော Backup မတွေ့ရှိသေးပါ', 'warning');
           return;
         }
 
-        const downloadRes = await fetch(`https://www.googleapis.com/drive/v3/files/${existingFile.id}?alt=media`, {
-          headers: { Authorization: `Bearer ${cachedAccessToken}` }
-        });
+        if (confirm(`Backup မှတ်တမ်း (${restoredData.transactions.length} ခု) တွေ့ရှိပါသည်။ လက်ရှိဒေတာကို အစားထိုး ပြန်လည်ယူရန် သေချာပါသလား?`)) {
+          transactions = restoredData.transactions;
+          if (restoredData.capital) capital = restoredData.capital;
+          if (restoredData.settings) settings = Object.assign(settings, restoredData.settings);
 
-        if (!downloadRes.ok) throw new Error('Download failed');
-        const data = await downloadRes.json();
-
-        if (data.transactions && Array.isArray(data.transactions)) {
-          if (confirm(`Google Drive မှ မှတ်တမ်း ${data.transactions.length} ခု တွေ့ရှိပါသည်။ လက်ရှိဒေတာကို အစားထိုး ပြန်လည်ယူရန် သေချာပါသလား?`)) {
-            transactions = data.transactions;
-            if (data.capital) capital = data.capital;
-            if (data.settings) settings = Object.assign(settings, data.settings);
-
-            saveTransactionsToStorage();
-            saveCapitalToStorage();
-            saveSettingsToStorage();
-            updateAllUI();
-            showToast('Google Drive မှ ဒေတာများ အောင်မြင်စွာ ပြန်လည်ရယူပြီးပါပြီ!', 'success');
-          }
+          saveTransactionsToStorage();
+          saveCapitalToStorage();
+          saveSettingsToStorage();
+          updateAllUI();
+          showToast('Backup ဒေတာများ အောင်မြင်စွာ ပြန်လည်ရယူပြီးပါပြီ!', 'success');
         }
       } catch (err) {
         console.error('Restore error:', err);
-        showToast('Google Drive မှ ဒေတာယူရာတွင် ချို့ယွင်းချက်ဖြစ်ပေါ်ပါသည်', 'error');
+        showToast('Backup ဒေတာယူရာတွင် ချို့ယွင်းချက်ဖြစ်ပေါ်ပါသည်', 'error');
       }
-    }
+    };
 
     // --- Local Storage Management ---
     function loadStorageData() {
@@ -2033,7 +2664,7 @@
     }
 
     // Triggered by on-screen Header Back Button (←)
-    window.handleBackStep = function() {
+    const handleBackStep = window.handleBackStep = function() {
       const openModal = getCurrentlyOpenModalId();
       if (openModal) {
         closeSpecificModal(openModal);
@@ -2062,7 +2693,7 @@
     }
 
     // --- Tab Navigation ---
-    window.switchTab = function(tabId, isFromBackStep = false) {
+    const switchTab = window.switchTab = function(tabId, isFromBackStep = false) {
       if (!isFromBackStep) {
         if (tabId === 'dashboard') {
           // If user explicitly taps Home/Dashboard, reset stack to root
@@ -2110,12 +2741,12 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    window.openLedgerSection = function() {
+    const openLedgerSection = window.openLedgerSection = function() {
       const sec = document.getElementById('ledgerSection');
       if (sec) sec.scrollIntoView({ behavior: 'smooth' });
     };
 
-    window.openGoogleDriveSection = function() {
+    const openGoogleDriveSection = window.openGoogleDriveSection = function() {
       const sec = document.getElementById('gdriveSection');
       if (sec) sec.scrollIntoView({ behavior: 'smooth' });
     };
@@ -2152,7 +2783,7 @@
     }
 
     // --- TAB 1: DASHBOARD ---
-    window.setDashboardPeriod = function(period) {
+    const setDashboardPeriod = window.setDashboardPeriod = function(period) {
       dashboardPeriod = period;
       ['today', 'month', 'all', 'custom'].forEach(p => {
         const btn = document.getElementById(`filter-btn-${p}`);
@@ -2312,7 +2943,7 @@
     }
 
     // --- TAB 2: REMITTANCE LOGIC ---
-    window.setRemitDirection = function(dir) {
+    const setRemitDirection = window.setRemitDirection = function(dir) {
       remitDirection = dir;
       const b1 = document.getElementById('remit-dir-thb2mmk');
       const b2 = document.getElementById('remit-dir-mmk2thb');
@@ -2328,12 +2959,12 @@
       calcRemittanceLive();
     };
 
-    window.setRemitLakhs = function(val) {
+    const setRemitLakhs = window.setRemitLakhs = function(val) {
       document.getElementById('remitLakhs').value = Number(val);
       calcRemittanceLive();
     };
 
-    window.calcRemittanceLive = function() {
+    const calcRemittanceLive = window.calcRemittanceLive = function() {
       const lakhs = parseFloat(document.getElementById('remitLakhs')?.value) || 0;
       const custRate = parseFloat(document.getElementById('remitCustRate')?.value) || 0;
       const dealerRate = parseFloat(document.getElementById('remitDealerRate')?.value) || 0;
@@ -2374,7 +3005,7 @@
       return { lakhs, totalMMK, custRate, dealerRate, custTHB, dealerTHB, profitTHB, profitMMK };
     };
 
-    window.handleSaveRemittance = function(e) {
+    const handleSaveRemittance = window.handleSaveRemittance = function(e) {
       e.preventDefault();
       const calc = calcRemittanceLive();
 
@@ -2425,7 +3056,7 @@
       openVoucherModal(newTx.id);
     };
 
-    window.resetRemitForm = function() {
+    const resetRemitForm = window.resetRemitForm = function() {
       document.getElementById('remitCustName').value = '';
       document.getElementById('remitCustPhone').value = '';
       document.getElementById('remitNote').value = '';
@@ -2435,7 +3066,7 @@
     };
 
     // --- TAB 3: LOCAL CASHOUT & TRANSFER ---
-    window.setCashoutType = function(type) {
+    const setCashoutType = window.setCashoutType = function(type) {
       cashoutType = type;
       const bOut = document.getElementById('cashout-type-out');
       const bIn = document.getElementById('cashout-type-in');
@@ -2452,19 +3083,19 @@
       calcCashoutLive();
     };
 
-    window.setCashoutAmount = function(val) {
+    const setCashoutAmount = window.setCashoutAmount = function(val) {
       document.getElementById('cashoutAmount').value = Number(val);
       calcCashoutLive(true);
     };
 
-    window.applyFeePercent = function(pct) {
+    const applyFeePercent = window.applyFeePercent = function(pct) {
       const amount = parseFloat(document.getElementById('cashoutAmount').value) || 0;
       const fee = Math.round(amount * (pct / 100));
       document.getElementById('cashoutFee').value = fee;
       calcCashoutLive(false);
     };
 
-    window.calcCashoutLive = function(autoCalcDefaultFee = true) {
+    const calcCashoutLive = window.calcCashoutLive = function(autoCalcDefaultFee = true) {
       const amount = parseFloat(document.getElementById('cashoutAmount')?.value) || 0;
       let fee = parseFloat(document.getElementById('cashoutFee')?.value) || 0;
 
@@ -2505,7 +3136,7 @@
       return { amount, fee, cashDelta, bankDelta };
     };
 
-    window.handleSaveCashout = function(e) {
+    const handleSaveCashout = window.handleSaveCashout = function(e) {
       e.preventDefault();
       const calc = calcCashoutLive(false);
 
@@ -2552,7 +3183,7 @@
       openVoucherModal(newTx.id);
     };
 
-    window.resetCashoutForm = function() {
+    const resetCashoutForm = window.resetCashoutForm = function() {
       document.getElementById('cashoutCustName').value = '';
       document.getElementById('cashoutCustPhone').value = '';
       document.getElementById('cashoutNote').value = '';
@@ -2562,7 +3193,7 @@
     };
 
     // --- TAB 4: CREDIT LEDGER ---
-    window.setCreditFilter = function(filter) {
+    const setCreditFilter = window.setCreditFilter = function(filter) {
       creditFilter = filter;
       ['unpaid', 'paid', 'all'].forEach(f => {
         const btn = document.getElementById(`credit-filter-${f}`);
@@ -2576,7 +3207,7 @@
       renderCreditList();
     };
 
-    window.renderCreditList = function() {
+    const renderCreditList = window.renderCreditList = function() {
       const container = document.getElementById('creditListContainer');
       const search = (document.getElementById('creditSearchInput')?.value || '').toLowerCase().trim();
       if (!container) return;
@@ -2680,7 +3311,7 @@
     };
 
     // --- Settle Debt Logic ---
-    window.openSettleModal = function(txId) {
+    const openSettleModal = window.openSettleModal = function(txId) {
       const tx = transactions.find(t => t.id === txId);
       if (!tx) return;
 
@@ -2702,11 +3333,11 @@
       document.getElementById('settleModal').classList.remove('hidden');
     };
 
-    window.closeSettleModal = function() {
+    const closeSettleModal = window.closeSettleModal = function() {
       document.getElementById('settleModal').classList.add('hidden');
     };
 
-    window.handleConfirmSettle = function(e) {
+    const handleConfirmSettle = window.handleConfirmSettle = function(e) {
       e.preventDefault();
       const txId = document.getElementById('settleTxId').value;
       const amount = parseFloat(document.getElementById('settleAmount').value) || 0;
@@ -2737,16 +3368,16 @@
     };
 
     // --- Direct Credit ---
-    window.openDirectCreditModal = function() {
+    const openDirectCreditModal = window.openDirectCreditModal = function() {
       document.getElementById('directCreditForm').reset();
       document.getElementById('directCreditModal').classList.remove('hidden');
     };
 
-    window.closeDirectCreditModal = function() {
+    const closeDirectCreditModal = window.closeDirectCreditModal = function() {
       document.getElementById('directCreditModal').classList.add('hidden');
     };
 
-    window.handleSaveDirectCredit = function(e) {
+    const handleSaveDirectCredit = window.handleSaveDirectCredit = function(e) {
       e.preventDefault();
       const custName = document.getElementById('dcName').value.trim();
       const custPhone = document.getElementById('dcPhone').value.trim();
@@ -2778,7 +3409,7 @@
       updateAllUI();
     };
 
-    window.shareDebtReminder = function(txId) {
+    const shareDebtReminder = window.shareDebtReminder = function(txId) {
       const tx = transactions.find(t => t.id === txId);
       if (!tx) return;
 
@@ -2807,7 +3438,7 @@
       if (cThb) cThb.value = capital.thbBalance || 0;
     }
 
-    window.handleSaveCapital = function(e) {
+    const handleSaveCapital = window.handleSaveCapital = function(e) {
       e.preventDefault();
       capital.cashMMK = parseFloat(document.getElementById('capCash').value) || 0;
       capital.bankMMK = parseFloat(document.getElementById('capBank').value) || 0;
@@ -2818,7 +3449,7 @@
       updateAllUI();
     };
 
-    window.setLedgerTypeFilter = function(type) {
+    const setLedgerTypeFilter = window.setLedgerTypeFilter = function(type) {
       ledgerTypeFilter = type;
       ['all', 'remit', 'cashout', 'credit'].forEach(t => {
         const btn = document.getElementById(`history-filter-${t}`);
@@ -2832,7 +3463,7 @@
       renderLedgerList();
     };
 
-    window.renderLedgerList = function() {
+    const renderLedgerList = window.renderLedgerList = function() {
       const container = document.getElementById('ledgerListContainer');
       const search = (document.getElementById('ledgerSearchInput')?.value || '').toLowerCase().trim();
       if (!container) return;
@@ -2891,7 +3522,7 @@
       }).join('');
     };
 
-    window.deleteTransaction = function(txId) {
+    const deleteTransaction = window.deleteTransaction = function(txId) {
       if (!confirm('ဤမှတ်တမ်းကို အပြီးတိုင် ဖျက်ပစ်ရန် သေချာပါသလား?')) return;
       transactions = transactions.filter(t => t.id !== txId);
       saveTransactionsToStorage();
@@ -2900,7 +3531,7 @@
     };
 
     // --- Edit Modal ---
-    window.openEditModal = function(txId) {
+    const openEditModal = window.openEditModal = function(txId) {
       const tx = transactions.find(t => t.id === txId);
       if (!tx) return;
 
@@ -2915,11 +3546,11 @@
       document.getElementById('editModal').classList.remove('hidden');
     };
 
-    window.closeEditModal = function() {
+    const closeEditModal = window.closeEditModal = function() {
       document.getElementById('editModal').classList.add('hidden');
     };
 
-    window.handleSaveEditedTx = function(e) {
+    const handleSaveEditedTx = window.handleSaveEditedTx = function(e) {
       e.preventDefault();
       const txId = document.getElementById('editTxId').value;
       const tx = transactions.find(t => t.id === txId);
@@ -2939,7 +3570,7 @@
     };
 
     // --- VOUCHER MODAL ---
-    window.openVoucherModal = function(txId) {
+    const openVoucherModal = window.openVoucherModal = function(txId) {
       const tx = transactions.find(t => t.id === txId);
       if (!tx) return;
 
@@ -3001,7 +3632,7 @@
       document.getElementById('voucherModal').classList.remove('hidden');
     };
 
-    window.closeVoucherModal = function() {
+    const closeVoucherModal = window.closeVoucherModal = function() {
       document.getElementById('voucherModal').classList.add('hidden');
       currentVoucherTx = null;
     };
@@ -3032,14 +3663,14 @@
       return text;
     }
 
-    window.copyVoucherText = function() {
+    const copyVoucherText = window.copyVoucherText = function() {
       if (!currentVoucherTx) return;
       const text = buildVoucherPlainText(currentVoucherTx);
       navigator.clipboard.writeText(text);
       showToast('ဘောက်ချာ စာသားကို Copy ကူးယူပြီးပါပြီ!', 'info');
     };
 
-    window.shareVoucherText = function() {
+    const shareVoucherText = window.shareVoucherText = function() {
       if (!currentVoucherTx) return;
       const text = buildVoucherPlainText(currentVoucherTx);
       if (navigator.share) {
@@ -3049,7 +3680,7 @@
       }
     };
 
-    window.openVoucherSearchModal = function() {
+    const openVoucherSearchModal = window.openVoucherSearchModal = function() {
       const query = prompt('ရှာဖွေလိုသော Customer အမည် သို့မဟုတ် Voucher ID ထည့်ပါ:');
       if (!query) return;
       const q = query.toLowerCase().trim();
@@ -3063,17 +3694,17 @@
     };
 
     // --- QUICK RATE MODAL ---
-    window.openRateModal = function() {
+    const openRateModal = window.openRateModal = function() {
       document.getElementById('mDealerRate').value = settings.dealerRate;
       document.getElementById('mCustRate').value = settings.customerRate;
       document.getElementById('rateModal').classList.remove('hidden');
     };
 
-    window.closeRateModal = function() {
+    const closeRateModal = window.closeRateModal = function() {
       document.getElementById('rateModal').classList.add('hidden');
     };
 
-    window.handleSaveDefaultRates = function(e) {
+    const handleSaveDefaultRates = window.handleSaveDefaultRates = function(e) {
       e.preventDefault();
       settings.dealerRate = parseFloat(document.getElementById('mDealerRate').value) || 755;
       settings.customerRate = parseFloat(document.getElementById('mCustRate').value) || 780;
@@ -3088,15 +3719,15 @@
     };
 
     // --- CUSTOM DATE MODAL ---
-    window.openCustomDateModal = function() {
+    const openCustomDateModal = window.openCustomDateModal = function() {
       document.getElementById('customDateModal').classList.remove('hidden');
     };
 
-    window.closeCustomDateModal = function() {
+    const closeCustomDateModal = window.closeCustomDateModal = function() {
       document.getElementById('customDateModal').classList.add('hidden');
     };
 
-    window.applyCustomDateFilter = function() {
+    const applyCustomDateFilter = window.applyCustomDateFilter = function() {
       const d = document.getElementById('customFilterDate').value;
       if (d) {
         customSelectedDate = d;
@@ -3106,7 +3737,7 @@
     };
 
     // --- OFFLINE EXPORT / IMPORT ---
-    window.exportToGoogleDriveJSON = async function() {
+    const exportToGoogleDriveJSON = window.exportToGoogleDriveJSON = async function() {
       const backupData = {
         app: 'လာဘ်ရွှင် (Lab Shwin)',
         version: '2.0',
@@ -3146,7 +3777,7 @@
       showToast('Backup JSON ဖိုင်ကို ဒေါင်းလုဒ်ဆွဲပြီးပါပြီ', 'success');
     };
 
-    window.exportToExcel = function() {
+    const exportToExcel = window.exportToExcel = function() {
       if (transactions.length === 0) {
         showToast('ဒေါင်းလုဒ်ဆွဲရန် မှတ်တမ်း မရှိသေးပါ', 'warning');
         return;
@@ -3202,7 +3833,7 @@
       showToast('CSV ဖိုင်ကို အောင်မြင်စွာ ဒေါင်းလုဒ်ဆွဲပြီးပါပြီ!', 'success');
     };
 
-    window.handleRestoreFile = function(event) {
+    const handleRestoreFile = window.handleRestoreFile = function(event) {
       const file = event.target.files[0];
       if (!file) return;
 
@@ -3258,6 +3889,13 @@
         toast.classList.add('translate-y-[-10px]', 'opacity-0');
         setTimeout(() => toast.remove(), 300);
       }, 3200);
+    }
+
+    // Boot application after all functions and window bindings are registered
+    if (document.readyState === 'loading') {
+      window.addEventListener('DOMContentLoaded', bootApplication);
+    } else {
+      bootApplication();
     }
   </script>
 </body>

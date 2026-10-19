@@ -1,0 +1,212 @@
+{
+  "entities": {
+    "UserBackup": {
+      "title": "UserBackup",
+      "description": "Stores a user's capital balances, exchange rate settings, and backup metadata.",
+      "type": "object",
+      "properties": {
+        "ownerId": {
+          "type": "string",
+          "description": "The Firebase Auth UID of the owner.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "cashMMK": {
+          "type": "number",
+          "description": "Cash in hand balance in MMK."
+        },
+        "bankMMK": {
+          "type": "number",
+          "description": "Digital wallet and bank balance in MMK."
+        },
+        "thbBalance": {
+          "type": "number",
+          "description": "Balance in Thai Baht (THB)."
+        },
+        "dealerRate": {
+          "type": "number",
+          "description": "Dealer exchange rate per 1 Lakh MMK."
+        },
+        "customerRate": {
+          "type": "number",
+          "description": "Customer exchange rate per 1 Lakh MMK."
+        },
+        "txCount": {
+          "type": "number",
+          "description": "Total number of transactions in backup."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of initial backup creation."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of latest backup update."
+        }
+      },
+      "required": [
+        "ownerId",
+        "cashMMK",
+        "bankMMK",
+        "thbBalance",
+        "dealerRate",
+        "customerRate",
+        "txCount",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "TransactionRecord": {
+      "title": "TransactionRecord",
+      "description": "A normalized remittance, cash-out, or credit transaction belonging to a user backup.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique transaction ID.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "ownerId": {
+          "type": "string",
+          "description": "The Firebase Auth UID of the owner.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["REMIT", "CASHOUT", "CREDIT"],
+          "maxLength": 20
+        },
+        "direction": {
+          "type": "string",
+          "maxLength": 30
+        },
+        "cashoutType": {
+          "type": "string",
+          "maxLength": 30
+        },
+        "date": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "custName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "custPhone": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "channel": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "lakhs": {
+          "type": "number"
+        },
+        "amountMMK": {
+          "type": "number"
+        },
+        "customerRate": {
+          "type": "number"
+        },
+        "dealerRate": {
+          "type": "number"
+        },
+        "customerTHB": {
+          "type": "number"
+        },
+        "dealerTHB": {
+          "type": "number"
+        },
+        "profitTHB": {
+          "type": "number"
+        },
+        "profitMMK": {
+          "type": "number"
+        },
+        "fee": {
+          "type": "number"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["PAID", "UNPAID"],
+          "maxLength": 20
+        },
+        "amountOwed": {
+          "type": "number"
+        },
+        "owedCurrency": {
+          "type": "string",
+          "enum": ["MMK", "THB", "NONE"],
+          "maxLength": 10
+        },
+        "paidAmount": {
+          "type": "number"
+        },
+        "settledDate": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "note": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "ownerId",
+        "type",
+        "direction",
+        "cashoutType",
+        "date",
+        "custName",
+        "custPhone",
+        "channel",
+        "lakhs",
+        "amountMMK",
+        "customerRate",
+        "dealerRate",
+        "customerTHB",
+        "dealerTHB",
+        "profitTHB",
+        "profitMMK",
+        "fee",
+        "status",
+        "amountOwed",
+        "owedCurrency",
+        "paidAmount",
+        "settledDate",
+        "note",
+        "createdAt",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/userBackups/{userId}": {
+      "schema": { "$ref": "#/entities/UserBackup" },
+      "description": "Per-user backup summary and capital/rate settings isolated to the authenticated owner."
+    },
+    "/userBackups/{userId}/transactions/{txId}": {
+      "schema": { "$ref": "#/entities/TransactionRecord" },
+      "description": "Individual remittance, cash-out, and credit transactions belonging to the user backup."
+    }
+  }
+}

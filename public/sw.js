@@ -1,4 +1,4 @@
-const CACHE_NAME = 'labshwin-cache-v1';
+const CACHE_NAME = 'labshwin-cache-v3';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -33,44 +33,58 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Only handle GET requests
   if (event.request.method !== 'GET') return;
 
-  // Let Firebase, Google Drive API, and Google Fonts bypass SW cache or use network
   const url = event.request.url;
-  if (url.includes('googleapis.com') || url.includes('gstatic.com') || url.includes('firebase')) {
+  // Always bypass Service Worker for Firebase Auth, Firestore, Google OAuth, and Google APIs
+  if (
+    url.includes('googleapis.com') ||
+    url.includes('gstatic.com') ||
+    url.includes('firebase') ||
+    url.includes('accounts.google.com') ||
+    url.includes('googleusercontent.com')
+  ) {
     return;
   }
 
-  event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        // Fetch in background to update cache
-        fetch(event.request).then((networkResponse) => {
+  // Network-First strategy for HTML / Navigation requests so updates load immediately
+  if (event.request.mode === 'navigate' || url.endsWith('.html') || url.endsWith('/')) {
+    event.respondWith(
+      fetch(event.request)
+        .then((networkResponse) => {
           if (networkResponse && networkResponse.status === 200) {
+            const responseClone = networkResponse.clone();
             caches.open(CACHE_NAME).then((cache) => {
-              cache.put(event.request, networkResponse.clone());
+              cache.put(event.request, responseClone);
             });
           }
-        }).catch(() => {});
-        return cachedResponse;
-      }
-
-      return fetch(event.request).then((networkResponse) => {
-        if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
           return networkResponse;
-        }
-        const responseToCache = networkResponse.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseToCache);
-        });
-        return networkResponse;
-      }).catch(() => {
-        // Fallback for navigation requests
-        if (event.request.mode === 'navigate') {
-          return caches.match('./index.html') || caches.match('./');
-        }
-      });
+        })
+        .catch(() => {
+          return caches.match(event.request).then((cached) => {
+            return cached || caches.match('./index.html') || caches.match('./');
+          });
+        })
+    );
+    return;
+  }
+
+  // Stale-While-Revalidate for static assets
+  event.respondWith(
+    caches.match(event.request).then((cachedResponse) => {
+      const fetchPromise = fetch(event.request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
+            const responseToCache = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, responseToCache);
+            });
+          }
+          return networkResponse;
+        })
+        .catch(() => cachedResponse);
+
+      return cachedResponse || fetchPromise;
     })
   );
 });
