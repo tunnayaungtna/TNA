@@ -225,8 +225,11 @@
   <header class="sticky top-0 z-40 theme-header backdrop-blur-md border-b px-3.5 sm:px-6 py-2.5 shadow-sm transition-colors">
     <div class="max-w-5xl mx-auto flex items-center justify-between gap-2">
       
-      <!-- Brand Logo (လာဘ်ရွှင် Lab Shwin App Icon) & Name -->
-      <div class="flex items-center space-x-2.5">
+      <!-- Brand Logo (လာဘ်ရွှင် Lab Shwin App Icon) & Name + Step Back Button -->
+      <div class="flex items-center space-x-2">
+        <button id="headerBackBtn" onclick="handleBackStep()" title="နောက်သို့ တစ်ဆင့်ပြန်သွားရန် (Back)" class="hidden w-9 h-9 rounded-xl theme-card-sub border border-blue-500/30 hover:border-blue-500 active:scale-90 transition items-center justify-center text-blue-500 shrink-0 shadow-sm">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+        </button>
         <button onclick="openAppBrandModal()" title="လာဘ်ရွှင် (Lab Shwin) App အချက်အလက်နှင့် Install" class="w-11 h-11 rounded-2xl overflow-hidden shadow-md shadow-blue-600/25 border border-amber-400/40 shrink-0 active:scale-95 transition group relative">
           <div id="headerAppIconContainer" class="w-full h-full"></div>
         </button>
@@ -1449,6 +1452,19 @@
     let currentTheme = localStorage.getItem(STORAGE_KEY_THEME) || 'dark';
 
     let activeTab = 'dashboard';
+    let tabHistoryStack = ['dashboard'];
+    let lastBackPressTime = 0;
+    let isExitingApp = false;
+    const ALL_MODAL_IDS = [
+      'voucherModal',
+      'settleModal',
+      'directCreditModal',
+      'rateModal',
+      'editModal',
+      'customDateModal',
+      'appBrandModal'
+    ];
+
     let dashboardPeriod = 'today';
     let customSelectedDate = new Date().toISOString().split('T')[0];
     let remitDirection = 'THB_TO_MMK';
@@ -1476,6 +1492,7 @@
       calcCashoutLive();
       updateAllUI();
       initFirebaseAuth();
+      initStepByStepBackNavigation();
     });
 
     function injectAppIcons() {
@@ -1918,8 +1935,152 @@
       document.getElementById('mCustRate').value = settings.customerRate;
     }
 
+    // --- STEP-BY-STEP BACK KEY NAVIGATION (HARDWARE BACK & ON-SCREEN BACK) ---
+    function getCurrentlyOpenModalId() {
+      for (const mId of ALL_MODAL_IDS) {
+        const el = document.getElementById(mId);
+        if (el && !el.classList.contains('hidden')) {
+          return mId;
+        }
+      }
+      return null;
+    }
+
+    function closeSpecificModal(mId) {
+      const el = document.getElementById(mId);
+      if (el) el.classList.add('hidden');
+      if (mId === 'voucherModal') currentVoucherTx = null;
+    }
+
+    function armBackTrap() {
+      if (isExitingApp) return;
+      try {
+        if (!window.history.state || !window.history.state.lsTrap) {
+          window.history.pushState({ lsTrap: true, ts: Date.now() }, '');
+        }
+      } catch (e) {}
+    }
+
+    function initStepByStepBackNavigation() {
+      try {
+        window.history.replaceState({ lsBase: true }, '');
+        window.history.pushState({ lsTrap: true, ts: Date.now() }, '');
+      } catch (e) {}
+
+      // Ensure user gesture arms history trap for strict mobile browsers (Android Chrome / iOS)
+      const gestureArm = () => {
+        if (!isExitingApp && (!window.history.state || !window.history.state.lsTrap)) {
+          try {
+            window.history.pushState({ lsTrap: true, ts: Date.now() }, '');
+          } catch (e) {}
+        }
+      };
+      document.addEventListener('touchstart', gestureArm, { passive: true });
+      document.addEventListener('click', gestureArm, { passive: true });
+
+      // Listen for Hardware Back Key / Browser Back Gesture
+      window.addEventListener('popstate', (event) => {
+        if (isExitingApp) return;
+
+        // Step 1: If any Modal is open, close that modal first
+        const openModal = getCurrentlyOpenModalId();
+        if (openModal) {
+          closeSpecificModal(openModal);
+          armBackTrap();
+          return;
+        }
+
+        // Step 2: If on a sub-tab or tabHistoryStack has previous tabs, step back one tab
+        if (tabHistoryStack.length > 1) {
+          tabHistoryStack.pop();
+          const prevTab = tabHistoryStack[tabHistoryStack.length - 1] || 'dashboard';
+          switchTab(prevTab, true);
+          armBackTrap();
+          return;
+        }
+
+        if (activeTab !== 'dashboard') {
+          tabHistoryStack = ['dashboard'];
+          switchTab('dashboard', true);
+          armBackTrap();
+          return;
+        }
+
+        // Step 3: Already on Home (Dashboard) with no modal open -> Double-Back to Exit
+        const now = Date.now();
+        if (now - lastBackPressTime < 2500) {
+          // Confirmed second Back press within 2.5s -> allow app exit
+          isExitingApp = true;
+          window.history.back();
+        } else {
+          lastBackPressTime = now;
+          showToast('⬅️ App မှ ထွက်ရန် Back ခလုတ်ကို နောက်တစ်ကြိမ် ထပ်နှိပ်ပါ', 'info');
+          armBackTrap();
+        }
+      });
+
+      // Also support Escape key for closing modals or stepping back
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          const openModal = getCurrentlyOpenModalId();
+          if (openModal) {
+            closeSpecificModal(openModal);
+          } else if (activeTab !== 'dashboard') {
+            window.handleBackStep();
+          }
+        }
+      });
+    }
+
+    // Triggered by on-screen Header Back Button (←)
+    window.handleBackStep = function() {
+      const openModal = getCurrentlyOpenModalId();
+      if (openModal) {
+        closeSpecificModal(openModal);
+        return;
+      }
+      if (tabHistoryStack.length > 1) {
+        tabHistoryStack.pop();
+        const prevTab = tabHistoryStack[tabHistoryStack.length - 1] || 'dashboard';
+        switchTab(prevTab, true);
+      } else if (activeTab !== 'dashboard') {
+        tabHistoryStack = ['dashboard'];
+        switchTab('dashboard', true);
+      }
+    };
+
+    function updateHeaderBackBtnUI() {
+      const backBtn = document.getElementById('headerBackBtn');
+      if (!backBtn) return;
+      if (activeTab !== 'dashboard' || tabHistoryStack.length > 1) {
+        backBtn.classList.remove('hidden');
+        backBtn.classList.add('flex');
+      } else {
+        backBtn.classList.add('hidden');
+        backBtn.classList.remove('flex');
+      }
+    }
+
     // --- Tab Navigation ---
-    window.switchTab = function(tabId) {
+    window.switchTab = function(tabId, isFromBackStep = false) {
+      if (!isFromBackStep) {
+        if (tabId === 'dashboard') {
+          // If user explicitly taps Home/Dashboard, reset stack to root
+          tabHistoryStack = ['dashboard'];
+        } else {
+          // Push new tab onto step-by-step stack if different from current top
+          const currentTop = tabHistoryStack[tabHistoryStack.length - 1];
+          if (currentTop !== tabId) {
+            tabHistoryStack.push(tabId);
+            // Keep stack clean (max 10 steps)
+            if (tabHistoryStack.length > 10) {
+              tabHistoryStack = ['dashboard', ...tabHistoryStack.slice(-8)];
+            }
+          }
+        }
+        armBackTrap();
+      }
+
       activeTab = tabId;
       const tabs = ['dashboard', 'remit', 'cashout', 'credit', 'capital'];
       tabs.forEach(t => {
@@ -1937,6 +2098,8 @@
           }
         }
       });
+
+      updateHeaderBackBtnUI();
 
       if (tabId === 'dashboard') updateDashboardUI();
       else if (tabId === 'credit') renderCreditList();
