@@ -438,17 +438,28 @@
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             <div>
-              <label class="block text-xs font-semibold theme-text-heading mb-1">Customer အမည် <span class="text-rose-500">*</span></label>
-              <input type="text" id="remitCustName" placeholder="ဥပမာ - ကိုကျော်ဇင်" required class="w-full theme-input border rounded-xl px-3 py-2 text-xs">
+              <label id="remitSenderLabel" class="block text-xs font-semibold theme-text-heading mb-1">
+                🇹🇭 ထိုင်းဘက်မှ လွှဲသူအမည် <span class="text-rose-500">*</span>
+              </label>
+              <input type="text" id="remitSenderName" placeholder="ဥပမာ - ကိုအောင် (ထိုင်းမှ လွှဲသူ)" required class="w-full theme-input border rounded-xl px-3 py-2 text-xs">
             </div>
             <div>
-              <label class="block text-xs font-semibold theme-text-heading mb-1">ဖုန်းနံပါတ် (သို့) Note</label>
-              <input type="text" id="remitCustPhone" placeholder="09xxxxxxx (စိတ်ကြိုက်)" class="w-full theme-input border rounded-xl px-3 py-2 text-xs">
+              <label id="remitReceiverLabel" class="block text-xs font-semibold theme-text-heading mb-1">
+                🇲🇲 မြန်မာဘက်မှ ထုတ်ယူသူအမည် <span class="text-rose-500">*</span>
+              </label>
+              <input type="text" id="remitReceiverName" placeholder="ဥပမာ - မစုစု (မြန်မာမှ ထုတ်သူ)" required class="w-full theme-input border rounded-xl px-3 py-2 text-xs">
             </div>
           </div>
 
           <div>
-            <label class="block text-xs font-semibold theme-text-heading mb-1">ငွေလွှဲပေးရမည့် ချန်နယ် / အကောင့်</label>
+            <label id="remitPhoneLabel" class="block text-xs font-semibold theme-text-heading mb-1">
+              🇲🇲 မြန်မာဘက် ထုတ်ယူသူ ဖုန်းနံပါတ် / အကောင့် (Optional)
+            </label>
+            <input type="text" id="remitCustPhone" placeholder="09xxxxxxx သို့မဟုတ် ဘဏ်အကောင့် (စိတ်ကြိုက်)" class="w-full theme-input border rounded-xl px-3 py-2 text-xs">
+          </div>
+
+          <div>
+            <label id="remitChannelLabel" class="block text-xs font-semibold theme-text-heading mb-1">မြန်မာဘက်သို့ ငွေလွှဲပေးရမည့် ချန်နယ် / အကောင့်</label>
             <div class="grid grid-cols-4 gap-1.5 text-xs">
               <label class="cursor-pointer">
                 <input type="radio" name="remitChannel" value="KPay" checked class="peer sr-only">
@@ -469,64 +480,74 @@
             </div>
           </div>
 
-          <div class="theme-card-sub p-3.5 rounded-xl border space-y-2">
+          <div class="theme-card-sub p-3.5 rounded-xl border space-y-2.5">
             <div class="flex items-center justify-between">
-              <label class="text-xs font-bold theme-text-heading">
-                ကျပ်သိန်းပေါင်း (Lakhs) <span class="text-rose-500">*</span>
+              <label id="remitAmountMMKLabel" class="text-xs font-bold theme-text-heading">
+                🇲🇲 မြန်မာဘက်မှ ထုတ်ယူမည့် ကျပ်ပမာဏ (MMK) <span class="text-rose-500">*</span>
               </label>
-              <span id="remitCalculatedMMKText" class="text-xs font-bold text-emerald-500 font-mono">1,000,000 MMK</span>
+              <span id="remitCalculatedMMKText" class="text-xs font-bold text-emerald-500 font-mono">0 Ks (0 သိန်း)</span>
             </div>
             
             <div class="relative">
-              <input type="number" step="any" min="0.1" id="remitLakhs" value="10" required oninput="calcRemittanceLive()" class="w-full theme-input border rounded-xl px-3.5 py-2.5 text-base font-bold font-mono pr-16">
-              <span class="absolute right-3 top-3 text-xs theme-text-muted font-bold pointer-events-none">သိန်းကျပ်</span>
+              <input type="number" step="any" min="1" id="remitAmountMMK" value="" placeholder="၁ ကျပ်မှစ၍ စိတ်ကြိုက်ပမာဏ ရိုက်ထည့်ပါ" required oninput="onRemitMMKInput()" class="w-full theme-input border rounded-xl px-3.5 py-2.5 text-base font-bold font-mono pr-16">
+              <span class="absolute right-3 top-3 text-xs theme-text-muted font-bold pointer-events-none">ကျပ် (Ks)</span>
+            </div>
+
+            <div class="flex items-center gap-2 pt-0.5">
+              <span class="text-[11px] theme-text-muted whitespace-nowrap">သိန်းဖြင့်ထည့်ရန် (Optional):</span>
+              <div class="relative flex-1">
+                <input type="number" step="any" min="0.00001" id="remitLakhs" value="" placeholder="ဥပမာ - 0.5 သို့မဟုတ် 1.5" oninput="onRemitLakhsInput()" class="w-full theme-input border rounded-lg px-2.5 py-1 text-xs font-bold font-mono pr-14">
+                <span class="absolute right-2.5 top-1.5 text-[10px] theme-text-muted font-bold pointer-events-none">သိန်းကျပ်</span>
+              </div>
             </div>
 
             <div class="flex flex-wrap gap-1.5 pt-1">
-              <button type="button" onclick="setRemitLakhs(1)" class="px-2 py-1 theme-card rounded-lg text-[11px] font-mono border hover:border-blue-500">+1 သိန်း</button>
-              <button type="button" onclick="setRemitLakhs(5)" class="px-2 py-1 theme-card rounded-lg text-[11px] font-mono border hover:border-blue-500">+5 သိန်း</button>
-              <button type="button" onclick="setRemitLakhs(10)" class="px-2 py-1 theme-card rounded-lg text-[11px] font-mono border hover:border-blue-500">+10 သိန်း</button>
-              <button type="button" onclick="setRemitLakhs(20)" class="px-2 py-1 theme-card rounded-lg text-[11px] font-mono border hover:border-blue-500">+20 သိန်း</button>
-              <button type="button" onclick="setRemitLakhs(50)" class="px-2 py-1 theme-card rounded-lg text-[11px] font-mono border hover:border-blue-500">+50 သိန်း</button>
-              <button type="button" onclick="setRemitLakhs(100)" class="px-2 py-1 theme-card rounded-lg text-[11px] font-mono border hover:border-blue-500">+100 သိန်း</button>
+              <button type="button" onclick="setRemitMMK(1000)" class="px-2 py-1 theme-card rounded-lg text-[11px] font-mono border hover:border-blue-500">1,000</button>
+              <button type="button" onclick="setRemitMMK(5000)" class="px-2 py-1 theme-card rounded-lg text-[11px] font-mono border hover:border-blue-500">5,000</button>
+              <button type="button" onclick="setRemitMMK(10000)" class="px-2 py-1 theme-card rounded-lg text-[11px] font-mono border hover:border-blue-500">10,000</button>
+              <button type="button" onclick="setRemitMMK(30000)" class="px-2 py-1 theme-card rounded-lg text-[11px] font-mono border hover:border-blue-500">30,000</button>
+              <button type="button" onclick="setRemitMMK(50000)" class="px-2 py-1 theme-card rounded-lg text-[11px] font-mono border hover:border-blue-500">50,000</button>
+              <button type="button" onclick="setRemitMMK(100000)" class="px-2 py-1 theme-card rounded-lg text-[11px] font-mono border hover:border-blue-500">100,000</button>
+              <button type="button" onclick="setRemitMMK(500000)" class="px-2 py-1 theme-card rounded-lg text-[11px] font-mono border hover:border-blue-500">500,000</button>
+              <button type="button" onclick="setRemitMMK(1000000)" class="px-2 py-1 theme-card rounded-lg text-[11px] font-mono border hover:border-blue-500">1,000,000</button>
             </div>
           </div>
 
           <div class="grid grid-cols-2 gap-2.5">
             <div class="theme-card-sub p-3 rounded-xl border space-y-1">
-              <label class="text-[11px] font-bold text-emerald-500">Customer ပေးဈေး <span class="text-rose-500">*</span></label>
+              <label id="remitCustRateLabel" class="text-[11px] font-bold text-emerald-500">Customer ပေးဈေး <span class="text-rose-500">*</span></label>
               <div class="relative">
                 <input type="number" step="any" id="remitCustRate" value="780" required oninput="calcRemittanceLive()" class="w-full theme-input border rounded-lg px-2.5 py-2 text-sm font-bold font-mono pr-9">
                 <span class="absolute right-2.5 top-2.5 text-[10px] theme-text-muted font-bold">THB</span>
               </div>
-              <p class="text-[9px] theme-text-muted">၁ သိန်းလျှင် Customer ပေးငွေ</p>
+              <p id="remitCustRateHint" class="text-[9px] theme-text-muted">၁ သိန်းကျပ်လျှင် ထိုင်းဘက် Customer ပေးရမည့်ဘတ်</p>
             </div>
 
             <div class="theme-card-sub p-3 rounded-xl border space-y-1">
-              <label class="text-[11px] font-bold text-cyan-500">ဒိုင်ပေါက်ဈေး <span class="text-rose-500">*</span></label>
+              <label id="remitDealerRateLabel" class="text-[11px] font-bold text-cyan-500">ဒိုင်ပေါက်ဈေး <span class="text-rose-500">*</span></label>
               <div class="relative">
                 <input type="number" step="any" id="remitDealerRate" value="755" required oninput="calcRemittanceLive()" class="w-full theme-input border rounded-lg px-2.5 py-2 text-sm font-bold font-mono pr-9">
                 <span class="absolute right-2.5 top-2.5 text-[10px] theme-text-muted font-bold">THB</span>
               </div>
-              <p class="text-[9px] theme-text-muted">၁ သိန်းလျှင် ဒိုင်မှယူငွေ</p>
+              <p id="remitDealerRateHint" class="text-[9px] theme-text-muted">၁ သိန်းကျပ်လျှင် ဒိုင်သို့ လွှဲပေးရမည့်ဘတ်</p>
             </div>
           </div>
 
           <div>
-            <label class="block text-xs font-semibold theme-text-heading mb-1">ငွေပေးချေမှု အခြေအနေ</label>
+            <label id="remitStatusSectionLabel" class="block text-xs font-semibold theme-text-heading mb-1">ငွေသား/ငွေထုတ်ပေးမှု အခြေအနေ</label>
             <div class="grid grid-cols-2 gap-2">
               <label class="cursor-pointer">
                 <input type="radio" name="remitStatus" value="PAID" checked class="peer sr-only">
                 <div class="p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 theme-card-sub peer-checked:border-emerald-500 peer-checked:bg-emerald-600/20 peer-checked:text-emerald-500 text-center font-bold text-xs flex items-center justify-center gap-1.5 transition">
-                  <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                  လက်ငင်းရရှိ (Paid)
+                  <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+                  <span id="remitStatusPaidLabel">လက်ငင်းထုတ်ပေးပြီး</span>
                 </div>
               </label>
               <label class="cursor-pointer">
                 <input type="radio" name="remitStatus" value="UNPAID" class="peer sr-only">
-                <div class="p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 theme-card-sub peer-checked:border-rose-500 peer-checked:bg-rose-600/20 peer-checked:text-rose-500 text-center font-bold text-xs flex items-center justify-center gap-1.5 transition">
-                  <span class="w-2 h-2 rounded-full bg-rose-500"></span>
-                  အကြွေး (Credit)
+                <div class="p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 theme-card-sub peer-checked:border-amber-500 peer-checked:bg-amber-500/20 peer-checked:text-amber-500 text-center font-bold text-xs flex items-center justify-center gap-1.5 transition">
+                  <span class="w-2 h-2 rounded-full bg-amber-500 shrink-0"></span>
+                  <span id="remitStatusUnpaidLabel">မထုတ်ပေးရသေးဘူး</span>
                 </div>
               </label>
             </div>
@@ -552,28 +573,28 @@
           <div class="theme-card border border-blue-500/40 rounded-2xl p-4 sm:p-5 space-y-3.5 shadow-md md:sticky md:top-20">
             <div class="text-xs font-bold text-blue-500 flex items-center justify-between border-b pb-2">
               <span class="flex items-center gap-1">⚡ တွက်ချက်မှု ရလဒ် အနှစ်ချုပ်</span>
-              <span class="text-[11px] theme-text-muted" id="liveCalcDirectionText">ထိုင်း ➔ မြန်မာ</span>
+              <span class="text-[11px] theme-text-muted" id="liveCalcDirectionText">ထိုင်းဘတ် ➔ မြန်မာကျပ်</span>
             </div>
 
             <div class="space-y-2 text-xs font-mono">
               <div class="p-2.5 rounded-xl theme-card-sub border flex justify-between items-center">
-                <span class="theme-text-muted text-[11px] font-sans">Customer ပေးရမည့်ဘတ်:</span>
-                <span id="liveCustomerTHB" class="text-sm font-bold theme-text-heading">7,800 THB</span>
+                <span id="liveRow1Label" class="theme-text-muted text-[11px] font-sans">🇹🇭 ထိုင်းဘက် Customer ပေးရမည့်ဘတ်:</span>
+                <span id="liveCustomerTHB" class="text-sm font-bold theme-text-heading">0 THB</span>
               </div>
               <div class="p-2.5 rounded-xl theme-card-sub border flex justify-between items-center">
-                <span class="theme-text-muted text-[11px] font-sans">ဒိုင်သို့ လွှဲပေးရမည့်ဘတ်:</span>
-                <span id="liveDealerTHB" class="text-sm font-bold text-cyan-500">7,550 THB</span>
+                <span id="liveRow2Label" class="theme-text-muted text-[11px] font-sans">🏦 ဒိုင်သို့ လွှဲပေးရမည့်ဘတ်:</span>
+                <span id="liveDealerTHB" class="text-sm font-bold text-cyan-500">0 THB</span>
               </div>
               <div class="p-2.5 rounded-xl theme-card-sub border flex justify-between items-center">
-                <span class="theme-text-muted text-[11px] font-sans">မြန်မာသို့ ရောက်မည့်ငွေ:</span>
-                <span id="liveReceiveMMK" class="text-sm font-bold text-amber-500">1,000,000 Ks</span>
+                <span id="liveRow3Label" class="theme-text-muted text-[11px] font-sans">🇲🇲 မြန်မာဘက် ထုတ်ယူမည့်ငွေ:</span>
+                <span id="liveReceiveMMK" class="text-sm font-bold text-amber-500">0 Ks</span>
               </div>
             </div>
 
             <div class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-center space-y-1">
               <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold block uppercase tracking-wider">အသားတင် အမြတ်ငွေ (Profit)</span>
-              <div class="text-xl font-black text-emerald-500 font-mono" id="liveProfitTHB">+250 THB</div>
-              <div class="text-xs text-emerald-600 dark:text-emerald-300 font-mono font-bold" id="liveProfitMMK">(~ 33,113 Ks)</div>
+              <div class="text-xl font-black text-emerald-500 font-mono" id="liveProfitTHB">+0 THB</div>
+              <div class="text-xs text-emerald-600 dark:text-emerald-300 font-mono font-bold" id="liveProfitMMK">(~ 0 Ks)</div>
             </div>
 
             <p class="text-[10px] theme-text-muted leading-relaxed text-center">
@@ -582,6 +603,70 @@
           </div>
         </div>
 
+      </div>
+
+      <!-- ================= REMITTANCE PAYOUT CHECK SECTION (ထုတ်ပေးပြီး / မထုတ်ပေးရသေး သီးသန့်စာရင်း) ================= -->
+      <div id="remitPayoutCheckSection" class="theme-card border border-blue-500/30 rounded-2xl p-4 sm:p-5 space-y-3.5 shadow-sm">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b pb-2.5">
+          <div>
+            <h3 class="text-xs sm:text-sm font-bold theme-text-heading flex items-center gap-1.5">
+              <span class="w-6 h-6 rounded-lg bg-amber-500/20 text-amber-500 flex items-center justify-center text-xs">📋</span>
+              ထိုင်း ➔ မြန်မာ ငွေထုတ်ပေးမှု စာရင်းစစ်ရန်
+            </h3>
+            <p class="text-[11px] theme-text-muted mt-0.5">ငွေထုတ်ပေးပြီးသား နှင့် လာမထုတ်သေးသည့် (မထုတ်ပေးရသေး) စာရင်းများကို သီးသန့်စီ စစ်ဆေးနိုင်ပါသည်</p>
+          </div>
+        </div>
+
+        <!-- Summary Cards for Pending Payout vs Paid Out -->
+        <div class="grid grid-cols-2 gap-2.5">
+          <div onclick="setRemitPayoutFilter('UNPAID')" class="cursor-pointer theme-card-sub border border-amber-500/40 hover:border-amber-500 p-3 rounded-xl space-y-1 transition">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold text-amber-500 flex items-center gap-1">
+                <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                မထုတ်ပေးရသေးဘူး
+              </span>
+              <span id="remitPendingCountBadge" class="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-500 font-bold font-mono">0 ခု</span>
+            </div>
+            <div id="remitPendingTotalMMK" class="text-sm sm:text-base font-extrabold theme-text-heading font-mono">0 Ks</div>
+            <div class="text-[10px] theme-text-muted">ထုတ်ပေးရန်ကျန် စုစုပေါင်း</div>
+          </div>
+
+          <div onclick="setRemitPayoutFilter('PAID')" class="cursor-pointer theme-card-sub border border-emerald-500/40 hover:border-emerald-500 p-3 rounded-xl space-y-1 transition">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold text-emerald-500 flex items-center gap-1">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                လက်ငင်းထုတ်ပေးပြီး
+              </span>
+              <span id="remitPaidCountBadge" class="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-500 font-bold font-mono">0 ခု</span>
+            </div>
+            <div id="remitPaidTotalMMK" class="text-sm sm:text-base font-extrabold text-emerald-500 font-mono">0 Ks</div>
+            <div class="text-[10px] theme-text-muted">ထုတ်ပေးပြီး စုစုပေါင်း</div>
+          </div>
+        </div>
+
+        <!-- Separate Filter Tabs -->
+        <div class="flex gap-1.5 theme-card-sub p-1 rounded-xl border text-xs">
+          <button type="button" onclick="setRemitPayoutFilter('UNPAID')" id="remit-payout-tab-unpaid" class="flex-1 py-2 px-2 rounded-lg font-bold bg-amber-500 text-slate-950 transition text-center shadow">
+            ⏳ မထုတ်ပေးရသေး
+          </button>
+          <button type="button" onclick="setRemitPayoutFilter('PAID')" id="remit-payout-tab-paid" class="flex-1 py-2 px-2 rounded-lg font-semibold theme-text-muted hover:text-emerald-500 transition text-center">
+            ✓ ထုတ်ပေးပြီး
+          </button>
+          <button type="button" onclick="setRemitPayoutFilter('ALL')" id="remit-payout-tab-all" class="flex-1 py-2 px-2 rounded-lg font-semibold theme-text-muted hover:text-blue-500 transition text-center">
+            အားလုံး
+          </button>
+        </div>
+
+        <!-- Search Input -->
+        <div class="relative">
+          <input type="text" id="remitPayoutSearchInput" oninput="renderRemitPayoutList()" placeholder="လွှဲသူအမည်၊ ထုတ်ယူသူအမည် သို့မဟုတ် ဖုန်းဖြင့် ရှာရန်..." class="w-full theme-input border rounded-xl px-3.5 py-2 pl-9 text-xs">
+          <svg class="w-4 h-4 theme-text-muted absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        </div>
+
+        <!-- Filtered List Container -->
+        <div id="remitPayoutListContainer" class="space-y-2.5 max-h-[460px] overflow-y-auto pr-1">
+          <!-- Rendered by JS -->
+        </div>
       </div>
     </section>
 
@@ -650,21 +735,23 @@
               <label class="text-xs font-bold theme-text-heading">
                 ငွေပမာဏ (Amount MMK) <span class="text-rose-500">*</span>
               </label>
-              <span id="cashoutAmountFormatted" class="text-xs font-bold text-emerald-500 font-mono">100,000 MMK</span>
+              <span id="cashoutAmountFormatted" class="text-xs font-bold text-emerald-500 font-mono">0 Ks</span>
             </div>
             
             <div class="relative">
-              <input type="number" step="1000" min="1000" id="cashoutAmount" value="100000" required oninput="calcCashoutLive()" class="w-full theme-input border rounded-xl px-3.5 py-2.5 text-base font-bold font-mono pr-14">
+              <input type="number" step="any" min="1" id="cashoutAmount" value="" placeholder="၁ ကျပ်မှစ၍ စိတ်ကြိုက်ပမာဏ ရိုက်ထည့်ပါ" required oninput="calcCashoutLive()" class="w-full theme-input border rounded-xl px-3.5 py-2.5 text-base font-bold font-mono pr-14">
               <span class="absolute right-3 top-3 text-xs theme-text-muted font-bold pointer-events-none">ကျပ်</span>
             </div>
 
             <div class="flex flex-wrap gap-1.5 pt-1">
+              <button type="button" onclick="setCashoutAmount(1000)" class="px-2 py-1 theme-card rounded-lg text-[11px] font-mono border hover:border-emerald-500">1,000</button>
+              <button type="button" onclick="setCashoutAmount(5000)" class="px-2 py-1 theme-card rounded-lg text-[11px] font-mono border hover:border-emerald-500">5,000</button>
+              <button type="button" onclick="setCashoutAmount(10000)" class="px-2 py-1 theme-card rounded-lg text-[11px] font-mono border hover:border-emerald-500">10,000</button>
               <button type="button" onclick="setCashoutAmount(50000)" class="px-2 py-1 theme-card rounded-lg text-[11px] font-mono border hover:border-emerald-500">50,000</button>
               <button type="button" onclick="setCashoutAmount(100000)" class="px-2 py-1 theme-card rounded-lg text-[11px] font-mono border hover:border-emerald-500">100,000</button>
               <button type="button" onclick="setCashoutAmount(300000)" class="px-2 py-1 theme-card rounded-lg text-[11px] font-mono border hover:border-emerald-500">300,000</button>
               <button type="button" onclick="setCashoutAmount(500000)" class="px-2 py-1 theme-card rounded-lg text-[11px] font-mono border hover:border-emerald-500">500,000</button>
               <button type="button" onclick="setCashoutAmount(1000000)" class="px-2 py-1 theme-card rounded-lg text-[11px] font-mono border hover:border-emerald-500">1,000,000</button>
-              <button type="button" onclick="setCashoutAmount(2000000)" class="px-2 py-1 theme-card rounded-lg text-[11px] font-mono border hover:border-emerald-500">2,000,000</button>
             </div>
           </div>
 
@@ -680,7 +767,7 @@
             </div>
 
             <div class="relative">
-              <input type="number" step="100" min="0" id="cashoutFee" value="1000" required oninput="calcCashoutLive(false)" class="w-full theme-input border rounded-xl px-3.5 py-2 text-sm font-bold font-mono pr-14 text-emerald-500">
+              <input type="number" step="any" min="0" id="cashoutFee" value="0" required oninput="calcCashoutLive(false)" class="w-full theme-input border rounded-xl px-3.5 py-2 text-sm font-bold font-mono pr-14 text-emerald-500">
               <span class="absolute right-3 top-2 text-xs theme-text-muted font-bold pointer-events-none">ကျပ်</span>
             </div>
           </div>
@@ -1019,12 +1106,13 @@
         </div>
 
         <div class="space-y-2">
-          <input type="text" id="ledgerSearchInput" oninput="renderLedgerList()" placeholder="ရှာဖွေရန် (Customer, ID, ဖုန်း)..." class="w-full theme-input border rounded-xl px-3 py-2 text-xs">
-          <div class="flex gap-1.5 text-xs">
-            <button onclick="setLedgerTypeFilter('ALL')" id="history-filter-all" class="flex-1 py-1.5 rounded-lg bg-blue-600 text-white font-bold">အားလုံး</button>
-            <button onclick="setLedgerTypeFilter('REMIT')" id="history-filter-remit" class="flex-1 py-1.5 rounded-lg theme-card-sub border theme-text-muted hover:text-blue-500">ငွေလွှဲ</button>
-            <button onclick="setLedgerTypeFilter('CASHOUT')" id="history-filter-cashout" class="flex-1 py-1.5 rounded-lg theme-card-sub border theme-text-muted hover:text-blue-500">ငွေထုတ်</button>
-            <button onclick="setLedgerTypeFilter('CREDIT')" id="history-filter-credit" class="flex-1 py-1.5 rounded-lg theme-card-sub border theme-text-muted hover:text-blue-500">အကြွေး</button>
+          <input type="text" id="ledgerSearchInput" oninput="renderLedgerList()" placeholder="ရှာဖွေရန် (လွှဲသူ၊ ထုတ်သူ၊ ID၊ ဖုန်း)..." class="w-full theme-input border rounded-xl px-3 py-2 text-xs">
+          <div class="flex flex-wrap gap-1.5 text-[11px]">
+            <button onclick="setLedgerTypeFilter('ALL')" id="history-filter-all" class="flex-1 min-w-[60px] py-1.5 px-2 rounded-lg bg-blue-600 text-white font-bold">အားလုံး</button>
+            <button onclick="setLedgerTypeFilter('REMIT_UNPAID')" id="history-filter-remit_unpaid" class="flex-1 min-w-[95px] py-1.5 px-2 rounded-lg theme-card-sub border theme-text-muted hover:text-amber-500">မထုတ်ပေးရသေး</button>
+            <button onclick="setLedgerTypeFilter('REMIT_PAID')" id="history-filter-remit_paid" class="flex-1 min-w-[85px] py-1.5 px-2 rounded-lg theme-card-sub border theme-text-muted hover:text-emerald-500">ထုတ်ပေးပြီး</button>
+            <button onclick="setLedgerTypeFilter('CASHOUT')" id="history-filter-cashout" class="flex-1 min-w-[65px] py-1.5 px-2 rounded-lg theme-card-sub border theme-text-muted hover:text-blue-500">ငွေထုတ်</button>
+            <button onclick="setLedgerTypeFilter('CREDIT')" id="history-filter-credit" class="flex-1 min-w-[65px] py-1.5 px-2 rounded-lg theme-card-sub border theme-text-muted hover:text-rose-500">အကြွေး</button>
           </div>
         </div>
 
@@ -1132,13 +1220,15 @@
           <div class="space-y-2 text-xs">
             <div class="flex justify-between"><span class="text-slate-500">ရက်စွဲ/အချိန်:</span> <span class="font-semibold text-slate-800" id="vouchDate">-</span></div>
             <div class="flex justify-between"><span class="text-slate-500">အမျိုးအစား:</span> <span class="font-bold text-blue-600" id="vouchType">-</span></div>
-            <div class="flex justify-between"><span class="text-slate-500">Customer အမည်:</span> <span class="font-bold text-slate-900" id="vouchCustName">-</span></div>
+            <div class="flex justify-between" id="vouchCustNameRow"><span class="text-slate-500">Customer အမည်:</span> <span class="font-bold text-slate-900" id="vouchCustName">-</span></div>
+            <div class="flex justify-between hidden" id="vouchSenderRow"><span class="text-slate-500" id="vouchSenderLabel">လွှဲသူအမည်:</span> <span class="font-bold text-slate-900" id="vouchSenderName">-</span></div>
+            <div class="flex justify-between hidden" id="vouchReceiverRow"><span class="text-slate-500" id="vouchReceiverLabel">ထုတ်ယူသူအမည်:</span> <span class="font-bold text-emerald-700" id="vouchReceiverName">-</span></div>
             <div class="flex justify-between" id="vouchPhoneRow"><span class="text-slate-500">ဖုန်း / အကောင့်:</span> <span class="font-mono text-slate-700" id="vouchPhone">-</span></div>
             <div class="flex justify-between"><span class="text-slate-500">ချန်နယ်:</span> <span class="font-semibold text-slate-800" id="vouchChannel">-</span></div>
 
             <div class="border-t border-dashed border-slate-200 my-2 pt-2 space-y-1.5" id="vouchRatesSection">
-              <div class="flex justify-between" id="vouchCustRateRow"><span class="text-slate-500">Customer ပေးဈေး:</span> <span class="font-mono font-bold text-slate-800" id="vouchCustRate">-</span></div>
-              <div class="flex justify-between" id="vouchThbRow"><span class="text-slate-500">ထိုင်းဘတ် ပမာဏ:</span> <span class="font-mono font-bold text-blue-600" id="vouchThbAmount">-</span></div>
+              <div class="flex justify-between" id="vouchCustRateRow"><span class="text-slate-500" id="vouchCustRateLabel">Customer ပေါက်ဈေး:</span> <span class="font-mono font-bold text-slate-800" id="vouchCustRate">-</span></div>
+              <div class="flex justify-between" id="vouchThbRow"><span class="text-slate-500" id="vouchThbLabel">ထိုင်းဘတ် ပမာဏ:</span> <span class="font-mono font-bold text-blue-600" id="vouchThbAmount">-</span></div>
             </div>
 
             <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center space-y-1">
@@ -1299,12 +1389,22 @@
 
       <form id="editTxForm" onsubmit="handleSaveEditedTx(event)" class="space-y-3">
         <input type="hidden" id="editTxId">
-        <div>
+        <div id="editSingleCustNameGroup">
           <label class="block text-xs font-semibold theme-text-heading mb-1">Customer အမည်</label>
-          <input type="text" id="editCustName" required class="w-full theme-input border rounded-xl px-3 py-2 text-xs">
+          <input type="text" id="editCustName" class="w-full theme-input border rounded-xl px-3 py-2 text-xs">
+        </div>
+        <div id="editRemitNamesGroup" class="grid grid-cols-1 sm:grid-cols-2 gap-2 hidden">
+          <div>
+            <label id="editSenderLabel" class="block text-xs font-semibold theme-text-heading mb-1">လွှဲသူအမည်</label>
+            <input type="text" id="editSenderName" class="w-full theme-input border rounded-xl px-3 py-2 text-xs">
+          </div>
+          <div>
+            <label id="editReceiverLabel" class="block text-xs font-semibold theme-text-heading mb-1">ထုတ်ယူသူအမည်</label>
+            <input type="text" id="editReceiverName" class="w-full theme-input border rounded-xl px-3 py-2 text-xs">
+          </div>
         </div>
         <div>
-          <label class="block text-xs font-semibold theme-text-heading mb-1">ဖုန်းနံပါတ်</label>
+          <label class="block text-xs font-semibold theme-text-heading mb-1">ဖုန်းနံပါတ် / အကောင့်</label>
           <input type="text" id="editCustPhone" class="w-full theme-input border rounded-xl px-3 py-2 text-xs">
         </div>
         <div class="grid grid-cols-2 gap-2">
@@ -2494,8 +2594,10 @@
           type: 'REMIT',
           direction: 'THB_TO_MMK',
           date: today,
-          custName: 'ကိုကျော်ဇင် (ဘန်ကောက်)',
-          custPhone: '0812345678',
+          senderName: 'ကိုကျော်ဇင် (ဘန်ကောက်)',
+          receiverName: 'မစုစု (ရန်ကုန်)',
+          custName: 'ကိုကျော်ဇင် (ဘန်ကောက်) ➔ မစုစု (ရန်ကုန်)',
+          custPhone: '09450011223',
           channel: 'KPay',
           lakhs: 10,
           amountMMK: 1000000,
@@ -2733,6 +2835,7 @@
       updateHeaderBackBtnUI();
 
       if (tabId === 'dashboard') updateDashboardUI();
+      else if (tabId === 'remit') renderRemitPayoutList();
       else if (tabId === 'credit') renderCreditList();
       else if (tabId === 'capital') {
         updateCapitalInputs();
@@ -2754,12 +2857,16 @@
     // --- Formatting Helpers ---
     function formatMMK(amount) {
       if (isNaN(amount) || amount === null) return '0 Ks';
-      return Math.round(amount).toLocaleString('en-US') + ' Ks';
+      const num = Number(amount);
+      if (num % 1 === 0) return num.toLocaleString('en-US') + ' Ks';
+      return Number(num.toFixed(2)).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 }) + ' Ks';
     }
 
     function formatTHB(amount) {
       if (isNaN(amount) || amount === null) return '0 THB';
-      return (Number(amount) % 1 === 0 ? Number(amount).toLocaleString('en-US') : Number(amount).toFixed(1)) + ' THB';
+      const num = Number(amount);
+      if (num % 1 === 0) return num.toLocaleString('en-US') + ' THB';
+      return Number(num.toFixed(2)).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 }) + ' THB';
     }
 
     function formatDateTime(isoString) {
@@ -2769,8 +2876,57 @@
              d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
     }
 
+    // Helper to extract sender & receiver names cleanly for both new and legacy transactions
+    function getTxNames(tx) {
+      let senderName = (tx.senderName || '').trim();
+      let receiverName = (tx.receiverName || '').trim();
+      const rawCust = (tx.custName || '').trim();
+
+      if (!senderName && !receiverName && rawCust) {
+        if (rawCust.includes('➔')) {
+          const parts = rawCust.split('➔');
+          senderName = (parts[0] || '').trim();
+          receiverName = (parts.slice(1).join('➔') || '').trim();
+        } else {
+          senderName = rawCust;
+        }
+      }
+
+      const isMmkToThb = tx.direction === 'MMK_TO_THB';
+      const senderLabel = isMmkToThb ? '🇲🇲 မြန်မာမှ လွှဲသူ' : '🇹🇭 ထိုင်းမှ လွှဲသူ';
+      const receiverLabel = isMmkToThb ? '🇹🇭 ထိုင်းမှ ထုတ်သူ' : '🇲🇲 မြန်မာမှ ထုတ်သူ';
+      const displayTitle = (senderName && receiverName)
+        ? `${senderName} ➔ ${receiverName}`
+        : (rawCust || senderName || receiverName || 'အမည်မသိ');
+
+      return { senderName, receiverName, displayTitle, senderLabel, receiverLabel };
+    }
+
+    // Helper for status text ("လက်ငင်းထုတ်ပေးပြီး" / "မထုတ်ပေးရသေးဘူး" for THB->MMK remittance)
+    function getTxStatusDisplay(tx) {
+      const isThbToMmkRemit = tx.type === 'REMIT' && tx.direction !== 'MMK_TO_THB';
+      const isPaid = tx.status === 'PAID';
+      if (isThbToMmkRemit) {
+        return {
+          text: isPaid ? 'လက်ငင်းထုတ်ပေးပြီး' : 'မထုတ်ပေးရသေးဘူး',
+          shortText: isPaid ? 'ထုတ်ပေးပြီး' : 'မထုတ်ပေးရသေး',
+          badgeClass: isPaid
+            ? 'bg-emerald-500/20 text-emerald-500 border border-emerald-500/30'
+            : 'bg-amber-500/20 text-amber-500 border border-amber-500/40'
+        };
+      }
+      return {
+        text: isPaid ? 'လက်ငင်း' : 'အကြွေး',
+        shortText: isPaid ? 'လက်ငင်း' : 'အကြွေး',
+        badgeClass: isPaid
+          ? 'bg-emerald-500/20 text-emerald-500'
+          : 'bg-rose-500/20 text-rose-500 border border-rose-500/30'
+      };
+    }
+
     function updateAllUI() {
       updateDashboardUI();
+      renderRemitPayoutList();
       renderCreditList();
       renderLedgerList();
       updateCapitalInputs();
@@ -2908,7 +3064,15 @@
 
       container.innerHTML = list.map(tx => {
         const isRemit = tx.type === 'REMIT';
-        const isUnpaid = tx.status === 'UNPAID';
+        const names = getTxNames(tx);
+        const stDisp = getTxStatusDisplay(tx);
+        const subNamesHtml = (isRemit && names.senderName && names.receiverName)
+          ? `<div class="text-[10px] theme-text-muted mt-0.5">လွှဲသူ: <span class="font-semibold theme-text-heading">${names.senderName}</span> • ထုတ်သူ: <span class="font-semibold text-emerald-500">${names.receiverName}</span></div>`
+          : '';
+
+        const mainAmtDisplay = (isRemit && tx.direction === 'MMK_TO_THB')
+          ? `${formatMMK(tx.amountMMK)} ➔ ${formatTHB(tx.customerTHB)}`
+          : formatMMK(tx.amountMMK);
 
         return `
           <div onclick="openVoucherModal('${tx.id}')" class="cursor-pointer theme-card-sub hover:opacity-95 active:scale-[0.99] border p-2.5 sm:p-3 rounded-xl flex items-center justify-between transition group">
@@ -2917,22 +3081,23 @@
                 ${isRemit ? '⇄' : (tx.cashoutType === 'TRANSFER' ? '🔺' : '🔻')}
               </div>
               <div>
-                <div class="flex items-center gap-1.5">
-                  <h4 class="text-xs font-bold theme-text-heading group-hover:text-blue-500 transition leading-tight">${tx.custName || 'အမည်မသိ'}</h4>
-                  <span class="text-[9px] px-1.5 py-0.2 rounded font-bold ${isUnpaid ? 'bg-rose-500/20 text-rose-500 border border-rose-500/30' : 'bg-emerald-500/20 text-emerald-500'}">
-                    ${isUnpaid ? 'အကြွေး' : 'လက်ငင်း'}
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <h4 class="text-xs font-bold theme-text-heading group-hover:text-blue-500 transition leading-tight">${names.displayTitle}</h4>
+                  <span class="text-[9px] px-1.5 py-0.2 rounded font-bold ${stDisp.badgeClass}">
+                    ${stDisp.text}
                   </span>
                 </div>
+                ${subNamesHtml}
                 <div class="text-[10px] theme-text-muted mt-0.5 flex items-center gap-1.5">
                   <span>${formatDateTime(tx.date)}</span>
                   <span>•</span>
-                  <span>${tx.channel || 'KPay'}</span>
+                  <span>${isRemit ? (tx.direction === 'MMK_TO_THB' ? '🇲🇲➔🇹🇭' : '🇹🇭➔🇲🇲') + ' • ' : ''}${tx.channel || 'KPay'}</span>
                 </div>
               </div>
             </div>
 
             <div class="text-right">
-              <div class="text-xs font-bold font-mono theme-text-heading">${formatMMK(tx.amountMMK)}</div>
+              <div class="text-xs font-bold font-mono theme-text-heading">${mainAmtDisplay}</div>
               <div class="text-[10px] text-emerald-500 font-mono font-bold">
                 ${tx.profitTHB ? `+${formatTHB(tx.profitTHB)}` : `+${formatMMK(tx.profitMMK)}`}
               </div>
@@ -2943,35 +3108,151 @@
     }
 
     // --- TAB 2: REMITTANCE LOGIC ---
+    let remitPayoutFilter = 'UNPAID';
+
     const setRemitDirection = window.setRemitDirection = function(dir) {
       remitDirection = dir;
       const b1 = document.getElementById('remit-dir-thb2mmk');
       const b2 = document.getElementById('remit-dir-mmk2thb');
+      const senderLbl = document.getElementById('remitSenderLabel');
+      const senderInp = document.getElementById('remitSenderName');
+      const receiverLbl = document.getElementById('remitReceiverLabel');
+      const receiverInp = document.getElementById('remitReceiverName');
+      const phoneLbl = document.getElementById('remitPhoneLabel');
+      const phoneInp = document.getElementById('remitCustPhone');
+      const chanLbl = document.getElementById('remitChannelLabel');
+      const amtLbl = document.getElementById('remitAmountMMKLabel');
+      const custRateLbl = document.getElementById('remitCustRateLabel');
+      const custRateHint = document.getElementById('remitCustRateHint');
+      const dealerRateHint = document.getElementById('remitDealerRateHint');
+      const statusSecLbl = document.getElementById('remitStatusSectionLabel');
+      const statusPaidLbl = document.getElementById('remitStatusPaidLabel');
+      const statusUnpaidLbl = document.getElementById('remitStatusUnpaidLabel');
+      const row1Lbl = document.getElementById('liveRow1Label');
+      const row2Lbl = document.getElementById('liveRow2Label');
+      const row3Lbl = document.getElementById('liveRow3Label');
+
       if (dir === 'THB_TO_MMK') {
         b1.className = 'py-2.5 px-3 rounded-xl bg-blue-600 text-white font-bold transition flex items-center justify-center gap-1.5 shadow';
         b2.className = 'py-2.5 px-3 rounded-xl theme-text-muted hover:text-blue-500 transition flex items-center justify-center gap-1.5';
-        document.getElementById('liveCalcDirectionText').textContent = 'ထိုင်း ➔ မြန်မာ';
+        document.getElementById('liveCalcDirectionText').textContent = 'ထိုင်းဘတ် ➔ မြန်မာကျပ်';
+
+        if (senderLbl) senderLbl.innerHTML = '🇹🇭 ထိုင်းဘက်မှ လွှဲသူအမည် <span class="text-rose-500">*</span>';
+        if (senderInp) senderInp.placeholder = 'ဥပမာ - ကိုအောင် (ထိုင်းမှ လွှဲသူ)';
+        if (receiverLbl) receiverLbl.innerHTML = '🇲🇲 မြန်မာဘက်မှ ထုတ်ယူသူအမည် <span class="text-rose-500">*</span>';
+        if (receiverInp) receiverInp.placeholder = 'ဥပမာ - မစုစု (မြန်မာမှ ထုတ်သူ)';
+        if (phoneLbl) phoneLbl.textContent = '🇲🇲 မြန်မာဘက် ထုတ်ယူသူ ဖုန်းနံပါတ် / အကောင့် (Optional)';
+        if (phoneInp) phoneInp.placeholder = '09xxxxxxx သို့မဟုတ် KPay / ဘဏ်အကောင့်';
+        if (chanLbl) chanLbl.textContent = 'မြန်မာဘက်သို့ ငွေလွှဲပေးရမည့် ချန်နယ် / အကောင့်';
+        if (amtLbl) amtLbl.innerHTML = '🇲🇲 မြန်မာဘက်မှ ထုတ်ယူမည့် ကျပ်ပမာဏ (MMK) <span class="text-rose-500">*</span>';
+        if (custRateLbl) custRateLbl.innerHTML = 'Customer ပေးဈေး <span class="text-rose-500">*</span>';
+        if (custRateHint) custRateHint.textContent = '၁ သိန်းကျပ်လျှင် ထိုင်းဘက် Customer ပေးရမည့်ဘတ်';
+        if (dealerRateHint) dealerRateHint.textContent = '၁ သိန်းကျပ်လျှင် ဒိုင်သို့ လွှဲပေးရမည့်ဘတ်';
+        if (statusSecLbl) statusSecLbl.textContent = 'ငွေသား/ငွေထုတ်ပေးမှု အခြေအနေ';
+        if (statusPaidLbl) statusPaidLbl.textContent = 'လက်ငင်းထုတ်ပေးပြီး';
+        if (statusUnpaidLbl) statusUnpaidLbl.textContent = 'မထုတ်ပေးရသေးဘူး';
+
+        if (row1Lbl) row1Lbl.textContent = '🇹🇭 ထိုင်းဘက် Customer ပေးရမည့်ဘတ်:';
+        if (row2Lbl) row2Lbl.textContent = '🏦 ဒိုင်သို့ လွှဲပေးရမည့်ဘတ်:';
+        if (row3Lbl) row3Lbl.textContent = '🇲🇲 မြန်မာဘက် ထုတ်ယူမည့်ငွေ:';
       } else {
         b2.className = 'py-2.5 px-3 rounded-xl bg-blue-600 text-white font-bold transition flex items-center justify-center gap-1.5 shadow';
         b1.className = 'py-2.5 px-3 rounded-xl theme-text-muted hover:text-blue-500 transition flex items-center justify-center gap-1.5';
-        document.getElementById('liveCalcDirectionText').textContent = 'မြန်မာ ➔ ထိုင်း';
+        document.getElementById('liveCalcDirectionText').textContent = 'မြန်မာကျပ် ➔ ထိုင်းဘတ်';
+
+        if (senderLbl) senderLbl.innerHTML = '🇲🇲 မြန်မာဘက်မှ လွှဲသူအမည် <span class="text-rose-500">*</span>';
+        if (senderInp) senderInp.placeholder = 'ဥပမာ - မစုစု (မြန်မာမှ ငွေပေးသွင်းသူ)';
+        if (receiverLbl) receiverLbl.innerHTML = '🇹🇭 ထိုင်းဘက်မှ ထုတ်ယူသူအမည် <span class="text-rose-500">*</span>';
+        if (receiverInp) receiverInp.placeholder = 'ဥပမာ - ကိုအောင် (ထိုင်းမှ ဘတ်လက်ခံသူ)';
+        if (phoneLbl) phoneLbl.textContent = '🇹🇭 ထိုင်းဘက် လက်ခံမည့် ဘဏ်အကောင့် / PromptPay / ဖုန်း (Optional)';
+        if (phoneInp) phoneInp.placeholder = 'ထိုင်းဘဏ်အကောင့် / PromptPay နံပါတ်';
+        if (chanLbl) chanLbl.textContent = 'မြန်မာဘက်မှ Customer ငွေပေးသွင်းသည့် ချန်နယ် / အကောင့်';
+        if (amtLbl) amtLbl.innerHTML = '🇲🇲 Customer ပေးသွင်းသည့် မြန်မာကျပ် ပမာဏ (MMK) <span class="text-rose-500">*</span>';
+        if (custRateLbl) custRateLbl.innerHTML = 'Customer ရမည့်ဘတ်ဈေး <span class="text-rose-500">*</span>';
+        if (custRateHint) custRateHint.textContent = '၁ သိန်းကျပ်လျှင် တစ်ဖက် Customer ရရှိမည့်ဘတ်';
+        if (dealerRateHint) dealerRateHint.textContent = '၁ သိန်းကျပ်လျှင် ဒိုင်မှ ရရှိမည့်ဘတ်';
+        if (statusSecLbl) statusSecLbl.textContent = 'ငွေပေးချေမှု အခြေအနေ';
+        if (statusPaidLbl) statusPaidLbl.textContent = 'လက်ငင်းရရှိ (Paid)';
+        if (statusUnpaidLbl) statusUnpaidLbl.textContent = 'အကြွေး (Credit)';
+
+        if (row1Lbl) row1Lbl.textContent = '🇲🇲 Customer ပေးသွင်းသည့် မြန်မာငွေ:';
+        if (row2Lbl) row2Lbl.textContent = '🇹🇭 တစ်ဖက် Customer ရရှိမည့် ထိုင်းဘတ်:';
+        if (row3Lbl) row3Lbl.textContent = '🏦 ဒိုင်မှ ရရှိမည့် ထိုင်းဘတ်:';
       }
       calcRemittanceLive();
     };
 
+    const setRemitMMK = window.setRemitMMK = function(val) {
+      const mmkEl = document.getElementById('remitAmountMMK');
+      const lakhsEl = document.getElementById('remitLakhs');
+      const numVal = Number(val) || 0;
+      if (mmkEl) mmkEl.value = numVal > 0 ? numVal : '';
+      if (lakhsEl) lakhsEl.value = numVal > 0 ? Number((numVal / 100000).toFixed(5)) : '';
+      calcRemittanceLive();
+    };
+
     const setRemitLakhs = window.setRemitLakhs = function(val) {
-      document.getElementById('remitLakhs').value = Number(val);
+      const lakhsEl = document.getElementById('remitLakhs');
+      const mmkEl = document.getElementById('remitAmountMMK');
+      const numLakhs = Number(val) || 0;
+      if (lakhsEl) lakhsEl.value = numLakhs > 0 ? numLakhs : '';
+      if (mmkEl) mmkEl.value = numLakhs > 0 ? Math.round(numLakhs * 100000) : '';
+      calcRemittanceLive();
+    };
+
+    const onRemitMMKInput = window.onRemitMMKInput = function() {
+      const mmkEl = document.getElementById('remitAmountMMK');
+      const lakhsEl = document.getElementById('remitLakhs');
+      const rawVal = mmkEl?.value;
+      const numMMK = parseFloat(rawVal);
+      if (lakhsEl) {
+        if (!rawVal || isNaN(numMMK) || numMMK <= 0) {
+          lakhsEl.value = '';
+        } else {
+          lakhsEl.value = Number((numMMK / 100000).toFixed(5));
+        }
+      }
+      calcRemittanceLive();
+    };
+
+    const onRemitLakhsInput = window.onRemitLakhsInput = function() {
+      const lakhsEl = document.getElementById('remitLakhs');
+      const mmkEl = document.getElementById('remitAmountMMK');
+      const rawVal = lakhsEl?.value;
+      const numLakhs = parseFloat(rawVal);
+      if (mmkEl) {
+        if (!rawVal || isNaN(numLakhs) || numLakhs <= 0) {
+          mmkEl.value = '';
+        } else {
+          mmkEl.value = Number((numLakhs * 100000).toFixed(2));
+        }
+      }
       calcRemittanceLive();
     };
 
     const calcRemittanceLive = window.calcRemittanceLive = function() {
-      const lakhs = parseFloat(document.getElementById('remitLakhs')?.value) || 0;
+      const mmkInputVal = parseFloat(document.getElementById('remitAmountMMK')?.value);
+      const lakhsInputVal = parseFloat(document.getElementById('remitLakhs')?.value);
+
+      let totalMMK = 0;
+      let lakhs = 0;
+
+      if (!isNaN(mmkInputVal) && mmkInputVal > 0) {
+        totalMMK = mmkInputVal;
+        lakhs = totalMMK / 100000;
+      } else if (!isNaN(lakhsInputVal) && lakhsInputVal > 0) {
+        lakhs = lakhsInputVal;
+        totalMMK = lakhs * 100000;
+      }
+
       const custRate = parseFloat(document.getElementById('remitCustRate')?.value) || 0;
       const dealerRate = parseFloat(document.getElementById('remitDealerRate')?.value) || 0;
 
-      const totalMMK = lakhs * 100000;
       const mmkLabel = document.getElementById('remitCalculatedMMKText');
-      if (mmkLabel) mmkLabel.textContent = formatMMK(totalMMK);
+      if (mmkLabel) {
+        const lakhsFormatted = Number(lakhs.toFixed(5));
+        mmkLabel.textContent = `${formatMMK(totalMMK)} (${lakhsFormatted} သိန်း)`;
+      }
 
       let custTHB = 0;
       let dealerTHB = 0;
@@ -2984,6 +3265,7 @@
         profitTHB = custTHB - dealerTHB;
         profitMMK = dealerRate > 0 ? (profitTHB / dealerRate) * 100000 : 0;
       } else {
+        // MMK_TO_THB: Customer in Myanmar pays MMK (totalMMK), Customer in Thailand receives THB (custTHB)
         custTHB = lakhs * custRate;
         dealerTHB = lakhs * dealerRate;
         profitTHB = Math.abs(dealerTHB - custTHB);
@@ -2996,11 +3278,19 @@
       const lProfMMK = document.getElementById('liveProfitMMK');
       const lRecMMK = document.getElementById('liveReceiveMMK');
 
-      if (lCust) lCust.textContent = formatTHB(custTHB);
-      if (lDealer) lDealer.textContent = formatTHB(dealerTHB);
+      if (remitDirection === 'THB_TO_MMK') {
+        if (lCust) lCust.textContent = formatTHB(custTHB);
+        if (lDealer) lDealer.textContent = formatTHB(dealerTHB);
+        if (lRecMMK) lRecMMK.textContent = formatMMK(totalMMK);
+      } else {
+        // MMK_TO_THB: Row 1 = Customer Paid MMK, Row 2 = Receiver Gets THB, Row 3 = Dealer THB
+        if (lCust) lCust.textContent = formatMMK(totalMMK);
+        if (lDealer) lDealer.textContent = formatTHB(custTHB);
+        if (lRecMMK) lRecMMK.textContent = formatTHB(dealerTHB);
+      }
+
       if (lProfTHB) lProfTHB.textContent = (profitTHB >= 0 ? '+' : '') + formatTHB(profitTHB);
       if (lProfMMK) lProfMMK.textContent = `(~ ${formatMMK(profitMMK)})`;
-      if (lRecMMK) lRecMMK.textContent = formatMMK(totalMMK);
 
       return { lakhs, totalMMK, custRate, dealerRate, custTHB, dealerTHB, profitTHB, profitMMK };
     };
@@ -3008,8 +3298,19 @@
     const handleSaveRemittance = window.handleSaveRemittance = function(e) {
       e.preventDefault();
       const calc = calcRemittanceLive();
+      if (!calc.totalMMK || calc.totalMMK < 1) {
+        showToast('မြန်မာကျပ် ပမာဏကို ၁ ကျပ်မှစ၍ ထည့်သွင်းပေးပါ', 'error');
+        return;
+      }
 
-      const custName = document.getElementById('remitCustName').value.trim();
+      const senderName = (document.getElementById('remitSenderName')?.value || '').trim();
+      const receiverName = (document.getElementById('remitReceiverName')?.value || '').trim();
+      if (!senderName || !receiverName) {
+        showToast('လွှဲသူအမည် နှင့် ထုတ်ယူသူအမည် နှစ်ခုလုံး ထည့်သွင်းပေးပါ', 'error');
+        return;
+      }
+
+      const custName = `${senderName} ➔ ${receiverName}`;
       const custPhone = document.getElementById('remitCustPhone').value.trim();
       const dateVal = document.getElementById('remitDate').value;
       const note = document.getElementById('remitNote').value.trim();
@@ -3023,6 +3324,8 @@
         type: 'REMIT',
         direction: remitDirection,
         date: dateVal ? new Date(dateVal).toISOString() : new Date().toISOString(),
+        senderName,
+        receiverName,
         custName,
         custPhone,
         channel,
@@ -3039,9 +3342,13 @@
       };
 
       if (status === 'UNPAID') {
-        newTx.amountOwed = calc.custTHB;
-        newTx.owedCurrency = 'THB';
+        // Pending withdrawal in MMK (for THB->MMK) or unpaid MMK (for MMK->THB)
+        newTx.amountOwed = calc.totalMMK;
+        newTx.owedCurrency = 'MMK';
         newTx.paidAmount = 0;
+        if (remitDirection === 'THB_TO_MMK') {
+          capital.thbBalance = (Number(capital.thbBalance) || 0) + calc.profitTHB;
+        }
       } else {
         capital.thbBalance = (Number(capital.thbBalance) || 0) + calc.profitTHB;
       }
@@ -3050,19 +3357,206 @@
       saveTransactionsToStorage();
       saveCapitalToStorage();
 
-      showToast('ငွေလွှဲမှတ်တမ်း အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ!', 'success');
+      if (remitDirection === 'THB_TO_MMK' && status === 'UNPAID') {
+        setRemitPayoutFilter('UNPAID');
+        showToast('မထုတ်ပေးရသေးသည့် ငွေလွှဲစာရင်းအဖြစ် သိမ်းဆည်းပြီးပါပြီ!', 'warning');
+      } else {
+        showToast('ငွေလွှဲမှတ်တမ်း အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ!', 'success');
+      }
       resetRemitForm();
       updateAllUI();
       openVoucherModal(newTx.id);
     };
 
     const resetRemitForm = window.resetRemitForm = function() {
-      document.getElementById('remitCustName').value = '';
+      const sEl = document.getElementById('remitSenderName');
+      const rEl = document.getElementById('remitReceiverName');
+      if (sEl) sEl.value = '';
+      if (rEl) rEl.value = '';
       document.getElementById('remitCustPhone').value = '';
       document.getElementById('remitNote').value = '';
-      document.getElementById('remitLakhs').value = '10';
+      const mmkEl = document.getElementById('remitAmountMMK');
+      const lakhsEl = document.getElementById('remitLakhs');
+      if (mmkEl) mmkEl.value = '';
+      if (lakhsEl) lakhsEl.value = '';
       initDefaultDateTimeInputs();
       calcRemittanceLive();
+    };
+
+    // --- Separate Remittance Payout Check List (ထုတ်ပေးပြီး vs မထုတ်ပေးရသေး) ---
+    const setRemitPayoutFilter = window.setRemitPayoutFilter = function(filter) {
+      remitPayoutFilter = filter;
+      const bUnpaid = document.getElementById('remit-payout-tab-unpaid');
+      const bPaid = document.getElementById('remit-payout-tab-paid');
+      const bAll = document.getElementById('remit-payout-tab-all');
+
+      if (bUnpaid) {
+        bUnpaid.className = filter === 'UNPAID'
+          ? 'flex-1 py-2 px-2 rounded-lg font-bold bg-amber-500 text-slate-950 transition text-center shadow'
+          : 'flex-1 py-2 px-2 rounded-lg font-semibold theme-text-muted hover:text-amber-500 transition text-center';
+      }
+      if (bPaid) {
+        bPaid.className = filter === 'PAID'
+          ? 'flex-1 py-2 px-2 rounded-lg font-bold bg-emerald-600 text-white transition text-center shadow'
+          : 'flex-1 py-2 px-2 rounded-lg font-semibold theme-text-muted hover:text-emerald-500 transition text-center';
+      }
+      if (bAll) {
+        bAll.className = filter === 'ALL'
+          ? 'flex-1 py-2 px-2 rounded-lg font-bold bg-blue-600 text-white transition text-center shadow'
+          : 'flex-1 py-2 px-2 rounded-lg font-semibold theme-text-muted hover:text-blue-500 transition text-center';
+      }
+
+      renderRemitPayoutList();
+    };
+
+    const toggleRemitPayoutStatus = window.toggleRemitPayoutStatus = function(txId) {
+      const tx = transactions.find(t => t.id === txId);
+      if (!tx) return;
+
+      if (tx.status === 'UNPAID') {
+        tx.status = 'PAID';
+        tx.settledDate = new Date().toISOString();
+        tx.paidAmount = tx.amountMMK || 0;
+        showToast('✓ လက်ငင်းထုတ်ပေးပြီး အဖြစ် ပြောင်းလဲမှတ်တမ်းတင်ပြီးပါပြီ!', 'success');
+      } else {
+        tx.status = 'UNPAID';
+        tx.settledDate = '';
+        tx.paidAmount = 0;
+        showToast('⏳ မထုတ်ပေးရသေးဘူး အဖြစ် ပြန်လည်သတ်မှတ်ပြီးပါပြီ', 'warning');
+      }
+
+      saveTransactionsToStorage();
+      updateAllUI();
+    };
+
+    const renderRemitPayoutList = window.renderRemitPayoutList = function() {
+      const container = document.getElementById('remitPayoutListContainer');
+      if (!container) return;
+
+      const search = (document.getElementById('remitPayoutSearchInput')?.value || '').toLowerCase().trim();
+      const allRemits = transactions.filter(t => t.type === 'REMIT');
+
+      let pendingCount = 0;
+      let pendingMMK = 0;
+      let paidCount = 0;
+      let paidMMK = 0;
+
+      allRemits.forEach(t => {
+        if (t.status === 'UNPAID') {
+          pendingCount++;
+          pendingMMK += Number(t.amountMMK) || 0;
+        } else {
+          paidCount++;
+          paidMMK += Number(t.amountMMK) || 0;
+        }
+      });
+
+      const pendBadge = document.getElementById('remitPendingCountBadge');
+      const pendTotal = document.getElementById('remitPendingTotalMMK');
+      const paidBadge = document.getElementById('remitPaidCountBadge');
+      const paidTotal = document.getElementById('remitPaidTotalMMK');
+
+      if (pendBadge) pendBadge.textContent = `${pendingCount} ခု`;
+      if (pendTotal) pendTotal.textContent = formatMMK(pendingMMK);
+      if (paidBadge) paidBadge.textContent = `${paidCount} ခု`;
+      if (paidTotal) paidTotal.textContent = formatMMK(paidMMK);
+
+      let filtered = [...allRemits];
+      if (remitPayoutFilter === 'UNPAID') {
+        filtered = filtered.filter(t => t.status === 'UNPAID');
+      } else if (remitPayoutFilter === 'PAID') {
+        filtered = filtered.filter(t => t.status === 'PAID');
+      }
+
+      if (search) {
+        filtered = filtered.filter(t => {
+          const names = getTxNames(t);
+          return (
+            names.displayTitle.toLowerCase().includes(search) ||
+            names.senderName.toLowerCase().includes(search) ||
+            names.receiverName.toLowerCase().includes(search) ||
+            (t.custPhone && t.custPhone.toLowerCase().includes(search)) ||
+            (t.id && t.id.toLowerCase().includes(search)) ||
+            (t.note && t.note.toLowerCase().includes(search))
+          );
+        });
+      }
+
+      if (filtered.length === 0) {
+        const emptyMsg = remitPayoutFilter === 'UNPAID'
+          ? 'မထုတ်ပေးရသေးသည့် ငွေလွှဲစာရင်း မရှိပါ (အားလုံး ထုတ်ပေးပြီးဖြစ်ပါသည်)'
+          : remitPayoutFilter === 'PAID'
+          ? 'လက်ငင်းထုတ်ပေးပြီးသည့် ငွေလွှဲမှတ်တမ်း မရှိသေးပါ'
+          : 'ငွေလွှဲမှတ်တမ်း မရှိသေးပါ';
+        container.innerHTML = `
+          <div class="text-center py-8 theme-card-sub rounded-xl border theme-text-muted text-xs">
+            ${emptyMsg}
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(tx => {
+        const names = getTxNames(tx);
+        const isPaid = tx.status === 'PAID';
+        const isMmkToThb = tx.direction === 'MMK_TO_THB';
+
+        return `
+          <div class="theme-card-sub border ${isPaid ? 'border-emerald-500/30' : 'border-amber-500/50'} p-3 rounded-xl space-y-2 text-xs">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-1.5">
+                <span class="font-mono text-[10px] text-blue-500 font-bold">${tx.id}</span>
+                <span class="text-[10px] theme-text-muted">• ${formatDateTime(tx.date)}</span>
+              </div>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isPaid ? 'bg-emerald-500/20 text-emerald-500 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-500 border border-amber-500/40'}">
+                ${isPaid ? '✓ လက်ငင်းထုတ်ပေးပြီး' : '⏳ မထုတ်ပေးရသေးဘူး'}
+              </span>
+            </div>
+
+            <div class="flex items-start justify-between gap-2">
+              <div class="space-y-0.5">
+                <div class="font-bold theme-text-heading text-xs">${names.displayTitle}</div>
+                <div class="text-[11px] theme-text-muted">
+                  <span>${names.senderLabel}: <strong class="theme-text-heading">${names.senderName || '-'}</strong></span>
+                  <span class="mx-1">➔</span>
+                  <span>${names.receiverLabel}: <strong class="text-emerald-500">${names.receiverName || '-'}</strong></span>
+                </div>
+                <div class="text-[10px] theme-text-muted">
+                  ချန်နယ်: <span class="font-semibold">${tx.channel || 'KPay'}</span>
+                  ${tx.custPhone ? ` • ဖုန်း/အကောင့်: <span class="font-mono">${tx.custPhone}</span>` : ''}
+                  ${tx.note ? ` • မှတ်ချက်: ${tx.note}` : ''}
+                </div>
+              </div>
+              <div class="text-right shrink-0">
+                <div class="text-xs sm:text-sm font-extrabold font-mono ${isPaid ? 'text-emerald-500' : 'text-amber-500'}">
+                  ${isMmkToThb ? formatTHB(tx.customerTHB) : formatMMK(tx.amountMMK)}
+                </div>
+                <div class="text-[10px] theme-text-muted font-mono">
+                  ${isMmkToThb ? `ပေးငွေ: ${formatMMK(tx.amountMMK)}` : `ဘတ်: ${formatTHB(tx.customerTHB)}`}
+                </div>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-between gap-1.5 pt-2 border-t">
+              <div>
+                ${!isPaid ? `
+                  <button type="button" onclick="toggleRemitPayoutStatus('${tx.id}')" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold shadow flex items-center gap-1 transition">
+                    <span>✓ ယခု ထုတ်ပေးပြီးကြောင်း မှတ်မည်</span>
+                  </button>
+                ` : `
+                  <button type="button" onclick="toggleRemitPayoutStatus('${tx.id}')" class="px-2.5 py-1 rounded-lg theme-card border text-[10px] theme-text-muted hover:text-amber-500 font-semibold transition">
+                    ⏳ မထုတ်ပေးရသေးသို့ ပြန်ပြောင်းရန်
+                  </button>
+                `}
+              </div>
+              <div class="flex items-center gap-1.5">
+                <button type="button" onclick="openVoucherModal('${tx.id}')" class="px-2.5 py-1 rounded-lg theme-card border text-[10px] font-semibold">ဘောက်ချာ</button>
+                <button type="button" onclick="openEditModal('${tx.id}')" class="px-2.5 py-1 rounded-lg bg-blue-600/15 text-blue-500 text-[10px] font-bold">ပြင်မည်</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
     };
 
     // --- TAB 3: LOCAL CASHOUT & TRANSFER ---
@@ -3187,7 +3681,8 @@
       document.getElementById('cashoutCustName').value = '';
       document.getElementById('cashoutCustPhone').value = '';
       document.getElementById('cashoutNote').value = '';
-      document.getElementById('cashoutAmount').value = '100000';
+      document.getElementById('cashoutAmount').value = '';
+      document.getElementById('cashoutFee').value = '0';
       initDefaultDateTimeInputs();
       calcCashoutLive(true);
     };
@@ -3231,7 +3726,7 @@
       let totalUnpaidTHB = 0;
       transactions.forEach(tx => {
         if (tx.status === 'UNPAID') {
-          const owedCur = tx.owedCurrency || (tx.type === 'REMIT' ? 'THB' : 'MMK');
+          const owedCur = tx.owedCurrency || (tx.type === 'REMIT' && tx.direction !== 'MMK_TO_THB' ? 'THB' : 'MMK');
           const totalOwed = tx.amountOwed !== undefined ? tx.amountOwed : (owedCur === 'THB' ? tx.customerTHB : tx.amountMMK);
           const rem = Math.max(0, (totalOwed || 0) - (tx.paidAmount || 0));
           if (owedCur === 'THB') totalUnpaidTHB += rem;
@@ -3255,7 +3750,7 @@
       }
 
       container.innerHTML = creditTx.map(tx => {
-        const owedCur = tx.owedCurrency || (tx.type === 'REMIT' ? 'THB' : 'MMK');
+        const owedCur = tx.owedCurrency || (tx.type === 'REMIT' && tx.direction !== 'MMK_TO_THB' ? 'THB' : 'MMK');
         const totalOwed = tx.amountOwed !== undefined ? tx.amountOwed : (owedCur === 'THB' ? tx.customerTHB : tx.amountMMK);
         const paid = tx.paidAmount || 0;
         const rem = Math.max(0, (totalOwed || 0) - paid);
@@ -3451,13 +3946,13 @@
 
     const setLedgerTypeFilter = window.setLedgerTypeFilter = function(type) {
       ledgerTypeFilter = type;
-      ['all', 'remit', 'cashout', 'credit'].forEach(t => {
+      ['all', 'remit_unpaid', 'remit_paid', 'cashout', 'credit'].forEach(t => {
         const btn = document.getElementById(`history-filter-${t}`);
         if (!btn) return;
         if (t === type.toLowerCase()) {
-          btn.className = 'flex-1 py-1.5 rounded-lg bg-blue-600 text-white font-bold shadow';
+          btn.className = 'flex-1 min-w-[60px] py-1.5 px-2 rounded-lg bg-blue-600 text-white font-bold shadow';
         } else {
-          btn.className = 'flex-1 py-1.5 rounded-lg theme-card-sub border theme-text-muted hover:text-blue-500';
+          btn.className = 'flex-1 min-w-[60px] py-1.5 px-2 rounded-lg theme-card-sub border theme-text-muted hover:text-blue-500';
         }
       });
       renderLedgerList();
@@ -3470,12 +3965,16 @@
 
       let list = [...transactions];
       if (ledgerTypeFilter === 'REMIT') list = list.filter(t => t.type === 'REMIT');
+      else if (ledgerTypeFilter === 'REMIT_UNPAID') list = list.filter(t => t.type === 'REMIT' && t.status === 'UNPAID');
+      else if (ledgerTypeFilter === 'REMIT_PAID') list = list.filter(t => t.type === 'REMIT' && t.status === 'PAID');
       else if (ledgerTypeFilter === 'CASHOUT') list = list.filter(t => t.type === 'CASHOUT');
       else if (ledgerTypeFilter === 'CREDIT') list = list.filter(t => t.status === 'UNPAID' || t.type === 'DIRECT_CREDIT');
 
       if (search) {
         list = list.filter(t => 
           (t.custName && t.custName.toLowerCase().includes(search)) ||
+          (t.senderName && t.senderName.toLowerCase().includes(search)) ||
+          (t.receiverName && t.receiverName.toLowerCase().includes(search)) ||
           (t.id && t.id.toLowerCase().includes(search)) ||
           (t.custPhone && t.custPhone.includes(search)) ||
           (t.note && t.note.toLowerCase().includes(search))
@@ -3492,30 +3991,49 @@
 
       container.innerHTML = list.map(tx => {
         const isRemit = tx.type === 'REMIT';
+        const names = getTxNames(tx);
+        const stDisp = getTxStatusDisplay(tx);
+        const remitSub = isRemit
+          ? (tx.direction === 'MMK_TO_THB'
+              ? `🇲🇲 မြန်မာ ➔ 🇹🇭 ထိုင်း • ပေးငွေ: ${formatMMK(tx.amountMMK)} / ရငွေ: ${formatTHB(tx.customerTHB)}`
+              : `🇹🇭 ထိုင်း ➔ 🇲🇲 မြန်မာ • ပေးငွေ: ${formatTHB(tx.customerTHB)} / ထုတ်ငွေ: ${formatMMK(tx.amountMMK)}`)
+          : `KPay/ငွေထုတ် • ${tx.channel}`;
+
         return `
           <div class="theme-card-sub border p-2.5 sm:p-3 rounded-xl space-y-1.5 text-xs">
             <div class="flex items-center justify-between">
-              <span class="font-mono text-[10px] text-blue-500 font-bold">${tx.id}</span>
+              <div class="flex items-center gap-1.5">
+                <span class="font-mono text-[10px] text-blue-500 font-bold">${tx.id}</span>
+                <span class="text-[9px] px-1.5 py-0.2 rounded font-bold ${stDisp.badgeClass}">${stDisp.text}</span>
+              </div>
               <span class="text-[10px] theme-text-muted">${formatDateTime(tx.date)}</span>
             </div>
 
             <div class="flex items-center justify-between">
               <div>
-                <span class="font-bold theme-text-heading">${tx.custName || 'အမည်မသိ'}</span>
-                <span class="text-[10px] theme-text-muted block">${isRemit ? 'ထိုင်း-မြန်မာ ငွေလွှဲ' : 'KPay/ငွေထုတ်'} • ${tx.channel}</span>
+                <span class="font-bold theme-text-heading">${names.displayTitle}</span>
+                ${isRemit && names.senderName && names.receiverName ? `<span class="text-[10px] theme-text-muted block">${names.senderLabel}: ${names.senderName} | ${names.receiverLabel}: ${names.receiverName}</span>` : ''}
+                <span class="text-[10px] theme-text-muted block">${remitSub}</span>
               </div>
               <div class="text-right">
-                <span class="font-bold font-mono theme-text-heading">${formatMMK(tx.amountMMK)}</span>
+                <span class="font-bold font-mono theme-text-heading">${isRemit && tx.direction === 'MMK_TO_THB' ? formatTHB(tx.customerTHB) : formatMMK(tx.amountMMK)}</span>
                 <span class="text-[10px] text-emerald-500 font-mono block">
                   အမြတ်: ${tx.profitTHB ? formatTHB(tx.profitTHB) : formatMMK(tx.profitMMK)}
                 </span>
               </div>
             </div>
 
-            <div class="flex items-center justify-end gap-1.5 pt-1 border-t">
-              <button onclick="openVoucherModal('${tx.id}')" class="px-2 py-1 rounded-lg theme-card border text-[10px] font-semibold">ဘောက်ချာ</button>
-              <button onclick="openEditModal('${tx.id}')" class="px-2 py-1 rounded-lg bg-blue-600/15 text-blue-500 text-[10px] font-bold">ပြင်မည်</button>
-              <button onclick="deleteTransaction('${tx.id}')" class="px-2 py-1 rounded-lg bg-rose-600/15 text-rose-500 text-[10px] font-bold">ဖျက်မည်</button>
+            <div class="flex items-center justify-between gap-1.5 pt-1 border-t">
+              <div>
+                ${isRemit && tx.status === 'UNPAID' ? `
+                  <button onclick="toggleRemitPayoutStatus('${tx.id}')" class="px-2 py-1 rounded-lg bg-emerald-600 text-white text-[10px] font-bold">✓ ထုတ်ပေးပြီးမှတ်မည်</button>
+                ` : ''}
+              </div>
+              <div class="flex items-center gap-1.5">
+                <button onclick="openVoucherModal('${tx.id}')" class="px-2 py-1 rounded-lg theme-card border text-[10px] font-semibold">ဘောက်ချာ</button>
+                <button onclick="openEditModal('${tx.id}')" class="px-2 py-1 rounded-lg bg-blue-600/15 text-blue-500 text-[10px] font-bold">ပြင်မည်</button>
+                <button onclick="deleteTransaction('${tx.id}')" class="px-2 py-1 rounded-lg bg-rose-600/15 text-rose-500 text-[10px] font-bold">ဖျက်မည်</button>
+              </div>
             </div>
           </div>
         `;
@@ -3536,7 +4054,35 @@
       if (!tx) return;
 
       document.getElementById('editTxId').value = tx.id;
-      document.getElementById('editCustName').value = tx.custName || '';
+      const singleGroup = document.getElementById('editSingleCustNameGroup');
+      const remitGroup = document.getElementById('editRemitNamesGroup');
+      const statusSel = document.getElementById('editStatus');
+      const names = getTxNames(tx);
+
+      if (tx.type === 'REMIT') {
+        if (singleGroup) singleGroup.classList.add('hidden');
+        if (remitGroup) remitGroup.classList.remove('hidden');
+        const sLbl = document.getElementById('editSenderLabel');
+        const rLbl = document.getElementById('editReceiverLabel');
+        if (sLbl) sLbl.textContent = names.senderLabel + ' အမည်';
+        if (rLbl) rLbl.textContent = names.receiverLabel + ' အမည်';
+        document.getElementById('editSenderName').value = names.senderName || '';
+        document.getElementById('editReceiverName').value = names.receiverName || '';
+        document.getElementById('editCustName').value = names.displayTitle || '';
+        if (statusSel) {
+          statusSel.options[0].textContent = 'လက်ငင်းထုတ်ပေးပြီး (PAID)';
+          statusSel.options[1].textContent = 'မထုတ်ပေးရသေးဘူး (UNPAID)';
+        }
+      } else {
+        if (singleGroup) singleGroup.classList.remove('hidden');
+        if (remitGroup) remitGroup.classList.add('hidden');
+        document.getElementById('editCustName').value = tx.custName || '';
+        if (statusSel) {
+          statusSel.options[0].textContent = 'လက်ငင်းရရှိ (PAID)';
+          statusSel.options[1].textContent = 'အကြွေး (UNPAID)';
+        }
+      }
+
       document.getElementById('editCustPhone').value = tx.custPhone || '';
       document.getElementById('editAmountMMK').value = tx.amountMMK || 0;
       document.getElementById('editProfitMMK').value = tx.profitMMK || 0;
@@ -3556,9 +4102,27 @@
       const tx = transactions.find(t => t.id === txId);
       if (!tx) return;
 
-      tx.custName = document.getElementById('editCustName').value.trim();
+      if (tx.type === 'REMIT') {
+        const sName = (document.getElementById('editSenderName').value || '').trim();
+        const rName = (document.getElementById('editReceiverName').value || '').trim();
+        tx.senderName = sName;
+        tx.receiverName = rName;
+        tx.custName = (sName && rName) ? `${sName} ➔ ${rName}` : (sName || rName || 'Customer');
+      } else {
+        tx.custName = document.getElementById('editCustName').value.trim() || 'Customer';
+      }
+
       tx.custPhone = document.getElementById('editCustPhone').value.trim();
       tx.amountMMK = parseFloat(document.getElementById('editAmountMMK').value) || 0;
+      if (tx.type === 'REMIT') {
+        tx.lakhs = tx.amountMMK / 100000;
+        if (tx.customerRate) {
+          tx.customerTHB = tx.lakhs * Number(tx.customerRate);
+        }
+        if (tx.dealerRate) {
+          tx.dealerTHB = tx.lakhs * Number(tx.dealerRate);
+        }
+      }
       tx.profitMMK = parseFloat(document.getElementById('editProfitMMK').value) || 0;
       tx.status = document.getElementById('editStatus').value;
       tx.note = document.getElementById('editNote').value.trim();
@@ -3576,10 +4140,33 @@
 
       currentVoucherTx = tx;
       const isRemit = tx.type === 'REMIT';
+      const names = getTxNames(tx);
 
       document.getElementById('vouchId').textContent = 'ID: #' + tx.id;
       document.getElementById('vouchDate').textContent = formatDateTime(tx.date);
-      document.getElementById('vouchCustName').textContent = tx.custName || 'အမည်မသိ';
+
+      const custNameRow = document.getElementById('vouchCustNameRow');
+      const senderRow = document.getElementById('vouchSenderRow');
+      const receiverRow = document.getElementById('vouchReceiverRow');
+
+      if (isRemit) {
+        if (custNameRow) custNameRow.classList.add('hidden');
+        if (senderRow) {
+          senderRow.classList.remove('hidden');
+          document.getElementById('vouchSenderLabel').textContent = names.senderLabel + ':';
+          document.getElementById('vouchSenderName').textContent = names.senderName || '-';
+        }
+        if (receiverRow) {
+          receiverRow.classList.remove('hidden');
+          document.getElementById('vouchReceiverLabel').textContent = names.receiverLabel + ':';
+          document.getElementById('vouchReceiverName').textContent = names.receiverName || '-';
+        }
+      } else {
+        if (custNameRow) custNameRow.classList.remove('hidden');
+        if (senderRow) senderRow.classList.add('hidden');
+        if (receiverRow) receiverRow.classList.add('hidden');
+        document.getElementById('vouchCustName').textContent = tx.custName || 'အမည်မသိ';
+      }
 
       const phoneRow = document.getElementById('vouchPhoneRow');
       if (tx.custPhone) {
@@ -3594,19 +4181,34 @@
       const typeEl = document.getElementById('vouchType');
       const ratesSec = document.getElementById('vouchRatesSection');
       const custRateRow = document.getElementById('vouchCustRateRow');
+      const custRateLbl = document.getElementById('vouchCustRateLabel');
       const thbRow = document.getElementById('vouchThbRow');
+      const thbLbl = document.getElementById('vouchThbLabel');
       const totalLbl = document.getElementById('vouchTotalLabel');
       const totalAmt = document.getElementById('vouchTotalAmount');
 
       if (isRemit) {
-        typeEl.textContent = tx.direction === 'THB_TO_MMK' ? 'ထိုင်းဘတ် ➔ မြန်မာကျပ် ငွေလွှဲ' : 'မြန်မာကျပ် ➔ ထိုင်းဘတ် ငွေလွှဲ';
         ratesSec.classList.remove('hidden');
         custRateRow.classList.remove('hidden');
-        document.getElementById('vouchCustRate').textContent = `${tx.customerRate} THB / ၁ သိန်း`;
         thbRow.classList.remove('hidden');
-        document.getElementById('vouchThbAmount').textContent = formatTHB(tx.customerTHB);
-        totalLbl.textContent = 'မြန်မာဘက်သို့ ရောက်ရှိမည့်ငွေ';
-        totalAmt.textContent = formatMMK(tx.amountMMK);
+
+        if (tx.direction === 'MMK_TO_THB') {
+          typeEl.textContent = '🇲🇲 မြန်မာကျပ် ➔ 🇹🇭 ထိုင်းဘတ် ငွေလွှဲ';
+          if (custRateLbl) custRateLbl.textContent = 'Customer ဘတ်ပေါက်ဈေး:';
+          document.getElementById('vouchCustRate').textContent = `${tx.customerRate} THB / ၁ သိန်း`;
+          if (thbLbl) thbLbl.textContent = '🇲🇲 မြန်မာဘက်မှ ပေးသွင်းငွေ:';
+          document.getElementById('vouchThbAmount').textContent = formatMMK(tx.amountMMK);
+          totalLbl.textContent = '🇹🇭 ထိုင်းဘက်မှ ရရှိမည့် ထိုင်းဘတ်ပမာဏ';
+          totalAmt.textContent = formatTHB(tx.customerTHB);
+        } else {
+          typeEl.textContent = '🇹🇭 ထိုင်းဘတ် ➔ 🇲🇲 မြန်မာကျပ် ငွေလွှဲ';
+          if (custRateLbl) custRateLbl.textContent = 'Customer ပေးဈေး:';
+          document.getElementById('vouchCustRate').textContent = `${tx.customerRate} THB / ၁ သိန်း`;
+          if (thbLbl) thbLbl.textContent = '🇹🇭 ထိုင်းဘက်မှ ပေးသွင်းသည့်ဘတ်:';
+          document.getElementById('vouchThbAmount').textContent = formatTHB(tx.customerTHB);
+          totalLbl.textContent = '🇲🇲 မြန်မာဘက်မှ ထုတ်ယူမည့် ကျပ်ပမာဏ';
+          totalAmt.textContent = formatMMK(tx.amountMMK);
+        }
       } else {
         typeEl.textContent = tx.cashoutType === 'CASHOUT' ? 'KPay / Bank ငွေထုတ်' : 'ငွေလွှဲ (Transfer In)';
         custRateRow.classList.add('hidden');
@@ -3617,12 +4219,13 @@
       }
 
       const statusBadge = document.getElementById('vouchStatusBadge');
+      const isThbToMmkRemit = isRemit && tx.direction !== 'MMK_TO_THB';
       if (tx.status === 'PAID') {
-        statusBadge.textContent = '✓ လက်ငင်း ပေးချေပြီး';
+        statusBadge.textContent = isThbToMmkRemit ? '✓ လက်ငင်းထုတ်ပေးပြီး' : '✓ လက်ငင်း ပေးချေပြီး';
         statusBadge.className = 'inline-block px-2.5 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800';
       } else {
-        statusBadge.textContent = '⚠️ မပေးချေရသေး (အကြွေး)';
-        statusBadge.className = 'inline-block px-2.5 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-800';
+        statusBadge.textContent = isThbToMmkRemit ? '⏳ မထုတ်ပေးရသေးဘူး' : '⚠️ မပေးချေရသေး (အကြွေး)';
+        statusBadge.className = 'inline-block px-2.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800';
       }
 
       const noteEl = document.getElementById('vouchNote');
@@ -3639,25 +4242,38 @@
 
     function buildVoucherPlainText(tx) {
       const isRemit = tx.type === 'REMIT';
+      const names = getTxNames(tx);
+      const stDisp = getTxStatusDisplay(tx);
       let text = `🏺 လာဘ်ရွှင် (Lab Shwin) - ငွေလွှဲပြေစာ\n` +
                  `---------------------------\n` +
                  `Voucher: #${tx.id}\n` +
                  `ရက်စွဲ: ${formatDateTime(tx.date)}\n` +
-                 `အမျိုးအစား: ${isRemit ? (tx.direction === 'THB_TO_MMK' ? 'ထိုင်းဘတ် ➔ မြန်မာကျပ်' : 'မြန်မာကျပ် ➔ ထိုင်းဘတ်') : 'ငွေထုတ်/ငွေလွှဲ'}\n` +
-                 `Customer: ${tx.custName || 'အမည်မသိ'}\n`;
+                 `အမျိုးအစား: ${isRemit ? (tx.direction === 'THB_TO_MMK' ? '🇹🇭 ထိုင်းဘတ် ➔ 🇲🇲 မြန်မာကျပ်' : '🇲🇲 မြန်မာကျပ် ➔ 🇹🇭 ထိုင်းဘတ်') : 'ငွေထုတ်/ငွေလွှဲ'}\n`;
+
+      if (isRemit) {
+        text += `${names.senderLabel}: ${names.senderName || '-'}\n` +
+                `${names.receiverLabel}: ${names.receiverName || '-'}\n`;
+      } else {
+        text += `Customer: ${tx.custName || 'အမည်မသိ'}\n`;
+      }
 
       if (tx.custPhone) text += `ဖုန်း/အကောင့်: ${tx.custPhone}\n`;
       text += `ချန်နယ်: ${tx.channel || 'KPay'}\n`;
 
       if (isRemit) {
-        text += `ပေါက်ဈေး: ${tx.customerRate} THB / ၁ သိန်း\n` +
-                `ထိုင်းဘတ် ပမာဏ: ${formatTHB(tx.customerTHB)}\n` +
-                `မြန်မာကျပ် ပမာဏ: ${formatMMK(tx.amountMMK)}\n`;
+        text += `ပေါက်ဈေး: ${tx.customerRate} THB / ၁ သိန်း\n`;
+        if (tx.direction === 'MMK_TO_THB') {
+          text += `🇲🇲 မြန်မာဘက်မှ ပေးသွင်းငွေ: ${formatMMK(tx.amountMMK)}\n` +
+                  `🇹🇭 ထိုင်းဘက်မှ ရရှိမည့်ဘတ်: ${formatTHB(tx.customerTHB)}\n`;
+        } else {
+          text += `🇹🇭 ထိုင်းဘက်မှ ပေးသွင်းသည့်ဘတ်: ${formatTHB(tx.customerTHB)}\n` +
+                  `🇲🇲 မြန်မာဘက်မှ ထုတ်ယူမည့်ငွေ: ${formatMMK(tx.amountMMK)}\n`;
+        }
       } else {
         text += `ငွေပမာဏ: ${formatMMK(tx.amountMMK)}\n`;
       }
 
-      text += `အခြေအနေ: ${tx.status === 'PAID' ? 'လက်ငင်း ပေးချေပြီး' : 'အကြွေး'}\n` +
+      text += `အခြေအနေ: ${stDisp.text}\n` +
               `---------------------------\n` +
               `လာဘ်ရွှင် (Lab Shwin) ကို အားပေးမှုအတွက် ကျေးဇူးတင်ရှိပါသည်။`;
       return text;
@@ -3783,20 +4399,26 @@
         return;
       }
 
-      const rows = transactions.map(tx => ({
-        'Voucher ID': tx.id,
-        'ရက်စွဲ': formatDateTime(tx.date),
-        'အမျိုးအစား': tx.type === 'REMIT' ? 'ထိုင်း-မြန်မာ ငွေလွှဲ' : 'KPay/ငွေထုတ်',
-        'Customer အမည်': tx.custName || '',
-        'ဖုန်းနံပါတ်': tx.custPhone || '',
-        'ချန်နယ်': tx.channel || '',
-        'ငွေပမာဏ (MMK)': tx.amountMMK || 0,
-        'ဘတ်ငွေ (THB)': tx.amountTHB || tx.customerTHB || 0,
-        'အမြတ် (MMK)': tx.profitMMK || 0,
-        'အမြတ် (THB)': tx.profitTHB || 0,
-        'အခြေအနေ': tx.status === 'PAID' ? 'လက်ငင်း' : 'အကြွေး',
-        'မှတ်ချက်': tx.note || ''
-      }));
+      const rows = transactions.map(tx => {
+        const names = getTxNames(tx);
+        const stDisp = getTxStatusDisplay(tx);
+        return {
+          'Voucher ID': tx.id,
+          'ရက်စွဲ': formatDateTime(tx.date),
+          'အမျိုးအစား': tx.type === 'REMIT' ? (tx.direction === 'MMK_TO_THB' ? 'မြန်မာကျပ် ➔ ထိုင်းဘတ်' : 'ထိုင်းဘတ် ➔ မြန်မာကျပ်') : 'KPay/ငွေထုတ်',
+          'လွှဲသူအမည်': tx.type === 'REMIT' ? (names.senderName || '-') : (tx.custName || ''),
+          'ထုတ်ယူသူအမည်': tx.type === 'REMIT' ? (names.receiverName || '-') : '-',
+          'Customer အမည် (စုစုပေါင်း)': names.displayTitle || '',
+          'ဖုန်းနံပါတ်': tx.custPhone || '',
+          'ချန်နယ်': tx.channel || '',
+          'ငွေပမာဏ (MMK)': tx.amountMMK || 0,
+          'ဘတ်ငွေ (THB)': tx.amountTHB || tx.customerTHB || 0,
+          'အမြတ် (MMK)': tx.profitMMK || 0,
+          'အမြတ် (THB)': tx.profitTHB || 0,
+          'အခြေအနေ': stDisp.text,
+          'မှတ်ချက်': tx.note || ''
+        };
+      });
 
       const fileName = `LabShwin_Report_${new Date().toISOString().split('T')[0]}`;
 
