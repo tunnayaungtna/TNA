@@ -1577,6 +1577,52 @@
     </div>
   </div>
 
+  <!-- 7. QUICK SEARCH MODAL (HEADER MAGNIFYING GLASS) -->
+  <div id="voucherSearchModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-start sm:items-center justify-center p-3 sm:p-4 pt-12 sm:pt-4 hidden">
+    <div class="theme-card border w-full max-w-lg rounded-3xl p-4 sm:p-5 shadow-2xl flex flex-col max-h-[85vh] space-y-3">
+      <div class="flex items-center justify-between border-b pb-2.5">
+        <h3 class="text-xs sm:text-sm font-bold theme-text-heading flex items-center gap-2">
+          <span class="w-7 h-7 rounded-xl bg-blue-600/20 text-blue-500 flex items-center justify-center">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          </span>
+          <span>စာရင်း နှင့် ဘောက်ချာ အမြန်ရှာဖွေရန် (Quick Search)</span>
+        </h3>
+        <button onclick="closeVoucherSearchModal()" class="theme-text-muted hover:text-rose-500 p-1.5 rounded-full text-sm font-bold">✕</button>
+      </div>
+
+      <!-- Search Input Box -->
+      <div class="relative">
+        <input type="text" id="quickSearchInput" oninput="renderQuickSearchList()" placeholder="Customer အမည်၊ လွှဲသူ/ထုတ်သူ၊ ဖုန်းနံပါတ်၊ Voucher ID သို့မဟုတ် ပမာဏ ရိုက်ရှာပါ..." class="w-full theme-input border border-blue-500/40 focus:border-blue-500 rounded-2xl px-4 py-2.5 pl-10 pr-9 text-xs sm:text-sm">
+        <svg class="w-4 h-4 text-blue-500 absolute left-3.5 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        <button type="button" onclick="clearQuickSearchInput()" class="absolute right-3 top-2.5 theme-text-muted hover:text-rose-500 text-xs p-0.5" title="ရှင်းလင်းရန်">✕</button>
+      </div>
+
+      <!-- Filter Pills -->
+      <div class="flex flex-wrap gap-1.5 text-[11px]">
+        <button type="button" id="qsearch-filter-all" onclick="setQuickSearchFilter('ALL')" class="px-2.5 py-1 rounded-lg font-bold bg-blue-600 text-white shadow-sm transition">အားလုံး</button>
+        <button type="button" id="qsearch-filter-remit" onclick="setQuickSearchFilter('REMIT')" class="px-2.5 py-1 rounded-lg font-medium theme-card-sub border theme-text-muted hover:text-blue-500 transition">ငွေလွှဲ (THB⇄MMK)</button>
+        <button type="button" id="qsearch-filter-cashout" onclick="setQuickSearchFilter('CASHOUT')" class="px-2.5 py-1 rounded-lg font-medium theme-card-sub border theme-text-muted hover:text-emerald-500 transition">KPay / ငွေထုတ်</button>
+        <button type="button" id="qsearch-filter-unpaid" onclick="setQuickSearchFilter('UNPAID')" class="px-2.5 py-1 rounded-lg font-medium theme-card-sub border theme-text-muted hover:text-amber-500 transition">⏳ မထုတ်ရသေး / အကြွေး</button>
+      </div>
+
+      <div class="flex items-center justify-between text-[11px] theme-text-muted px-1">
+        <span id="quickSearchResultCount">ရှာဖွေမှု ရလဒ်: 0 ခု</span>
+        <span>ဘောက်ချာ သို့မဟုတ် ပြင်ဆင်ရန် တိုက်ရိုက်နှိပ်နိုင်ပါသည်</span>
+      </div>
+
+      <!-- Results Container -->
+      <div id="quickSearchListContainer" class="flex-1 overflow-y-auto space-y-2 pr-1 min-h-[220px]">
+        <!-- Populated by JS -->
+      </div>
+
+      <div class="pt-2 border-t flex justify-end">
+        <button type="button" onclick="closeVoucherSearchModal()" class="w-full sm:w-auto px-5 py-2 rounded-xl theme-card-sub border theme-text-muted hover:text-rose-500 text-xs font-bold transition">
+          ပိတ်မည်
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- TOAST NOTIFICATION CONTAINER -->
   <div id="toastContainer" class="fixed top-4 inset-x-0 z-50 flex flex-col items-center pointer-events-none px-4 space-y-2"></div>
 
@@ -1726,6 +1772,7 @@
       'rateModal',
       'editModal',
       'customDateModal',
+      'voucherSearchModal',
       'appBrandModal'
     ];
 
@@ -1738,6 +1785,7 @@
     let cashoutPayoutFilter = 'UNPAID';
     let creditFilter = 'UNPAID';
     let ledgerTypeFilter = 'ALL';
+    let quickSearchTypeFilter = 'ALL';
     let currentVoucherTx = null;
     let deferredInstallPrompt = null;
 
@@ -3029,9 +3077,9 @@
       return { senderName, receiverName, displayTitle, senderLabel, receiverLabel };
     }
 
-    // Helper for status text ("လက်ငင်းထုတ်ပေးပြီး" / "မထုတ်ပေးရသေးဘူး" for Remittance & Cashout)
+    // Helper for status text ("လက်ငင်းထုတ်ပေးပြီး" / "မထုတ်ပေးရသေးဘူး" for THB->MMK Remit & Cash-Out; "လက်ငင်း" / "အကြွေး" for Transfer & MMK->THB)
     function getTxStatusDisplay(tx) {
-      const isPayoutFlow = (tx.type === 'REMIT' && tx.direction !== 'MMK_TO_THB') || tx.type === 'CASHOUT';
+      const isPayoutFlow = (tx.type === 'REMIT' && tx.direction !== 'MMK_TO_THB') || (tx.type === 'CASHOUT' && tx.cashoutType !== 'TRANSFER');
       const isPaid = tx.status === 'PAID';
       if (isPayoutFlow) {
         return {
@@ -3046,7 +3094,7 @@
         text: isPaid ? 'လက်ငင်း' : 'အကြွေး',
         shortText: isPaid ? 'လက်ငင်း' : 'အကြွေး',
         badgeClass: isPaid
-          ? 'bg-emerald-500/20 text-emerald-500'
+          ? 'bg-emerald-500/20 text-emerald-500 border border-emerald-500/30'
           : 'bg-rose-500/20 text-rose-500 border border-rose-500/30'
       };
     }
@@ -3505,7 +3553,7 @@
         if (custRateHint) custRateHint.textContent = '၁ သိန်းကျပ်လျှင် တစ်ဖက် Customer ရရှိမည့်ဘတ်';
         if (dealerRateHint) dealerRateHint.textContent = '၁ သိန်းကျပ်လျှင် ဒိုင်မှ ရရှိမည့်ဘတ်';
         if (statusSecLbl) statusSecLbl.textContent = 'ငွေပေးချေမှု အခြေအနေ';
-        if (statusPaidLbl) statusPaidLbl.textContent = 'လက်ငင်းရရှိ (Paid)';
+        if (statusPaidLbl) statusPaidLbl.textContent = 'လက်ငင်း (Cash)';
         if (statusUnpaidLbl) statusUnpaidLbl.textContent = 'အကြွေး (Credit)';
 
         if (row1Lbl) row1Lbl.textContent = '🇲🇲 Customer ပေးသွင်းသည့် မြန်မာငွေ:';
@@ -3897,14 +3945,23 @@
       cashoutType = type;
       const bOut = document.getElementById('cashout-type-out');
       const bIn = document.getElementById('cashout-type-in');
+      const statusSecLbl = document.getElementById('cashoutStatusSectionLabel');
+      const statusPaidLbl = document.getElementById('cashoutStatusPaidLabel');
+      const statusUnpaidLbl = document.getElementById('cashoutStatusUnpaidLabel');
 
       if (type === 'CASHOUT') {
         bOut.className = 'py-2.5 px-3 rounded-xl bg-emerald-600 text-white font-bold transition flex items-center justify-center gap-1.5 shadow';
         bIn.className = 'py-2.5 px-3 rounded-xl theme-text-muted hover:text-emerald-500 transition flex items-center justify-center gap-1.5';
+        if (statusSecLbl) statusSecLbl.textContent = 'ငွေထုတ်ပေးမှု အခြေအနေ';
+        if (statusPaidLbl) statusPaidLbl.textContent = 'လက်ငင်းထုတ်ပေးပြီး';
+        if (statusUnpaidLbl) statusUnpaidLbl.textContent = 'မထုတ်ပေးရသေးဘူး';
         applyFeePercent(1.0);
       } else {
         bIn.className = 'py-2.5 px-3 rounded-xl bg-emerald-600 text-white font-bold transition flex items-center justify-center gap-1.5 shadow';
         bOut.className = 'py-2.5 px-3 rounded-xl theme-text-muted hover:text-emerald-500 transition flex items-center justify-center gap-1.5';
+        if (statusSecLbl) statusSecLbl.textContent = 'ငွေပေးချေမှု အခြေအနေ';
+        if (statusPaidLbl) statusPaidLbl.textContent = 'လက်ငင်း (Cash)';
+        if (statusUnpaidLbl) statusUnpaidLbl.textContent = 'အကြွေး (Credit)';
         applyFeePercent(0);
       }
       calcCashoutLive();
@@ -3942,11 +3999,13 @@
       let bankDelta = 0;
 
       if (cashoutType === 'CASHOUT') {
+        // ငွေထုတ် (Cash-Out): KPay comes in (+amount+fee), Cash goes out (-amount if PAID, 0 if UNPAID/မထုတ်ပေးရသေးဘူး)
         cashDelta = status === 'PAID' ? -amount : 0;
         bankDelta = amount + fee;
       } else {
-        cashDelta = amount + fee;
-        bankDelta = status === 'PAID' ? -amount : 0;
+        // ငွေလွှဲ (Transfer In): KPay goes out (-amount), Customer pays Cash (+amount+fee if PAID/လက်ငင်း, 0 if UNPAID/အကြွေး)
+        cashDelta = status === 'PAID' ? (amount + fee) : 0;
+        bankDelta = -amount;
       }
 
       const cashEl = document.getElementById('previewCashDelta');
@@ -3957,19 +4016,17 @@
         if (cashoutType === 'CASHOUT' && status === 'UNPAID') {
           cashEl.textContent = `0 Ks (မထုတ်ပေးရသေး: ${formatMMK(amount)})`;
           cashEl.className = 'font-bold font-mono text-amber-500';
+        } else if (cashoutType === 'TRANSFER' && status === 'UNPAID') {
+          cashEl.textContent = `0 Ks (အကြွေး: ${formatMMK(amount + fee)})`;
+          cashEl.className = 'font-bold font-mono text-rose-500';
         } else {
           cashEl.textContent = (cashDelta >= 0 ? '+' : '') + formatMMK(cashDelta);
           cashEl.className = `font-bold font-mono ${cashDelta >= 0 ? 'text-emerald-500' : 'text-rose-500'}`;
         }
       }
       if (bankEl) {
-        if (cashoutType === 'TRANSFER' && status === 'UNPAID') {
-          bankEl.textContent = `0 Ks (မထုတ်ပေးရသေး: ${formatMMK(amount)})`;
-          bankEl.className = 'font-bold font-mono text-amber-500';
-        } else {
-          bankEl.textContent = (bankDelta >= 0 ? '+' : '') + formatMMK(bankDelta);
-          bankEl.className = `font-bold font-mono ${bankDelta >= 0 ? 'text-emerald-500' : 'text-rose-500'}`;
-        }
+        bankEl.textContent = (bankDelta >= 0 ? '+' : '') + formatMMK(bankDelta);
+        bankEl.className = `font-bold font-mono ${bankDelta >= 0 ? 'text-emerald-500' : 'text-rose-500'}`;
       }
       if (profitEl) profitEl.textContent = '+' + formatMMK(fee);
 
@@ -4005,13 +4062,13 @@
       };
 
       if (status === 'UNPAID') {
-        newTx.amountOwed = calc.amount;
+        newTx.amountOwed = cashoutType === 'TRANSFER' ? (calc.amount + calc.fee) : calc.amount;
         newTx.owedCurrency = 'MMK';
         newTx.paidAmount = 0;
         capital.cashMMK = (Number(capital.cashMMK) || 0) + calc.cashDelta;
         capital.bankMMK = (Number(capital.bankMMK) || 0) + calc.bankDelta;
       } else {
-        newTx.paidAmount = calc.amount;
+        newTx.paidAmount = cashoutType === 'TRANSFER' ? (calc.amount + calc.fee) : calc.amount;
         capital.cashMMK = (Number(capital.cashMMK) || 0) + calc.cashDelta;
         capital.bankMMK = (Number(capital.bankMMK) || 0) + calc.bankDelta;
       }
@@ -4021,8 +4078,12 @@
       saveCapitalToStorage();
 
       if (status === 'UNPAID') {
-        setCashoutPayoutFilter('UNPAID');
-        showToast('မထုတ်ပေးရသေးသည့် ငွေထုတ်စာရင်းအဖြစ် သိမ်းဆည်းပြီးပါပြီ!', 'warning');
+        if (cashoutType === 'CASHOUT') {
+          setCashoutPayoutFilter('UNPAID');
+          showToast('မထုတ်ပေးရသေးသည့် ငွေထုတ်စာရင်းအဖြစ် သိမ်းဆည်းပြီးပါပြီ!', 'warning');
+        } else {
+          showToast('ငွေလွှဲ (အကြွေး) စာရင်းအဖြစ် သိမ်းဆည်းပြီးပါပြီ!', 'warning');
+        }
       } else {
         showToast('ငွေထုတ်/ငွေလွှဲ စာရင်း အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ!', 'success');
       }
@@ -4072,26 +4133,32 @@
       if (!tx) return;
 
       const amt = Number(tx.amountMMK) || 0;
+      const fee = Number(tx.fee ?? tx.profitMMK) || 0;
+      const isTransfer = tx.cashoutType === 'TRANSFER';
+
       if (tx.status === 'UNPAID') {
         tx.status = 'PAID';
         tx.settledDate = new Date().toISOString();
-        tx.paidAmount = amt;
-        if (tx.cashoutType === 'TRANSFER') {
-          capital.bankMMK = (Number(capital.bankMMK) || 0) - amt;
+        if (isTransfer) {
+          tx.paidAmount = amt + fee;
+          capital.cashMMK = (Number(capital.cashMMK) || 0) + (amt + fee);
+          showToast('✓ လက်ငင်းပေးချေပြီး (အကြွေးပြေလည်ပြီး) အဖြစ် မှတ်တမ်းတင်ပြီးပါပြီ!', 'success');
         } else {
+          tx.paidAmount = amt;
           capital.cashMMK = (Number(capital.cashMMK) || 0) - amt;
+          showToast('✓ လက်ငင်းထုတ်ပေးပြီး အဖြစ် ပြောင်းလဲမှတ်တမ်းတင်ပြီးပါပြီ!', 'success');
         }
-        showToast('✓ လက်ငင်းထုတ်ပေးပြီး အဖြစ် ပြောင်းလဲမှတ်တမ်းတင်ပြီးပါပြီ!', 'success');
       } else {
         tx.status = 'UNPAID';
         tx.settledDate = '';
         tx.paidAmount = 0;
-        if (tx.cashoutType === 'TRANSFER') {
-          capital.bankMMK = (Number(capital.bankMMK) || 0) + amt;
+        if (isTransfer) {
+          capital.cashMMK = (Number(capital.cashMMK) || 0) - (amt + fee);
+          showToast('⚠️ အကြွေးစာရင်း အဖြစ် ပြန်လည်သတ်မှတ်ပြီးပါပြီ', 'warning');
         } else {
           capital.cashMMK = (Number(capital.cashMMK) || 0) + amt;
+          showToast('⏳ မထုတ်ပေးရသေးဘူး အဖြစ် ပြန်လည်သတ်မှတ်ပြီးပါပြီ', 'warning');
         }
-        showToast('⏳ မထုတ်ပေးရသေးဘူး အဖြစ် ပြန်လည်သတ်မှတ်ပြီးပါပြီ', 'warning');
       }
 
       saveTransactionsToStorage();
@@ -4112,12 +4179,14 @@
       let paidMMK = 0;
 
       allCashouts.forEach(t => {
-        if (t.status === 'UNPAID') {
-          pendingCount++;
-          pendingMMK += Number(t.amountMMK) || 0;
-        } else {
-          paidCount++;
-          paidMMK += Number(t.amountMMK) || 0;
+        if (t.cashoutType !== 'TRANSFER') {
+          if (t.status === 'UNPAID') {
+            pendingCount++;
+            pendingMMK += Number(t.amountMMK) || 0;
+          } else {
+            paidCount++;
+            paidMMK += Number(t.amountMMK) || 0;
+          }
         }
       });
 
@@ -4133,9 +4202,9 @@
 
       let filtered = [...allCashouts];
       if (cashoutPayoutFilter === 'UNPAID') {
-        filtered = filtered.filter(t => t.status === 'UNPAID');
+        filtered = filtered.filter(t => t.cashoutType !== 'TRANSFER' && t.status === 'UNPAID');
       } else if (cashoutPayoutFilter === 'PAID') {
-        filtered = filtered.filter(t => t.status === 'PAID');
+        filtered = filtered.filter(t => t.cashoutType !== 'TRANSFER' && t.status === 'PAID');
       }
 
       if (search) {
@@ -4164,16 +4233,17 @@
       container.innerHTML = filtered.map(tx => {
         const isPaid = tx.status === 'PAID';
         const isTransfer = tx.cashoutType === 'TRANSFER';
+        const stDisp = getTxStatusDisplay(tx);
 
         return `
-          <div class="theme-card-sub border ${isPaid ? 'border-emerald-500/30' : 'border-amber-500/50'} p-3 rounded-xl space-y-2 text-xs">
+          <div class="theme-card-sub border ${isPaid ? 'border-emerald-500/30' : (isTransfer ? 'border-rose-500/50' : 'border-amber-500/50')} p-3 rounded-xl space-y-2 text-xs">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-1.5">
                 <span class="font-mono text-[10px] text-emerald-500 font-bold">${tx.id}</span>
                 <span class="text-[10px] theme-text-muted">• ${formatDateTime(tx.date)}</span>
               </div>
-              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isPaid ? 'bg-emerald-500/20 text-emerald-500 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-500 border border-amber-500/40'}">
-                ${isPaid ? '✓ လက်ငင်းထုတ်ပေးပြီး' : '⏳ မထုတ်ပေးရသေးဘူး'}
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${stDisp.badgeClass}">
+                ${isPaid ? '✓ ' + stDisp.text : (isTransfer ? '⚠️ ' + stDisp.text : '⏳ ' + stDisp.text)}
               </span>
             </div>
 
@@ -4188,7 +4258,7 @@
                 </div>
               </div>
               <div class="text-right shrink-0">
-                <div class="text-xs sm:text-sm font-extrabold font-mono ${isPaid ? 'text-emerald-500' : 'text-amber-500'}">
+                <div class="text-xs sm:text-sm font-extrabold font-mono ${isPaid ? 'text-emerald-500' : (isTransfer ? 'text-rose-500' : 'text-amber-500')}">
                   ${formatMMK(tx.amountMMK)}
                 </div>
                 <div class="text-[10px] text-emerald-500 font-mono">
@@ -4201,11 +4271,11 @@
               <div>
                 ${!isPaid ? `
                   <button type="button" onclick="toggleCashoutPayoutStatus('${tx.id}')" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold shadow flex items-center gap-1 transition">
-                    <span>✓ ယခု ထုတ်ပေးပြီးကြောင်း မှတ်မည်</span>
+                    <span>${isTransfer ? '✓ လက်ငင်းရရှိပြီးကြောင်း မှတ်မည်' : '✓ ယခု ထုတ်ပေးပြီးကြောင်း မှတ်မည်'}</span>
                   </button>
                 ` : `
                   <button type="button" onclick="toggleCashoutPayoutStatus('${tx.id}')" class="px-2.5 py-1 rounded-lg theme-card border text-[10px] theme-text-muted hover:text-amber-500 font-semibold transition">
-                    ⏳ မထုတ်ပေးရသေးသို့ ပြန်ပြောင်းရန်
+                    ${isTransfer ? '⚠️ အကြွေးသို့ ပြန်ပြောင်းရန်' : '⏳ မထုတ်ပေးရသေးသို့ ပြန်ပြောင်းရန်'}
                   </button>
                 `}
               </div>
@@ -4595,6 +4665,7 @@
       const statusSel = document.getElementById('editStatus');
       const names = getTxNames(tx);
 
+      const isPayoutFlow = (tx.type === 'REMIT' && tx.direction !== 'MMK_TO_THB') || (tx.type === 'CASHOUT' && tx.cashoutType !== 'TRANSFER');
       if (tx.type === 'REMIT') {
         if (singleGroup) singleGroup.classList.add('hidden');
         if (remitGroup) remitGroup.classList.remove('hidden');
@@ -4605,18 +4676,14 @@
         document.getElementById('editSenderName').value = names.senderName || '';
         document.getElementById('editReceiverName').value = names.receiverName || '';
         document.getElementById('editCustName').value = names.displayTitle || '';
-        if (statusSel) {
-          statusSel.options[0].textContent = 'လက်ငင်းထုတ်ပေးပြီး (PAID)';
-          statusSel.options[1].textContent = 'မထုတ်ပေးရသေးဘူး (UNPAID)';
-        }
       } else {
         if (singleGroup) singleGroup.classList.remove('hidden');
         if (remitGroup) remitGroup.classList.add('hidden');
         document.getElementById('editCustName').value = tx.custName || '';
-        if (statusSel) {
-          statusSel.options[0].textContent = 'လက်ငင်းထုတ်ပေးပြီး (PAID)';
-          statusSel.options[1].textContent = 'မထုတ်ပေးရသေးဘူး (UNPAID)';
-        }
+      }
+      if (statusSel) {
+        statusSel.options[0].textContent = isPayoutFlow ? 'လက်ငင်းထုတ်ပေးပြီး (PAID)' : 'လက်ငင်း (PAID)';
+        statusSel.options[1].textContent = isPayoutFlow ? 'မထုတ်ပေးရသေးဘူး (UNPAID)' : 'အကြွေး (UNPAID)';
       }
 
       document.getElementById('editCustPhone').value = tx.custPhone || '';
@@ -4755,12 +4822,12 @@
       }
 
       const statusBadge = document.getElementById('vouchStatusBadge');
-      const isPayoutFlow = (isRemit && tx.direction !== 'MMK_TO_THB') || tx.type === 'CASHOUT';
+      const isPayoutFlow = (isRemit && tx.direction !== 'MMK_TO_THB') || (tx.type === 'CASHOUT' && tx.cashoutType !== 'TRANSFER');
       if (tx.status === 'PAID') {
         statusBadge.textContent = isPayoutFlow ? '✓ လက်ငင်းထုတ်ပေးပြီး' : '✓ လက်ငင်း ပေးချေပြီး';
         statusBadge.className = 'inline-block px-2.5 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800';
       } else {
-        statusBadge.textContent = isPayoutFlow ? '⏳ မထုတ်ပေးရသေးဘူး' : '⚠️ မပေးချေရသေး (အကြွေး)';
+        statusBadge.textContent = isPayoutFlow ? '⏳ မထုတ်ပေးရသေးဘူး' : '⚠️ အကြွေး (Credit)';
         statusBadge.className = 'inline-block px-2.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800';
       }
 
@@ -4832,17 +4899,165 @@
       }
     };
 
+    // --- QUICK SEARCH MODAL (HEADER MAGNIFYING GLASS ICON) ---
     const openVoucherSearchModal = window.openVoucherSearchModal = function() {
-      const query = prompt('ရှာဖွေလိုသော Customer အမည် သို့မဟုတ် Voucher ID ထည့်ပါ:');
-      if (!query) return;
-      const q = query.toLowerCase().trim();
-      const found = transactions.find(t => 
-        (t.id && t.id.toLowerCase().includes(q)) || 
-        (t.custName && t.custName.toLowerCase().includes(q)) ||
-        (t.custPhone && t.custPhone.includes(q))
-      );
-      if (found) openVoucherModal(found.id);
-      else showToast('ကိုက်ညီသော ဘောက်ချာ ရှာမတွေ့ပါ', 'warning');
+      const modal = document.getElementById('voucherSearchModal');
+      if (!modal) return;
+      modal.classList.remove('hidden');
+      armBackTrap();
+      renderQuickSearchList();
+      setTimeout(() => {
+        const inp = document.getElementById('quickSearchInput');
+        if (inp) inp.focus();
+      }, 60);
+    };
+
+    const closeVoucherSearchModal = window.closeVoucherSearchModal = function() {
+      const modal = document.getElementById('voucherSearchModal');
+      if (modal) modal.classList.add('hidden');
+    };
+
+    const clearQuickSearchInput = window.clearQuickSearchInput = function() {
+      const inp = document.getElementById('quickSearchInput');
+      if (inp) {
+        inp.value = '';
+        inp.focus();
+      }
+      renderQuickSearchList();
+    };
+
+    const setQuickSearchFilter = window.setQuickSearchFilter = function(filter) {
+      quickSearchTypeFilter = filter;
+      const map = {
+        ALL: 'qsearch-filter-all',
+        REMIT: 'qsearch-filter-remit',
+        CASHOUT: 'qsearch-filter-cashout',
+        UNPAID: 'qsearch-filter-unpaid'
+      };
+      Object.entries(map).forEach(([key, id]) => {
+        const btn = document.getElementById(id);
+        if (!btn) return;
+        if (key === filter) {
+          btn.className = 'px-2.5 py-1 rounded-lg font-bold bg-blue-600 text-white shadow-sm transition';
+        } else {
+          btn.className = 'px-2.5 py-1 rounded-lg font-medium theme-card-sub border theme-text-muted hover:text-blue-500 transition';
+        }
+      });
+      renderQuickSearchList();
+    };
+
+    const renderQuickSearchList = window.renderQuickSearchList = function() {
+      const container = document.getElementById('quickSearchListContainer');
+      const countEl = document.getElementById('quickSearchResultCount');
+      if (!container) return;
+
+      const q = (document.getElementById('quickSearchInput')?.value || '').toLowerCase().trim();
+      let list = [...transactions];
+
+      if (quickSearchTypeFilter === 'REMIT') {
+        list = list.filter(t => t.type === 'REMIT');
+      } else if (quickSearchTypeFilter === 'CASHOUT') {
+        list = list.filter(t => t.type === 'CASHOUT');
+      } else if (quickSearchTypeFilter === 'UNPAID') {
+        list = list.filter(t => t.status === 'UNPAID');
+      }
+
+      if (q) {
+        list = list.filter(t => {
+          const names = getTxNames(t);
+          const stDisp = getTxStatusDisplay(t);
+          return (
+            (t.id && t.id.toLowerCase().includes(q)) ||
+            (t.custName && t.custName.toLowerCase().includes(q)) ||
+            (names.displayTitle && names.displayTitle.toLowerCase().includes(q)) ||
+            (names.senderName && names.senderName.toLowerCase().includes(q)) ||
+            (names.receiverName && names.receiverName.toLowerCase().includes(q)) ||
+            (t.custPhone && t.custPhone.toLowerCase().includes(q)) ||
+            (t.channel && t.channel.toLowerCase().includes(q)) ||
+            (t.note && t.note.toLowerCase().includes(q)) ||
+            (stDisp.text && stDisp.text.toLowerCase().includes(q)) ||
+            String(t.amountMMK || '').includes(q) ||
+            String(t.customerTHB || '').includes(q)
+          );
+        });
+      }
+
+      if (countEl) {
+        countEl.textContent = `ရှာဖွေမှု ရလဒ်: ${list.length} ခု`;
+      }
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-10 theme-card-sub rounded-2xl border theme-text-muted text-xs space-y-1">
+            <div class="text-base">🔍</div>
+            <div>ကိုက်ညီသော စာရင်း သို့မဟုတ် ဘောက်ချာ ရှာမတွေ့ပါ</div>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = list.slice(0, 40).map(tx => {
+        const isRemit = tx.type === 'REMIT';
+        const isCashout = tx.type === 'CASHOUT';
+        const names = getTxNames(tx);
+        const stDisp = getTxStatusDisplay(tx);
+        const typeLabel = isRemit
+          ? (tx.direction === 'MMK_TO_THB' ? '🇲🇲 မြန်မာ ➔ 🇹🇭 ထိုင်း' : '🇹🇭 ထိုင်း ➔ 🇲🇲 မြန်မာ')
+          : (tx.cashoutType === 'TRANSFER' ? '🔺 KPay ငွေလွှဲ' : '🔻 KPay ငွေထုတ်');
+
+        return `
+          <div class="theme-card-sub border hover:border-blue-500/50 p-3 rounded-2xl space-y-1.5 text-xs transition">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-1.5">
+                <span class="font-mono text-[10px] text-blue-500 font-bold">#${tx.id}</span>
+                <span class="text-[9px] px-2 py-0.5 rounded-full font-bold ${stDisp.badgeClass}">${stDisp.text}</span>
+              </div>
+              <span class="text-[10px] theme-text-muted">${formatDateTime(tx.date)}</span>
+            </div>
+
+            <div class="flex items-start justify-between gap-2">
+              <div class="space-y-0.5">
+                <div class="font-bold theme-text-heading text-xs">${names.displayTitle}</div>
+                <div class="text-[10px] theme-text-muted">
+                  <span class="font-semibold text-blue-400">${typeLabel}</span>
+                  • ချန်နယ်: <span class="font-semibold">${tx.channel || 'KPay'}</span>
+                  ${tx.custPhone ? ` • ဖုန်း: <span class="font-mono">${tx.custPhone}</span>` : ''}
+                  ${tx.note ? ` • မှတ်ချက်: ${tx.note}` : ''}
+                </div>
+              </div>
+              <div class="text-right shrink-0">
+                <div class="font-extrabold font-mono theme-text-heading">
+                  ${isRemit && tx.direction === 'MMK_TO_THB' ? formatTHB(tx.customerTHB) : formatMMK(tx.amountMMK)}
+                </div>
+                <div class="text-[10px] text-emerald-500 font-mono">
+                  အမြတ်: +${tx.profitTHB ? formatTHB(tx.profitTHB) : formatMMK(tx.profitMMK || tx.fee || 0)}
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between gap-1.5 pt-1.5 border-t">
+              <div>
+                ${tx.status === 'UNPAID' && isRemit ? `
+                  <button type="button" onclick="toggleRemitPayoutStatus('${tx.id}'); renderQuickSearchList();" class="px-2.5 py-1 rounded-lg bg-emerald-600 text-white text-[10px] font-bold">✓ ထုတ်ပေးပြီးမှတ်မည်</button>
+                ` : ''}
+                ${tx.status === 'UNPAID' && isCashout ? `
+                  <button type="button" onclick="toggleCashoutPayoutStatus('${tx.id}'); renderQuickSearchList();" class="px-2.5 py-1 rounded-lg bg-emerald-600 text-white text-[10px] font-bold">
+                    ${tx.cashoutType === 'TRANSFER' ? '✓ လက်ငင်းရရှိမှတ်မည်' : '✓ ထုတ်ပေးပြီးမှတ်မည်'}
+                  </button>
+                ` : ''}
+              </div>
+              <div class="flex items-center gap-1.5">
+                <button type="button" onclick="closeVoucherSearchModal(); openVoucherModal('${tx.id}');" class="px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-bold shadow-sm">
+                  📄 ဘောက်ချာကြည့်ရန်
+                </button>
+                <button type="button" onclick="closeVoucherSearchModal(); openEditModal('${tx.id}');" class="px-2.5 py-1 rounded-lg theme-card border text-blue-500 text-[10px] font-bold">
+                  ပြင်မည်
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
     };
 
     // --- QUICK RATE MODAL ---
