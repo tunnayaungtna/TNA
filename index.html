@@ -440,16 +440,16 @@
           </div>
           <div class="flex flex-wrap items-center justify-between gap-2 pt-2.5 mt-2 border-t text-[10px] theme-text-muted">
             <div class="flex flex-wrap items-center gap-3">
-              <span class="flex items-center gap-1">
-                <span class="w-2.5 h-2.5 rounded-sm bg-blue-500 inline-block"></span>
-                <span>ထိုင်း-မြန်မာ ငွေလွှဲအမြတ်</span>
+              <span class="flex items-center gap-1.5">
+                <span class="w-3 h-3 rounded-sm bg-gradient-to-t from-indigo-600 to-sky-400 border border-sky-300/40 inline-block shadow-sm"></span>
+                <span class="font-semibold text-sky-500 dark:text-sky-400">ထိုင်း-မြန်မာ ငွေလွှဲအမြတ်</span>
+              </span>
+              <span class="flex items-center gap-1.5">
+                <span class="w-3 h-3 rounded-sm bg-gradient-to-t from-orange-600 to-amber-400 border border-amber-300/40 inline-block shadow-sm"></span>
+                <span class="font-semibold text-orange-500 dark:text-orange-400">KPay / ငွေထုတ်အမြတ်</span>
               </span>
               <span class="flex items-center gap-1">
-                <span class="w-2.5 h-2.5 rounded-sm bg-emerald-500 inline-block"></span>
-                <span>KPay / ငွေထုတ်အမြတ်</span>
-              </span>
-              <span class="flex items-center gap-1">
-                <span class="w-2.5 h-2.5 rounded-full bg-amber-400 inline-block"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 inline-block"></span>
                 <span>ဘတ်အမြတ် (THB)</span>
               </span>
             </div>
@@ -724,8 +724,9 @@
 
         <!-- Search Input -->
         <div class="relative">
-          <input type="text" id="remitPayoutSearchInput" oninput="renderRemitPayoutList()" placeholder="လွှဲသူအမည်၊ ထုတ်ယူသူအမည် သို့မဟုတ် ဖုန်းဖြင့် ရှာရန်..." class="w-full theme-input border rounded-xl px-3.5 py-2 pl-9 text-xs">
-          <svg class="w-4 h-4 theme-text-muted absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          <input type="text" id="remitPayoutSearchInput" oninput="renderRemitPayoutList()" placeholder="လွှဲသူအမည်၊ ထုတ်ယူသူအမည် သို့မဟုတ် ဖုန်းဖြင့် ရှာရန်..." class="w-full theme-input border rounded-xl px-3.5 py-2 pl-9 pr-8 text-xs">
+          <svg class="w-4 h-4 theme-text-muted absolute left-3 top-2.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          <button type="button" id="remitPayoutSearchClearBtn" onclick="clearSearchInput('remitPayoutSearchInput')" class="hidden absolute right-2.5 top-2 w-5 h-5 rounded-full bg-slate-500/20 hover:bg-rose-500/20 theme-text-muted hover:text-rose-500 flex items-center justify-center text-[11px] font-bold transition" title="ရှင်းလင်းရန်" aria-label="Clear search">✕</button>
         </div>
 
         <!-- Filtered List Container -->
@@ -952,8 +953,9 @@
 
         <!-- Search Input -->
         <div class="relative">
-          <input type="text" id="cashoutPayoutSearchInput" oninput="renderCashoutPayoutList()" placeholder="Customer အမည်၊ ဖုန်းနံပါတ် သို့မဟုတ် မှတ်ချက်ဖြင့် ရှာရန်..." class="w-full theme-input border rounded-xl px-3.5 py-2 pl-9 text-xs">
-          <svg class="w-4 h-4 theme-text-muted absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          <input type="text" id="cashoutPayoutSearchInput" oninput="renderCashoutPayoutList()" placeholder="Customer အမည်၊ ဖုန်းနံပါတ် သို့မဟုတ် မှတ်ချက်ဖြင့် ရှာရန်..." class="w-full theme-input border rounded-xl px-3.5 py-2 pl-9 pr-8 text-xs">
+          <svg class="w-4 h-4 theme-text-muted absolute left-3 top-2.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          <button type="button" id="cashoutPayoutSearchClearBtn" onclick="clearSearchInput('cashoutPayoutSearchInput')" class="hidden absolute right-2.5 top-2 w-5 h-5 rounded-full bg-slate-500/20 hover:bg-rose-500/20 theme-text-muted hover:text-rose-500 flex items-center justify-center text-[11px] font-bold transition" title="ရှင်းလင်းရန်" aria-label="Clear search">✕</button>
         </div>
 
         <!-- Filtered List Container -->
@@ -998,8 +1000,9 @@
         </div>
 
         <div class="relative">
-          <input type="text" id="creditSearchInput" oninput="renderCreditList()" placeholder="Customer အမည် သို့မဟုတ် ဖုန်းဖြင့် ရှာရန်..." class="w-full theme-input border rounded-2xl px-3.5 py-2.5 pl-9 text-xs focus:outline-none">
-          <svg class="w-4 h-4 theme-text-muted absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          <input type="text" id="creditSearchInput" oninput="renderCreditList()" placeholder="Customer အမည် သို့မဟုတ် ဖုန်းဖြင့် ရှာရန်..." class="w-full theme-input border rounded-2xl px-3.5 py-2.5 pl-9 pr-8 text-xs focus:outline-none">
+          <svg class="w-4 h-4 theme-text-muted absolute left-3 top-3 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          <button type="button" id="creditSearchClearBtn" onclick="clearSearchInput('creditSearchInput')" class="hidden absolute right-2.5 top-2.5 w-5 h-5 rounded-full bg-slate-500/20 hover:bg-rose-500/20 theme-text-muted hover:text-rose-500 flex items-center justify-center text-[11px] font-bold transition" title="ရှင်းလင်းရန်" aria-label="Clear search">✕</button>
         </div>
       </div>
 
@@ -1008,14 +1011,14 @@
       </div>
     </section>
 
-    <!-- ================= TAB 5: အရင်းစာရင်း & GOOGLE DRIVE AUTO BACKUP ================= -->
+    <!-- ================= TAB 5: SETTING (အရင်းစာရင်း၊ ပေါက်ဈေး & DRIVE BACKUP) ================= -->
     <section id="tab-capital" class="space-y-4 hidden">
       <div class="bg-gradient-to-r from-blue-900/30 via-indigo-900/20 to-transparent theme-card border rounded-2xl p-4 sm:p-5 shadow-sm">
         <h2 class="text-sm sm:text-base font-bold theme-text-heading flex items-center gap-2">
-          <span class="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center text-xs">💼</span>
-          အရင်းစာရင်း နှင့် Google Drive Cloud Auto-Backup
+          <span class="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center text-xs">⚙️</span>
+          Setting (လုပ်ငန်းချိန်ညှိချက်၊ အရင်းစာရင်း & Cloud Backup)
         </h2>
-        <p class="text-xs theme-text-muted mt-0.5">Gmail အကောင့်ဖြင့် ချိတ်ဆက်ရုံဖြင့် Data များကို Google Drive သို့ အလိုအလျောက် သိမ်းဆည်းပေးပါသည်</p>
+        <p class="text-xs theme-text-muted mt-0.5">မတည်ရင်းနှီးငွေ၊ ပေါက်ဈေးများ၊ ဖုန်းပြောင်းဒေတာပြန်ယူခြင်းနှင့် Google Drive Auto-Backup စီမံမှု</p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1060,6 +1063,40 @@
               အရင်း စာရင်း သိမ်းဆည်းမည်
             </button>
           </form>
+        </div>
+
+        <!-- Phone Switch & Migration Card -->
+        <div class="theme-card border border-blue-500/40 rounded-2xl p-4 sm:p-5 space-y-3 shadow-sm bg-gradient-to-r from-blue-950/20 to-indigo-950/20">
+          <div class="flex items-center justify-between border-b pb-2">
+            <h3 class="text-xs sm:text-sm font-bold text-blue-500 flex items-center gap-1.5">
+              <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+              ဖုန်းပြောင်းသုံးခြင်း & စာရင်းများ အကုန်ပြန်ယူခြင်း (Phone Switch & Restore)
+            </h3>
+            <span class="text-[10px] bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded-full font-bold">Data Recovery</span>
+          </div>
+          <p class="text-xs theme-text-muted leading-relaxed">
+            ဖုန်းအသစ်ပြောင်းလဲသည့်အခါ အရင်ဖုန်းမှ စာရင်းများ၊ ဘောက်ချာများနှင့် အရင်းလက်ကျန်များ မပျောက်ပျက်စေရန် အောက်ပါအတိုင်း အကုန်ပြန်လည်ရယူနိုင်ပါသည်-
+          </p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+            <button type="button" onclick="handleGoogleSignInAndRestorePrompt()" class="p-3 rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-98 text-white transition text-left flex items-center gap-2.5 shadow">
+              <div class="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center shrink-0">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+              </div>
+              <div>
+                <div class="text-xs font-bold">၁။ Google Cloud မှ ပြန်ယူမည်</div>
+                <div class="text-[10px] text-blue-100">အရင်ဖုန်းမှ Gmail ဖြင့် ချက်ချင်းပြန်ရ</div>
+              </div>
+            </button>
+            <button type="button" onclick="openPhoneMigrationModal()" class="p-3 rounded-xl theme-card-sub border hover:border-emerald-500 active:scale-98 transition text-left flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-lg bg-emerald-600/20 text-emerald-400 flex items-center justify-center shrink-0">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+              </div>
+              <div>
+                <div class="text-xs font-bold theme-text-heading">၂။ Backup ဖိုင် (.json) ဖြင့် ပြန်ယူမည်</div>
+                <div class="text-[10px] theme-text-muted">အင်တာနက်မလိုဘဲ အကုန်ပြန်တင်နိုင်သည်</div>
+              </div>
+            </button>
+          </div>
         </div>
 
         <!-- Subsection 2: Gmail & Cloud Auto-Backup Center -->
@@ -1220,16 +1257,26 @@
 
       <!-- Subsection 3: All Transactions History Table -->
       <div id="ledgerSection" class="theme-card border rounded-2xl p-4 sm:p-5 space-y-3 shadow-sm">
-        <div class="flex items-center justify-between border-b pb-2">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b pb-2.5">
           <h3 class="text-xs sm:text-sm font-bold theme-text-heading flex items-center gap-1.5">
             <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
             စာရင်းမှတ်တမ်း အားလုံး (All History)
           </h3>
-          <span class="text-[10px] theme-tag-bg px-2 py-0.5 rounded-full font-bold" id="ledgerCountBadge">0 ခု</span>
+          <div class="flex items-center gap-2">
+            <span class="text-[10px] theme-tag-bg px-2.5 py-1 rounded-full font-bold" id="ledgerCountBadge">0 ခု</span>
+            <button type="button" id="exportFilteredCsvBtn" onclick="exportFilteredHistoryCSV()" class="px-2.5 py-1 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white text-[11px] font-bold shadow-sm transition flex items-center gap-1" title="လက်ရှိ စစ်ထုတ်ထားသော စာရင်းများကိုသာ CSV ဖိုင်အဖြစ် ထုတ်ယူရန်">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+              <span>CSV ထုတ်မည်</span>
+            </button>
+          </div>
         </div>
 
         <div class="space-y-2">
-          <input type="text" id="ledgerSearchInput" oninput="renderLedgerList()" placeholder="ရှာဖွေရန် (လွှဲသူ၊ ထုတ်သူ၊ ID၊ ဖုန်း)..." class="w-full theme-input border rounded-xl px-3 py-2 text-xs">
+          <div class="relative">
+            <input type="text" id="ledgerSearchInput" oninput="renderLedgerList()" placeholder="ရှာဖွေရန် (လွှဲသူ၊ ထုတ်သူ၊ ID၊ ဖုန်း)..." class="w-full theme-input border rounded-xl px-3.5 py-2 pl-9 pr-8 text-xs">
+            <svg class="w-4 h-4 theme-text-muted absolute left-3 top-2.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            <button type="button" id="ledgerSearchClearBtn" onclick="clearSearchInput('ledgerSearchInput')" class="hidden absolute right-2.5 top-2 w-5 h-5 rounded-full bg-slate-500/20 hover:bg-rose-500/20 theme-text-muted hover:text-rose-500 flex items-center justify-center text-[11px] font-bold transition" title="ရှင်းလင်းရန်" aria-label="Clear search">✕</button>
+          </div>
           <div class="flex flex-wrap gap-1.5 text-[11px]">
             <button onclick="setLedgerTypeFilter('ALL')" id="history-filter-all" class="flex-1 min-w-[60px] py-1.5 px-2 rounded-lg bg-blue-600 text-white font-bold">အားလုံး</button>
             <button onclick="setLedgerTypeFilter('REMIT_UNPAID')" id="history-filter-remit_unpaid" class="flex-1 min-w-[95px] py-1.5 px-2 rounded-lg theme-card-sub border theme-text-muted hover:text-amber-500">မထုတ်ပေးရသေး</button>
@@ -1274,7 +1321,7 @@
 
       <button onclick="switchTab('capital')" id="nav-capital" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition theme-text-muted hover:text-indigo-500">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-        <span class="text-[10px] mt-0.5 leading-tight">အရင်း/Drive</span>
+        <span class="text-[10px] mt-0.5 leading-tight">Setting</span>
       </button>
     </div>
   </nav>
@@ -1593,8 +1640,8 @@
       <!-- Search Input Box -->
       <div class="relative">
         <input type="text" id="quickSearchInput" oninput="renderQuickSearchList()" placeholder="Customer အမည်၊ လွှဲသူ/ထုတ်သူ၊ ဖုန်းနံပါတ်၊ Voucher ID သို့မဟုတ် ပမာဏ ရိုက်ရှာပါ..." class="w-full theme-input border border-blue-500/40 focus:border-blue-500 rounded-2xl px-4 py-2.5 pl-10 pr-9 text-xs sm:text-sm">
-        <svg class="w-4 h-4 text-blue-500 absolute left-3.5 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-        <button type="button" onclick="clearQuickSearchInput()" class="absolute right-3 top-2.5 theme-text-muted hover:text-rose-500 text-xs p-0.5" title="ရှင်းလင်းရန်">✕</button>
+        <svg class="w-4 h-4 text-blue-500 absolute left-3.5 top-3 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        <button type="button" id="quickSearchClearBtn" onclick="clearQuickSearchInput()" class="hidden absolute right-3 top-2.5 w-5 h-5 rounded-full bg-slate-500/20 hover:bg-rose-500/20 theme-text-muted hover:text-rose-500 flex items-center justify-center text-xs font-bold transition" title="ရှင်းလင်းရန်" aria-label="Clear search">✕</button>
       </div>
 
       <!-- Filter Pills -->
@@ -1623,6 +1670,121 @@
     </div>
   </div>
 
+  <!-- 8. PHONE MIGRATION & RESTORE ASSISTANT MODAL -->
+  <div id="phoneMigrationModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3.5 sm:p-4 hidden">
+    <div class="theme-card border w-full max-w-md rounded-3xl p-5 shadow-2xl space-y-4 max-h-[92vh] overflow-y-auto relative">
+      <div class="flex items-center justify-between border-b pb-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-blue-600/20 text-blue-500 flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+          </div>
+          <div>
+            <h3 class="text-xs sm:text-sm font-extrabold theme-text-heading">ဖုန်းပြောင်း / စာရင်းများ အကုန်ပြန်ယူရန်</h3>
+            <p class="text-[10px] theme-text-muted">အရင်ဖုန်းမှ မှတ်တမ်းများကို ဤဖုန်းအသစ်ထဲသို့ ပြန်လည်ထည့်သွင်းခြင်း</p>
+          </div>
+        </div>
+        <button onclick="closePhoneMigrationModal()" class="theme-text-muted hover:text-rose-500 p-1.5 rounded-full text-base font-bold">✕</button>
+      </div>
+
+      <!-- Option 1: Google Cloud Restore (Recommended) -->
+      <div class="theme-card-sub border border-blue-500/40 rounded-2xl p-4 space-y-2.5">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-1.5">
+            <span class="w-5 h-5 rounded-full bg-blue-600 text-white text-[10px] font-bold flex items-center justify-center">1</span>
+            <span class="text-xs font-bold text-blue-500">Google Cloud အကောင့်ဖြင့် ပြန်ယူမည်</span>
+          </div>
+          <span class="text-[9px] bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded-full font-bold">အကြံပြုချက်</span>
+        </div>
+        <p class="text-[11px] theme-text-muted leading-relaxed">
+          အရင်ဖုန်းတွင် အသုံးပြုခဲ့သော <strong>Google (Gmail) အကောင့်</strong> ဖြင့် Login ဝင်ထားပါက Cloud Backup မှ စာရင်းများ၊ ဘောက်ချာများနှင့် အရင်းလက်ကျန်များအားလုံးကို အလိုအလျောက် ဤဖုန်းအသစ်ထဲသို့ ရယူပေးမည်ဖြစ်ပါသည်။
+        </p>
+        <button type="button" onclick="handleGoogleSignInAndRestorePrompt()" class="w-full py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-98 text-white text-xs font-bold shadow transition flex items-center justify-center gap-2">
+          <svg class="w-4 h-4" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+          <span>Google Account ဖြင့် ချိတ်ပြီး စာရင်းပြန်ယူမည်</span>
+        </button>
+      </div>
+
+      <!-- Option 2: File-Based Restore (Offline / No Account needed) -->
+      <div class="theme-card-sub border border-emerald-500/40 rounded-2xl p-4 space-y-2.5">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-1.5">
+            <span class="w-5 h-5 rounded-full bg-emerald-600 text-white text-[10px] font-bold flex items-center justify-center">2</span>
+            <span class="text-xs font-bold text-emerald-500">Backup ဖိုင် (.json) ဖြင့် ပြန်ယူမည်</span>
+          </div>
+          <span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full font-bold">အော့ဖ်လိုင်းရ</span>
+        </div>
+        <p class="text-[11px] theme-text-muted leading-relaxed">
+          အရင်ဖုန်းမှ ထုတ်ယူထားသော Backup ဖိုင် (ဥပမာ <code>LabShwin_AutoBackup.json</code>) ကို Telegram, Viber, Google Drive, သို့မဟုတ် ဖုန်းတွင်းမှ ရွေးချယ်ပြီး ၁ စက္ကန့်အတွင်း အကုန်ပြန်တင်နိုင်ပါသည်။
+        </p>
+        <label class="w-full py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-98 text-white text-xs font-bold shadow transition flex items-center justify-center gap-2 cursor-pointer">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+          <span>📁 Backup ဖိုင်ရွေးချယ်ပြီး အကုန်ပြန်တင်မည်</span>
+          <input type="file" accept=".json,.xlsx,.csv" onchange="handleRestoreFile(event); closePhoneMigrationModal();" class="sr-only">
+        </label>
+      </div>
+
+      <!-- Guide on how to export from old phone -->
+      <div class="theme-card-sub border rounded-2xl p-3.5 space-y-1.5 text-xs text-left">
+        <div class="font-bold text-amber-500 flex items-center gap-1.5 text-[11px]">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          အရင်ဖုန်းမှ စာရင်းများကို Backup ထုတ်ယူနည်း:
+        </div>
+        <ul class="text-[10px] theme-text-muted space-y-1 list-disc pl-4 leading-normal">
+          <li><strong>အရင်ဖုန်းတွင်:</strong> အောက်ခြေရှိ <strong>အရင်း/Drive</strong> တက်ဘ်သို့ သွားပါ။</li>
+          <li><strong>Google Auto-Backup</strong> ဖွင့်ထားပါက နောက်ဖုန်းအသစ်တွင် အဆိုပါ Gmail ဖြင့် Login ဝင်ရုံဖြင့် အလိုအလျောက် ပြန်ရပါသည်။</li>
+          <li>သို့မဟုတ် <strong>"JSON ဖိုင် သိမ်းဆည်းရန်"</strong> ကို နှိပ်၍ မိမိ၏ Viber, Telegram, သို့မဟုတ် Drive သို့ ပို့ထားနိုင်ပါသည်။</li>
+        </ul>
+      </div>
+
+      <button type="button" onclick="closePhoneMigrationModal()" class="w-full py-2.5 rounded-xl theme-card-sub border text-xs font-bold theme-text-muted hover:text-rose-500 transition">
+        ပိတ်မည်
+      </button>
+    </div>
+  </div>
+
+  <!-- 9. CLOUD RESTORE CONFIRMATION PROMPT MODAL -->
+  <div id="cloudRestorePromptModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3.5 sm:p-4 hidden">
+    <div class="theme-card border border-emerald-500/50 w-full max-w-sm rounded-3xl p-5 shadow-2xl space-y-4 text-center relative overflow-hidden">
+      <div class="w-14 h-14 mx-auto rounded-2xl bg-emerald-600/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+      </div>
+
+      <div class="space-y-1">
+        <h3 class="text-sm sm:text-base font-extrabold theme-text-heading">အရင်ဖုန်းမှ Cloud Backup တွေ့ရှိပါသည်!</h3>
+        <p class="text-xs text-emerald-500 font-semibold truncate" id="cloudRestoreUserEmail">user@gmail.com</p>
+      </div>
+
+      <div class="theme-card-sub border rounded-2xl p-3.5 text-left text-xs space-y-1.5">
+        <div class="flex justify-between items-center">
+          <span class="theme-text-muted">အရင်ဖုန်းမှ စာရင်းမှတ်တမ်း:</span>
+          <span class="font-mono font-bold text-emerald-500 text-sm" id="cloudRestoreTxCount">0 ခု</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="theme-text-muted">အရင်းလက်ကျန်:</span>
+          <span class="font-mono text-[10px] theme-text-heading font-semibold" id="cloudRestoreCapitalSummary">-</span>
+        </div>
+        <div class="flex justify-between items-center pt-1 border-t">
+          <span class="theme-text-muted">နောက်ဆုံး Backup:</span>
+          <span class="font-mono text-[10px] theme-text-muted" id="cloudRestoreTime">-</span>
+        </div>
+      </div>
+
+      <p class="text-[11px] theme-text-muted leading-relaxed">
+        အရင်ဖုန်းမှ မှတ်တမ်းများအားလုံးကို ဤဖုန်းအသစ်ထဲသို့ အစားထိုး ထည့်သွင်း (Restore) လိုက်ပါမည်လား?
+      </p>
+
+      <div class="flex flex-col gap-2 pt-1">
+        <button type="button" onclick="confirmRestoreCloudData()" class="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 active:scale-98 text-white text-xs font-bold shadow-lg shadow-emerald-900/30 flex items-center justify-center gap-1.5 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+          <span>✓ စာရင်းများ အကုန်ပြန်ယူမည် (Restore Now)</span>
+        </button>
+        <button type="button" onclick="closeCloudRestorePromptModal()" class="w-full py-2 rounded-xl theme-card-sub border text-xs font-bold theme-text-muted hover:text-rose-500 transition">
+          မယူသေးပါ (Skip)
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- TOAST NOTIFICATION CONTAINER -->
   <div id="toastContainer" class="fixed top-4 inset-x-0 z-50 flex flex-col items-center pointer-events-none px-4 space-y-2"></div>
 
@@ -1630,7 +1792,7 @@
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js';
     import { getAuth, signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js';
-    import { getFirestore, doc, getDoc, getDocFromServer, setDoc, updateDoc, deleteDoc, collection, getDocs, writeBatch, serverTimestamp } from 'https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js';
+    import { getFirestore, doc, getDoc, getDocFromServer, setDoc, updateDoc, deleteDoc, collection, getDocs, writeBatch, serverTimestamp, query, where } from 'https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js';
 
     // --- Embedded Firebase Configuration (Completely Standalone) ---
     const firebaseConfig = {
@@ -1773,7 +1935,9 @@
       'editModal',
       'customDateModal',
       'voucherSearchModal',
-      'appBrandModal'
+      'appBrandModal',
+      'phoneMigrationModal',
+      'cloudRestorePromptModal'
     ];
 
     let dashboardPeriod = 'today';
@@ -2165,7 +2329,7 @@
           updateAuthUI(currentUser, true);
           showToast(`မင်္ဂလာပါ ${currentUser.displayName || ''} (Google Auto-Backup ချိတ်ဆက်ပြီးပါပြီ)`, 'success');
           if (autoBackupEnabled) {
-            await triggerDriveBackup(false);
+            await checkOrSyncInitialCloudBackup();
           }
           return true;
         }
@@ -2366,6 +2530,171 @@
       };
     }
 
+    function isDemoOnlyData(list) {
+      if (!list || !Array.isArray(list) || list.length === 0) return true;
+      if (list.length > 3) return false;
+      const demoKeywords = ['ကိုကျော်ဇင်', 'ဒေါ်အေးအေး', 'မနီလာ'];
+      return list.every(t => demoKeywords.some(k => (t.custName || '').includes(k) || (t.senderName || '').includes(k)));
+    }
+
+    const openPhoneMigrationModal = window.openPhoneMigrationModal = function() {
+      const modal = document.getElementById('phoneMigrationModal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        armBackTrap();
+      }
+    };
+
+    const closePhoneMigrationModal = window.closePhoneMigrationModal = function() {
+      const modal = document.getElementById('phoneMigrationModal');
+      if (modal) modal.classList.add('hidden');
+    };
+
+    const openCloudRestorePromptModal = window.openCloudRestorePromptModal = function(txCount, meta) {
+      const modal = document.getElementById('cloudRestorePromptModal');
+      if (!modal) return;
+
+      const countEl = document.getElementById('cloudRestoreTxCount');
+      const userEl = document.getElementById('cloudRestoreUserEmail');
+      const capitalEl = document.getElementById('cloudRestoreCapitalSummary');
+      const timeEl = document.getElementById('cloudRestoreTime');
+
+      if (countEl) countEl.textContent = `${txCount} ခု`;
+      if (userEl) userEl.textContent = currentUser?.email || auth?.currentUser?.email || 'Google Account';
+      if (capitalEl && meta) {
+        const cash = Number(meta.cashMMK) || 0;
+        const bank = Number(meta.bankMMK) || 0;
+        const thb = Number(meta.thbBalance) || 0;
+        capitalEl.textContent = `ငွေသား ${formatMMK(cash)} • KPay ${formatMMK(bank)} • ${formatTHB(thb)}`;
+      }
+      if (timeEl && meta?.updatedAt) {
+        try {
+          const d = meta.updatedAt.toDate ? meta.updatedAt.toDate() : new Date(meta.updatedAt);
+          timeEl.textContent = formatDateTime(d.toISOString());
+        } catch (e) {
+          timeEl.textContent = 'ယခင်သိမ်းဆည်းမှု';
+        }
+      }
+
+      modal.classList.remove('hidden');
+      armBackTrap();
+    };
+
+    const closeCloudRestorePromptModal = window.closeCloudRestorePromptModal = function() {
+      const modal = document.getElementById('cloudRestorePromptModal');
+      if (modal) modal.classList.add('hidden');
+    };
+
+    const dismissPhoneSwitchBanner = window.dismissPhoneSwitchBanner = function() {
+      const banner = document.getElementById('phoneSwitchRestoreBanner');
+      if (banner) banner.classList.add('hidden');
+      localStorage.setItem('thb_mmk_dismiss_migration_banner', 'true');
+    };
+
+    async function fetchCloudTransactions(uid) {
+      const txColRef = collection(db, 'userBackups', uid, 'transactions');
+      let txSnap;
+      try {
+        const q = query(txColRef, where('ownerId', '==', uid));
+        txSnap = await getDocs(q);
+      } catch (qErr) {
+        txSnap = await getDocs(txColRef);
+      }
+      const cloudTxs = txSnap.docs.map(d => {
+        const item = d.data();
+        delete item.createdAt;
+        delete item.updatedAt;
+        delete item.ownerId;
+        return item;
+      });
+      cloudTxs.sort((a, b) => new Date(b.date) - new Date(a.date));
+      return cloudTxs;
+    }
+
+    const confirmRestoreCloudData = window.confirmRestoreCloudData = async function() {
+      if (!auth?.currentUser || !db) {
+        showToast('Google Account ဖြင့် ဦးစွာ ချိတ်ဆက်ပေးပါ', 'warning');
+        return;
+      }
+      const uid = auth.currentUser.uid;
+      try {
+        showToast('အရင်ဖုန်းမှ စာရင်းများကို Cloud မှ ရယူနေပါသည်...', 'info');
+        const backupRef = doc(db, 'userBackups', uid);
+        const snap = await getDoc(backupRef);
+        if (!snap.exists()) {
+          showToast('Cloud ပေါ်တွင် Backup မရှိသေးပါ', 'warning');
+          closeCloudRestorePromptModal();
+          return;
+        }
+
+        const meta = snap.data();
+        const cloudTxs = await fetchCloudTransactions(uid);
+
+        if (cloudTxs.length === 0) {
+          showToast('Cloud ပေါ်တွင် စာရင်းမှတ်တမ်း မတွေ့ရှိပါ', 'warning');
+          closeCloudRestorePromptModal();
+          return;
+        }
+
+        transactions = cloudTxs;
+        if (meta.cashMMK !== undefined) {
+          capital.cashMMK = Number(meta.cashMMK) || 0;
+          capital.bankMMK = Number(meta.bankMMK) || 0;
+          capital.thbBalance = Number(meta.thbBalance) || 0;
+        }
+        if (meta.dealerRate !== undefined) {
+          settings.dealerRate = Number(meta.dealerRate) || 755;
+          settings.customerRate = Number(meta.customerRate) || 780;
+        }
+
+        localStorage.setItem('thb_mmk_has_user_data', 'true');
+        saveTransactionsToStorage();
+        saveCapitalToStorage();
+        saveSettingsToStorage();
+
+        closeCloudRestorePromptModal();
+        closePhoneMigrationModal();
+        updateAllUI();
+
+        const banner = document.getElementById('phoneSwitchRestoreBanner');
+        if (banner) banner.classList.add('hidden');
+
+        showToast(`🎉 အရင်ဖုန်းမှ စာရင်းမှတ်တမ်း ${transactions.length} ခု အားလုံးကို အောင်မြင်စွာ ပြန်လည်ရယူပြီးပါပြီ!`, 'success');
+      } catch (err) {
+        console.error('Cloud restore error:', err);
+        showToast('ဒေတာ ပြန်ယူရာတွင် အမှားဖြစ်ပေါ်ပါသည်', 'error');
+      }
+    };
+
+    const handleGoogleSignInAndRestorePrompt = window.handleGoogleSignInAndRestorePrompt = async function() {
+      closePhoneMigrationModal();
+      const ok = await handleGoogleSignIn();
+      if (!ok || !currentUser) return;
+
+      if (auth?.currentUser && db) {
+        const uid = auth.currentUser.uid;
+        showToast('Cloud Backup စာရင်းများ စစ်ဆေးနေပါသည်...', 'info');
+        try {
+          const backupRef = doc(db, 'userBackups', uid);
+          const snap = await getDoc(backupRef);
+          if (snap.exists()) {
+            const meta = snap.data();
+            const cloudCount = Number(meta.txCount) || 0;
+            if (cloudCount > 0) {
+              openCloudRestorePromptModal(cloudCount, meta);
+            } else {
+              showToast('ဤ Google Account တွင် သိမ်းထားသော စာရင်းမှတ်တမ်း မရှိသေးပါ', 'warning');
+            }
+          } else {
+            showToast('ဤ Google Account တွင် Backup မရှိသေးပါ', 'warning');
+          }
+        } catch (e) {
+          console.warn('Check cloud error:', e);
+          showToast('Cloud စစ်ဆေးရာတွင် အဆင်မပြေပါ', 'error');
+        }
+      }
+    };
+
     async function checkOrSyncInitialCloudBackup() {
       if (!db || !auth?.currentUser) return;
       const uid = auth.currentUser.uid;
@@ -2373,10 +2702,24 @@
         const backupRef = doc(db, 'userBackups', uid);
         const snap = await getDoc(backupRef);
         if (!snap.exists()) {
-          await triggerDriveBackup(false);
-        } else {
-          const timeEl = document.getElementById('lastBackupTimeText');
-          if (timeEl) timeEl.textContent = 'Cloud ချိတ်ဆက်ပြီး';
+          const hasUserData = localStorage.getItem('thb_mmk_has_user_data') === 'true';
+          if (hasUserData && !isDemoOnlyData(transactions)) {
+            await triggerDriveBackup(false);
+          }
+          return;
+        }
+
+        const meta = snap.data();
+        const cloudTxCount = Number(meta.txCount) || 0;
+        const timeEl = document.getElementById('lastBackupTimeText');
+        if (timeEl) timeEl.textContent = 'Cloud ချိတ်ဆက်ပြီး';
+
+        const hasUserData = localStorage.getItem('thb_mmk_has_user_data') === 'true';
+        const isLocalDemo = isDemoOnlyData(transactions);
+
+        // If user is on a new phone with demo/fewer records, prompt to restore immediately
+        if (cloudTxCount > 0 && (!hasUserData || isLocalDemo || transactions.length < cloudTxCount)) {
+          openCloudRestorePromptModal(cloudTxCount, meta);
         }
       } catch (err) {
         console.warn('Initial cloud check note:', err);
@@ -2385,6 +2728,14 @@
 
     async function syncBackupToFirestore(uid) {
       if (!db || !uid) return false;
+
+      // SAFETY GUARD: Do not overwrite cloud backup if local phone is on default demo data!
+      const hasUserData = localStorage.getItem('thb_mmk_has_user_data') === 'true';
+      if (!hasUserData && isDemoOnlyData(transactions)) {
+        console.log('Skipping cloud backup overwrite: Local data is default demo data.');
+        return false;
+      }
+
       const backupPath = `userBackups/${uid}`;
       const backupRef = doc(db, 'userBackups', uid);
 
@@ -2403,6 +2754,13 @@
             updatedAt: serverTimestamp()
           });
         } else {
+          // If cloud has more transactions and local has fewer, prevent accidental overwrite without user intent
+          const existingCount = Number(snap.data().txCount) || 0;
+          if (existingCount > transactions.length && isDemoOnlyData(transactions)) {
+            console.warn('Preventing accidental cloud overwrite: Cloud has ' + existingCount + ' transactions.');
+            return false;
+          }
+
           await updateDoc(backupRef, {
             cashMMK: Number(capital.cashMMK) || 0,
             bankMMK: Number(capital.bankMMK) || 0,
@@ -2415,7 +2773,12 @@
         }
 
         const txColRef = collection(db, 'userBackups', uid, 'transactions');
-        const existingSnap = await getDocs(txColRef);
+        let existingSnap;
+        try {
+          existingSnap = await getDocs(query(txColRef, where('ownerId', '==', uid)));
+        } catch (e) {
+          existingSnap = await getDocs(txColRef);
+        }
         const existingIds = new Set(existingSnap.docs.map(d => d.id));
         const currentIds = new Set();
 
@@ -2651,15 +3014,7 @@
           const snap = await getDoc(backupRef);
           if (snap.exists()) {
             const meta = snap.data();
-            const txSnap = await getDocs(collection(db, 'userBackups', uid, 'transactions'));
-            const cloudTxs = txSnap.docs.map(d => {
-              const item = d.data();
-              delete item.createdAt;
-              delete item.updatedAt;
-              delete item.ownerId;
-              return item;
-            });
-            cloudTxs.sort((a, b) => new Date(b.date) - new Date(a.date));
+            const cloudTxs = await fetchCloudTransactions(uid);
             restoredData = {
               capital: {
                 cashMMK: meta.cashMMK,
@@ -2703,21 +3058,26 @@
           }
         }
 
-        if (!restoredData || !Array.isArray(restoredData.transactions)) {
+        if (!restoredData || !Array.isArray(restoredData.transactions) || restoredData.transactions.length === 0) {
           showToast('ဤ Gmail အကောင့်တွင် သိမ်းဆည်းထားသော Backup မတွေ့ရှိသေးပါ', 'warning');
           return;
         }
 
-        if (confirm(`Backup မှတ်တမ်း (${restoredData.transactions.length} ခု) တွေ့ရှိပါသည်။ လက်ရှိဒေတာကို အစားထိုး ပြန်လည်ယူရန် သေချာပါသလား?`)) {
+        if (confirm(`အရင်ဖုန်းမှ Backup မှတ်တမ်း (${restoredData.transactions.length} ခု) တွေ့ရှိပါသည်။ ဤဖုန်းအသစ်ထဲသို့ အစားထိုး ပြန်လည်ရယူရန် သေချာပါသလား?`)) {
           transactions = restoredData.transactions;
           if (restoredData.capital) capital = restoredData.capital;
           if (restoredData.settings) settings = Object.assign(settings, restoredData.settings);
 
+          localStorage.setItem('thb_mmk_has_user_data', 'true');
           saveTransactionsToStorage();
           saveCapitalToStorage();
           saveSettingsToStorage();
           updateAllUI();
-          showToast('Backup ဒေတာများ အောင်မြင်စွာ ပြန်လည်ရယူပြီးပါပြီ!', 'success');
+
+          const banner = document.getElementById('phoneSwitchRestoreBanner');
+          if (banner) banner.classList.add('hidden');
+
+          showToast(`🎉 Backup ဒေတာများ (${transactions.length} ခု) အောင်မြင်စွာ ပြန်လည်ရယူပြီးပါပြီ!`, 'success');
         }
       } catch (err) {
         console.error('Restore error:', err);
@@ -2731,6 +3091,9 @@
         const storedTx = localStorage.getItem(STORAGE_KEY_TRANSACTIONS);
         if (storedTx) {
           transactions = JSON.parse(storedTx);
+          if (transactions.length > 0 && !isDemoOnlyData(transactions)) {
+            localStorage.setItem('thb_mmk_has_user_data', 'true');
+          }
         } else {
           initDemoData();
         }
@@ -3182,7 +3545,7 @@
     const selectProfitBarDetails = window.selectProfitBarDetails = function(label, totalMMK, remitMMK, cashoutMMK, totalTHB, txCount) {
       const infoEl = document.getElementById('profitChartSelectedInfo');
       if (!infoEl) return;
-      infoEl.textContent = `${label}: စုစုပေါင်း +${formatMMK(totalMMK)} (ငွေလွှဲ +${formatMMK(remitMMK)} • KPay +${formatMMK(cashoutMMK)}${totalTHB > 0 ? ` • +${formatTHB(totalTHB)}` : ''}) [${txCount} ခု]`;
+      infoEl.innerHTML = `<span class="theme-text-heading font-bold">${label}:</span> <span class="text-emerald-500">+${formatMMK(totalMMK)}</span> (<span class="text-sky-500 dark:text-sky-400">ငွေလွှဲ +${formatMMK(remitMMK)}</span> • <span class="text-orange-500 dark:text-orange-400">KPay +${formatMMK(cashoutMMK)}</span>${totalTHB > 0 ? ` • <span class="text-emerald-400">+${formatTHB(totalTHB)}</span>` : ''}) [${txCount} ခု]`;
     };
 
     function renderProfitTrendChart() {
@@ -3306,25 +3669,37 @@
 
       container.innerHTML = buckets.map(b => {
         const totalHeightPct = b.totalProfitMMK > 0
-          ? Math.max(12, Math.round((b.totalProfitMMK / maxMMK) * 100))
+          ? Math.max(14, Math.round((b.totalProfitMMK / maxMMK) * 100))
           : 4;
-        const remitSharePct = b.totalProfitMMK > 0
+        let remitSharePct = b.totalProfitMMK > 0
           ? Math.round((b.remitProfitMMK / b.totalProfitMMK) * 100)
           : 0;
-        const cashoutSharePct = 100 - remitSharePct;
+        let cashoutSharePct = b.totalProfitMMK > 0 ? (100 - remitSharePct) : 0;
 
+        // Ensure both segments remain clearly visible if both have positive profit
+        if (b.remitProfitMMK > 0 && b.cashoutProfitMMK > 0) {
+          if (remitSharePct < 15) {
+            remitSharePct = 15;
+            cashoutSharePct = 85;
+          } else if (cashoutSharePct < 15) {
+            cashoutSharePct = 15;
+            remitSharePct = 85;
+          }
+        }
+
+        const hasBothSegments = b.remitProfitMMK > 0 && b.cashoutProfitMMK > 0;
         const safeLabel = b.fullLabel.replace(/'/g, "\\'");
         return `
           <div onclick="selectProfitBarDetails('${safeLabel}', ${b.totalProfitMMK}, ${b.remitProfitMMK}, ${b.cashoutProfitMMK}, ${b.totalProfitTHB}, ${b.count})" class="cursor-pointer flex flex-col items-center justify-end h-full group select-none">
-            <div class="text-[9px] sm:text-[10px] font-mono font-bold ${b.totalProfitMMK > 0 ? 'text-emerald-500' : 'theme-text-muted opacity-60'} mb-1 text-center leading-tight">
+            <div class="text-[9px] sm:text-[10px] font-mono font-bold ${b.totalProfitMMK > 0 ? 'theme-text-heading' : 'theme-text-muted opacity-60'} mb-1 text-center leading-tight">
               ${b.totalProfitMMK > 0 ? '+' + formatCompactMMK(b.totalProfitMMK) : '0'}
-              ${b.totalProfitTHB > 0 ? `<span class="block text-[8px] text-amber-500">+${Math.round(b.totalProfitTHB)}฿</span>` : ''}
+              ${b.totalProfitTHB > 0 ? `<span class="block text-[8px] text-emerald-500 font-extrabold">+${Math.round(b.totalProfitTHB)}฿</span>` : ''}
             </div>
-            <div class="w-full max-w-[38px] bg-slate-500/10 rounded-t-lg h-24 flex flex-col justify-end overflow-hidden p-0.5 border border-transparent group-hover:border-emerald-500/50 transition">
+            <div class="w-full max-w-[38px] bg-slate-500/10 rounded-t-lg h-24 flex flex-col justify-end overflow-hidden p-0.5 border border-transparent group-hover:border-sky-500/60 transition">
               <div class="w-full rounded-t-md overflow-hidden flex flex-col justify-end transition-all duration-500" style="height: ${totalHeightPct}%">
                 ${b.totalProfitMMK > 0 ? `
-                  <div class="w-full bg-emerald-500 transition-all duration-300" style="height: ${cashoutSharePct}%" title="KPay အမြတ်: ${formatMMK(b.cashoutProfitMMK)}"></div>
-                  <div class="w-full bg-blue-500 transition-all duration-300" style="height: ${remitSharePct}%" title="ငွေလွှဲ အမြတ်: ${formatMMK(b.remitProfitMMK)}"></div>
+                  ${cashoutSharePct > 0 ? `<div class="w-full bg-gradient-to-t from-orange-600 to-amber-400 ${hasBothSegments ? 'border-b-2 border-white/90 dark:border-slate-950/90' : ''} transition-all duration-300" style="height: ${cashoutSharePct}%" title="KPay / ငွေထုတ်အမြတ်: ${formatMMK(b.cashoutProfitMMK)}"></div>` : ''}
+                  ${remitSharePct > 0 ? `<div class="w-full bg-gradient-to-t from-indigo-600 to-sky-400 transition-all duration-300" style="height: ${remitSharePct}%" title="ထိုင်း-မြန်မာ ငွေလွှဲအမြတ်: ${formatMMK(b.remitProfitMMK)}"></div>` : ''}
                 ` : `
                   <div class="w-full h-full bg-slate-400/30 rounded-t-sm"></div>
                 `}
@@ -3425,8 +3800,10 @@
       }
       document.getElementById('cashPercentText').textContent = `ငွေသား ${cashPercent}% (${formatMMK(cashInHand)})`;
       document.getElementById('bankPercentText').textContent = `KPay ${bankPercent}% (${formatMMK(bankBalance)})`;
-      document.getElementById('ratioBarCash').style.width = `${cashPercent}%`;
-      document.getElementById('ratioBarBank').style.width = `${bankPercent}%`;
+      const barCash = document.getElementById('ratioBarCash');
+      const barBank = document.getElementById('ratioBarBank');
+      if (barCash) barCash.style.width = `${cashPercent}%`;
+      if (barBank) barBank.style.width = `${bankPercent}%`;
 
       renderProfitTrendChart();
       renderRecentTransactions(periodTx.slice(0, 8));
@@ -3735,6 +4112,7 @@
       }
 
       transactions.unshift(newTx);
+      localStorage.setItem('thb_mmk_has_user_data', 'true');
       saveTransactionsToStorage();
       saveCapitalToStorage();
 
@@ -3810,7 +4188,31 @@
       updateAllUI();
     };
 
+    const syncSearchClearButton = window.syncSearchClearButton = function(inputId, clearBtnId) {
+      const inp = document.getElementById(inputId);
+      const btn = document.getElementById(clearBtnId);
+      if (!inp || !btn) return;
+      if (inp.value && inp.value.length > 0) {
+        btn.classList.remove('hidden');
+      } else {
+        btn.classList.add('hidden');
+      }
+    };
+
+    const clearSearchInput = window.clearSearchInput = function(inputId) {
+      const inp = document.getElementById(inputId);
+      if (!inp) return;
+      inp.value = '';
+      inp.focus();
+      if (inputId === 'remitPayoutSearchInput') renderRemitPayoutList();
+      else if (inputId === 'cashoutPayoutSearchInput') renderCashoutPayoutList();
+      else if (inputId === 'creditSearchInput') renderCreditList();
+      else if (inputId === 'ledgerSearchInput') renderLedgerList();
+      else if (inputId === 'quickSearchInput') renderQuickSearchList();
+    };
+
     const renderRemitPayoutList = window.renderRemitPayoutList = function() {
+      syncSearchClearButton('remitPayoutSearchInput', 'remitPayoutSearchClearBtn');
       const container = document.getElementById('remitPayoutListContainer');
       if (!container) return;
 
@@ -4074,6 +4476,7 @@
       }
 
       transactions.unshift(newTx);
+      localStorage.setItem('thb_mmk_has_user_data', 'true');
       saveTransactionsToStorage();
       saveCapitalToStorage();
 
@@ -4167,6 +4570,7 @@
     };
 
     const renderCashoutPayoutList = window.renderCashoutPayoutList = function() {
+      syncSearchClearButton('cashoutPayoutSearchInput', 'cashoutPayoutSearchClearBtn');
       const container = document.getElementById('cashoutPayoutListContainer');
       if (!container) return;
 
@@ -4305,6 +4709,7 @@
     };
 
     const renderCreditList = window.renderCreditList = function() {
+      syncSearchClearButton('creditSearchInput', 'creditSearchClearBtn');
       const container = document.getElementById('creditListContainer');
       const search = (document.getElementById('creditSearchInput')?.value || '').toLowerCase().trim();
       if (!container) return;
@@ -4457,6 +4862,7 @@
       else if (account === 'BANK') capital.bankMMK = (Number(capital.bankMMK) || 0) + amount;
       else if (account === 'THB') capital.thbBalance = (Number(capital.thbBalance) || 0) + amount;
 
+      localStorage.setItem('thb_mmk_has_user_data', 'true');
       saveTransactionsToStorage();
       saveCapitalToStorage();
       closeSettleModal();
@@ -4500,6 +4906,7 @@
       };
 
       transactions.unshift(newTx);
+      localStorage.setItem('thb_mmk_has_user_data', 'true');
       saveTransactionsToStorage();
       closeDirectCreditModal();
       showToast('အကြွေးသစ် အောင်မြင်စွာ မှတ်တမ်းတင်ပြီးပါပြီ!', 'success');
@@ -4560,11 +4967,8 @@
       renderLedgerList();
     };
 
-    const renderLedgerList = window.renderLedgerList = function() {
-      const container = document.getElementById('ledgerListContainer');
+    function getFilteredLedgerTransactions() {
       const search = (document.getElementById('ledgerSearchInput')?.value || '').toLowerCase().trim();
-      if (!container) return;
-
       let list = [...transactions];
       if (ledgerTypeFilter === 'REMIT') list = list.filter(t => t.type === 'REMIT');
       else if (ledgerTypeFilter === 'REMIT_UNPAID') list = list.filter(t => (t.type === 'REMIT' || t.type === 'CASHOUT') && t.status === 'UNPAID');
@@ -4573,15 +4977,87 @@
       else if (ledgerTypeFilter === 'CREDIT') list = list.filter(t => t.status === 'UNPAID' || t.type === 'DIRECT_CREDIT');
 
       if (search) {
-        list = list.filter(t => 
-          (t.custName && t.custName.toLowerCase().includes(search)) ||
-          (t.senderName && t.senderName.toLowerCase().includes(search)) ||
-          (t.receiverName && t.receiverName.toLowerCase().includes(search)) ||
-          (t.id && t.id.toLowerCase().includes(search)) ||
-          (t.custPhone && t.custPhone.includes(search)) ||
-          (t.note && t.note.toLowerCase().includes(search))
-        );
+        list = list.filter(t => {
+          const names = getTxNames(t);
+          const stDisp = getTxStatusDisplay(t);
+          return (
+            (t.custName && t.custName.toLowerCase().includes(search)) ||
+            (t.senderName && t.senderName.toLowerCase().includes(search)) ||
+            (t.receiverName && t.receiverName.toLowerCase().includes(search)) ||
+            (names.displayTitle && names.displayTitle.toLowerCase().includes(search)) ||
+            (t.id && t.id.toLowerCase().includes(search)) ||
+            (t.custPhone && t.custPhone.toLowerCase().includes(search)) ||
+            (t.channel && t.channel.toLowerCase().includes(search)) ||
+            (t.note && t.note.toLowerCase().includes(search)) ||
+            (stDisp.text && stDisp.text.toLowerCase().includes(search)) ||
+            String(t.amountMMK || '').includes(search) ||
+            String(t.customerTHB || '').includes(search)
+          );
+        });
       }
+      return list;
+    }
+
+    const exportFilteredHistoryCSV = window.exportFilteredHistoryCSV = function() {
+      const filteredList = getFilteredLedgerTransactions();
+      if (filteredList.length === 0) {
+        showToast('CSV ထုတ်ယူရန် လက်ရှိစစ်ထုတ်ထားသော မှတ်တမ်း မရှိပါ', 'warning');
+        return;
+      }
+
+      const rows = filteredList.map(tx => {
+        const names = getTxNames(tx);
+        const stDisp = getTxStatusDisplay(tx);
+        return {
+          'Voucher ID': tx.id || '',
+          'ရက်စွဲ': formatDateTime(tx.date),
+          'အမျိုးအစား': tx.type === 'REMIT'
+            ? (tx.direction === 'MMK_TO_THB' ? 'မြန်မာကျပ် ➔ ထိုင်းဘတ်' : 'ထိုင်းဘတ် ➔ မြန်မာကျပ်')
+            : (tx.type === 'DIRECT_CREDIT' ? 'အကြွေးသီးသန့်' : (tx.cashoutType === 'TRANSFER' ? 'KPay ငွေလွှဲ' : 'KPay ငွေထုတ်')),
+          'လွှဲသူအမည်': tx.type === 'REMIT' ? (names.senderName || '-') : (tx.custName || ''),
+          'ထုတ်ယူသူအမည်': tx.type === 'REMIT' ? (names.receiverName || '-') : '-',
+          'Customer အမည် (စုစုပေါင်း)': names.displayTitle || '',
+          'ဖုန်းနံပါတ်': tx.custPhone || '',
+          'ချန်နယ်': tx.channel || '',
+          'ငွေပမာဏ (MMK)': tx.amountMMK || 0,
+          'ဘတ်ငွေ (THB)': tx.amountTHB || tx.customerTHB || 0,
+          'အမြတ် (MMK)': tx.profitMMK || 0,
+          'အမြတ် (THB)': tx.profitTHB || 0,
+          'အခြေအနေ': stDisp.text,
+          'မှတ်ချက်': tx.note || ''
+        };
+      });
+
+      let csvContent = "\uFEFF";
+      const headers = Object.keys(rows[0]);
+      csvContent += headers.map(h => `"${String(h).replace(/"/g, '""')}"`).join(",") + "\r\n";
+      rows.forEach(row => {
+        const line = headers.map(header => `"${String(row[header] ?? '').replace(/"/g, '""')}"`).join(",");
+        csvContent += line + "\r\n";
+      });
+
+      const filterSlug = (ledgerTypeFilter || 'ALL').toLowerCase();
+      const dateStr = new Date().toISOString().split('T')[0];
+      const fileName = `LabShwin_History_${filterSlug}_${dateStr}.csv`;
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast(`စစ်ထုတ်ထားသော မှတ်တမ်း (${filteredList.length} ခု) ကို CSV ဖိုင်အဖြစ် ဒေါင်းလုဒ်ဆွဲပြီးပါပြီ!`, 'success');
+    };
+
+    const renderLedgerList = window.renderLedgerList = function() {
+      syncSearchClearButton('ledgerSearchInput', 'ledgerSearchClearBtn');
+      const container = document.getElementById('ledgerListContainer');
+      if (!container) return;
+
+      const list = getFilteredLedgerTransactions();
 
       const countBadge = document.getElementById('ledgerCountBadge');
       if (countBadge) countBadge.textContent = list.length + ' ခု';
@@ -4730,6 +5206,7 @@
       tx.status = document.getElementById('editStatus').value;
       tx.note = document.getElementById('editNote').value.trim();
 
+      localStorage.setItem('thb_mmk_has_user_data', 'true');
       saveTransactionsToStorage();
       closeEditModal();
       showToast('မှတ်တမ်းကို အောင်မြင်စွာ ပြင်ဆင်ပြီးပါပြီ!', 'success');
@@ -4947,6 +5424,7 @@
     };
 
     const renderQuickSearchList = window.renderQuickSearchList = function() {
+      syncSearchClearButton('quickSearchInput', 'quickSearchClearBtn');
       const container = document.getElementById('quickSearchListContainer');
       const countEl = document.getElementById('quickSearchResultCount');
       if (!container) return;
@@ -5220,11 +5698,14 @@
                 transactions = data.transactions;
                 if (data.capital) capital = data.capital;
                 if (data.settings) settings = Object.assign(settings, data.settings);
+                localStorage.setItem('thb_mmk_has_user_data', 'true');
                 saveTransactionsToStorage();
                 saveCapitalToStorage();
                 saveSettingsToStorage();
                 updateAllUI();
-                showToast('ဒေတာများကို အောင်မြင်စွာ ပြန်လည်တင်သွင်းပြီးပါပြီ!', 'success');
+                const banner = document.getElementById('phoneSwitchRestoreBanner');
+                if (banner) banner.classList.add('hidden');
+                showToast(`🎉 ဖိုင်မှ စာရင်းမှတ်တမ်း ${transactions.length} ခု အားလုံးကို အောင်မြင်စွာ ပြန်လည်တင်သွင်းပြီးပါပြီ!`, 'success');
               }
             } else {
               showToast('မမှန်ကန်သော JSON Backup ဖိုင်ဖြစ်နေပါသည်', 'error');
