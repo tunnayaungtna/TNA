@@ -197,6 +197,81 @@
         "createdAt",
         "updatedAt"
       ]
+    },
+    "ExpenseRecord": {
+      "title": "ExpenseRecord",
+      "description": "An operational expense record (internet, electricity, wages, rent, etc.) logged by the user to track net profit.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique expense ID.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "ownerId": {
+          "type": "string",
+          "description": "The Firebase Auth UID of the owner.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "date": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "category": {
+          "type": "string",
+          "enum": ["INTERNET", "ELECTRICITY", "SALARY", "RENT", "PHONE", "SUPPLIES", "TRANSPORT", "GENERAL"],
+          "maxLength": 30
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "amount": {
+          "type": "number",
+          "minimum": 0
+        },
+        "currency": {
+          "type": "string",
+          "enum": ["MMK", "THB"],
+          "maxLength": 10
+        },
+        "paidAccount": {
+          "type": "string",
+          "enum": ["CASH", "BANK", "THB"],
+          "maxLength": 10
+        },
+        "note": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "ownerId",
+        "date",
+        "category",
+        "title",
+        "amount",
+        "currency",
+        "paidAccount",
+        "note",
+        "createdAt",
+        "updatedAt"
+      ]
     }
   },
   "firestore": {
@@ -207,6 +282,10 @@
     "/userBackups/{userId}/transactions/{txId}": {
       "schema": { "$ref": "#/entities/TransactionRecord" },
       "description": "Individual remittance, cash-out, and credit transactions belonging to the user backup."
+    },
+    "/userBackups/{userId}/expenses/{expId}": {
+      "schema": { "$ref": "#/entities/ExpenseRecord" },
+      "description": "Business expense records logged by the user to track accurate net profit."
     }
   }
 }

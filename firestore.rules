@@ -112,6 +112,34 @@ service cloud.firestore {
         && data.updatedAt is timestamp;
     }
 
+    // --- Validation Blueprint: ExpenseRecord ---
+    function isValidExpenseRecord(data, userId, expId) {
+      return data.keys().hasAll([
+          'id', 'ownerId', 'date', 'category', 'title',
+          'amount', 'currency', 'paidAccount', 'note',
+          'createdAt', 'updatedAt'
+        ])
+        && data.keys().hasOnly([
+          'id', 'ownerId', 'date', 'category', 'title',
+          'amount', 'currency', 'paidAccount', 'note',
+          'createdAt', 'updatedAt'
+        ])
+        && data.id is string && data.id.size() >= 1 && data.id.size() <= 128 && data.id.matches('^[a-zA-Z0-9_\\-]+$')
+        && data.id == expId
+        && data.ownerId is string && data.ownerId.size() >= 1 && data.ownerId.size() <= 128 && data.ownerId.matches('^[a-zA-Z0-9_\\-]+$')
+        && data.ownerId == request.auth.uid
+        && data.ownerId == userId
+        && data.date is string && data.date.size() >= 1 && data.date.size() <= 64
+        && data.category is string && data.category.size() <= 30 && (data.category in ['INTERNET', 'ELECTRICITY', 'SALARY', 'RENT', 'PHONE', 'SUPPLIES', 'TRANSPORT', 'GENERAL'])
+        && data.title is string && data.title.size() >= 1 && data.title.size() <= 200
+        && data.amount is number && data.amount >= 0
+        && data.currency is string && data.currency.size() <= 10 && (data.currency in ['MMK', 'THB'])
+        && data.paidAccount is string && data.paidAccount.size() <= 10 && (data.paidAccount in ['CASH', 'BANK', 'THB'])
+        && data.note is string && data.note.size() <= 500
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
     // --- Collection: /userBackups/{userId} ---
     match /userBackups/{userId} {
       allow get: if isOwner(userId) && isValidId(userId) && existing().ownerId == request.auth.uid;
@@ -185,6 +213,50 @@ service cloud.firestore {
         allow delete: if isOwner(userId)
           && isValidId(userId)
           && isValidId(txId)
+          && existing().ownerId == request.auth.uid
+          && exists(/databases/$(database)/documents/userBackups/$(userId))
+          && get(/databases/$(database)/documents/userBackups/$(userId)).data.ownerId == request.auth.uid;
+      }
+
+      // --- Subcollection: /userBackups/{userId}/expenses/{expId} ---
+      match /expenses/{expId} {
+        allow get, list: if isOwner(userId)
+          && existing().ownerId == request.auth.uid;
+
+        allow create: if isOwner(userId)
+          && isValidId(userId)
+          && isValidId(expId)
+          && isValidExpenseRecord(incoming(), userId, expId)
+          && incoming().createdAt == request.time
+          && incoming().updatedAt == request.time
+          && (
+            (exists(/databases/$(database)/documents/userBackups/$(userId))
+              && get(/databases/$(database)/documents/userBackups/$(userId)).data.ownerId == request.auth.uid)
+            || (existsAfter(/databases/$(database)/documents/userBackups/$(userId))
+              && getAfter(/databases/$(database)/documents/userBackups/$(userId)).data.ownerId == request.auth.uid)
+          );
+
+        allow update: if isOwner(userId)
+          && isValidId(userId)
+          && isValidId(expId)
+          && isValidExpenseRecord(incoming(), userId, expId)
+          && incoming().id == existing().id
+          && incoming().ownerId == existing().ownerId
+          && incoming().createdAt == existing().createdAt
+          && incoming().updatedAt == request.time
+          && incoming().diff(existing()).affectedKeys().hasOnly([
+            'date', 'category', 'title', 'amount', 'currency', 'paidAccount', 'note', 'updatedAt'
+          ])
+          && (
+            (exists(/databases/$(database)/documents/userBackups/$(userId))
+              && get(/databases/$(database)/documents/userBackups/$(userId)).data.ownerId == request.auth.uid)
+            || (existsAfter(/databases/$(database)/documents/userBackups/$(userId))
+              && getAfter(/databases/$(database)/documents/userBackups/$(userId)).data.ownerId == request.auth.uid)
+          );
+
+        allow delete: if isOwner(userId)
+          && isValidId(userId)
+          && isValidId(expId)
           && existing().ownerId == request.auth.uid
           && exists(/databases/$(database)/documents/userBackups/$(userId))
           && get(/databases/$(database)/documents/userBackups/$(userId)).data.ownerId == request.auth.uid;

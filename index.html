@@ -327,19 +327,20 @@
         </div>
 
         <!-- 2. Profit Card -->
-        <div class="theme-card border hover:border-emerald-500/60 transition rounded-2xl p-3.5 relative overflow-hidden shadow-sm">
+        <div onclick="switchTab('expense')" class="cursor-pointer theme-card border hover:border-emerald-500/60 active:scale-[0.99] transition rounded-2xl p-3.5 relative overflow-hidden shadow-sm group">
           <div class="flex items-center justify-between mb-1.5">
             <span class="text-xs text-emerald-500 font-bold flex items-center gap-1">
               <svg class="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
-              စုစုပေါင်း အမြတ်
+              အသားတင် အမြတ် (Net Profit)
             </span>
             <span class="text-[10px] bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 px-1.5 py-0.2 rounded font-bold" id="dashPeriodLabel">ယနေ့</span>
           </div>
           <div class="text-lg sm:text-xl font-bold text-emerald-500 font-mono leading-tight" id="dashTotalProfitMMK">+0 Ks</div>
           <div class="mt-2 text-[11px] theme-text-muted font-mono space-y-0.5">
-            <div class="flex justify-between"><span>ဘတ်အမြတ်:</span> <span class="text-emerald-500 font-bold" id="dashProfitTHB">+0 THB</span></div>
-            <div class="flex justify-between"><span>ကျပ်အမြတ်:</span> <span class="text-emerald-500 font-medium" id="dashProfitMMKOnly">+0 Ks</span></div>
-            <div class="text-[10px] opacity-75 text-right pt-0.5">ငွေလွှဲ + KPay အမြတ်</div>
+            <div class="flex justify-between"><span>အကြမ်းအမြတ်:</span> <span class="text-emerald-500 font-semibold" id="dashGrossProfitMMK">+0 Ks</span></div>
+            <div class="flex justify-between"><span>အသုံးစရိတ်:</span> <span class="text-rose-500 font-bold" id="dashTotalExpenseMMK">-0 Ks</span></div>
+            <div class="flex justify-between"><span>အသားတင်ဘတ်:</span> <span class="text-emerald-500 font-bold" id="dashProfitTHB">+0 THB</span></div>
+            <div class="text-[10px] text-amber-500 group-hover:underline text-right pt-0.5 font-semibold">အသုံးစရိတ် စီမံရန် ➔</div>
           </div>
         </div>
 
@@ -382,14 +383,18 @@
       </div>
 
       <!-- Quick Action Buttons -->
-      <div class="grid grid-cols-2 gap-2.5">
-        <button onclick="switchTab('remit')" class="py-3 px-3 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 active:scale-98 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md shadow-blue-900/20 transition">
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-2.5">
+        <button onclick="switchTab('remit')" class="py-2.5 sm:py-3 px-2 sm:px-3 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 active:scale-98 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 sm:gap-2 shadow-md shadow-blue-900/20 transition">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
-          + ထိုင်း-မြန်မာ ငွေလွှဲသစ်
+          <span>+ ငွေလွှဲသစ်</span>
         </button>
-        <button onclick="switchTab('cashout')" class="py-3 px-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 active:scale-98 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md shadow-emerald-900/20 transition">
+        <button onclick="switchTab('cashout')" class="py-2.5 sm:py-3 px-2 sm:px-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 active:scale-98 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 sm:gap-2 shadow-md shadow-emerald-900/20 transition">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-          + KPay ငွေထုတ်/လွှဲသစ်
+          <span>+ KPay ငွေထုတ်/လွှဲ</span>
+        </button>
+        <button onclick="switchTab('expense')" class="col-span-2 sm:col-span-1 py-2.5 sm:py-3 px-2 sm:px-3 rounded-2xl bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 active:scale-98 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 sm:gap-2 shadow-md shadow-amber-900/20 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z"></path></svg>
+          <span>+ အသုံးစရိတ်သစ်</span>
         </button>
       </div>
 
@@ -1011,7 +1016,213 @@
       </div>
     </section>
 
-    <!-- ================= TAB 5: SETTING (အရင်းစာရင်း၊ ပေါက်ဈေး & DRIVE BACKUP) ================= -->
+    <!-- ================= TAB 5: အသုံးစရိတ်များ (BUSINESS EXPENSES) ================= -->
+    <section id="tab-expense" class="space-y-4 hidden">
+      <!-- Header Banner -->
+      <div class="bg-gradient-to-r from-amber-900/30 via-orange-900/20 to-transparent theme-card border border-amber-500/30 rounded-2xl p-4 sm:p-5 shadow-sm">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h2 class="text-sm sm:text-base font-bold theme-text-heading flex items-center gap-2">
+              <span class="w-7 h-7 rounded-lg bg-amber-600 text-white flex items-center justify-center text-xs">💸</span>
+              အသုံးစရိတ် စာရင်း (Business Expenses)
+            </h2>
+            <p class="text-xs theme-text-muted mt-0.5">နေ့စဉ် လုပ်ငန်းသုံး အသုံးစရိတ်များ (အင်တာနက်၊ မီးဖိုး၊ ဝန်ထမ်းလစာ၊ ဆိုင်ခန်းခ) ကို မှတ်တမ်းတင်ပြီး အသားတင်အမြတ် (Net Profit) အစစ်အမှန်ကို တိကျစွာ တွက်ချက်ပါသည်</p>
+          </div>
+          <button type="button" onclick="focusExpenseForm()" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white text-xs font-bold shadow flex items-center gap-1.5 transition active:scale-95">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+            <span>+ အသုံးစရိတ် မှတ်တမ်းသစ်</span>
+          </button>
+        </div>
+
+        <!-- 4 Expense KPI Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3.5 pt-3.5 mt-3.5 border-t border-amber-500/20">
+          <div class="theme-card-sub p-2.5 sm:p-3 rounded-xl border border-amber-500/20">
+            <span class="text-[10px] theme-text-muted block">ယနေ့ အသုံးစရိတ်</span>
+            <div class="text-sm sm:text-base font-bold font-mono text-rose-500 mt-0.5" id="expKpiTodayMMK">0 Ks</div>
+            <div class="text-[10px] font-mono text-amber-500" id="expKpiTodayTHB">0 THB</div>
+          </div>
+          <div class="theme-card-sub p-2.5 sm:p-3 rounded-xl border border-amber-500/20">
+            <span class="text-[10px] theme-text-muted block">ယခုလ အသုံးစရိတ်</span>
+            <div class="text-sm sm:text-base font-bold font-mono text-rose-500 mt-0.5" id="expKpiMonthMMK">0 Ks</div>
+            <div class="text-[10px] font-mono text-amber-500" id="expKpiMonthTHB">0 THB</div>
+          </div>
+          <div class="theme-card-sub p-2.5 sm:p-3 rounded-xl border border-amber-500/20">
+            <span class="text-[10px] theme-text-muted block">စုစုပေါင်း အသုံးစရိတ်</span>
+            <div class="text-sm sm:text-base font-bold font-mono text-rose-500 mt-0.5" id="expKpiAllMMK">0 Ks</div>
+            <div class="text-[10px] theme-text-muted font-mono" id="expKpiAllCount">0 ခု</div>
+          </div>
+          <div class="theme-card-sub p-2.5 sm:p-3 rounded-xl border border-emerald-500/20 bg-emerald-500/5">
+            <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold block">ယနေ့ အသားတင်အမြတ် (Net)</span>
+            <div class="text-sm sm:text-base font-bold font-mono text-emerald-500 mt-0.5" id="expKpiNetProfitMMK">+0 Ks</div>
+            <div class="text-[10px] text-emerald-600 dark:text-emerald-400" id="expKpiNetProfitSub">အကြမ်းအမြတ် - အသုံးစရိတ်</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Layout: Form (Left) & Expense History (Right) -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+        
+        <!-- Left: Expense Input Form (5 cols on md) -->
+        <div class="md:col-span-5 space-y-4">
+          <form id="expenseForm" onsubmit="handleSaveExpense(event)" class="theme-card border border-amber-500/30 rounded-2xl p-4 sm:p-5 space-y-3.5 shadow-sm">
+            <div class="flex items-center justify-between border-b pb-2">
+              <h3 class="text-xs sm:text-sm font-bold text-amber-500 flex items-center gap-1.5">
+                <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                အသုံးစရိတ် မှတ်တမ်းတင်ရန်
+              </h3>
+              <span class="text-[10px] theme-text-muted">အရင်းမှ အလိုအလျောက်နုတ်မည်</span>
+            </div>
+
+            <!-- Quick Category Selection Chips -->
+            <div>
+              <label class="block text-[11px] font-semibold theme-text-heading mb-1.5">အသုံးများသော ကဏ္ဍ အမြန်ရွေးရန်:</label>
+              <div class="grid grid-cols-3 gap-1.5 text-[11px]">
+                <button type="button" onclick="setExpenseCategoryPreset('INTERNET', 'လစဉ် Fiber အင်တာနက်ဖိုး (WiFi)')" class="px-2 py-1.5 rounded-xl theme-card-sub border hover:border-blue-500 hover:text-blue-500 active:scale-95 transition text-center truncate font-medium">
+                  🌐 အင်တာနက်
+                </button>
+                <button type="button" onclick="setExpenseCategoryPreset('ELECTRICITY', 'မီးဖိုး / မီးစက်ဆီဖိုး')" class="px-2 py-1.5 rounded-xl theme-card-sub border hover:border-amber-500 hover:text-amber-500 active:scale-95 transition text-center truncate font-medium">
+                  ⚡ မီးဖိုး / ဆီဖိုး
+                </button>
+                <button type="button" onclick="setExpenseCategoryPreset('SALARY', 'ဝန်ထမ်းလစာ / စရိတ်')" class="px-2 py-1.5 rounded-xl theme-card-sub border hover:border-purple-500 hover:text-purple-500 active:scale-95 transition text-center truncate font-medium">
+                  👥 ဝန်ထမ်းလစာ
+                </button>
+                <button type="button" onclick="setExpenseCategoryPreset('RENT', 'ဆိုင်ခန်းလခ / နေရာစရိတ်')" class="px-2 py-1.5 rounded-xl theme-card-sub border hover:border-rose-500 hover:text-rose-500 active:scale-95 transition text-center truncate font-medium">
+                  🏠 ဆိုင်ငှားခ
+                </button>
+                <button type="button" onclick="setExpenseCategoryPreset('PHONE', 'ဖုန်းဘေလ် / အင်တာနက်ကတ်')" class="px-2 py-1.5 rounded-xl theme-card-sub border hover:border-emerald-500 hover:text-emerald-500 active:scale-95 transition text-center truncate font-medium">
+                  📱 ဖုန်းဘေလ်
+                </button>
+                <button type="button" onclick="setExpenseCategoryPreset('GENERAL', 'အထွေထွေ အသုံးစရိတ်')" class="px-2 py-1.5 rounded-xl theme-card-sub border hover:border-slate-500 hover:text-slate-300 active:scale-95 transition text-center truncate font-medium">
+                  📦 အထွေထွေ
+                </button>
+              </div>
+            </div>
+
+            <!-- Date and Time -->
+            <div>
+              <label class="block text-xs font-semibold theme-text-heading mb-1">ရက်စွဲနှင့် အချိန်</label>
+              <input type="datetime-local" id="expenseDate" required class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-mono">
+            </div>
+
+            <!-- Category Dropdown -->
+            <div>
+              <label class="block text-xs font-semibold theme-text-heading mb-1">အသုံးစရိတ် အမျိုးအစား (Category) <span class="text-rose-500">*</span></label>
+              <select id="expenseCategory" required class="w-full theme-input border rounded-xl px-3 py-2 text-xs">
+                <option value="INTERNET">🌐 အင်တာနက်ဖိုး / WiFi (Internet)</option>
+                <option value="ELECTRICITY">⚡ လျှပ်စစ်မီးဖိုး / မီးစက်ဆီဖိုး (Electricity/Fuel)</option>
+                <option value="SALARY">👥 ဝန်ထမ်းလစာ / နေ့တွက်စရိတ် (Staff Wages/Salary)</option>
+                <option value="RENT">🏠 ဆိုင်ခန်းခ / အဆောက်အဦးငှားရမ်းခ (Shop Rent)</option>
+                <option value="PHONE">📱 ဖုန်းဘေလ် / အင်တာနက်ဒေတာ (Phone Bill)</option>
+                <option value="SUPPLIES">🛍️ စာရေးကိရိယာ / ရုံးသုံးပစ္စည်းစရိတ် (Stationery/Supplies)</option>
+                <option value="TRANSPORT">🚗 သယ်ယူပို့ဆောင်ရေး / ခရီးစရိတ် (Transport/Travel)</option>
+                <option value="GENERAL">📦 အထွေထွေ အသုံးစရိတ် (General/Miscellaneous)</option>
+              </select>
+            </div>
+
+            <!-- Title / Description -->
+            <div>
+              <label class="block text-xs font-semibold theme-text-heading mb-1">အကြောင်းအရာ / ခေါင်းစဉ် <span class="text-rose-500">*</span></label>
+              <input type="text" id="expenseTitle" placeholder="ဥပမာ - လစဉ် Fiber အင်တာနက်ကြေး" required class="w-full theme-input border rounded-xl px-3 py-2 text-xs">
+            </div>
+
+            <!-- Currency & Amount -->
+            <div class="grid grid-cols-12 gap-2">
+              <div class="col-span-4">
+                <label class="block text-xs font-semibold theme-text-heading mb-1">ငွေကြေး</label>
+                <select id="expenseCurrency" onchange="updateExpenseAmountUnit()" class="w-full theme-input border rounded-xl px-2.5 py-2 text-xs font-bold">
+                  <option value="MMK">မြန်မာကျပ် (Ks)</option>
+                  <option value="THB">ထိုင်းဘတ် (฿)</option>
+                </select>
+              </div>
+              <div class="col-span-8">
+                <label class="block text-xs font-semibold theme-text-heading mb-1">ကျသင့်ငွေ ပမာဏ <span class="text-rose-500">*</span></label>
+                <div class="relative">
+                  <input type="number" step="any" min="1" id="expenseAmount" required placeholder="0" class="w-full theme-input border rounded-xl px-3 py-2 text-sm font-mono font-bold pr-12">
+                  <span id="expenseCurrencySuffix" class="absolute right-3 top-2.5 text-xs theme-text-muted font-bold">Ks</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Payment Account (Where money was deducted from) -->
+            <div>
+              <label class="block text-xs font-semibold theme-text-heading mb-1">ငွေရှင်းပေးသည့် အကောင့် (အရင်းမှ နုတ်မည်) <span class="text-rose-500">*</span></label>
+              <select id="expensePaidAccount" required class="w-full theme-input border rounded-xl px-3 py-2 text-xs">
+                <option value="CASH">💵 လက်ထဲရှိ ငွေသား (Cash in Hand MMK)</option>
+                <option value="BANK">📱 KPay / ဘဏ်အကောင့် (Digital MMK)</option>
+                <option value="THB">🇹🇭 ထိုင်းဘတ် လက်ကျန် (THB Balance)</option>
+              </select>
+              <p class="text-[10px] theme-text-muted mt-1">အသုံးစရိတ် သွင်းလိုက်ပါက အဆိုပါ အကောင့်ရှိ မတည်အရင်းထဲမှ အလိုအလျောက် နုတ်ယူသွားပါမည်</p>
+            </div>
+
+            <!-- Note -->
+            <div>
+              <label class="block text-xs font-semibold theme-text-heading mb-1">မှတ်ချက် (Optional)</label>
+              <input type="text" id="expenseNote" placeholder="ဥပမာ - ဘောက်ချာနံပါတ် သို့မဟုတ် အပိုမှတ်ချက်" class="w-full theme-input border rounded-xl px-3 py-2 text-xs">
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 active:scale-98 text-white text-xs sm:text-sm font-bold shadow-md shadow-amber-900/20 transition flex items-center justify-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+              <span>အသုံးစရိတ် စာရင်းသွင်းမည်</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Right: Expense History & Filter (7 cols on md) -->
+        <div class="md:col-span-7 space-y-3">
+          <div class="theme-card border border-amber-500/30 rounded-2xl p-4 space-y-3 shadow-sm">
+            <div class="flex flex-wrap items-center justify-between gap-2 border-b pb-2.5">
+              <div class="flex items-center gap-2">
+                <h3 class="text-xs sm:text-sm font-bold theme-text-heading flex items-center gap-1.5">
+                  <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                  အသုံးစရိတ် စာရင်းမှတ်တမ်းများ
+                </h3>
+                <span class="text-[10px] theme-tag-bg px-2 py-0.5 rounded-full font-bold" id="expenseCountBadge">0 ခု</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold font-mono text-rose-500" id="expenseFilteredTotal">0 Ks</span>
+                <button type="button" onclick="exportFilteredExpenseCSV()" class="px-2.5 py-1 rounded-xl bg-amber-600 hover:bg-amber-500 active:scale-95 text-white text-[11px] font-bold shadow-sm transition flex items-center gap-1" title="အသုံးစရိတ်များကို CSV ထုတ်ယူရန်">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                  <span>CSV ထုတ်မည်</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Search input with auto-clear X button -->
+            <div class="relative">
+              <input type="text" id="expenseSearchInput" oninput="renderExpenseList()" placeholder="အသုံးစရိတ် အမည်၊ ကဏ္ဍ၊ မှတ်ချက် သို့မဟုတ် ပမာဏဖြင့် ရှာရန်..." class="w-full theme-input border rounded-xl px-3.5 py-2 pl-9 pr-8 text-xs">
+              <svg class="w-4 h-4 theme-text-muted absolute left-3 top-2.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+              <button type="button" id="expenseSearchClearBtn" onclick="clearSearchInput('expenseSearchInput')" class="hidden absolute right-2.5 top-2 w-5 h-5 rounded-full bg-slate-500/20 hover:bg-rose-500/20 theme-text-muted hover:text-rose-500 flex items-center justify-center text-[11px] font-bold transition" title="ရှင်းလင်းရန်" aria-label="Clear search">✕</button>
+            </div>
+
+            <!-- Period Filter -->
+            <div class="flex gap-1 theme-card-sub p-1 rounded-xl border text-xs">
+              <button type="button" onclick="setExpensePeriodFilter('today')" id="exp-filter-today" class="flex-1 py-1.5 rounded-lg font-bold bg-amber-600 text-white transition text-center shadow">ယနေ့</button>
+              <button type="button" onclick="setExpensePeriodFilter('month')" id="exp-filter-month" class="flex-1 py-1.5 rounded-lg font-medium theme-text-muted hover:text-amber-500 transition text-center">ယခုလ</button>
+              <button type="button" onclick="setExpensePeriodFilter('all')" id="exp-filter-all" class="flex-1 py-1.5 rounded-lg font-medium theme-text-muted hover:text-amber-500 transition text-center">အားလုံး</button>
+            </div>
+
+            <!-- Category Filter Chips -->
+            <div class="flex flex-wrap gap-1 text-[11px] pt-1">
+              <button type="button" onclick="setExpenseCategoryFilter('ALL')" id="exp-cat-all" class="px-2.5 py-1 rounded-lg bg-amber-600 text-white font-bold transition">အားလုံး</button>
+              <button type="button" onclick="setExpenseCategoryFilter('INTERNET')" id="exp-cat-internet" class="px-2 py-1 rounded-lg theme-card-sub border theme-text-muted hover:text-blue-500 transition">🌐 အင်တာနက်</button>
+              <button type="button" onclick="setExpenseCategoryFilter('ELECTRICITY')" id="exp-cat-electricity" class="px-2 py-1 rounded-lg theme-card-sub border theme-text-muted hover:text-amber-500 transition">⚡ မီးဖိုး</button>
+              <button type="button" onclick="setExpenseCategoryFilter('SALARY')" id="exp-cat-salary" class="px-2 py-1 rounded-lg theme-card-sub border theme-text-muted hover:text-purple-500 transition">👥 လစာ</button>
+              <button type="button" onclick="setExpenseCategoryFilter('RENT')" id="exp-cat-rent" class="px-2 py-1 rounded-lg theme-card-sub border theme-text-muted hover:text-rose-500 transition">🏠 ဆိုင်ခန်းခ</button>
+              <button type="button" onclick="setExpenseCategoryFilter('OTHER')" id="exp-cat-other" class="px-2 py-1 rounded-lg theme-card-sub border theme-text-muted hover:text-slate-300 transition">📦 အခြား</button>
+            </div>
+
+            <!-- Expense List Container -->
+            <div id="expenseListContainer" class="space-y-2 max-h-[480px] overflow-y-auto pr-1">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= TAB 6: SETTING (အရင်းစာရင်း၊ ပေါက်ဈေး & DRIVE BACKUP) ================= -->
     <section id="tab-capital" class="space-y-4 hidden">
       <div class="bg-gradient-to-r from-blue-900/30 via-indigo-900/20 to-transparent theme-card border rounded-2xl p-4 sm:p-5 shadow-sm">
         <h2 class="text-sm sm:text-base font-bold theme-text-heading flex items-center gap-2">
@@ -1296,32 +1507,38 @@
   </main>
 
   <!-- ================= BOTTOM NAVIGATION (MOBILE & TABLET DOCK) ================= -->
-  <nav class="fixed bottom-0 inset-x-0 z-40 theme-nav backdrop-blur-lg border-t px-2 py-1.5 shadow-2xl md:bottom-4 md:max-w-xl md:mx-auto md:rounded-2xl md:border md:shadow-2xl">
-    <div class="grid grid-cols-5 gap-1 text-center">
-      <button onclick="switchTab('dashboard')" id="nav-dashboard" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition text-blue-500 font-bold bg-blue-600/15">
+  <nav class="fixed bottom-0 inset-x-0 z-40 theme-nav backdrop-blur-lg border-t px-1 sm:px-2 py-1.5 shadow-2xl md:bottom-4 md:max-w-2xl md:mx-auto md:rounded-2xl md:border md:shadow-2xl">
+    <div class="grid grid-cols-6 gap-0.5 sm:gap-1 text-center">
+      <button onclick="switchTab('dashboard')" id="nav-dashboard" class="flex flex-col items-center justify-center py-1.5 px-0.5 sm:px-1 rounded-xl transition text-blue-500 font-bold bg-blue-600/15">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-        <span class="text-[10px] mt-0.5 leading-tight">ပင်မ</span>
+        <span class="text-[9px] sm:text-[10px] mt-0.5 leading-tight">ပင်မ</span>
       </button>
 
-      <button onclick="switchTab('remit')" id="nav-remit" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition theme-text-muted hover:text-blue-500">
+      <button onclick="switchTab('remit')" id="nav-remit" class="flex flex-col items-center justify-center py-1.5 px-0.5 sm:px-1 rounded-xl transition theme-text-muted hover:text-blue-500">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
-        <span class="text-[10px] mt-0.5 leading-tight">ငွေလွှဲ</span>
+        <span class="text-[9px] sm:text-[10px] mt-0.5 leading-tight">ငွေလွှဲ</span>
       </button>
 
-      <button onclick="switchTab('cashout')" id="nav-cashout" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition theme-text-muted hover:text-emerald-500">
+      <button onclick="switchTab('cashout')" id="nav-cashout" class="flex flex-col items-center justify-center py-1.5 px-0.5 sm:px-1 rounded-xl transition theme-text-muted hover:text-emerald-500">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-        <span class="text-[10px] mt-0.5 leading-tight">ငွေထုတ်</span>
+        <span class="text-[9px] sm:text-[10px] mt-0.5 leading-tight">ငွေထုတ်</span>
       </button>
 
-      <button onclick="switchTab('credit')" id="nav-credit" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition theme-text-muted hover:text-rose-500 relative">
+      <button onclick="switchTab('credit')" id="nav-credit" class="flex flex-col items-center justify-center py-1.5 px-0.5 sm:px-1 rounded-xl transition theme-text-muted hover:text-rose-500 relative">
         <span id="navCreditBadge" class="hidden absolute top-1 right-2 w-2 h-2 rounded-full bg-rose-500"></span>
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-        <span class="text-[10px] mt-0.5 leading-tight">အကြွေး</span>
+        <span class="text-[9px] sm:text-[10px] mt-0.5 leading-tight">အကြွေး</span>
       </button>
 
-      <button onclick="switchTab('capital')" id="nav-capital" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition theme-text-muted hover:text-indigo-500">
+      <button onclick="switchTab('expense')" id="nav-expense" class="flex flex-col items-center justify-center py-1.5 px-0.5 sm:px-1 rounded-xl transition theme-text-muted hover:text-amber-500 relative">
+        <span id="navExpenseBadge" class="hidden absolute top-1 right-2 w-2 h-2 rounded-full bg-amber-500"></span>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z"></path></svg>
+        <span class="text-[9px] sm:text-[10px] mt-0.5 leading-tight">အသုံးများ</span>
+      </button>
+
+      <button onclick="switchTab('capital')" id="nav-capital" class="flex flex-col items-center justify-center py-1.5 px-0.5 sm:px-1 rounded-xl transition theme-text-muted hover:text-indigo-500">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-        <span class="text-[10px] mt-0.5 leading-tight">Setting</span>
+        <span class="text-[9px] sm:text-[10px] mt-0.5 leading-tight">Setting</span>
       </button>
     </div>
   </nav>
@@ -1601,6 +1818,80 @@
         <div class="flex gap-2 pt-2">
           <button type="button" onclick="closeEditModal()" class="flex-1 py-2.5 rounded-xl theme-card-sub border theme-text-muted text-xs font-bold">မလုပ်တော့ပါ</button>
           <button type="submit" class="flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold">ပြင်ဆင်ချက် သိမ်းမည်</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 5B. EDIT EXPENSE MODAL -->
+  <div id="editExpenseModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="theme-card border w-full max-w-sm rounded-3xl p-4 sm:p-5 shadow-2xl space-y-3 max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b pb-2">
+        <h3 class="text-xs sm:text-sm font-bold text-amber-500 flex items-center gap-1.5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+          အသုံးစရိတ် ပြင်ဆင်ရန် (Edit Expense)
+        </h3>
+        <button onclick="closeEditExpenseModal()" class="theme-text-muted hover:text-rose-500 p-1">✕</button>
+      </div>
+
+      <form id="editExpenseForm" onsubmit="handleSaveEditedExpense(event)" class="space-y-3">
+        <input type="hidden" id="editExpId">
+
+        <div>
+          <label class="block text-xs font-semibold theme-text-heading mb-1">ရက်စွဲနှင့် အချိန်</label>
+          <input type="datetime-local" id="editExpDate" required class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-mono">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold theme-text-heading mb-1">အသုံးစရိတ် အမျိုးအစား</label>
+          <select id="editExpCategory" required class="w-full theme-input border rounded-xl px-3 py-2 text-xs">
+            <option value="INTERNET">🌐 အင်တာနက်ဖိုး / WiFi</option>
+            <option value="ELECTRICITY">⚡ မီးဖိုး / မီးစက်ဆီဖိုး</option>
+            <option value="SALARY">👥 ဝန်ထမ်းလစာ / စရိတ်</option>
+            <option value="RENT">🏠 ဆိုင်ခန်းခ / အဆောက်အဦးငှားရမ်းခ</option>
+            <option value="PHONE">📱 ဖုန်းဘေလ် / ဒေတာ</option>
+            <option value="SUPPLIES">🛍️ စာရေးကိရိယာ / ရုံးသုံးပစ္စည်း</option>
+            <option value="TRANSPORT">🚗 သယ်ယူပို့ဆောင်ရေး / ခရီးစရိတ်</option>
+            <option value="GENERAL">📦 အထွေထွေ အသုံးစရိတ်</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold theme-text-heading mb-1">အကြောင်းအရာ / ခေါင်းစဉ် <span class="text-rose-500">*</span></label>
+          <input type="text" id="editExpTitle" required class="w-full theme-input border rounded-xl px-3 py-2 text-xs">
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-xs font-semibold theme-text-heading mb-1">ငွေကြေး</label>
+            <select id="editExpCurrency" class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-bold">
+              <option value="MMK">မြန်မာကျပ် (Ks)</option>
+              <option value="THB">ထိုင်းဘတ် (฿)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold theme-text-heading mb-1">ပမာဏ <span class="text-rose-500">*</span></label>
+            <input type="number" step="any" min="1" id="editExpAmount" required class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-mono font-bold">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold theme-text-heading mb-1">ငွေရှင်းပေးသည့် အကောင့် (အရင်းမှ နုတ်မည်)</label>
+          <select id="editExpPaidAccount" required class="w-full theme-input border rounded-xl px-3 py-2 text-xs">
+            <option value="CASH">💵 လက်ထဲရှိ ငွေသား (Cash in Hand MMK)</option>
+            <option value="BANK">📱 KPay / ဘဏ်အကောင့် (Digital MMK)</option>
+            <option value="THB">🇹🇭 ထိုင်းဘတ် လက်ကျန် (THB Balance)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold theme-text-heading mb-1">မှတ်ချက်</label>
+          <input type="text" id="editExpNote" class="w-full theme-input border rounded-xl px-3 py-2 text-xs">
+        </div>
+
+        <div class="flex gap-2 pt-2">
+          <button type="button" onclick="closeEditExpenseModal()" class="flex-1 py-2.5 rounded-xl theme-card-sub border theme-text-muted text-xs font-bold">မလုပ်တော့ပါ</button>
+          <button type="submit" class="flex-1 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold shadow">ပြင်ဆင်ချက် သိမ်းမည်</button>
         </div>
       </form>
     </div>
@@ -1912,6 +2203,7 @@
 
     // --- State Storage Keys ---
     const STORAGE_KEY_TRANSACTIONS = 'thb_mmk_transactions_v2';
+    const STORAGE_KEY_EXPENSES = 'thb_mmk_expenses_v2';
     const STORAGE_KEY_CAPITAL = 'thb_mmk_capital_v2';
     const STORAGE_KEY_SETTINGS = 'thb_mmk_settings_v2';
     const STORAGE_KEY_THEME = 'thb_mmk_theme';
@@ -1919,6 +2211,7 @@
 
     // --- State Variables ---
     let transactions = [];
+    let expenses = [];
     let capital = { cashMMK: 2500000, bankMMK: 5000000, thbBalance: 40000 };
     let settings = { dealerRate: 755, customerRate: 780 };
     let currentTheme = localStorage.getItem(STORAGE_KEY_THEME) || 'dark';
@@ -1933,6 +2226,7 @@
       'directCreditModal',
       'rateModal',
       'editModal',
+      'editExpenseModal',
       'customDateModal',
       'voucherSearchModal',
       'appBrandModal',
@@ -1948,6 +2242,8 @@
     let cashoutType = 'CASHOUT';
     let cashoutPayoutFilter = 'UNPAID';
     let creditFilter = 'UNPAID';
+    let expensePeriodFilter = 'today';
+    let expenseCategoryFilter = 'ALL';
     let ledgerTypeFilter = 'ALL';
     let quickSearchTypeFilter = 'ALL';
     let currentVoucherTx = null;
@@ -2526,7 +2822,27 @@
         owedCurrency: validOwedCurr,
         paidAmount: Number(tx.paidAmount) || 0,
         settledDate: String(tx.settledDate || '').slice(0, 64),
-        note: String(tx.note || '').slice(0, 500)
+      };
+    }
+
+    // Normalize an expense object so it strictly adheres to firebase-blueprint.json & firestore.rules
+    function normalizeExpenseForFirestore(exp, ownerId) {
+      const safeId = String(exp.id || ('EXP-' + Date.now())).replace(/[^a-zA-Z0-9_\-]/g, '_').slice(0, 120);
+      const validCategories = ['INTERNET', 'ELECTRICITY', 'SALARY', 'RENT', 'PHONE', 'SUPPLIES', 'TRANSPORT', 'GENERAL'];
+      const validCat = validCategories.includes(exp.category) ? exp.category : 'GENERAL';
+      const validCurr = exp.currency === 'THB' ? 'THB' : 'MMK';
+      const validAcc = ['CASH', 'BANK', 'THB'].includes(exp.paidAccount) ? exp.paidAccount : 'CASH';
+
+      return {
+        id: safeId,
+        ownerId: String(ownerId).slice(0, 128),
+        date: String(exp.date || new Date().toISOString()).slice(0, 64),
+        category: validCat,
+        title: String(exp.title || 'Expense').slice(0, 200),
+        amount: Number(exp.amount) || 0,
+        currency: validCurr,
+        paidAccount: validAcc,
+        note: String(exp.note || '').slice(0, 500)
       };
     }
 
@@ -2611,6 +2927,26 @@
       return cloudTxs;
     }
 
+    async function fetchCloudExpenses(uid) {
+      const expColRef = collection(db, 'userBackups', uid, 'expenses');
+      let expSnap;
+      try {
+        const q = query(expColRef, where('ownerId', '==', uid));
+        expSnap = await getDocs(q);
+      } catch (qErr) {
+        expSnap = await getDocs(expColRef);
+      }
+      const cloudExps = expSnap.docs.map(d => {
+        const item = d.data();
+        delete item.createdAt;
+        delete item.updatedAt;
+        delete item.ownerId;
+        return item;
+      });
+      cloudExps.sort((a, b) => new Date(b.date) - new Date(a.date));
+      return cloudExps;
+    }
+
     const confirmRestoreCloudData = window.confirmRestoreCloudData = async function() {
       if (!auth?.currentUser || !db) {
         showToast('Google Account ဖြင့် ဦးစွာ ချိတ်ဆက်ပေးပါ', 'warning');
@@ -2629,14 +2965,21 @@
 
         const meta = snap.data();
         const cloudTxs = await fetchCloudTransactions(uid);
+        const cloudExps = await fetchCloudExpenses(uid);
 
-        if (cloudTxs.length === 0) {
+        if (cloudTxs.length === 0 && cloudExps.length === 0) {
           showToast('Cloud ပေါ်တွင် စာရင်းမှတ်တမ်း မတွေ့ရှိပါ', 'warning');
           closeCloudRestorePromptModal();
           return;
         }
 
-        transactions = cloudTxs;
+        if (cloudTxs.length > 0) {
+          transactions = cloudTxs;
+        }
+        if (cloudExps.length > 0) {
+          expenses = cloudExps;
+          saveExpensesToStorage();
+        }
         if (meta.cashMMK !== undefined) {
           capital.cashMMK = Number(meta.cashMMK) || 0;
           capital.bankMMK = Number(meta.bankMMK) || 0;
@@ -2812,6 +3155,44 @@
           }
         }
 
+        // Batch expenses
+        const expColRef = collection(db, 'userBackups', uid, 'expenses');
+        let existingExpSnap;
+        try {
+          existingExpSnap = await getDocs(query(expColRef, where('ownerId', '==', uid)));
+        } catch (e) {
+          existingExpSnap = await getDocs(expColRef);
+        }
+        const existingExpIds = new Set(existingExpSnap.docs.map(d => d.id));
+        const currentExpIds = new Set();
+        const sliceExp = expenses.slice(0, 80);
+
+        for (const rawExp of sliceExp) {
+          const normExp = normalizeExpenseForFirestore(rawExp, uid);
+          currentExpIds.add(normExp.id);
+          const expDocRef = doc(db, 'userBackups', uid, 'expenses', normExp.id);
+
+          if (existingExpIds.has(normExp.id)) {
+            const { id, ownerId, ...mutableExp } = normExp;
+            batch.update(expDocRef, {
+              ...mutableExp,
+              updatedAt: serverTimestamp()
+            });
+          } else {
+            batch.set(expDocRef, {
+              ...normExp,
+              createdAt: serverTimestamp(),
+              updatedAt: serverTimestamp()
+            });
+          }
+        }
+
+        for (const oldDoc of existingExpSnap.docs) {
+          if (!currentExpIds.has(oldDoc.id)) {
+            batch.delete(doc(db, 'userBackups', uid, 'expenses', oldDoc.id));
+          }
+        }
+
         await batch.commit();
         return true;
       } catch (err) {
@@ -2854,7 +3235,8 @@
           userEmail: currentUser.email || '',
           capital,
           settings,
-          transactions
+          transactions,
+          expenses
         };
 
         // 1. Always save per-Gmail local snapshot immediately (0ms latency & 100% reliable)
@@ -3098,6 +3480,18 @@
           initDemoData();
         }
 
+        const storedExp = localStorage.getItem(STORAGE_KEY_EXPENSES);
+        if (storedExp) {
+          try {
+            expenses = JSON.parse(storedExp);
+          } catch (e) {
+            expenses = [];
+          }
+        } else {
+          expenses = initDemoExpenses();
+          localStorage.setItem(STORAGE_KEY_EXPENSES, JSON.stringify(expenses));
+        }
+
         const storedCap = localStorage.getItem(STORAGE_KEY_CAPITAL);
         if (storedCap) capital = JSON.parse(storedCap);
 
@@ -3113,6 +3507,11 @@
       queueAutoDriveBackup();
     }
 
+    function saveExpensesToStorage() {
+      localStorage.setItem(STORAGE_KEY_EXPENSES, JSON.stringify(expenses));
+      queueAutoDriveBackup();
+    }
+
     function saveCapitalToStorage() {
       localStorage.setItem(STORAGE_KEY_CAPITAL, JSON.stringify(capital));
       queueAutoDriveBackup();
@@ -3121,6 +3520,32 @@
     function saveSettingsToStorage() {
       localStorage.setItem(STORAGE_KEY_SETTINGS, JSON.stringify(settings));
       queueAutoDriveBackup();
+    }
+
+    function initDemoExpenses() {
+      const today = new Date().toISOString();
+      return [
+        {
+          id: 'EXP-' + (Date.now() - 3600000).toString().slice(-6),
+          date: today,
+          category: 'INTERNET',
+          title: 'လစဉ် Fiber အင်တာနက်ဖိုး (WiFi)',
+          amount: 35000,
+          currency: 'MMK',
+          paidAccount: 'BANK',
+          note: 'KBZPay ဖြင့် ပေးချေသည်'
+        },
+        {
+          id: 'EXP-' + (Date.now() - 7200000).toString().slice(-6),
+          date: today,
+          category: 'ELECTRICITY',
+          title: 'မီးအားမြှင့်စက် ဆီဖိုး (Electricity/Fuel)',
+          amount: 20000,
+          currency: 'MMK',
+          paidAccount: 'CASH',
+          note: 'လက်ထဲရှိ ငွေသားဖြင့် ပေးချေသည်'
+        }
+      ];
     }
 
     function initDemoData() {
@@ -3194,9 +3619,11 @@
       
       const rDate = document.getElementById('remitDate');
       const cDate = document.getElementById('cashoutDate');
+      const expDate = document.getElementById('expenseDate');
       const customD = document.getElementById('customFilterDate');
       if (rDate) rDate.value = localIso;
       if (cDate) cDate.value = localIso;
+      if (expDate) expDate.value = localIso;
       if (customD) customD.value = todayDate;
 
       document.getElementById('remitDealerRate').value = settings.dealerRate;
@@ -3352,7 +3779,7 @@
       }
 
       activeTab = tabId;
-      const tabs = ['dashboard', 'remit', 'cashout', 'credit', 'capital'];
+      const tabs = ['dashboard', 'remit', 'cashout', 'credit', 'expense', 'capital'];
       tabs.forEach(t => {
         const el = document.getElementById(`tab-${t}`);
         const navEl = document.getElementById(`nav-${t}`);
@@ -3362,9 +3789,9 @@
         }
         if (navEl) {
           if (t === tabId) {
-            navEl.className = 'flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition text-blue-500 font-bold bg-blue-600/15';
+            navEl.className = 'flex flex-col items-center justify-center py-1.5 px-0.5 sm:px-1 rounded-xl transition text-blue-500 font-bold bg-blue-600/15';
           } else {
-            navEl.className = 'flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition theme-text-muted hover:text-blue-500';
+            navEl.className = 'flex flex-col items-center justify-center py-1.5 px-0.5 sm:px-1 rounded-xl transition theme-text-muted hover:text-blue-500';
           }
         }
       });
@@ -3375,6 +3802,10 @@
       else if (tabId === 'remit') renderRemitPayoutList();
       else if (tabId === 'cashout') renderCashoutPayoutList();
       else if (tabId === 'credit') renderCreditList();
+      else if (tabId === 'expense') {
+        renderExpenseList();
+        updateExpenseKPIs();
+      }
       else if (tabId === 'capital') {
         updateCapitalInputs();
         renderLedgerList();
@@ -3467,6 +3898,8 @@
       renderRemitPayoutList();
       renderCashoutPayoutList();
       renderCreditList();
+      renderExpenseList();
+      updateExpenseKPIs();
       renderLedgerList();
       updateCapitalInputs();
       updateHeaderRateBadge();
@@ -3542,10 +3975,12 @@
       return n.toLocaleString('en-US');
     }
 
-    const selectProfitBarDetails = window.selectProfitBarDetails = function(label, totalMMK, remitMMK, cashoutMMK, totalTHB, txCount) {
+    const selectProfitBarDetails = window.selectProfitBarDetails = function(label, grossMMK, remitMMK, cashoutMMK, expMMK, netMMK, totalTHB, txCount) {
       const infoEl = document.getElementById('profitChartSelectedInfo');
       if (!infoEl) return;
-      infoEl.innerHTML = `<span class="theme-text-heading font-bold">${label}:</span> <span class="text-emerald-500">+${formatMMK(totalMMK)}</span> (<span class="text-sky-500 dark:text-sky-400">ငွေလွှဲ +${formatMMK(remitMMK)}</span> • <span class="text-orange-500 dark:text-orange-400">KPay +${formatMMK(cashoutMMK)}</span>${totalTHB > 0 ? ` • <span class="text-emerald-400">+${formatTHB(totalTHB)}</span>` : ''}) [${txCount} ခု]`;
+      const netClass = netMMK >= 0 ? 'text-emerald-500' : 'text-rose-500';
+      const netSign = netMMK >= 0 ? '+' : '';
+      infoEl.innerHTML = `<span class="theme-text-heading font-bold">${label}:</span> <span class="${netClass} font-bold">အသားတင်: ${netSign}${formatMMK(netMMK)}</span> (<span class="text-emerald-500">အကြမ်း: +${formatMMK(grossMMK)}</span> • <span class="text-rose-500">အသုံး: -${formatMMK(expMMK)}</span> • <span class="text-sky-500 dark:text-sky-400">ငွေလွှဲ +${formatMMK(remitMMK)}</span> • <span class="text-orange-500 dark:text-orange-400">KPay +${formatMMK(cashoutMMK)}</span>${totalTHB > 0 ? ` • <span class="text-emerald-400">+${formatTHB(totalTHB)}</span>` : ''}) [${txCount} ခု]`;
     };
 
     function renderProfitTrendChart() {
@@ -3577,6 +4012,9 @@
             cashoutProfitMMK: 0,
             totalProfitMMK: 0,
             totalProfitTHB: 0,
+            expenseMMK: 0,
+            expenseTHB: 0,
+            netProfitMMK: 0,
             count: 0
           });
         }
@@ -3614,6 +4052,9 @@
             cashoutProfitMMK: 0,
             totalProfitMMK: 0,
             totalProfitTHB: 0,
+            expenseMMK: 0,
+            expenseTHB: 0,
+            netProfitMMK: 0,
             count: 0
           });
         }
@@ -3636,22 +4077,50 @@
         });
       }
 
+      // Aggregate expenses into the buckets
+      const rateForConversion = settings.dealerRate > 0 ? (100000 / settings.dealerRate) : 130;
+      expenses.forEach(exp => {
+        if (!exp.date) return;
+        const d = new Date(exp.date);
+        if (isNaN(d.getTime())) return;
+        const key = (profitChartMode === 'daily')
+          ? `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+          : `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+        const b = buckets.find(item => item.key === key);
+        if (b) {
+          const amt = Number(exp.amount) || 0;
+          if (exp.currency === 'THB') {
+            b.expenseTHB += amt;
+            b.expenseMMK += amt * rateForConversion;
+          } else {
+            b.expenseMMK += amt;
+          }
+        }
+      });
+
+      buckets.forEach(b => {
+        b.netProfitMMK = b.totalProfitMMK - b.expenseMMK;
+      });
+
       const maxMMK = Math.max(...buckets.map(b => b.totalProfitMMK), 1);
-      let periodTotalMMK = 0;
+      let periodGrossMMK = 0;
       let periodTotalTHB = 0;
+      let periodExpenseMMK = 0;
       let periodTxCount = 0;
       let peakBucket = buckets[0];
 
       buckets.forEach(b => {
-        periodTotalMMK += b.totalProfitMMK;
+        periodGrossMMK += b.totalProfitMMK;
         periodTotalTHB += b.totalProfitTHB;
+        periodExpenseMMK += b.expenseMMK;
         periodTxCount += b.count;
-        if (b.totalProfitMMK >= (peakBucket?.totalProfitMMK || 0)) {
+        if (b.netProfitMMK >= (peakBucket?.netProfitMMK ?? 0)) {
           peakBucket = b;
         }
       });
 
-      const avgMMK = buckets.length > 0 ? Math.round(periodTotalMMK / buckets.length) : 0;
+      const periodNetMMK = periodGrossMMK - periodExpenseMMK;
+      const avgNetMMK = buckets.length > 0 ? Math.round(periodNetMMK / buckets.length) : 0;
 
       const totMmkEl = document.getElementById('chartPeriodTotalMMK');
       const totThbEl = document.getElementById('chartPeriodTotalTHB');
@@ -3660,12 +4129,20 @@
       const peakAmtEl = document.getElementById('chartPeakAmountMMK');
       const peakDateEl = document.getElementById('chartPeakDateLabel');
 
-      if (totMmkEl) totMmkEl.textContent = '+' + formatMMK(periodTotalMMK);
+      if (totMmkEl) {
+        totMmkEl.textContent = (periodNetMMK >= 0 ? '+' : '-') + formatMMK(Math.abs(periodNetMMK));
+        totMmkEl.className = periodNetMMK >= 0 ? 'text-xs sm:text-sm font-extrabold font-mono text-emerald-500' : 'text-xs sm:text-sm font-extrabold font-mono text-rose-500';
+      }
       if (totThbEl) totThbEl.textContent = '+' + formatTHB(periodTotalTHB);
-      if (avgMmkEl) avgMmkEl.textContent = '+' + formatMMK(avgMMK);
-      if (countEl) countEl.textContent = `အရောင်းအဝယ် ${periodTxCount} ခု`;
-      if (peakAmtEl) peakAmtEl.textContent = '+' + formatMMK(peakBucket ? peakBucket.totalProfitMMK : 0);
-      if (peakDateEl) peakDateEl.textContent = (peakBucket && peakBucket.totalProfitMMK > 0) ? peakBucket.fullLabel : 'မှတ်တမ်းမရှိသေးပါ';
+      if (avgMmkEl) {
+        avgMmkEl.textContent = (avgNetMMK >= 0 ? '+' : '-') + formatMMK(Math.abs(avgNetMMK));
+      }
+      if (countEl) countEl.textContent = `အရောင်း ${periodTxCount} ခု • အသုံးစရိတ် -${formatMMK(periodExpenseMMK)}`;
+      if (peakAmtEl) {
+        const peakNet = peakBucket ? peakBucket.netProfitMMK : 0;
+        peakAmtEl.textContent = (peakNet >= 0 ? '+' : '-') + formatMMK(Math.abs(peakNet));
+      }
+      if (peakDateEl) peakDateEl.textContent = (peakBucket && (peakBucket.totalProfitMMK > 0 || peakBucket.expenseMMK > 0)) ? peakBucket.fullLabel : 'မှတ်တမ်းမရှိသေးပါ';
 
       container.innerHTML = buckets.map(b => {
         const totalHeightPct = b.totalProfitMMK > 0
@@ -3689,10 +4166,11 @@
 
         const hasBothSegments = b.remitProfitMMK > 0 && b.cashoutProfitMMK > 0;
         const safeLabel = b.fullLabel.replace(/'/g, "\\'");
+        const netColor = b.netProfitMMK >= 0 ? 'theme-text-heading' : 'text-rose-500';
         return `
-          <div onclick="selectProfitBarDetails('${safeLabel}', ${b.totalProfitMMK}, ${b.remitProfitMMK}, ${b.cashoutProfitMMK}, ${b.totalProfitTHB}, ${b.count})" class="cursor-pointer flex flex-col items-center justify-end h-full group select-none">
-            <div class="text-[9px] sm:text-[10px] font-mono font-bold ${b.totalProfitMMK > 0 ? 'theme-text-heading' : 'theme-text-muted opacity-60'} mb-1 text-center leading-tight">
-              ${b.totalProfitMMK > 0 ? '+' + formatCompactMMK(b.totalProfitMMK) : '0'}
+          <div onclick="selectProfitBarDetails('${safeLabel}', ${b.totalProfitMMK}, ${b.remitProfitMMK}, ${b.cashoutProfitMMK}, ${b.expenseMMK}, ${b.netProfitMMK}, ${b.totalProfitTHB}, ${b.count})" class="cursor-pointer flex flex-col items-center justify-end h-full group select-none">
+            <div class="text-[9px] sm:text-[10px] font-mono font-bold ${b.totalProfitMMK > 0 || b.expenseMMK > 0 ? netColor : 'theme-text-muted opacity-60'} mb-1 text-center leading-tight">
+              ${b.netProfitMMK !== 0 ? (b.netProfitMMK > 0 ? '+' : '') + formatCompactMMK(b.netProfitMMK) : '0'}
               ${b.totalProfitTHB > 0 ? `<span class="block text-[8px] text-emerald-500 font-extrabold">+${Math.round(b.totalProfitTHB)}฿</span>` : ''}
             </div>
             <div class="w-full max-w-[38px] bg-slate-500/10 rounded-t-lg h-24 flex flex-col justify-end overflow-hidden p-0.5 border border-transparent group-hover:border-sky-500/60 transition">
@@ -3734,18 +4212,35 @@
 
     function updateDashboardUI() {
       const periodTx = filterTransactionsByPeriod(transactions, dashboardPeriod);
+      const periodExp = filterExpensesByPeriod(expenses, dashboardPeriod);
 
-      let totalProfitMMK = 0;
+      let totalGrossProfitMMK = 0;
       let totalProfitTHB = 0;
       let profitMMKOnly = 0;
 
       periodTx.forEach(tx => {
         if (tx.profitTHB) totalProfitTHB += Number(tx.profitTHB);
         if (tx.profitMMK) {
-          totalProfitMMK += Number(tx.profitMMK);
+          totalGrossProfitMMK += Number(tx.profitMMK);
           if (tx.type === 'CASHOUT') profitMMKOnly += Number(tx.profitMMK);
         }
       });
+
+      const rateForConversion = settings.dealerRate > 0 ? (100000 / settings.dealerRate) : 130;
+      let totalExpenseMMK = 0;
+      let totalExpenseTHB = 0;
+      periodExp.forEach(e => {
+        const amt = Number(e.amount) || 0;
+        if (e.currency === 'THB') {
+          totalExpenseTHB += amt;
+          totalExpenseMMK += amt * rateForConversion;
+        } else {
+          totalExpenseMMK += amt;
+        }
+      });
+
+      const netProfitMMK = totalGrossProfitMMK - totalExpenseMMK;
+      const netProfitTHB = totalProfitTHB - totalExpenseTHB;
 
       let unpaidDebtMMK = 0;
       let unpaidDebtTHB = 0;
@@ -3763,7 +4258,6 @@
         }
       });
 
-      const rateForConversion = settings.dealerRate > 0 ? (100000 / settings.dealerRate) : 130;
       const totalUnpaidMMKCombined = unpaidDebtMMK + (unpaidDebtTHB * rateForConversion);
 
       const cashInHand = Number(capital.cashMMK) || 0;
@@ -3776,9 +4270,29 @@
       document.getElementById('dashBankBalance').textContent = formatMMK(bankBalance);
       document.getElementById('dashThbBalance').textContent = formatTHB(thbBal);
 
-      document.getElementById('dashTotalProfitMMK').textContent = '+' + formatMMK(totalProfitMMK);
-      document.getElementById('dashProfitTHB').textContent = '+' + formatTHB(totalProfitTHB);
-      document.getElementById('dashProfitMMKOnly').textContent = '+' + formatMMK(profitMMKOnly);
+      // Card 2: Net Profit & Gross Profit Breakdown
+      const netEl = document.getElementById('dashTotalProfitMMK');
+      if (netEl) {
+        if (netProfitMMK >= 0) {
+          netEl.textContent = '+' + formatMMK(netProfitMMK);
+          netEl.className = 'text-lg sm:text-xl font-bold text-emerald-500 font-mono leading-tight';
+        } else {
+          netEl.textContent = '-' + formatMMK(Math.abs(netProfitMMK));
+          netEl.className = 'text-lg sm:text-xl font-bold text-rose-500 font-mono leading-tight';
+        }
+      }
+
+      const grossEl = document.getElementById('dashGrossProfitMMK');
+      if (grossEl) grossEl.textContent = '+' + formatMMK(totalGrossProfitMMK);
+
+      const expEl = document.getElementById('dashTotalExpenseMMK');
+      if (expEl) expEl.textContent = '-' + formatMMK(totalExpenseMMK) + (totalExpenseTHB > 0 ? ` (${formatTHB(totalExpenseTHB)})` : '');
+
+      const thbProfitEl = document.getElementById('dashProfitTHB');
+      if (thbProfitEl) {
+        thbProfitEl.textContent = (netProfitTHB >= 0 ? '+' : '') + formatTHB(netProfitTHB);
+        thbProfitEl.className = netProfitTHB >= 0 ? 'text-emerald-500 font-bold' : 'text-rose-500 font-bold';
+      }
 
       document.getElementById('dashDebtCount').textContent = unpaidCount + ' ခု';
       document.getElementById('dashDebtMMK').textContent = formatMMK(totalUnpaidMMKCombined);
@@ -4209,6 +4723,7 @@
       else if (inputId === 'creditSearchInput') renderCreditList();
       else if (inputId === 'ledgerSearchInput') renderLedgerList();
       else if (inputId === 'quickSearchInput') renderQuickSearchList();
+      else if (inputId === 'expenseSearchInput') renderExpenseList();
     };
 
     const renderRemitPayoutList = window.renderRemitPayoutList = function() {
@@ -4932,7 +5447,468 @@
       }
     };
 
-    // --- TAB 5: CAPITAL & LEDGER ---
+    // --- TAB 5: BUSINESS EXPENSES LOGIC (အသုံးစရိတ် စာရင်း) ---
+    function getExpenseCategoryLabel(cat) {
+      const map = {
+        INTERNET: '🌐 အင်တာနက် / WiFi',
+        ELECTRICITY: '⚡ မီးဖိုး / ဆီဖိုး',
+        SALARY: '👥 ဝန်ထမ်းလစာ / စရိတ်',
+        RENT: '🏠 ဆိုင်ခန်းခ / အဆောက်အဦး',
+        PHONE: '📱 ဖုန်းဘေလ် / ဒေတာ',
+        SUPPLIES: '🛍️ စာရေးကိရိယာ / ပစ္စည်း',
+        TRANSPORT: '🚗 သယ်ယူပို့ဆောင်ရေး',
+        GENERAL: '📦 အထွေထွေ အသုံးစရိတ်'
+      };
+      return map[cat] || '📦 အထွေထွေ';
+    }
+
+    function getExpenseCategoryIcon(cat) {
+      const map = {
+        INTERNET: '🌐',
+        ELECTRICITY: '⚡',
+        SALARY: '👥',
+        RENT: '🏠',
+        PHONE: '📱',
+        SUPPLIES: '🛍️',
+        TRANSPORT: '🚗',
+        GENERAL: '📦'
+      };
+      return map[cat] || '💸';
+    }
+
+    const focusExpenseForm = window.focusExpenseForm = function() {
+      const form = document.getElementById('expenseForm');
+      if (form) form.scrollIntoView({ behavior: 'smooth' });
+      const titleInp = document.getElementById('expenseTitle');
+      if (titleInp) titleInp.focus();
+    };
+
+    const setExpenseCategoryPreset = window.setExpenseCategoryPreset = function(category, defaultTitle) {
+      const catEl = document.getElementById('expenseCategory');
+      const titleEl = document.getElementById('expenseTitle');
+      const amtEl = document.getElementById('expenseAmount');
+      if (catEl) catEl.value = category;
+      if (titleEl && (!titleEl.value || titleEl.value.trim() === '')) {
+        titleEl.value = defaultTitle;
+      }
+      if (amtEl) amtEl.focus();
+    };
+
+    const updateExpenseAmountUnit = window.updateExpenseAmountUnit = function() {
+      const curr = document.getElementById('expenseCurrency')?.value || 'MMK';
+      const suf = document.getElementById('expenseCurrencySuffix');
+      if (suf) suf.textContent = curr === 'THB' ? '฿' : 'Ks';
+    };
+
+    const setExpensePeriodFilter = window.setExpensePeriodFilter = function(period) {
+      expensePeriodFilter = period;
+      ['today', 'month', 'all'].forEach(p => {
+        const btn = document.getElementById(`exp-filter-${p}`);
+        if (!btn) return;
+        if (p === period) {
+          btn.className = 'flex-1 py-1.5 rounded-lg font-bold bg-amber-600 text-white transition text-center shadow';
+        } else {
+          btn.className = 'flex-1 py-1.5 rounded-lg font-medium theme-text-muted hover:text-amber-500 transition text-center';
+        }
+      });
+      renderExpenseList();
+      updateExpenseKPIs();
+    };
+
+    const setExpenseCategoryFilter = window.setExpenseCategoryFilter = function(cat) {
+      expenseCategoryFilter = cat;
+      ['all', 'internet', 'electricity', 'salary', 'rent', 'other'].forEach(c => {
+        const btn = document.getElementById(`exp-cat-${c}`);
+        if (!btn) return;
+        if (c === cat.toLowerCase()) {
+          btn.className = 'px-2.5 py-1 rounded-lg bg-amber-600 text-white font-bold transition';
+        } else {
+          btn.className = 'px-2.5 py-1 rounded-lg theme-card-sub border theme-text-muted hover:text-amber-500 transition';
+        }
+      });
+      renderExpenseList();
+    };
+
+    function filterExpensesByPeriod(list, period) {
+      const now = new Date();
+      const todayStr = now.toISOString().split('T')[0];
+      const curYear = now.getFullYear();
+      const curMonth = now.getMonth();
+
+      return (list || []).filter(exp => {
+        if (!exp.date) return false;
+        const expDate = new Date(exp.date);
+        const expDateStr = exp.date.split('T')[0];
+
+        if (period === 'today') return expDateStr === todayStr;
+        if (period === 'month') return expDate.getFullYear() === curYear && expDate.getMonth() === curMonth;
+        if (period === 'custom') return expDateStr === customSelectedDate;
+        return true;
+      });
+    }
+
+    function getFilteredExpenses() {
+      const search = (document.getElementById('expenseSearchInput')?.value || '').toLowerCase().trim();
+      let list = filterExpensesByPeriod(expenses, expensePeriodFilter);
+
+      if (expenseCategoryFilter !== 'ALL') {
+        if (expenseCategoryFilter === 'OTHER') {
+          const mainCats = ['INTERNET', 'ELECTRICITY', 'SALARY', 'RENT'];
+          list = list.filter(e => !mainCats.includes(e.category));
+        } else {
+          list = list.filter(e => e.category === expenseCategoryFilter);
+        }
+      }
+
+      if (search) {
+        list = list.filter(e => {
+          const catLabel = getExpenseCategoryLabel(e.category).toLowerCase();
+          return (
+            (e.title && e.title.toLowerCase().includes(search)) ||
+            (e.id && e.id.toLowerCase().includes(search)) ||
+            (e.note && e.note.toLowerCase().includes(search)) ||
+            catLabel.includes(search) ||
+            String(e.amount || '').includes(search)
+          );
+        });
+      }
+
+      return list;
+    }
+
+    const handleSaveExpense = window.handleSaveExpense = function(e) {
+      e.preventDefault();
+      const dateVal = document.getElementById('expenseDate').value;
+      const category = document.getElementById('expenseCategory').value;
+      const title = document.getElementById('expenseTitle').value.trim();
+      const currency = document.getElementById('expenseCurrency').value;
+      const amount = parseFloat(document.getElementById('expenseAmount').value) || 0;
+      const paidAccount = document.getElementById('expensePaidAccount').value;
+      const note = document.getElementById('expenseNote').value.trim();
+
+      if (amount <= 0) {
+        showToast('ကျသင့်ငွေ ပမာဏကို ၁ ကျပ်မှစ၍ ထည့်သွင်းပေးပါ', 'error');
+        return;
+      }
+      if (!title) {
+        showToast('အသုံးစရိတ် ခေါင်းစဉ် ထည့်သွင်းပေးပါ', 'error');
+        return;
+      }
+
+      const newExp = {
+        id: 'EXP-' + Date.now().toString().slice(-6),
+        date: dateVal ? new Date(dateVal).toISOString() : new Date().toISOString(),
+        category,
+        title,
+        amount,
+        currency,
+        paidAccount,
+        note
+      };
+
+      // Deduct from capital account
+      if (paidAccount === 'CASH') {
+        capital.cashMMK = (Number(capital.cashMMK) || 0) - (currency === 'MMK' ? amount : 0);
+      } else if (paidAccount === 'BANK') {
+        capital.bankMMK = (Number(capital.bankMMK) || 0) - (currency === 'MMK' ? amount : 0);
+      } else if (paidAccount === 'THB') {
+        capital.thbBalance = (Number(capital.thbBalance) || 0) - (currency === 'THB' ? amount : 0);
+      }
+
+      expenses.unshift(newExp);
+      localStorage.setItem('thb_mmk_has_user_data', 'true');
+      saveExpensesToStorage();
+      saveCapitalToStorage();
+
+      showToast(`အသုံးစရိတ် "${title}" (${currency === 'THB' ? formatTHB(amount) : formatMMK(amount)}) မှတ်တမ်းတင်ပြီးပါပြီ!`, 'success');
+      resetExpenseForm();
+      updateAllUI();
+    };
+
+    const resetExpenseForm = window.resetExpenseForm = function() {
+      document.getElementById('expenseTitle').value = '';
+      document.getElementById('expenseAmount').value = '';
+      document.getElementById('expenseNote').value = '';
+      initDefaultDateTimeInputs();
+    };
+
+    const deleteExpense = window.deleteExpense = function(expId) {
+      const exp = expenses.find(e => e.id === expId);
+      if (!exp) return;
+      if (!confirm(`အသုံးစရိတ် "${exp.title}" (${exp.currency === 'THB' ? formatTHB(exp.amount) : formatMMK(exp.amount)}) ကို အပြီးတိုင် ဖျက်ပစ်ရန် သေချာပါသလား?\nနုတ်ယူထားသော အရင်းငွေကိုလည်း ပြန်လည်ပေါင်းထည့်ပေးပါမည်။`)) {
+        return;
+      }
+
+      // Refund to capital account
+      const amt = Number(exp.amount) || 0;
+      if (exp.paidAccount === 'CASH' && exp.currency === 'MMK') {
+        capital.cashMMK = (Number(capital.cashMMK) || 0) + amt;
+      } else if (exp.paidAccount === 'BANK' && exp.currency === 'MMK') {
+        capital.bankMMK = (Number(capital.bankMMK) || 0) + amt;
+      } else if (exp.paidAccount === 'THB' && exp.currency === 'THB') {
+        capital.thbBalance = (Number(capital.thbBalance) || 0) + amt;
+      }
+
+      expenses = expenses.filter(e => e.id !== expId);
+      saveExpensesToStorage();
+      saveCapitalToStorage();
+
+      showToast('အသုံးစရိတ်ကို ဖျက်ပစ်ပြီး အရင်းငွေကို ပြန်လည်ဖြည့်သွင်းပြီးပါပြီ', 'info');
+      updateAllUI();
+    };
+
+    const openEditExpenseModal = window.openEditExpenseModal = function(expId) {
+      const exp = expenses.find(e => e.id === expId);
+      if (!exp) return;
+
+      document.getElementById('editExpId').value = exp.id;
+      if (exp.date) {
+        const d = new Date(exp.date);
+        const localIso = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+        document.getElementById('editExpDate').value = localIso;
+      }
+      document.getElementById('editExpCategory').value = exp.category || 'GENERAL';
+      document.getElementById('editExpTitle').value = exp.title || '';
+      document.getElementById('editExpCurrency').value = exp.currency || 'MMK';
+      document.getElementById('editExpAmount').value = exp.amount || 0;
+      document.getElementById('editExpPaidAccount').value = exp.paidAccount || 'CASH';
+      document.getElementById('editExpNote').value = exp.note || '';
+
+      document.getElementById('editExpenseModal').classList.remove('hidden');
+      armBackTrap();
+    };
+
+    const closeEditExpenseModal = window.closeEditExpenseModal = function() {
+      document.getElementById('editExpenseModal').classList.add('hidden');
+    };
+
+    const handleSaveEditedExpense = window.handleSaveEditedExpense = function(e) {
+      e.preventDefault();
+      const expId = document.getElementById('editExpId').value;
+      const exp = expenses.find(e => e.id === expId);
+      if (!exp) return;
+
+      const oldAmt = Number(exp.amount) || 0;
+      const oldAccount = exp.paidAccount;
+      const oldCurrency = exp.currency;
+
+      // 1. Refund old amount
+      if (oldAccount === 'CASH' && oldCurrency === 'MMK') capital.cashMMK = (Number(capital.cashMMK) || 0) + oldAmt;
+      else if (oldAccount === 'BANK' && oldCurrency === 'MMK') capital.bankMMK = (Number(capital.bankMMK) || 0) + oldAmt;
+      else if (oldAccount === 'THB' && oldCurrency === 'THB') capital.thbBalance = (Number(capital.thbBalance) || 0) + oldAmt;
+
+      // 2. Read new values
+      const dateVal = document.getElementById('editExpDate').value;
+      exp.date = dateVal ? new Date(dateVal).toISOString() : exp.date;
+      exp.category = document.getElementById('editExpCategory').value;
+      exp.title = document.getElementById('editExpTitle').value.trim();
+      exp.currency = document.getElementById('editExpCurrency').value;
+      exp.amount = parseFloat(document.getElementById('editExpAmount').value) || 0;
+      exp.paidAccount = document.getElementById('editExpPaidAccount').value;
+      exp.note = document.getElementById('editExpNote').value.trim();
+
+      // 3. Deduct new amount
+      const newAmt = exp.amount;
+      if (exp.paidAccount === 'CASH' && exp.currency === 'MMK') capital.cashMMK = (Number(capital.cashMMK) || 0) - newAmt;
+      else if (exp.paidAccount === 'BANK' && exp.currency === 'MMK') capital.bankMMK = (Number(capital.bankMMK) || 0) - newAmt;
+      else if (exp.paidAccount === 'THB' && exp.currency === 'THB') capital.thbBalance = (Number(capital.thbBalance) || 0) - newAmt;
+
+      localStorage.setItem('thb_mmk_has_user_data', 'true');
+      saveExpensesToStorage();
+      saveCapitalToStorage();
+      closeEditExpenseModal();
+      showToast('အသုံးစရိတ် ပြင်ဆင်ချက် အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ!', 'success');
+      updateAllUI();
+    };
+
+    const updateExpenseKPIs = window.updateExpenseKPIs = function() {
+      const todayList = filterExpensesByPeriod(expenses, 'today');
+      const monthList = filterExpensesByPeriod(expenses, 'month');
+
+      let todayMMK = 0, todayTHB = 0;
+      todayList.forEach(e => {
+        if (e.currency === 'THB') todayTHB += Number(e.amount) || 0;
+        else todayMMK += Number(e.amount) || 0;
+      });
+
+      let monthMMK = 0, monthTHB = 0;
+      monthList.forEach(e => {
+        if (e.currency === 'THB') monthTHB += Number(e.amount) || 0;
+        else monthMMK += Number(e.amount) || 0;
+      });
+
+      let allMMK = 0, allTHB = 0;
+      expenses.forEach(e => {
+        if (e.currency === 'THB') allTHB += Number(e.amount) || 0;
+        else allMMK += Number(e.amount) || 0;
+      });
+
+      // Today's Gross Profit from transactions
+      const todayTxs = filterTransactionsByPeriod(transactions, 'today');
+      let todayGrossProfitMMK = 0;
+      todayTxs.forEach(t => {
+        if (t.profitMMK) todayGrossProfitMMK += Number(t.profitMMK) || 0;
+      });
+      const rateForConversion = settings.dealerRate > 0 ? (100000 / settings.dealerRate) : 130;
+      const todayTotalExpMMK = todayMMK + (todayTHB * rateForConversion);
+      const todayNetProfitMMK = todayGrossProfitMMK - todayTotalExpMMK;
+
+      const kpiTodayMMK = document.getElementById('expKpiTodayMMK');
+      const kpiTodayTHB = document.getElementById('expKpiTodayTHB');
+      const kpiMonthMMK = document.getElementById('expKpiMonthMMK');
+      const kpiMonthTHB = document.getElementById('expKpiMonthTHB');
+      const kpiAllMMK = document.getElementById('expKpiAllMMK');
+      const kpiAllCount = document.getElementById('expKpiAllCount');
+      const kpiNetProfit = document.getElementById('expKpiNetProfitMMK');
+      const kpiNetSub = document.getElementById('expKpiNetProfitSub');
+
+      if (kpiTodayMMK) kpiTodayMMK.textContent = formatMMK(todayMMK);
+      if (kpiTodayTHB) kpiTodayTHB.textContent = todayTHB > 0 ? formatTHB(todayTHB) : '0 THB';
+      if (kpiMonthMMK) kpiMonthMMK.textContent = formatMMK(monthMMK);
+      if (kpiMonthTHB) kpiMonthTHB.textContent = monthTHB > 0 ? formatTHB(monthTHB) : '0 THB';
+      if (kpiAllMMK) kpiAllMMK.textContent = formatMMK(allMMK) + (allTHB > 0 ? ` + ${formatTHB(allTHB)}` : '');
+      if (kpiAllCount) kpiAllCount.textContent = `${expenses.length} ခု`;
+
+      if (kpiNetProfit) {
+        if (todayNetProfitMMK >= 0) {
+          kpiNetProfit.textContent = '+' + formatMMK(todayNetProfitMMK);
+          kpiNetProfit.className = 'text-sm sm:text-base font-bold font-mono text-emerald-500 mt-0.5';
+        } else {
+          kpiNetProfit.textContent = '-' + formatMMK(Math.abs(todayNetProfitMMK));
+          kpiNetProfit.className = 'text-sm sm:text-base font-bold font-mono text-rose-500 mt-0.5';
+        }
+      }
+      if (kpiNetSub) {
+        kpiNetSub.textContent = `အကြမ်း: +${formatMMK(todayGrossProfitMMK)} | အသုံး: -${formatMMK(todayTotalExpMMK)}`;
+      }
+    };
+
+    const renderExpenseList = window.renderExpenseList = function() {
+      syncSearchClearButton('expenseSearchInput', 'expenseSearchClearBtn');
+      const container = document.getElementById('expenseListContainer');
+      if (!container) return;
+
+      const list = getFilteredExpenses();
+
+      const countBadge = document.getElementById('expenseCountBadge');
+      if (countBadge) countBadge.textContent = list.length + ' ခု';
+
+      let totalFilterMMK = 0;
+      let totalFilterTHB = 0;
+      list.forEach(e => {
+        if (e.currency === 'THB') totalFilterTHB += Number(e.amount) || 0;
+        else totalFilterMMK += Number(e.amount) || 0;
+      });
+
+      const filterTotEl = document.getElementById('expenseFilteredTotal');
+      if (filterTotEl) {
+        filterTotEl.textContent = '-' + formatMMK(totalFilterMMK) + (totalFilterTHB > 0 ? ` (-${formatTHB(totalFilterTHB)})` : '');
+      }
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-8 theme-card-sub rounded-2xl border theme-text-muted text-xs space-y-1">
+            <div class="text-base">💸</div>
+            <div>အသုံးစရိတ် မှတ်တမ်း မရှိပါ</div>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = list.map(exp => {
+        const icon = getExpenseCategoryIcon(exp.category);
+        const catLabel = getExpenseCategoryLabel(exp.category);
+        const isThb = exp.currency === 'THB';
+        const formattedAmt = isThb ? formatTHB(exp.amount) : formatMMK(exp.amount);
+        const accLabel = exp.paidAccount === 'CASH'
+          ? '💵 ငွေသား'
+          : (exp.paidAccount === 'BANK' ? '📱 KPay/ဘဏ်' : '🇹🇭 ဘတ်လက်ကျန်');
+
+        return `
+          <div class="theme-card-sub border hover:border-amber-500/50 p-3 rounded-2xl space-y-2 text-xs transition">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-1.5">
+                <span class="w-6 h-6 rounded-lg bg-amber-500/20 text-amber-500 flex items-center justify-center text-xs font-bold shrink-0">${icon}</span>
+                <span class="font-bold text-amber-500 text-[11px]">${catLabel}</span>
+                <span class="font-mono text-[10px] theme-text-muted">#${exp.id}</span>
+              </div>
+              <span class="text-[10px] theme-text-muted">${formatDateTime(exp.date)}</span>
+            </div>
+
+            <div class="flex items-start justify-between gap-2">
+              <div class="space-y-0.5">
+                <div class="font-bold theme-text-heading text-xs">${exp.title}</div>
+                <div class="text-[10px] theme-text-muted">
+                  ငွေရှင်းအကောင့်: <span class="font-semibold text-blue-400">${accLabel}</span>
+                  ${exp.note ? ` • <span class="italic text-slate-400">"${exp.note}"</span>` : ''}
+                </div>
+              </div>
+              <div class="text-right shrink-0">
+                <div class="text-xs sm:text-sm font-extrabold font-mono text-rose-500">
+                  -${formattedAmt}
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between gap-1.5 pt-1.5 border-t">
+              <span class="text-[9px] px-2 py-0.5 rounded-full font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                အသုံးစရိတ်
+              </span>
+              <div class="flex items-center gap-1.5">
+                <button type="button" onclick="openEditExpenseModal('${exp.id}')" class="px-2.5 py-1 rounded-lg bg-blue-600/15 text-blue-500 text-[10px] font-bold hover:bg-blue-600/25 transition">
+                  ပြင်မည်
+                </button>
+                <button type="button" onclick="deleteExpense('${exp.id}')" class="px-2.5 py-1 rounded-lg bg-rose-600/15 text-rose-500 text-[10px] font-bold hover:bg-rose-600/25 transition">
+                  ဖျက်မည်
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    };
+
+    const exportFilteredExpenseCSV = window.exportFilteredExpenseCSV = function() {
+      const list = getFilteredExpenses();
+      if (list.length === 0) {
+        showToast('CSV ထုတ်ယူရန် လက်ရှိ စစ်ထုတ်ထားသော အသုံးစရိတ် မရှိပါ', 'warning');
+        return;
+      }
+
+      const rows = list.map(exp => ({
+        'ID': exp.id,
+        'ရက်စွဲ': formatDateTime(exp.date),
+        'ကဏ္ဍ': getExpenseCategoryLabel(exp.category),
+        'ခေါင်းစဉ်': exp.title,
+        'ငွေကြေး': exp.currency || 'MMK',
+        'ပမာဏ': exp.amount || 0,
+        'ငွေရှင်းသည့်အကောင့်': exp.paidAccount === 'CASH' ? 'ငွေသား' : (exp.paidAccount === 'BANK' ? 'KPay/ဘဏ်' : 'ထိုင်းဘတ်'),
+        'မှတ်ချက်': exp.note || ''
+      }));
+
+      let csvContent = "\uFEFF";
+      const headers = Object.keys(rows[0]);
+      csvContent += headers.map(h => `"${String(h).replace(/"/g, '""')}"`).join(",") + "\r\n";
+      rows.forEach(row => {
+        const line = headers.map(header => `"${String(row[header] ?? '').replace(/"/g, '""')}"`).join(",");
+        csvContent += line + "\r\n";
+      });
+
+      const dateStr = new Date().toISOString().split('T')[0];
+      const fileName = `LabShwin_Expenses_${expensePeriodFilter}_${dateStr}.csv`;
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast(`အသုံးစရိတ် မှတ်တမ်း (${list.length} ခု) ကို CSV ဖိုင်အဖြစ် ဒေါင်းလုဒ်ဆွဲပြီးပါပြီ!`, 'success');
+    };
+
+    // --- TAB 6: SETTING (CAPITAL, EXCHANGE RATE & DRIVE BACKUP) ---
     function updateCapitalInputs() {
       const cCash = document.getElementById('capCash');
       const cBank = document.getElementById('capBank');
@@ -5589,7 +6565,8 @@
         exportedAt: new Date().toISOString(),
         capital,
         settings,
-        transactions
+        transactions,
+        expenses
       };
 
       const jsonStr = JSON.stringify(backupData, null, 2);
@@ -5623,7 +6600,7 @@
     };
 
     const exportToExcel = window.exportToExcel = function() {
-      if (transactions.length === 0) {
+      if (transactions.length === 0 && expenses.length === 0) {
         showToast('ဒေါင်းလုဒ်ဆွဲရန် မှတ်တမ်း မရှိသေးပါ', 'warning');
         return;
       }
@@ -5649,13 +6626,30 @@
         };
       });
 
+      const expenseRows = expenses.map(exp => ({
+        'ID': exp.id,
+        'ရက်စွဲ': formatDateTime(exp.date),
+        'ကဏ္ဍ': getExpenseCategoryLabel(exp.category),
+        'ခေါင်းစဉ်': exp.title || '',
+        'ငွေကြေး': exp.currency || 'MMK',
+        'ပမာဏ': exp.amount || 0,
+        'ရှင်းသည့်အကောင့်': exp.paidAccount === 'CASH' ? 'ငွေသား' : (exp.paidAccount === 'BANK' ? 'KPay/ဘဏ်' : 'ထိုင်းဘတ်'),
+        'မှတ်ချက်': exp.note || ''
+      }));
+
       const fileName = `LabShwin_Report_${new Date().toISOString().split('T')[0]}`;
 
       if (typeof XLSX !== 'undefined') {
         try {
-          const ws = XLSX.utils.json_to_sheet(rows);
           const wb = XLSX.utils.book_new();
-          XLSX.utils.book_append_sheet(wb, ws, "လာဘ်ရွှင်_စာရင်း");
+          if (rows.length > 0) {
+            const ws = XLSX.utils.json_to_sheet(rows);
+            XLSX.utils.book_append_sheet(wb, ws, "အရောင်းအဝယ်စာရင်း");
+          }
+          if (expenseRows.length > 0) {
+            const wsExp = XLSX.utils.json_to_sheet(expenseRows);
+            XLSX.utils.book_append_sheet(wb, wsExp, "အသုံးစရိတ်များ");
+          }
           XLSX.writeFile(wb, `${fileName}.xlsx`);
           showToast('Excel (.xlsx) ဖိုင်ကို အောင်မြင်စွာ ဒေါင်းလုဒ်ဆွဲပြီးပါပြီ!', 'success');
           return;
@@ -5665,9 +6659,9 @@
       }
 
       let csvContent = "\uFEFF";
-      const headers = Object.keys(rows[0]);
+      const headers = rows.length > 0 ? Object.keys(rows[0]) : Object.keys(expenseRows[0] || {});
       csvContent += headers.join(",") + "\r\n";
-      rows.forEach(row => {
+      (rows.length > 0 ? rows : expenseRows).forEach(row => {
         const line = headers.map(header => `"${String(row[header] || '').replace(/"/g, '""')}"`).join(",");
         csvContent += line + "\r\n";
       });
@@ -5696,6 +6690,10 @@
             if (data.transactions && Array.isArray(data.transactions)) {
               if (confirm(`ဖိုင်ထဲတွင် မှတ်တမ်း ${data.transactions.length} ခု တွေ့ရှိပါသည်။ လက်ရှိဒေတာများကို အစားထိုး သိမ်းဆည်းရန် သေချာပါသလား?`)) {
                 transactions = data.transactions;
+                if (data.expenses && Array.isArray(data.expenses)) {
+                  expenses = data.expenses;
+                  saveExpensesToStorage();
+                }
                 if (data.capital) capital = data.capital;
                 if (data.settings) settings = Object.assign(settings, data.settings);
                 localStorage.setItem('thb_mmk_has_user_data', 'true');
@@ -5705,7 +6703,7 @@
                 updateAllUI();
                 const banner = document.getElementById('phoneSwitchRestoreBanner');
                 if (banner) banner.classList.add('hidden');
-                showToast(`🎉 ဖိုင်မှ စာရင်းမှတ်တမ်း ${transactions.length} ခု အားလုံးကို အောင်မြင်စွာ ပြန်လည်တင်သွင်းပြီးပါပြီ!`, 'success');
+                showToast(`🎉 ဖိုင်မှ စာရင်းမှတ်တမ်း ${transactions.length} ခုနှင့် အသုံးစရိတ်များကို အောင်မြင်စွာ ပြန်လည်တင်သွင်းပြီးပါပြီ!`, 'success');
               }
             } else {
               showToast('မမှန်ကန်သော JSON Backup ဖိုင်ဖြစ်နေပါသည်', 'error');
