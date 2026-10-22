@@ -306,15 +306,37 @@
         </div>
       </div>
 
+      <!-- Upcoming 1-Week Withdrawal Notice Alert Banner (Dashboard) -->
+      <div id="dashDepositNoticeBanner" class="hidden theme-card border-2 border-amber-500/70 bg-gradient-to-r from-amber-500/15 via-orange-500/10 to-rose-500/10 rounded-2xl p-3.5 sm:p-4 shadow-md">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+          <div class="flex items-center gap-2">
+            <span class="w-7 h-7 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center text-sm font-black animate-bounce">🔔</span>
+            <div>
+              <h3 class="text-xs sm:text-sm font-extrabold text-amber-500 flex items-center gap-1.5">
+                ၁ ပတ်အတွင်း ပြန်ထုတ်ပေးရမည့် အပ်ငွေသတိပေးချက်
+                <span id="dashNoticeCountBadge" class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 font-black">0 ခု</span>
+              </h3>
+              <p class="text-[11px] theme-text-muted">ကြိုတင်အကြောင်းကြားထားသော အပ်ငွေပြန်ထုတ်ရက် နီးကပ်နေသည့် စာရင်းများ</p>
+            </div>
+          </div>
+          <button type="button" onclick="switchTab('deposits')" class="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-extrabold shadow transition">
+            အပ်ငွေစာရင်းသို့ ➔
+          </button>
+        </div>
+        <div id="dashDepositNoticeList" class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
       <!-- 4 Core Summary Cards -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3.5">
         
-        <!-- 1. Total Capital -->
+        <!-- 1. Total Working Funds (စုစုပေါင်း လည်ပတ်ငွေ) -->
         <div onclick="switchTab('capital')" class="cursor-pointer theme-card hover:border-blue-500/60 active:scale-[0.99] transition border rounded-2xl p-3.5 relative overflow-hidden group shadow-sm">
           <div class="flex items-center justify-between mb-1.5">
             <span class="text-xs text-blue-500 font-bold flex items-center gap-1">
               <svg class="w-3.5 h-3.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-              မတည်ရင်းနှီးငွေ
+              စုစုပေါင်း လည်ပတ်ငွေ
             </span>
             <span class="text-[10px] text-blue-500 font-semibold">ပြင်ဆင် ➔</span>
           </div>
@@ -382,19 +404,72 @@
 
       </div>
 
+      <!-- Own Capital vs Customer Deposits vs Total Working Funds & U9 Overview Strip -->
+      <div class="theme-card border border-purple-500/30 rounded-2xl p-3.5 sm:p-4 shadow-sm space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b pb-2">
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded-lg bg-purple-600/20 text-purple-400 flex items-center justify-center text-xs font-bold">🏦</span>
+            <div>
+              <h3 class="text-xs sm:text-sm font-bold theme-text-heading">အရင်းငွေ၊ အပ်ငွေ နှင့် လည်ပတ်ငွေ ခွဲခြားချက် & U9 ဖုန်းဘေလ် စာရင်းချုပ်</h3>
+              <p class="text-[10px] theme-text-muted">ကိုယ်ပိုင်အရင်း + Customer အပ်ငွေ + အမြတ် = စုစုပေါင်း လည်ပတ်ငွေ</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button type="button" onclick="switchTab('deposits')" class="px-2.5 py-1 rounded-lg bg-purple-600/15 hover:bg-purple-600/25 text-purple-400 text-[11px] font-bold transition">အပ်ငွေစာရင်း ➔</button>
+            <button type="button" onclick="switchTab('u9')" class="px-2.5 py-1 rounded-lg bg-cyan-600/15 hover:bg-cyan-600/25 text-cyan-400 text-[11px] font-bold transition">U9 ဖုန်းဘေလ် ➔</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          <!-- Own Capital -->
+          <div onclick="switchTab('capital')" class="cursor-pointer theme-card-sub border border-blue-500/30 hover:border-blue-500 p-2.5 sm:p-3 rounded-xl transition">
+            <span class="text-[10px] text-blue-400 font-bold block">၁။ ကိုယ်ပိုင်အရင်း (Own Capital)</span>
+            <div class="text-sm sm:text-base font-extrabold font-mono theme-text-heading mt-0.5" id="dashOwnCapitalMMK">0 Ks</div>
+            <div class="text-[10px] font-mono text-blue-400" id="dashOwnCapitalTHB">0 THB (အပ်ငွေနုတ်ပြီး)</div>
+          </div>
+
+          <!-- Total Customer Deposits (Liability) -->
+          <div onclick="switchTab('deposits')" class="cursor-pointer theme-card-sub border border-purple-500/30 hover:border-purple-500 p-2.5 sm:p-3 rounded-xl transition">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] text-purple-400 font-bold">၂။ အပ်ငွေစုစုပေါင်း (Liability)</span>
+              <span id="dashDepositCustomerCount" class="text-[9px] px-1.5 py-0.2 rounded-full bg-purple-500/20 text-purple-400 font-bold">0 ဦး</span>
+            </div>
+            <div class="text-sm sm:text-base font-extrabold font-mono text-purple-400 mt-0.5" id="dashCustomerDepositsMMK">0 Ks</div>
+            <div class="text-[10px] font-mono theme-text-muted" id="dashCustomerDepositsTHB">0 THB (ပြန်ပေးရန်တာဝန်)</div>
+          </div>
+
+          <!-- Total Working Funds -->
+          <div onclick="switchTab('deposits')" class="cursor-pointer theme-card-sub border border-emerald-500/30 hover:border-emerald-500 p-2.5 sm:p-3 rounded-xl transition">
+            <span class="text-[10px] text-emerald-400 font-bold block">၃။ စုစုပေါင်း လည်ပတ်ငွေ</span>
+            <div class="text-sm sm:text-base font-extrabold font-mono text-emerald-400 mt-0.5" id="dashTotalWorkingFundsMMK">0 Ks</div>
+            <div class="text-[10px] theme-text-muted" id="dashTotalWorkingFundsSub">ကိုယ်ပိုင်အရင်း + အပ်ငွေ + အမြတ်</div>
+          </div>
+
+          <!-- U9 Bill Balance & Remaining Commission -->
+          <div onclick="switchTab('u9')" class="cursor-pointer theme-card-sub border border-cyan-500/30 hover:border-cyan-500 p-2.5 sm:p-3 rounded-xl transition">
+            <span class="text-[10px] text-cyan-400 font-bold block">၄။ U9 ဖုန်းဘေလ် လက်ကျန်</span>
+            <div class="text-sm sm:text-base font-extrabold font-mono text-cyan-400 mt-0.5" id="dashU9StockBalance">0 Ks</div>
+            <div class="text-[10px] font-mono text-emerald-400" id="dashU9RemainingCommission">ထုတ်ရန်ကျန်ကော်မရှင်: 0 Ks</div>
+          </div>
+        </div>
+      </div>
+
       <!-- Quick Action Buttons -->
-      <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-2.5">
-        <button onclick="switchTab('remit')" class="py-2.5 sm:py-3 px-2 sm:px-3 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 active:scale-98 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 sm:gap-2 shadow-md shadow-blue-900/20 transition">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
-          <span>+ ငွေလွှဲသစ်</span>
+      <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
+        <button onclick="switchTab('remit')" class="py-2.5 px-2.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 active:scale-98 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-blue-900/20 transition">
+          <span>⇄ + ငွေလွှဲသစ်</span>
         </button>
-        <button onclick="switchTab('cashout')" class="py-2.5 sm:py-3 px-2 sm:px-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 active:scale-98 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 sm:gap-2 shadow-md shadow-emerald-900/20 transition">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-          <span>+ KPay ငွေထုတ်/လွှဲ</span>
+        <button onclick="switchTab('cashout')" class="py-2.5 px-2.5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 active:scale-98 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-emerald-900/20 transition">
+          <span>📱 + KPay ငွေထုတ်</span>
         </button>
-        <button onclick="switchTab('expense')" class="col-span-2 sm:col-span-1 py-2.5 sm:py-3 px-2 sm:px-3 rounded-2xl bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 active:scale-98 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 sm:gap-2 shadow-md shadow-amber-900/20 transition">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z"></path></svg>
-          <span>+ အသုံးစရိတ်သစ်</span>
+        <button onclick="switchTab('deposits')" class="py-2.5 px-2.5 rounded-2xl bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-500 hover:to-fuchsia-500 active:scale-98 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-purple-900/20 transition">
+          <span>🏦 + အပ်ငွေစာရင်း</span>
+        </button>
+        <button onclick="switchTab('u9')" class="py-2.5 px-2.5 rounded-2xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 active:scale-98 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-cyan-900/20 transition">
+          <span>📶 + U9 ဖုန်းဘေလ်</span>
+        </button>
+        <button onclick="switchTab('expense')" class="col-span-2 sm:col-span-1 py-2.5 px-2.5 rounded-2xl bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 active:scale-98 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-amber-900/20 transition">
+          <span>💸 + အသုံးစရိတ်</span>
         </button>
       </div>
 
@@ -481,6 +556,16 @@
 
     <!-- ================= TAB 2: ထိုင်း-မြန်မာ ငွေလွှဲ ================= -->
     <section id="tab-remit" class="space-y-4 hidden">
+      <!-- Top Sub-Navigation Switcher: ငွေလွှဲ vs KPay ငွေထုတ်/လွှဲ -->
+      <div class="grid grid-cols-2 gap-1.5 p-1 theme-card rounded-2xl border text-xs font-bold shadow-sm">
+        <button type="button" onclick="switchTab('remit')" class="py-2 px-3 rounded-xl bg-blue-600 text-white shadow flex items-center justify-center gap-1.5 transition">
+          <span>🇹🇭 ⇄ 🇲🇲 ထိုင်း-မြန်မာ ငွေလွှဲ</span>
+        </button>
+        <button type="button" onclick="switchTab('cashout')" class="py-2 px-3 rounded-xl theme-text-muted hover:text-emerald-500 flex items-center justify-center gap-1.5 transition">
+          <span>📱 KPay / Wave ငွေထုတ် & လွှဲ</span>
+        </button>
+      </div>
+
       <div class="bg-gradient-to-r from-blue-900/30 via-indigo-900/20 to-transparent theme-card border rounded-2xl p-4 shadow-sm">
         <h2 class="text-sm sm:text-base font-bold theme-text-heading flex items-center gap-2">
           <span class="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center text-xs">🇹🇭</span>
@@ -743,6 +828,16 @@
 
     <!-- ================= TAB 3: ပြည်တွင်း KPAY / ငွေထုတ် ================= -->
     <section id="tab-cashout" class="space-y-4 hidden">
+      <!-- Top Sub-Navigation Switcher: ငွေလွှဲ vs KPay ငွေထုတ်/လွှဲ -->
+      <div class="grid grid-cols-2 gap-1.5 p-1 theme-card rounded-2xl border text-xs font-bold shadow-sm">
+        <button type="button" onclick="switchTab('remit')" class="py-2 px-3 rounded-xl theme-text-muted hover:text-blue-500 flex items-center justify-center gap-1.5 transition">
+          <span>🇹🇭 ⇄ 🇲🇲 ထိုင်း-မြန်မာ ငွေလွှဲ</span>
+        </button>
+        <button type="button" onclick="switchTab('cashout')" class="py-2 px-3 rounded-xl bg-emerald-600 text-white shadow flex items-center justify-center gap-1.5 transition">
+          <span>📱 KPay / Wave ငွေထုတ် & လွှဲ</span>
+        </button>
+      </div>
+
       <div class="bg-gradient-to-r from-emerald-900/30 via-teal-900/20 to-transparent theme-card border rounded-2xl p-4 shadow-sm">
         <h2 class="text-sm sm:text-base font-bold theme-text-heading flex items-center gap-2">
           <span class="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-xs">🇲🇲</span>
@@ -972,6 +1067,19 @@
 
     <!-- ================= TAB 4: အကြွေးစာရင်း ================= -->
     <section id="tab-credit" class="space-y-4 hidden">
+      <!-- Top Sub-Navigation Switcher: အကြွေးစာရင်း | အသုံးများ | Setting / Backup -->
+      <div class="grid grid-cols-3 gap-1.5 p-1 theme-card rounded-2xl border text-xs font-bold shadow-sm">
+        <button type="button" onclick="switchTab('credit')" class="py-2 px-2 rounded-xl bg-rose-600 text-white shadow flex items-center justify-center gap-1 transition">
+          <span>📋 အကြွေးစာရင်း</span>
+        </button>
+        <button type="button" onclick="switchTab('expense')" class="py-2 px-2 rounded-xl theme-text-muted hover:text-amber-500 flex items-center justify-center gap-1 transition">
+          <span>💸 အသုံးများ</span>
+        </button>
+        <button type="button" onclick="switchTab('capital')" class="py-2 px-2 rounded-xl theme-text-muted hover:text-blue-500 flex items-center justify-center gap-1 transition">
+          <span>⚙️ Setting / Backup</span>
+        </button>
+      </div>
+
       <div class="theme-card border border-rose-500/30 rounded-2xl p-4 sm:p-5 shadow-sm space-y-3">
         <div class="flex items-center justify-between">
           <h2 class="text-sm sm:text-base font-bold theme-text-heading flex items-center gap-2">
@@ -1018,6 +1126,19 @@
 
     <!-- ================= TAB 5: အသုံးစရိတ်များ (BUSINESS EXPENSES) ================= -->
     <section id="tab-expense" class="space-y-4 hidden">
+      <!-- Top Sub-Navigation Switcher: အကြွေးစာရင်း | အသုံးများ | Setting / Backup -->
+      <div class="grid grid-cols-3 gap-1.5 p-1 theme-card rounded-2xl border text-xs font-bold shadow-sm">
+        <button type="button" onclick="switchTab('credit')" class="py-2 px-2 rounded-xl theme-text-muted hover:text-rose-500 flex items-center justify-center gap-1 transition">
+          <span>📋 အကြွေးစာရင်း</span>
+        </button>
+        <button type="button" onclick="switchTab('expense')" class="py-2 px-2 rounded-xl bg-amber-600 text-white shadow flex items-center justify-center gap-1 transition">
+          <span>💸 အသုံးများ</span>
+        </button>
+        <button type="button" onclick="switchTab('capital')" class="py-2 px-2 rounded-xl theme-text-muted hover:text-blue-500 flex items-center justify-center gap-1 transition">
+          <span>⚙️ Setting / Backup</span>
+        </button>
+      </div>
+
       <!-- Header Banner -->
       <div class="bg-gradient-to-r from-amber-900/30 via-orange-900/20 to-transparent theme-card border border-amber-500/30 rounded-2xl p-4 sm:p-5 shadow-sm">
         <div class="flex flex-wrap items-center justify-between gap-2">
@@ -1222,8 +1343,627 @@
       </div>
     </section>
 
+    <!-- ================= MODULE 1: အပ်ငွေစာရင်း (CUSTOMER SAVINGS / DEPOSITS MANAGEMENT) ================= -->
+    <section id="tab-deposits" class="space-y-4 hidden">
+      <!-- Upcoming 1-Week Withdrawal Notice Alert Banner (Deposits Tab) -->
+      <div id="depositTabNoticeBanner" class="hidden theme-card border-2 border-amber-500/70 bg-gradient-to-r from-amber-500/15 via-orange-500/10 to-rose-500/10 rounded-2xl p-3.5 sm:p-4 shadow-md">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+          <div class="flex items-center gap-2">
+            <span class="w-7 h-7 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center text-sm font-black animate-bounce">🔔</span>
+            <div>
+              <h3 class="text-xs sm:text-sm font-extrabold text-amber-500 flex items-center gap-1.5">
+                ၁ ပတ်အတွင်း ပြန်ထုတ်ပေးရမည့် အပ်ငွေသတိပေးချက်
+                <span id="depositTabNoticeCount" class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 font-black">0 ခု</span>
+              </h3>
+              <p class="text-[11px] theme-text-muted">၁ ပတ်ကြိုတင်အကြောင်းကြားထားသော အပ်နှံသူများ၏ ပြန်ထုတ်ပေးရမည့် ရက်စွဲနှင့် ပမာဏများ</p>
+            </div>
+          </div>
+          <span class="text-[10px] text-amber-400 font-bold">ငွေထုတ်ပေးပြီးပါက "ထုတ်ပေးပြီး" ခလုတ်နှိပ်ပါ</span>
+        </div>
+        <div id="depositTabNoticeList" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Header & Capital Distinction Cards -->
+      <div class="bg-gradient-to-r from-purple-900/30 via-fuchsia-900/20 to-transparent theme-card border border-purple-500/30 rounded-2xl p-4 sm:p-5 shadow-sm space-y-3.5">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h2 class="text-sm sm:text-base font-bold theme-text-heading flex items-center gap-2">
+              <span class="w-7 h-7 rounded-lg bg-purple-600 text-white flex items-center justify-center text-xs">🏦</span>
+              အပ်ငွေစာရင်း (Customer Savings / Deposits Management)
+            </h2>
+            <p class="text-xs theme-text-muted mt-0.5">အပ်နှံငွေ လက်ခံခြင်း၊ ၁ ပတ်ကြိုတင် ငွေထုတ်ရက်မှတ်သားခြင်း နှင့် လည်ပတ်ငွေ ခွဲခြားစီမံခန့်ခွဲခြင်း</p>
+          </div>
+          <button type="button" onclick="focusDepositForm()" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-500 hover:to-fuchsia-500 text-white text-xs font-bold shadow flex items-center gap-1.5 transition active:scale-95">
+            <span>+ အပ်ငွေစာရင်းသစ် သွင်းမည်</span>
+          </button>
+        </div>
+
+        <!-- 4 Core Distinction Cards: Own Capital vs Customer Deposits vs Total Working Funds vs Pending Notices -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3 pt-3 border-t border-purple-500/20">
+          <!-- 1. ကိုယ်ပိုင်အရင်း (Own Capital) -->
+          <div class="theme-card-sub p-3 rounded-xl border border-blue-500/30">
+            <span class="text-[10px] text-blue-400 font-bold block">၁။ ကိုယ်ပိုင်အရင်း (Own Capital)</span>
+            <div class="text-sm sm:text-base font-extrabold font-mono theme-text-heading mt-0.5" id="depKpiOwnCapMMK">0 Ks</div>
+            <div class="text-[10px] font-mono text-blue-400" id="depKpiOwnCapTHB">0 THB (အပ်ငွေ မပါဝင်ပါ)</div>
+          </div>
+
+          <!-- 2. အပ်ငွေစုစုပေါင်း (Total Customer Deposits - Liability) -->
+          <div class="theme-card-sub p-3 rounded-xl border border-purple-500/30 bg-purple-500/5">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] text-purple-400 font-bold">၂။ အပ်ငွေစုစုပေါင်း (Liability)</span>
+              <span id="depKpiCustCount" class="text-[9px] px-1.5 py-0.2 rounded-full bg-purple-500/20 text-purple-400 font-bold">0 ဦး</span>
+            </div>
+            <div class="text-sm sm:text-base font-extrabold font-mono text-purple-400 mt-0.5" id="depKpiTotalDepositsMMK">0 Ks</div>
+            <div class="text-[10px] font-mono text-purple-300" id="depKpiTotalDepositsTHB">0 THB (ပြန်ထုတ်ပေးရန်ကျန်)</div>
+          </div>
+
+          <!-- 3. စုစုပေါင်း လည်ပတ်ငွေ (Total Working Funds) -->
+          <div class="theme-card-sub p-3 rounded-xl border border-emerald-500/30 bg-emerald-500/5">
+            <span class="text-[10px] text-emerald-400 font-bold block">၃။ စုစုပေါင်း လည်ပတ်ငွေ</span>
+            <div class="text-sm sm:text-base font-extrabold font-mono text-emerald-400 mt-0.5" id="depKpiWorkingFundsMMK">0 Ks</div>
+            <div class="text-[10px] font-mono theme-text-muted" id="depKpiWorkingFundsSub">ကိုယ်ပိုင်အရင်း + အပ်ငွေ + အမြတ်</div>
+          </div>
+
+          <!-- 4. ၁ ပတ်ကြိုမှတ်ထားသော ထုတ်ငွေ (Upcoming Withdrawal Notices) -->
+          <div class="theme-card-sub p-3 rounded-xl border border-amber-500/30">
+            <span class="text-[10px] text-amber-400 font-bold block">၄။ ကြိုမှတ်ထားသော ထုတ်ငွေ</span>
+            <div class="text-sm sm:text-base font-extrabold font-mono text-amber-400 mt-0.5" id="depKpiNoticeTotalMMK">0 Ks</div>
+            <div class="text-[10px] font-mono theme-text-muted" id="depKpiNoticeSub">သတိပေးချက် 0 ခု</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Layout: Deposit Form (Left 5 cols) + Customer Balances & History (Right 7 cols) -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+        
+        <!-- Left: Deposit / Notice / Withdraw Form -->
+        <div class="md:col-span-5 space-y-4">
+          <form id="depositForm" onsubmit="handleSaveDeposit(event)" class="theme-card border border-purple-500/30 rounded-2xl p-4 sm:p-5 space-y-3.5 shadow-sm">
+            <div class="flex items-center justify-between border-b pb-2">
+              <h3 class="text-xs sm:text-sm font-bold text-purple-400 flex items-center gap-1.5">
+                <span>📝 အပ်ငွေ / ကြိုမှတ် / ပြန်ထုတ် စာရင်းသွင်းရန်</span>
+              </h3>
+              <span class="text-[10px] theme-text-muted">အလိုအလျောက် ချိန်ညှိပေးသည်</span>
+            </div>
+
+            <!-- Transaction Type Selector (3 options) -->
+            <div>
+              <label class="block text-xs font-semibold theme-text-heading mb-1.5">လုပ်ဆောင်ချက် အမျိုးအစား <span class="text-rose-500">*</span></label>
+              <div class="grid grid-cols-1 gap-1.5 text-xs">
+                <button type="button" id="dep-type-in" onclick="setDepositActionType('DEPOSIT_IN')" class="p-2.5 rounded-xl border border-emerald-500 bg-emerald-600/20 text-emerald-400 font-bold text-left flex items-center justify-between transition">
+                  <span>📥 ၁။ ငွေလာအပ်သည် (Deposit In)</span>
+                  <span class="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20">+ လည်ပတ်ငွေ & + အပ်ငွေ</span>
+                </button>
+                <button type="button" id="dep-type-notice" onclick="setDepositActionType('WITHDRAW_NOTICE')" class="p-2.5 rounded-xl border border-slate-700 theme-card-sub theme-text-muted hover:border-amber-500 font-bold text-left flex items-center justify-between transition">
+                  <span>🔔 ၂။ ပြန်ထုတ်မည့်ရက် ကြိုမှတ်ရန် (1-Week Notice)</span>
+                  <span class="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-400">လက်ကျန် မနုတ်သေးပါ</span>
+                </button>
+                <button type="button" id="dep-type-out" onclick="setDepositActionType('WITHDRAW_OUT')" class="p-2.5 rounded-xl border border-slate-700 theme-card-sub theme-text-muted hover:border-rose-500 font-bold text-left flex items-center justify-between transition">
+                  <span>📤 ၃။ ငွေပြန်ထုတ်ပေးသည် (Withdraw Out)</span>
+                  <span class="text-[10px] px-2 py-0.5 rounded bg-rose-500/20 text-rose-400">- လည်ပတ်ငွေ & - အပ်ငွေ</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Date -->
+            <div>
+              <label class="block text-xs font-semibold theme-text-heading mb-1">ရက်စွဲနှင့် အချိန်</label>
+              <input type="datetime-local" id="depositDate" required class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-mono">
+            </div>
+
+            <!-- Customer Name (with datalist of existing depositors) & Phone -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <div>
+                <label class="block text-xs font-semibold theme-text-heading mb-1">အပ်နှံသူ အမည် <span class="text-rose-500">*</span></label>
+                <input type="text" id="depositCustName" list="depositorNamesList" required placeholder="ဥပမာ - ဒေါ်မြင့်မြင့်" oninput="onDepositCustomerInput()" class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-bold">
+                <datalist id="depositorNamesList"></datalist>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold theme-text-heading mb-1">ဖုန်းနံပါတ်</label>
+                <input type="text" id="depositCustPhone" placeholder="09xxxxxxx (စိတ်ကြိုက်)" class="w-full theme-input border rounded-xl px-3 py-2 text-xs">
+              </div>
+            </div>
+
+            <!-- Selected Customer Current Deposit Balance Hint -->
+            <div id="depositCustBalanceHint" class="hidden p-2.5 rounded-xl bg-purple-500/10 border border-purple-500/30 text-xs flex items-center justify-between">
+              <span class="theme-text-muted">လက်ရှိ အပ်ငွေလက်ကျန်:</span>
+              <span id="depositCustBalanceValue" class="font-bold font-mono text-purple-400">0 Ks</span>
+            </div>
+
+            <!-- Currency & Amount -->
+            <div class="grid grid-cols-12 gap-2">
+              <div class="col-span-4">
+                <label class="block text-xs font-semibold theme-text-heading mb-1">ငွေကြေး</label>
+                <select id="depositCurrency" onchange="updateDepositCurrencyUI()" class="w-full theme-input border rounded-xl px-2.5 py-2 text-xs font-bold">
+                  <option value="MMK">မြန်မာကျပ် (Ks)</option>
+                  <option value="THB">ထိုင်းဘတ် (฿)</option>
+                </select>
+              </div>
+              <div class="col-span-8">
+                <label id="depositAmountLabel" class="block text-xs font-semibold theme-text-heading mb-1">အပ်နှံငွေ ပမာဏ <span class="text-rose-500">*</span></label>
+                <div class="relative">
+                  <input type="number" step="any" min="1" id="depositAmount" required placeholder="0" class="w-full theme-input border rounded-xl px-3 py-2 text-sm font-mono font-bold pr-12">
+                  <span id="depositCurrencySuffix" class="absolute right-3 top-2.5 text-xs theme-text-muted font-bold">Ks</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Amount Buttons -->
+            <div class="flex flex-wrap gap-1.5">
+              <button type="button" onclick="setDepositQuickAmount(50000)" class="px-2 py-1 theme-card-sub rounded-lg text-[11px] font-mono border hover:border-purple-500">50,000</button>
+              <button type="button" onclick="setDepositQuickAmount(100000)" class="px-2 py-1 theme-card-sub rounded-lg text-[11px] font-mono border hover:border-purple-500">100,000</button>
+              <button type="button" onclick="setDepositQuickAmount(300000)" class="px-2 py-1 theme-card-sub rounded-lg text-[11px] font-mono border hover:border-purple-500">300,000</button>
+              <button type="button" onclick="setDepositQuickAmount(500000)" class="px-2 py-1 theme-card-sub rounded-lg text-[11px] font-mono border hover:border-purple-500">500,000</button>
+              <button type="button" onclick="setDepositQuickAmount(1000000)" class="px-2 py-1 theme-card-sub rounded-lg text-[11px] font-mono border hover:border-purple-500">1,000,000</button>
+              <button type="button" onclick="setDepositQuickAmount(5000000)" class="px-2 py-1 theme-card-sub rounded-lg text-[11px] font-mono border hover:border-purple-500">5,000,000</button>
+            </div>
+
+            <!-- Target Withdrawal Date (Only visible when WITHDRAW_NOTICE is selected) -->
+            <div id="depositTargetDateGroup" class="hidden p-3 rounded-xl bg-amber-500/10 border border-amber-500/40 space-y-2">
+              <div class="flex items-center justify-between">
+                <label class="block text-xs font-bold text-amber-400">📅 ပြန်ထုတ်ပေးရမည့် ရက်စွဲ (Target Date) <span class="text-rose-500">*</span></label>
+                <button type="button" onclick="setDepositNoticePlusDays(7)" class="text-[10px] px-2 py-0.5 rounded bg-amber-500 text-slate-950 font-bold">+ ၇ ရက် (၁ ပတ်)</button>
+              </div>
+              <input type="date" id="depositTargetDate" class="w-full theme-input border border-amber-500/50 rounded-xl px-3 py-2 text-xs font-mono font-bold">
+              <p class="text-[10px] theme-text-muted">၁ ပတ်ကြိုတင်မှတ်သားခြင်းဖြစ်သောကြောင့် ယခုချက်ချင်း လက်ကျန်ငွေမှ မနုတ်သေးပါ။ Dashboard နှင့် အပ်ငွေစာမျက်နှာထိပ်တွင် သတိပေးချက် ပေါ်နေပါမည်။</p>
+            </div>
+
+            <!-- Working Balance Account Selection (Cash / KPay / THB) -->
+            <div id="depositAccountGroup">
+              <label id="depositAccountLabel" class="block text-xs font-semibold theme-text-heading mb-1">လက်ခံသည့် / ထုတ်ပေးသည့် လည်ပတ်ငွေအကောင့် <span class="text-rose-500">*</span></label>
+              <select id="depositAccount" class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-semibold">
+                <option value="CASH">💵 လက်ထဲရှိ ငွေသား (Cash in Hand MMK)</option>
+                <option value="BANK">📱 KPay / Wave / Bank အကောင့် (Digital MMK)</option>
+                <option value="THB">🇹🇭 ထိုင်းဘတ် လက်ကျန် (THB Balance)</option>
+              </select>
+              <p id="depositAccountHint" class="text-[10px] theme-text-muted mt-1">ငွေလာအပ်ပါက ရွေးချယ်ထားသော လည်ပတ်ငွေအကောင့်ထဲသို့ အလိုအလျောက် ပေါင်းထည့်ပေးပါမည်</p>
+            </div>
+
+            <!-- Note -->
+            <div>
+              <label class="block text-xs font-semibold theme-text-heading mb-1">မှတ်ချက် (Optional)</label>
+              <input type="text" id="depositNote" placeholder="ဥပမာ - KPay ဖြင့် လွှဲအပ်သည် / ၁ ပတ်ကြိုပြောရန်" class="w-full theme-input border rounded-xl px-3 py-2 text-xs">
+            </div>
+
+            <button type="submit" id="depositSubmitBtn" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 active:scale-98 text-white text-xs sm:text-sm font-bold shadow-md transition flex items-center justify-center gap-2">
+              <span>📥 အပ်ငွေ လက်ခံစာရင်း သိမ်းမည်</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Right: Customer Deposit Balances + Deposit History -->
+        <div class="md:col-span-7 space-y-4">
+          
+          <!-- Customer-wise Deposit Summary Card -->
+          <div class="theme-card border border-purple-500/30 rounded-2xl p-4 space-y-3 shadow-sm">
+            <div class="flex items-center justify-between border-b pb-2">
+              <h3 class="text-xs sm:text-sm font-bold theme-text-heading flex items-center gap-1.5">
+                <span class="w-5 h-5 rounded-md bg-purple-600/20 text-purple-400 flex items-center justify-center text-xs">👥</span>
+                အပ်နှံထားသူ တစ်ဦးချင်းစီ၏ လက်ကျန်စာရင်း
+              </h3>
+              <span id="depositActiveCustBadge" class="text-[10px] theme-tag-bg px-2 py-0.5 rounded-full font-bold">0 ဦး</span>
+            </div>
+            <div id="depositCustomerSummaryList" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-[260px] overflow-y-auto pr-1">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <!-- Deposit Transaction History Table -->
+          <div class="theme-card border border-purple-500/30 rounded-2xl p-4 space-y-3 shadow-sm">
+            <div class="flex flex-wrap items-center justify-between gap-2 border-b pb-2.5">
+              <div class="flex items-center gap-2">
+                <h3 class="text-xs sm:text-sm font-bold theme-text-heading">အပ်ငွေ / ထုတ်ငွေ မှတ်တမ်းအားလုံး</h3>
+                <span id="depositHistoryCountBadge" class="text-[10px] theme-tag-bg px-2 py-0.5 rounded-full font-bold">0 ခု</span>
+              </div>
+              <button type="button" onclick="exportDepositHistoryCSV()" class="px-2.5 py-1 rounded-xl bg-purple-600 hover:bg-purple-500 active:scale-95 text-white text-[11px] font-bold shadow-sm transition flex items-center gap-1">
+                <span>CSV ထုတ်မည်</span>
+              </button>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="flex flex-wrap gap-1 theme-card-sub p-1 rounded-xl border text-xs">
+              <button type="button" onclick="setDepositHistoryFilter('ALL')" id="dep-hist-all" class="flex-1 py-1.5 rounded-lg font-bold bg-purple-600 text-white transition text-center">အားလုံး</button>
+              <button type="button" onclick="setDepositHistoryFilter('DEPOSIT_IN')" id="dep-hist-in" class="flex-1 py-1.5 rounded-lg font-medium theme-text-muted hover:text-emerald-400 transition text-center">ငွေအပ်</button>
+              <button type="button" onclick="setDepositHistoryFilter('WITHDRAW_NOTICE')" id="dep-hist-notice" class="flex-1 py-1.5 rounded-lg font-medium theme-text-muted hover:text-amber-400 transition text-center">ကြိုမှတ်</button>
+              <button type="button" onclick="setDepositHistoryFilter('WITHDRAW_OUT')" id="dep-hist-out" class="flex-1 py-1.5 rounded-lg font-medium theme-text-muted hover:text-rose-400 transition text-center">ပြန်ထုတ်</button>
+            </div>
+
+            <!-- Search with Auto-clear X -->
+            <div class="relative">
+              <input type="text" id="depositSearchInput" oninput="renderDepositsModule()" placeholder="အပ်နှံသူအမည်၊ ဖုန်း သို့မဟုတ် မှတ်ချက်ဖြင့် ရှာရန်..." class="w-full theme-input border rounded-xl px-3.5 py-2 pl-9 pr-8 text-xs">
+              <svg class="w-4 h-4 theme-text-muted absolute left-3 top-2.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+              <button type="button" id="depositSearchClearBtn" onclick="clearSearchInput('depositSearchInput')" class="hidden absolute right-2.5 top-2 w-5 h-5 rounded-full bg-slate-500/20 hover:bg-rose-500/20 theme-text-muted hover:text-rose-500 flex items-center justify-center text-[11px] font-bold transition" title="ရှင်းလင်းရန်">✕</button>
+            </div>
+
+            <div id="depositHistoryListContainer" class="space-y-2 max-h-[420px] overflow-y-auto pr-1">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= MODULE 2: U9 ဖုန်းဘေလ် ကိုယ်စားလှယ်လုပ်ငန်း (U9 TELECOM BILL AGENT MODULE) ================= -->
+    <section id="tab-u9" class="space-y-4 hidden">
+      <!-- Top Header & Month Filter -->
+      <div class="bg-gradient-to-r from-cyan-900/30 via-blue-900/20 to-transparent theme-card border border-cyan-500/30 rounded-2xl p-4 sm:p-5 shadow-sm space-y-3.5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+          <div>
+            <h2 class="text-sm sm:text-base font-bold theme-text-heading flex items-center gap-2">
+              <span class="w-7 h-7 rounded-lg bg-cyan-600 text-white flex items-center justify-center text-xs font-black">U9</span>
+              U9 ဖုန်းဘေလ် ကိုယ်စားလှယ်လုပ်ငန်း (လစဉ် U9 စာရင်းချုပ်)
+            </h2>
+            <p class="text-xs theme-text-muted mt-0.5">U9 သီးသန့်အရင်း၊ လစဉ် Primary ဝယ်ယူမှု၊ ကော်မရှင်အမြတ်ထုတ်ယူမှု နှင့် ဖုန်းဘေလ်လက်လီ/အကြွေး ရောင်းချမှုစနစ်</p>
+          </div>
+
+          <!-- Month Filter Controls -->
+          <div class="flex flex-wrap items-center gap-1.5">
+            <div class="flex items-center gap-1 theme-card-sub p-1 rounded-xl border text-xs">
+              <button type="button" id="u9-month-btn-current" onclick="setU9MonthFilter('CURRENT')" class="px-2.5 py-1.5 rounded-lg font-bold bg-cyan-600 text-white transition">ယခုလ</button>
+              <button type="button" id="u9-month-btn-prev" onclick="setU9MonthFilter('PREV')" class="px-2.5 py-1.5 rounded-lg font-medium theme-text-muted hover:text-cyan-400 transition">ပြီးခဲ့သောလ</button>
+              <button type="button" id="u9-month-btn-all" onclick="setU9MonthFilter('ALL')" class="px-2.5 py-1.5 rounded-lg font-medium theme-text-muted hover:text-cyan-400 transition">အားလုံး</button>
+            </div>
+            <input type="month" id="u9MonthPicker" onchange="setU9CustomMonth(this.value)" class="theme-input border rounded-xl px-2.5 py-1.5 text-xs font-mono font-bold">
+          </div>
+        </div>
+
+        <!-- 5 U9 Monthly Summary Cards -->
+        <div class="grid grid-cols-2 lg:grid-cols-5 gap-2.5 pt-3 border-t border-cyan-500/20">
+          <!-- Card 1: U9 သီးသန့်အရင်းငွေ (U9 Capital) -->
+          <div class="theme-card-sub p-3 rounded-xl border border-cyan-500/30 relative">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] text-cyan-400 font-bold">၁။ U9 သီးသန့်အရင်းငွေ</span>
+              <button type="button" onclick="openU9CapitalModal()" class="text-[10px] text-cyan-400 hover:underline font-bold">ပြင်ရန် ✎</button>
+            </div>
+            <div class="text-sm sm:text-base font-extrabold font-mono theme-text-heading mt-1" id="u9CardCapital">0 Ks</div>
+            <div class="text-[10px] theme-text-muted mt-0.5">သီးသန့် ဖုန်းဘေလ်အရင်း</div>
+          </div>
+
+          <!-- Card 2: လက်ကျန် ဖုန်းဘေလ်ပမာဏ (Current U9 Bill Balance / Stock) -->
+          <div class="theme-card-sub p-3 rounded-xl border border-blue-500/30 bg-blue-500/5">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] text-blue-400 font-bold">၂။ လက်ကျန် ဖုန်းဘေလ်ပမာဏ</span>
+              <button type="button" onclick="openU9CapitalModal()" class="text-[10px] text-blue-400 hover:underline font-bold">ချိန်ညှိ ✎</button>
+            </div>
+            <div class="text-sm sm:text-base font-extrabold font-mono text-blue-400 mt-1" id="u9CardBillBalance">0 Ks</div>
+            <div class="text-[10px] theme-text-muted mt-0.5" id="u9CardSoldSub">ရောင်းပြီး: 0 Ks</div>
+          </div>
+
+          <!-- Card 3: ယခုလ Primary ဝယ်ယူမှု စုစုပေါင်း -->
+          <div class="theme-card-sub p-3 rounded-xl border border-indigo-500/30">
+            <span class="text-[10px] text-indigo-400 font-bold block" id="u9CardPrimaryTitle">၃။ ယခုလ Primary ဝယ်ယူမှု</span>
+            <div class="text-sm sm:text-base font-extrabold font-mono text-indigo-400 mt-1" id="u9CardPrimaryTotal">0 Ks</div>
+            <div class="text-[10px] theme-text-muted mt-0.5" id="u9CardPrimarySub">ရရှိဘေလ်: 0 Ks</div>
+          </div>
+
+          <!-- Card 4: ယခုလ ရရှိသော ကော်မရှင်အမြတ် စုစုပေါင်း -->
+          <div class="theme-card-sub p-3 rounded-xl border border-emerald-500/30 bg-emerald-500/5">
+            <span class="text-[10px] text-emerald-400 font-bold block" id="u9CardCommTitle">၄။ ယခုလ ကော်မရှင်အမြတ်</span>
+            <div class="text-sm sm:text-base font-extrabold font-mono text-emerald-400 mt-1" id="u9CardCommTotal">+0 Ks</div>
+            <div class="text-[10px] font-mono text-emerald-300 mt-0.5" id="u9CardExtraProfitSub">လက်လီအပိုအမြတ်: +0 Ks</div>
+          </div>
+
+          <!-- Card 5: ထုတ်ယူပြီးသော ကော်မရှင်အမြတ် & ထုတ်ရန်ကျန် ကော်မရှင် -->
+          <div class="col-span-2 lg:col-span-1 theme-card-sub p-3 rounded-xl border border-amber-500/40 bg-amber-500/5">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] text-amber-400 font-bold">၅။ ထုတ်ရန်ကျန် ကော်မရှင်</span>
+              <span class="text-[9px] px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-400 font-bold">လက်ကျန်အမြတ်</span>
+            </div>
+            <div class="text-sm sm:text-base font-extrabold font-mono text-amber-400 mt-0.5" id="u9CardRemainingComm">0 Ks</div>
+            <div class="text-[10px] font-mono theme-text-muted mt-1 space-y-0.5 border-t border-amber-500/20 pt-1">
+              <div class="flex justify-between"><span>ထုတ်ပြီး စုစုပေါင်း:</span> <span class="font-bold text-emerald-400" id="u9CardWithdrawnComm">0 Ks</span></div>
+              <div class="flex justify-between text-[9px]">
+                <span id="u9CardWithdrawnCash">ငွေသား: 0 Ks</span>
+                <span id="u9CardWithdrawnKPay">KPay: 0 Ks</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main U9 Grid: Left Sub-Actions A, B, C (5 cols) + Right History (7 cols) -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+        
+        <!-- Left Column: Sub-Action Switcher + Forms -->
+        <div class="md:col-span-5 space-y-3.5">
+          <!-- 3 Sub-Action Selector Buttons -->
+          <div class="grid grid-cols-3 gap-1.5 p-1 theme-card rounded-2xl border text-xs font-bold shadow-sm">
+            <button type="button" id="u9-subtab-sell" onclick="setU9SubAction('SELL_BILL')" class="py-2.5 px-2 rounded-xl bg-cyan-600 text-white shadow text-center transition leading-tight">
+              📲 ဖုန်းဘေလ် ရောင်းရန်
+            </button>
+            <button type="button" id="u9-subtab-primary" onclick="setU9SubAction('BUY_PRIMARY')" class="py-2.5 px-2 rounded-xl theme-text-muted hover:text-indigo-400 text-center transition leading-tight">
+              📦 Primary ဝယ်ယူရန်
+            </button>
+            <button type="button" id="u9-subtab-withdraw" onclick="setU9SubAction('WITHDRAW_COMM')" class="py-2.5 px-2 rounded-xl theme-text-muted hover:text-amber-400 text-center transition leading-tight">
+              💵 ကော်မရှင် ထုတ်ယူရန်
+            </button>
+          </div>
+
+          <!-- SUB-ACTION C: ဖုန်းဘေလ် ပြန်ရောင်းခြင်း (Sell Phone Bill to Customers) -->
+          <form id="u9SellForm" onsubmit="handleSaveU9Sell(event)" class="theme-card border border-cyan-500/30 rounded-2xl p-4 sm:p-5 space-y-3.5 shadow-sm">
+            <div class="flex items-center justify-between border-b pb-2">
+              <h3 class="text-xs sm:text-sm font-bold text-cyan-400">📲 Sub-Action C: ဖုန်းဘေလ် ပြန်ရောင်းခြင်း</h3>
+              <span class="text-[10px] theme-text-muted">ဘေလ်လက်ကျန်မှ နုတ်မည်</span>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold theme-text-heading mb-1">ရက်စွဲနှင့် အချိန်</label>
+              <input type="datetime-local" id="u9SellDate" required class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-mono">
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <div>
+                <label class="block text-xs font-semibold theme-text-heading mb-1">ဝယ်သူအမည် (Customer) <span class="text-rose-500">*</span></label>
+                <input type="text" id="u9SellCustName" required placeholder="ဥပမာ - ကိုမင်းမင်း" class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-bold">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold theme-text-heading mb-1">ဖုန်းနံပါတ် (Optional)</label>
+                <input type="text" id="u9SellCustPhone" placeholder="09xxxxxxx" class="w-full theme-input border rounded-xl px-3 py-2 text-xs">
+              </div>
+            </div>
+
+            <div class="theme-card-sub p-3 rounded-xl border space-y-2.5">
+              <div>
+                <label class="block text-xs font-bold theme-text-heading mb-1">ရောင်းသည့် ဖုန်းဘေလ်ပမာဏ (Bill Amount Sold) <span class="text-rose-500">*</span></label>
+                <div class="relative">
+                  <input type="number" step="any" min="1" id="u9SellBillAmount" required oninput="onU9SellBillAmountInput()" placeholder="ဥပမာ - 10000" class="w-full theme-input border rounded-xl px-3 py-2 text-sm font-mono font-bold pr-12">
+                  <span class="absolute right-3 top-2.5 text-xs theme-text-muted font-bold">Ks</span>
+                </div>
+              </div>
+
+              <!-- Quick Bill Amounts -->
+              <div class="flex flex-wrap gap-1.5">
+                <button type="button" onclick="setU9QuickSellBill(1000)" class="px-2 py-1 theme-card rounded-lg text-[11px] font-mono border hover:border-cyan-500">1,000</button>
+                <button type="button" onclick="setU9QuickSellBill(3000)" class="px-2 py-1 theme-card rounded-lg text-[11px] font-mono border hover:border-cyan-500">3,000</button>
+                <button type="button" onclick="setU9QuickSellBill(5000)" class="px-2 py-1 theme-card rounded-lg text-[11px] font-mono border hover:border-cyan-500">5,000</button>
+                <button type="button" onclick="setU9QuickSellBill(10000)" class="px-2 py-1 theme-card rounded-lg text-[11px] font-mono border hover:border-cyan-500">10,000</button>
+                <button type="button" onclick="setU9QuickSellBill(20000)" class="px-2 py-1 theme-card rounded-lg text-[11px] font-mono border hover:border-cyan-500">20,000</button>
+                <button type="button" onclick="setU9QuickSellBill(50000)" class="px-2 py-1 theme-card rounded-lg text-[11px] font-mono border hover:border-cyan-500">50,000</button>
+                <button type="button" onclick="setU9QuickSellBill(100000)" class="px-2 py-1 theme-card rounded-lg text-[11px] font-mono border hover:border-cyan-500">100,000</button>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold theme-text-heading mb-1">လက်ခံရရှိငွေ / ရောင်းဈေး (Selling Price MMK) <span class="text-rose-500">*</span></label>
+                <div class="relative">
+                  <input type="number" step="any" min="0" id="u9SellPriceAmount" required oninput="calcU9SellProfitLive()" placeholder="ဥပမာ - 10000 သို့မဟုတ် 10500" class="w-full theme-input border rounded-xl px-3 py-2 text-sm font-mono font-bold pr-12">
+                  <span class="absolute right-3 top-2.5 text-xs theme-text-muted font-bold">Ks</span>
+                </div>
+                <div class="flex justify-between items-center text-[10px] pt-1">
+                  <span class="theme-text-muted">အပိုဝန်ဆောင်ခ/အမြတ် (Extra Profit):</span>
+                  <span id="u9SellExtraProfitPreview" class="font-mono font-bold text-emerald-400">+0 Ks</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Payment Type: Paid Cash, Paid KPay, or Credit -->
+            <div>
+              <label class="block text-xs font-semibold theme-text-heading mb-1.5">ငွေချေမှု ပုံစံ (Payment Type) <span class="text-rose-500">*</span></label>
+              <div class="grid grid-cols-3 gap-1.5 text-xs">
+                <label class="cursor-pointer">
+                  <input type="radio" name="u9SellPaymentType" value="CASH" checked onchange="updateU9SellPaymentHint()" class="peer sr-only">
+                  <div class="p-2.5 rounded-xl border border-slate-700 theme-card-sub peer-checked:border-emerald-500 peer-checked:bg-emerald-600/20 peer-checked:text-emerald-400 text-center font-bold text-[11px] transition">
+                    💵 လက်ငင်း (ငွေသား)
+                  </div>
+                </label>
+                <label class="cursor-pointer">
+                  <input type="radio" name="u9SellPaymentType" value="KPAY" onchange="updateU9SellPaymentHint()" class="peer sr-only">
+                  <div class="p-2.5 rounded-xl border border-slate-700 theme-card-sub peer-checked:border-blue-500 peer-checked:bg-blue-600/20 peer-checked:text-blue-400 text-center font-bold text-[11px] transition">
+                    📱 လက်ငင်း (KPay)
+                  </div>
+                </label>
+                <label class="cursor-pointer">
+                  <input type="radio" name="u9SellPaymentType" value="CREDIT" onchange="updateU9SellPaymentHint()" class="peer sr-only">
+                  <div class="p-2.5 rounded-xl border border-slate-700 theme-card-sub peer-checked:border-rose-500 peer-checked:bg-rose-600/20 peer-checked:text-rose-400 text-center font-bold text-[11px] transition">
+                    ⚠️ အကြွေး (Credit)
+                  </div>
+                </label>
+              </div>
+              <p id="u9SellPaymentHint" class="text-[10px] theme-text-muted mt-1">ဖုန်းဘေလ်လက်ကျန်မှ နုတ်ပြီး လက်ထဲရှိ ငွေသားစာရင်းသို့ ပေါင်းထည့်ပေးပါမည်</p>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold theme-text-heading mb-1">မှတ်ချက် (Optional)</label>
+              <input type="text" id="u9SellNote" placeholder="ဥပမာ - လက်လီရောင်း / ကိုယ်စားလှယ်ခွဲ" class="w-full theme-input border rounded-xl px-3 py-2 text-xs">
+            </div>
+
+            <button type="submit" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 active:scale-98 text-white text-xs sm:text-sm font-bold shadow-md transition flex items-center justify-center gap-2">
+              <span>📲 ဖုန်းဘေလ် အရောင်းစာရင်း သိမ်းမည်</span>
+            </button>
+          </form>
+
+          <!-- SUB-ACTION A: Primary ဖုန်းဘေလ် ဝယ်ယူခြင်း (Buy Monthly Primary Stock) -->
+          <form id="u9PrimaryForm" onsubmit="handleSaveU9Primary(event)" class="hidden theme-card border border-indigo-500/30 rounded-2xl p-4 sm:p-5 space-y-3.5 shadow-sm">
+            <div class="flex items-center justify-between border-b pb-2">
+              <h3 class="text-xs sm:text-sm font-bold text-indigo-400">📦 Sub-Action A: Primary ဖုန်းဘေလ် ဝယ်ယူခြင်း</h3>
+              <span class="text-[10px] theme-text-muted">ဘေလ်လက်ကျန် + ကော်မရှင်တိုးမည်</span>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold theme-text-heading mb-1">ဝယ်ယူသည့် ရက်စွဲနှင့် အချိန်</label>
+              <input type="datetime-local" id="u9PrimaryDate" required class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-mono">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold theme-text-heading mb-1">ဝယ်ယူသည့်ငွေ ပမာဏ (Purchase Amount MMK) <span class="text-rose-500">*</span></label>
+              <div class="relative">
+                <input type="number" step="any" min="1" id="u9PrimaryPurchaseAmt" required oninput="calcU9PrimaryLive('RATE')" placeholder="ဥပမာ - 1000000 (၁၀ သိန်း)" class="w-full theme-input border rounded-xl px-3 py-2 text-sm font-mono font-bold pr-12">
+                <span class="absolute right-3 top-2.5 text-xs theme-text-muted font-bold">Ks</span>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2.5">
+              <div>
+                <label class="block text-xs font-semibold text-emerald-400 mb-1">ကော်မရှင်နှုန်း (%)</label>
+                <div class="relative">
+                  <input type="number" step="any" min="0" id="u9PrimaryCommRate" value="6" oninput="calcU9PrimaryLive('RATE')" class="w-full theme-input border rounded-xl px-3 py-2 text-sm font-mono font-bold pr-8">
+                  <span class="absolute right-2.5 top-2.5 text-xs theme-text-muted font-bold">%</span>
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-emerald-400 mb-1">ပြန်ရသည့် ကော်မရှင်အမြတ် <span class="text-rose-500">*</span></label>
+                <div class="relative">
+                  <input type="number" step="any" min="0" id="u9PrimaryCommAmt" required oninput="calcU9PrimaryLive('AMT')" placeholder="0" class="w-full theme-input border rounded-xl px-3 py-2 text-sm font-mono font-bold pr-10">
+                  <span class="absolute right-2.5 top-2.5 text-xs theme-text-muted font-bold">Ks</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Total Bill Stock Received -->
+            <div class="p-3 rounded-xl bg-indigo-500/10 border border-indigo-500/30 space-y-2">
+              <div class="flex items-center justify-between">
+                <label class="text-xs font-bold text-indigo-400">လက်ခံရရှိသည့် စုစုပေါင်း ဖုန်းဘေလ်ပမာဏ <span class="text-rose-500">*</span></label>
+                <label class="flex items-center gap-1 text-[10px] text-emerald-400 cursor-pointer">
+                  <input type="checkbox" id="u9PrimaryCommInStock" checked onchange="calcU9PrimaryLive('RATE')" class="accent-emerald-500 rounded">
+                  <span>ကော်မရှင်ကို ဘေလ်ထဲပေါင်းထည့်</span>
+                </label>
+              </div>
+              <div class="relative">
+                <input type="number" step="any" min="1" id="u9PrimaryStockReceived" required class="w-full theme-input border border-indigo-500/40 rounded-xl px-3 py-2 text-sm font-mono font-bold pr-12">
+                <span class="absolute right-3 top-2.5 text-xs theme-text-muted font-bold">Ks</span>
+              </div>
+              <p class="text-[10px] theme-text-muted">ဤပမာဏသည် လက်ကျန် ဖုန်းဘေလ်ပမာဏ (Current U9 Bill Balance) ထဲသို့ အလိုအလျောက် ပေါင်းထည့်သွားပါမည်။</p>
+            </div>
+
+            <!-- Payment Method -->
+            <div>
+              <label class="block text-xs font-semibold theme-text-heading mb-1">ငွေပေးချေသည့် နည်းလမ်း (Payment Method)</label>
+              <select id="u9PrimaryPayMethod" class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-semibold">
+                <option value="U9_CAPITAL">📶 U9 သီးသန့်အရင်းငွေဖြင့် ဝယ်သည် (ပင်မလည်ပတ်ငွေ မနုတ်ပါ)</option>
+                <option value="CASH">💵 လက်ထဲရှိ ငွေသားမှ နုတ်မည် (Cash MMK)</option>
+                <option value="BANK">📱 KPay / Bank အကောင့်မှ နုတ်မည် (Digital MMK)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold theme-text-heading mb-1">မှတ်ချက် (Optional)</label>
+              <input type="text" id="u9PrimaryNote" placeholder="ဥပမာ - လစဉ် Primary ဝယ်ယူမှု" class="w-full theme-input border rounded-xl px-3 py-2 text-xs">
+            </div>
+
+            <button type="submit" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 active:scale-98 text-white text-xs sm:text-sm font-bold shadow-md transition flex items-center justify-center gap-2">
+              <span>📦 Primary ဖုန်းဘေလ်အဝယ် သိမ်းမည်</span>
+            </button>
+          </form>
+
+          <!-- SUB-ACTION B: ကော်မရှင်အမြတ် ထုတ်ယူခြင်း (Withdraw U9 Commission Profit) -->
+          <form id="u9WithdrawCommForm" onsubmit="handleSaveU9WithdrawComm(event)" class="hidden theme-card border border-amber-500/30 rounded-2xl p-4 sm:p-5 space-y-3.5 shadow-sm">
+            <div class="flex items-center justify-between border-b pb-2">
+              <h3 class="text-xs sm:text-sm font-bold text-amber-400">💵 Sub-Action B: ကော်မရှင်အမြတ် ထုတ်ယူခြင်း</h3>
+              <span class="text-[10px] theme-text-muted">ထုတ်ရန်ကျန်ကော်မရှင်မှ နုတ်မည်</span>
+            </div>
+
+            <div class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-between">
+              <span class="text-xs theme-text-muted">လက်ရှိ ထုတ်ယူနိုင်သော ကော်မရှင်အမြတ်:</span>
+              <span id="u9WithdrawAvailableCommText" class="text-sm font-extrabold font-mono text-amber-400">0 Ks</span>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold theme-text-heading mb-1">ထုတ်ယူသည့် ရက်စွဲနှင့် အချိန်</label>
+              <input type="datetime-local" id="u9WithdrawDate" required class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-mono">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold theme-text-heading mb-1">ထုတ်ယူသည့် ကော်မရှင်ပမာဏ (MMK) <span class="text-rose-500">*</span></label>
+              <div class="relative">
+                <input type="number" step="any" min="1" id="u9WithdrawAmt" required placeholder="0" class="w-full theme-input border rounded-xl px-3 py-2 text-sm font-mono font-bold pr-12">
+                <span class="absolute right-3 top-2.5 text-xs theme-text-muted font-bold">Ks</span>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold theme-text-heading mb-1.5">ထုတ်ယူသည့် နည်းလမ်း (ငွေသား / KPay) <span class="text-rose-500">*</span></label>
+              <div class="grid grid-cols-2 gap-2 text-xs">
+                <label class="cursor-pointer">
+                  <input type="radio" name="u9WithdrawChannel" value="CASH" checked class="peer sr-only">
+                  <div class="p-2.5 rounded-xl border border-slate-700 theme-card-sub peer-checked:border-emerald-500 peer-checked:bg-emerald-600/20 peer-checked:text-emerald-400 text-center font-bold transition">
+                    💵 ငွေသား (Cash)
+                  </div>
+                </label>
+                <label class="cursor-pointer">
+                  <input type="radio" name="u9WithdrawChannel" value="KPAY" class="peer sr-only">
+                  <div class="p-2.5 rounded-xl border border-slate-700 theme-card-sub peer-checked:border-blue-500 peer-checked:bg-blue-600/20 peer-checked:text-blue-400 text-center font-bold transition">
+                    📱 KPay
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <div class="space-y-1.5 pt-1">
+              <label class="flex items-center gap-2 text-xs theme-text-heading cursor-pointer">
+                <input type="checkbox" id="u9WithdrawDeductBillStock" class="w-4 h-4 accent-amber-500 rounded">
+                <span>ဖုန်းဘေလ် လက်ကျန် (U9 Bill Balance) ထဲမှပါ တစ်ပါတည်း နုတ်မည်</span>
+              </label>
+              <label class="flex items-center gap-2 text-xs theme-text-heading cursor-pointer">
+                <input type="checkbox" id="u9WithdrawAddToMainWallet" checked class="w-4 h-4 accent-emerald-500 rounded">
+                <span>ပင်မ လည်ပတ်ငွေ (ငွေသား/KPay) စာရင်းထဲသို့ ပေါင်းထည့်မည်</span>
+              </label>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold theme-text-heading mb-1">မှတ်ချက် (Optional)</label>
+              <input type="text" id="u9WithdrawNote" placeholder="ဥပမာ - ယခုလ ကော်မရှင်အမြတ် ထုတ်ယူခြင်း" class="w-full theme-input border rounded-xl px-3 py-2 text-xs">
+            </div>
+
+            <button type="submit" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 active:scale-98 text-white text-xs sm:text-sm font-bold shadow-md transition flex items-center justify-center gap-2">
+              <span>💵 ကော်မရှင်အမြတ် ထုတ်ယူမှု သိမ်းမည်</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Right Column: U9 History & Filter -->
+        <div class="md:col-span-7 space-y-4">
+          <div class="theme-card border border-cyan-500/30 rounded-2xl p-4 space-y-3 shadow-sm">
+            <div class="flex flex-wrap items-center justify-between gap-2 border-b pb-2.5">
+              <div class="flex items-center gap-2">
+                <h3 class="text-xs sm:text-sm font-bold theme-text-heading">U9 ဖုန်းဘေလ် စာရင်းမှတ်တမ်းများ</h3>
+                <span id="u9HistoryCountBadge" class="text-[10px] theme-tag-bg px-2 py-0.5 rounded-full font-bold">0 ခု</span>
+              </div>
+              <button type="button" onclick="exportU9HistoryCSV()" class="px-2.5 py-1 rounded-xl bg-cyan-600 hover:bg-cyan-500 active:scale-95 text-white text-[11px] font-bold shadow-sm transition flex items-center gap-1">
+                <span>CSV ထုတ်မည်</span>
+              </button>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="flex flex-wrap gap-1 theme-card-sub p-1 rounded-xl border text-xs">
+              <button type="button" onclick="setU9HistoryFilter('ALL')" id="u9-hist-all" class="flex-1 py-1.5 rounded-lg font-bold bg-cyan-600 text-white transition text-center">အားလုံး</button>
+              <button type="button" onclick="setU9HistoryFilter('SELL_BILL')" id="u9-hist-sell" class="flex-1 py-1.5 rounded-lg font-medium theme-text-muted hover:text-cyan-400 transition text-center">ဘေလ်အရောင်း</button>
+              <button type="button" onclick="setU9HistoryFilter('BUY_PRIMARY')" id="u9-hist-primary" class="flex-1 py-1.5 rounded-lg font-medium theme-text-muted hover:text-indigo-400 transition text-center">Primary အဝယ်</button>
+              <button type="button" onclick="setU9HistoryFilter('WITHDRAW_COMM')" id="u9-hist-withdraw" class="flex-1 py-1.5 rounded-lg font-medium theme-text-muted hover:text-amber-400 transition text-center">ကော်မရှင်ထုတ်</button>
+            </div>
+
+            <!-- Search with Auto-clear X -->
+            <div class="relative">
+              <input type="text" id="u9SearchInput" oninput="renderU9Module()" placeholder="ဝယ်သူအမည်၊ ဖုန်း သို့မဟုတ် မှတ်ချက်ဖြင့် ရှာရန်..." class="w-full theme-input border rounded-xl px-3.5 py-2 pl-9 pr-8 text-xs">
+              <svg class="w-4 h-4 theme-text-muted absolute left-3 top-2.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+              <button type="button" id="u9SearchClearBtn" onclick="clearSearchInput('u9SearchInput')" class="hidden absolute right-2.5 top-2 w-5 h-5 rounded-full bg-slate-500/20 hover:bg-rose-500/20 theme-text-muted hover:text-rose-500 flex items-center justify-center text-[11px] font-bold transition" title="ရှင်းလင်းရန်">✕</button>
+            </div>
+
+            <div id="u9HistoryListContainer" class="space-y-2 max-h-[500px] overflow-y-auto pr-1">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
     <!-- ================= TAB 6: SETTING (အရင်းစာရင်း၊ ပေါက်ဈေး & DRIVE BACKUP) ================= -->
     <section id="tab-capital" class="space-y-4 hidden">
+      <!-- Top Sub-Navigation Switcher: အကြွေးစာရင်း | အသုံးများ | Setting / Backup -->
+      <div class="grid grid-cols-3 gap-1.5 p-1 theme-card rounded-2xl border text-xs font-bold shadow-sm">
+        <button type="button" onclick="switchTab('credit')" class="py-2 px-2 rounded-xl theme-text-muted hover:text-rose-500 flex items-center justify-center gap-1 transition">
+          <span>📋 အကြွေးစာရင်း</span>
+        </button>
+        <button type="button" onclick="switchTab('expense')" class="py-2 px-2 rounded-xl theme-text-muted hover:text-amber-500 flex items-center justify-center gap-1 transition">
+          <span>💸 အသုံးများ</span>
+        </button>
+        <button type="button" onclick="switchTab('capital')" class="py-2 px-2 rounded-xl bg-blue-600 text-white shadow flex items-center justify-center gap-1 transition">
+          <span>⚙️ Setting / Backup</span>
+        </button>
+      </div>
+
       <div class="bg-gradient-to-r from-blue-900/30 via-indigo-900/20 to-transparent theme-card border rounded-2xl p-4 sm:p-5 shadow-sm">
         <h2 class="text-sm sm:text-base font-bold theme-text-heading flex items-center gap-2">
           <span class="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center text-xs">⚙️</span>
@@ -1506,39 +2246,39 @@
 
   </main>
 
-  <!-- ================= BOTTOM NAVIGATION (MOBILE & TABLET DOCK) ================= -->
+  <!-- ================= BOTTOM NAVIGATION (MOBILE & TABLET DOCK - 5 CLEAN ITEMS) ================= -->
   <nav class="fixed bottom-0 inset-x-0 z-40 theme-nav backdrop-blur-lg border-t px-1 sm:px-2 py-1.5 shadow-2xl md:bottom-4 md:max-w-2xl md:mx-auto md:rounded-2xl md:border md:shadow-2xl">
-    <div class="grid grid-cols-6 gap-0.5 sm:gap-1 text-center">
+    <div class="grid grid-cols-5 gap-0.5 sm:gap-1 text-center">
+      <!-- 1. ပင်မ -->
       <button onclick="switchTab('dashboard')" id="nav-dashboard" class="flex flex-col items-center justify-center py-1.5 px-0.5 sm:px-1 rounded-xl transition text-blue-500 font-bold bg-blue-600/15">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-        <span class="text-[9px] sm:text-[10px] mt-0.5 leading-tight">ပင်မ</span>
+        <span class="text-[9px] sm:text-[10px] mt-0.5 leading-tight">၁။ ပင်မ</span>
       </button>
 
+      <!-- 2. ငွေလွှဲ/KPay -->
       <button onclick="switchTab('remit')" id="nav-remit" class="flex flex-col items-center justify-center py-1.5 px-0.5 sm:px-1 rounded-xl transition theme-text-muted hover:text-blue-500">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
-        <span class="text-[9px] sm:text-[10px] mt-0.5 leading-tight">ငွေလွှဲ</span>
+        <span class="text-[9px] sm:text-[10px] mt-0.5 leading-tight">၂။ ငွေလွှဲ/KPay</span>
       </button>
 
-      <button onclick="switchTab('cashout')" id="nav-cashout" class="flex flex-col items-center justify-center py-1.5 px-0.5 sm:px-1 rounded-xl transition theme-text-muted hover:text-emerald-500">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-        <span class="text-[9px] sm:text-[10px] mt-0.5 leading-tight">ငွေထုတ်</span>
+      <!-- 3. အပ်ငွေစာရင်း -->
+      <button onclick="switchTab('deposits')" id="nav-deposits" class="flex flex-col items-center justify-center py-1.5 px-0.5 sm:px-1 rounded-xl transition theme-text-muted hover:text-purple-500 relative">
+        <span id="navDepositBadge" class="hidden absolute top-1 right-2.5 w-2 h-2 rounded-full bg-amber-500 animate-ping"></span>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <span class="text-[9px] sm:text-[10px] mt-0.5 leading-tight">၃။ အပ်ငွေစာရင်း</span>
       </button>
 
+      <!-- 4. U9 ဖုန်းဘေလ် -->
+      <button onclick="switchTab('u9')" id="nav-u9" class="flex flex-col items-center justify-center py-1.5 px-0.5 sm:px-1 rounded-xl transition theme-text-muted hover:text-cyan-500">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+        <span class="text-[9px] sm:text-[10px] mt-0.5 leading-tight">၄။ U9 ဖုန်းဘေလ်</span>
+      </button>
+
+      <!-- 5. အကြွေး/Backup -->
       <button onclick="switchTab('credit')" id="nav-credit" class="flex flex-col items-center justify-center py-1.5 px-0.5 sm:px-1 rounded-xl transition theme-text-muted hover:text-rose-500 relative">
-        <span id="navCreditBadge" class="hidden absolute top-1 right-2 w-2 h-2 rounded-full bg-rose-500"></span>
+        <span id="navCreditBadge" class="hidden absolute top-1 right-2.5 w-2 h-2 rounded-full bg-rose-500"></span>
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-        <span class="text-[9px] sm:text-[10px] mt-0.5 leading-tight">အကြွေး</span>
-      </button>
-
-      <button onclick="switchTab('expense')" id="nav-expense" class="flex flex-col items-center justify-center py-1.5 px-0.5 sm:px-1 rounded-xl transition theme-text-muted hover:text-amber-500 relative">
-        <span id="navExpenseBadge" class="hidden absolute top-1 right-2 w-2 h-2 rounded-full bg-amber-500"></span>
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z"></path></svg>
-        <span class="text-[9px] sm:text-[10px] mt-0.5 leading-tight">အသုံးများ</span>
-      </button>
-
-      <button onclick="switchTab('capital')" id="nav-capital" class="flex flex-col items-center justify-center py-1.5 px-0.5 sm:px-1 rounded-xl transition theme-text-muted hover:text-indigo-500">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-        <span class="text-[9px] sm:text-[10px] mt-0.5 leading-tight">Setting</span>
+        <span class="text-[9px] sm:text-[10px] mt-0.5 leading-tight">၅။ အကြွေး/Backup</span>
       </button>
     </div>
   </nav>
@@ -2076,6 +2816,39 @@
     </div>
   </div>
 
+  <!-- 10. U9 CAPITAL & BILL STOCK ADJUSTMENT MODAL -->
+  <div id="u9CapitalModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="theme-card border border-cyan-500/40 w-full max-w-sm rounded-3xl p-5 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b pb-2.5">
+        <h3 class="text-sm font-bold text-cyan-400 flex items-center gap-1.5">
+          <span>📶 U9 သီးသန့်အရင်း နှင့် ဘေလ်လက်ကျန် ပြင်ဆင်ရန်</span>
+        </h3>
+        <button type="button" onclick="closeU9CapitalModal()" class="theme-text-muted hover:text-rose-500">✕</button>
+      </div>
+      <form onsubmit="handleSaveU9CapitalModal(event)" class="space-y-3.5 text-xs">
+        <div>
+          <label class="block font-semibold theme-text-heading mb-1">U9 သီးသန့်အရင်းငွေ (U9 Capital MMK)</label>
+          <div class="relative">
+            <input type="number" step="any" min="0" id="u9ModalCapitalInput" required class="w-full theme-input border rounded-xl px-3 py-2.5 text-sm font-mono font-bold pr-12">
+            <span class="absolute right-3 top-2.5 text-xs theme-text-muted font-bold">Ks</span>
+          </div>
+        </div>
+        <div>
+          <label class="block font-semibold theme-text-heading mb-1">လက်ရှိ ဖုန်းဘေလ်လက်ကျန် (Current U9 Bill Stock MMK)</label>
+          <div class="relative">
+            <input type="number" step="any" min="0" id="u9ModalStockInput" required class="w-full theme-input border rounded-xl px-3 py-2.5 text-sm font-mono font-bold pr-12">
+            <span class="absolute right-3 top-2.5 text-xs theme-text-muted font-bold">Ks</span>
+          </div>
+          <p class="text-[10px] theme-text-muted mt-1">Primary ဝယ်ယူမှုနှင့် ဘေလ်အရောင်းများအပေါ် မူတည်၍လည်း အလိုအလျောက် တိုး/လျော့ ပေးပါသည်</p>
+        </div>
+        <div class="flex gap-2 pt-2">
+          <button type="button" onclick="closeU9CapitalModal()" class="flex-1 py-2.5 rounded-xl theme-card-sub border theme-text-muted font-bold">မလုပ်တော့ပါ</button>
+          <button type="submit" class="flex-1 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold shadow">သိမ်းဆည်းမည်</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- TOAST NOTIFICATION CONTAINER -->
   <div id="toastContainer" class="fixed top-4 inset-x-0 z-50 flex flex-col items-center pointer-events-none px-4 space-y-2"></div>
 
@@ -2204,6 +2977,8 @@
     // --- State Storage Keys ---
     const STORAGE_KEY_TRANSACTIONS = 'thb_mmk_transactions_v2';
     const STORAGE_KEY_EXPENSES = 'thb_mmk_expenses_v2';
+    const STORAGE_KEY_DEPOSITS = 'thb_mmk_deposits_v2';
+    const STORAGE_KEY_U9 = 'thb_mmk_u9_v2';
     const STORAGE_KEY_CAPITAL = 'thb_mmk_capital_v2';
     const STORAGE_KEY_SETTINGS = 'thb_mmk_settings_v2';
     const STORAGE_KEY_THEME = 'thb_mmk_theme';
@@ -2212,6 +2987,12 @@
     // --- State Variables ---
     let transactions = [];
     let expenses = [];
+    let deposits = [];
+    let u9Data = {
+      capitalMMK: 1500000,
+      billBalanceMMK: 850000,
+      records: []
+    };
     let capital = { cashMMK: 2500000, bankMMK: 5000000, thbBalance: 40000 };
     let settings = { dealerRate: 755, customerRate: 780 };
     let currentTheme = localStorage.getItem(STORAGE_KEY_THEME) || 'dark';
@@ -2231,7 +3012,8 @@
       'voucherSearchModal',
       'appBrandModal',
       'phoneMigrationModal',
-      'cloudRestorePromptModal'
+      'cloudRestorePromptModal',
+      'u9CapitalModal'
     ];
 
     let dashboardPeriod = 'today';
@@ -2244,6 +3026,12 @@
     let creditFilter = 'UNPAID';
     let expensePeriodFilter = 'today';
     let expenseCategoryFilter = 'ALL';
+    let depositActionType = 'DEPOSIT_IN';
+    let depositHistoryFilter = 'ALL';
+    let u9SubAction = 'SELL_BILL';
+    let u9MonthFilter = 'CURRENT';
+    let u9SelectedMonth = new Date().toISOString().slice(0, 7);
+    let u9HistoryFilter = 'ALL';
     let ledgerTypeFilter = 'ALL';
     let quickSearchTypeFilter = 'ALL';
     let currentVoucherTx = null;
@@ -3230,13 +4018,15 @@
       try {
         const payload = {
           app: 'လာဘ်ရွှင် (Lab Shwin)',
-          version: '2.0',
+          version: '2.1',
           savedAt: new Date().toISOString(),
           userEmail: currentUser.email || '',
           capital,
           settings,
           transactions,
-          expenses
+          expenses,
+          deposits,
+          u9Data
         };
 
         // 1. Always save per-Gmail local snapshot immediately (0ms latency & 100% reliable)
@@ -3447,6 +4237,18 @@
 
         if (confirm(`အရင်ဖုန်းမှ Backup မှတ်တမ်း (${restoredData.transactions.length} ခု) တွေ့ရှိပါသည်။ ဤဖုန်းအသစ်ထဲသို့ အစားထိုး ပြန်လည်ရယူရန် သေချာပါသလား?`)) {
           transactions = restoredData.transactions;
+          if (Array.isArray(restoredData.expenses)) {
+            expenses = restoredData.expenses;
+            saveExpensesToStorage();
+          }
+          if (Array.isArray(restoredData.deposits)) {
+            deposits = restoredData.deposits;
+            saveDepositsToStorage();
+          }
+          if (restoredData.u9Data && typeof restoredData.u9Data === 'object') {
+            u9Data = restoredData.u9Data;
+            saveU9ToStorage();
+          }
           if (restoredData.capital) capital = restoredData.capital;
           if (restoredData.settings) settings = Object.assign(settings, restoredData.settings);
 
@@ -3492,6 +4294,35 @@
           localStorage.setItem(STORAGE_KEY_EXPENSES, JSON.stringify(expenses));
         }
 
+        const storedDep = localStorage.getItem(STORAGE_KEY_DEPOSITS);
+        if (storedDep) {
+          try {
+            deposits = JSON.parse(storedDep);
+          } catch (e) {
+            deposits = [];
+          }
+        } else {
+          deposits = initDemoDeposits();
+          localStorage.setItem(STORAGE_KEY_DEPOSITS, JSON.stringify(deposits));
+        }
+
+        const storedU9 = localStorage.getItem(STORAGE_KEY_U9);
+        if (storedU9) {
+          try {
+            const parsedU9 = JSON.parse(storedU9);
+            u9Data = {
+              capitalMMK: Number(parsedU9.capitalMMK) || 1500000,
+              billBalanceMMK: Number(parsedU9.billBalanceMMK) || 0,
+              records: Array.isArray(parsedU9.records) ? parsedU9.records : []
+            };
+          } catch (e) {
+            u9Data = initDemoU9Data();
+          }
+        } else {
+          u9Data = initDemoU9Data();
+          localStorage.setItem(STORAGE_KEY_U9, JSON.stringify(u9Data));
+        }
+
         const storedCap = localStorage.getItem(STORAGE_KEY_CAPITAL);
         if (storedCap) capital = JSON.parse(storedCap);
 
@@ -3512,6 +4343,16 @@
       queueAutoDriveBackup();
     }
 
+    function saveDepositsToStorage() {
+      localStorage.setItem(STORAGE_KEY_DEPOSITS, JSON.stringify(deposits));
+      queueAutoDriveBackup();
+    }
+
+    function saveU9ToStorage() {
+      localStorage.setItem(STORAGE_KEY_U9, JSON.stringify(u9Data));
+      queueAutoDriveBackup();
+    }
+
     function saveCapitalToStorage() {
       localStorage.setItem(STORAGE_KEY_CAPITAL, JSON.stringify(capital));
       queueAutoDriveBackup();
@@ -3520,6 +4361,97 @@
     function saveSettingsToStorage() {
       localStorage.setItem(STORAGE_KEY_SETTINGS, JSON.stringify(settings));
       queueAutoDriveBackup();
+    }
+
+    function initDemoDeposits() {
+      const now = new Date();
+      const target4Days = new Date(now.getTime() + 4 * 86400000).toISOString().split('T')[0];
+      return [
+        {
+          id: 'DEP-' + (Date.now() - 86400000 * 3).toString().slice(-6),
+          type: 'DEPOSIT_IN',
+          date: new Date(now.getTime() - 86400000 * 3).toISOString(),
+          custName: 'ဒေါ်မြင့်မြင့် (စုဘူးအပ်ငွေ)',
+          custPhone: '09420011223',
+          amount: 1500000,
+          currency: 'MMK',
+          account: 'BANK',
+          targetDate: '',
+          noticeStatus: 'NONE',
+          note: 'KPay ဖြင့် လာအပ်ထားသည် (ထုတ်လိုပါက ၁ ပတ်ကြိုပြောမည်)'
+        },
+        {
+          id: 'DEP-' + (Date.now() - 86400000 * 2).toString().slice(-6),
+          type: 'DEPOSIT_IN',
+          date: new Date(now.getTime() - 86400000 * 2).toISOString(),
+          custName: 'ကိုထွန်းထွန်း (ဘန်ကောက်)',
+          custPhone: '09798877665',
+          amount: 1000000,
+          currency: 'MMK',
+          account: 'CASH',
+          targetDate: '',
+          noticeStatus: 'NONE',
+          note: 'ငွေသား လာအပ်ထားသည်'
+        },
+        {
+          id: 'DEP-' + (Date.now() - 3600000 * 5).toString().slice(-6),
+          type: 'WITHDRAW_NOTICE',
+          date: new Date(now.getTime() - 3600000 * 5).toISOString(),
+          custName: 'ဒေါ်မြင့်မြင့် (စုဘူးအပ်ငွေ)',
+          custPhone: '09420011223',
+          amount: 500000,
+          currency: 'MMK',
+          account: 'BANK',
+          targetDate: target4Days,
+          noticeStatus: 'PENDING',
+          note: '၁ ပတ်ကြိုတင် အကြောင်းကြားထားသည် (KPay ဖြင့် ပြန်ထုတ်ယူမည်)'
+        }
+      ];
+    }
+
+    function initDemoU9Data() {
+      const todayIso = new Date().toISOString();
+      return {
+        capitalMMK: 1500000,
+        billBalanceMMK: 910000,
+        records: [
+          {
+            id: 'U9-' + (Date.now() - 86400000 * 2).toString().slice(-6),
+            type: 'BUY_PRIMARY',
+            date: new Date(Date.now() - 86400000 * 2).toISOString(),
+            purchaseAmount: 1000000,
+            commRate: 6,
+            commissionAmount: 60000,
+            stockReceived: 1060000,
+            payMethod: 'U9_CAPITAL',
+            note: 'လစဉ် U9 Primary ဖုန်းဘေလ် ဝယ်ယူမှု (6% ကော်မရှင်)'
+          },
+          {
+            id: 'U9-' + (Date.now() - 3600000 * 6).toString().slice(-6),
+            type: 'SELL_BILL',
+            date: todayIso,
+            custName: 'ကိုမင်းမင်း (လက်လီဆိုင်)',
+            custPhone: '09970011223',
+            billAmount: 150000,
+            sellingPrice: 152000,
+            extraProfit: 2000,
+            paymentType: 'CASH',
+            status: 'PAID',
+            linkedTxId: '',
+            note: 'လက်ငင်း ငွေသားဖြင့် ဖုန်းဘေလ်ရောင်း'
+          },
+          {
+            id: 'U9-' + (Date.now() - 3600000 * 2).toString().slice(-6),
+            type: 'WITHDRAW_COMM',
+            date: todayIso,
+            withdrawAmount: 20000,
+            channel: 'KPAY',
+            deductedFromStock: false,
+            addedToMainWallet: true,
+            note: 'ကော်မရှင်အမြတ်ထဲမှ KPay ဖြင့် ထုတ်ယူသည်'
+          }
+        ]
+      };
     }
 
     function initDemoExpenses() {
@@ -3616,14 +4548,29 @@
       const now = new Date();
       const localIso = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
       const todayDate = now.toISOString().split('T')[0];
+      const nextWeekDate = new Date(now.getTime() + 7 * 86400000).toISOString().split('T')[0];
+      const currentMonthStr = now.toISOString().slice(0, 7);
       
       const rDate = document.getElementById('remitDate');
       const cDate = document.getElementById('cashoutDate');
       const expDate = document.getElementById('expenseDate');
+      const depDate = document.getElementById('depositDate');
+      const depTarget = document.getElementById('depositTargetDate');
+      const u9SellD = document.getElementById('u9SellDate');
+      const u9PrimD = document.getElementById('u9PrimaryDate');
+      const u9WithD = document.getElementById('u9WithdrawDate');
+      const u9MonthPick = document.getElementById('u9MonthPicker');
       const customD = document.getElementById('customFilterDate');
+
       if (rDate) rDate.value = localIso;
       if (cDate) cDate.value = localIso;
       if (expDate) expDate.value = localIso;
+      if (depDate) depDate.value = localIso;
+      if (depTarget) depTarget.value = nextWeekDate;
+      if (u9SellD) u9SellD.value = localIso;
+      if (u9PrimD) u9PrimD.value = localIso;
+      if (u9WithD) u9WithD.value = localIso;
+      if (u9MonthPick) u9MonthPick.value = currentMonthStr;
       if (customD) customD.value = todayDate;
 
       document.getElementById('remitDealerRate').value = settings.dealerRate;
@@ -3758,18 +4705,15 @@
       }
     }
 
-    // --- Tab Navigation ---
+    // --- Tab Navigation (Supports 7 sections mapped cleanly to 5 Bottom Nav buttons) ---
     const switchTab = window.switchTab = function(tabId, isFromBackStep = false) {
       if (!isFromBackStep) {
         if (tabId === 'dashboard') {
-          // If user explicitly taps Home/Dashboard, reset stack to root
           tabHistoryStack = ['dashboard'];
         } else {
-          // Push new tab onto step-by-step stack if different from current top
           const currentTop = tabHistoryStack[tabHistoryStack.length - 1];
           if (currentTop !== tabId) {
             tabHistoryStack.push(tabId);
-            // Keep stack clean (max 10 steps)
             if (tabHistoryStack.length > 10) {
               tabHistoryStack = ['dashboard', ...tabHistoryStack.slice(-8)];
             }
@@ -3779,20 +4723,39 @@
       }
 
       activeTab = tabId;
-      const tabs = ['dashboard', 'remit', 'cashout', 'credit', 'expense', 'capital'];
+      const tabs = ['dashboard', 'remit', 'cashout', 'deposits', 'u9', 'credit', 'expense', 'capital'];
       tabs.forEach(t => {
         const el = document.getElementById(`tab-${t}`);
-        const navEl = document.getElementById(`nav-${t}`);
         if (el) {
           if (t === tabId) el.classList.remove('hidden');
           else el.classList.add('hidden');
         }
-        if (navEl) {
-          if (t === tabId) {
-            navEl.className = 'flex flex-col items-center justify-center py-1.5 px-0.5 sm:px-1 rounded-xl transition text-blue-500 font-bold bg-blue-600/15';
-          } else {
-            navEl.className = 'flex flex-col items-center justify-center py-1.5 px-0.5 sm:px-1 rounded-xl transition theme-text-muted hover:text-blue-500';
-          }
+      });
+
+      // Highlight the 5 Bottom Nav Items accurately
+      const navMapping = {
+        'nav-dashboard': tabId === 'dashboard',
+        'nav-remit': tabId === 'remit' || tabId === 'cashout',
+        'nav-deposits': tabId === 'deposits',
+        'nav-u9': tabId === 'u9',
+        'nav-credit': tabId === 'credit' || tabId === 'expense' || tabId === 'capital'
+      };
+      const navColors = {
+        'nav-dashboard': 'text-blue-500 font-bold bg-blue-600/15',
+        'nav-remit': 'text-emerald-500 font-bold bg-emerald-600/15',
+        'nav-deposits': 'text-purple-400 font-bold bg-purple-600/15',
+        'nav-u9': 'text-cyan-400 font-bold bg-cyan-600/15',
+        'nav-credit': 'text-rose-500 font-bold bg-rose-600/15'
+      };
+
+      Object.keys(navMapping).forEach(navId => {
+        const navEl = document.getElementById(navId);
+        if (!navEl) return;
+        const isActive = navMapping[navId];
+        if (isActive) {
+          navEl.className = `flex flex-col items-center justify-center py-1.5 px-0.5 sm:px-1 rounded-xl transition relative ${navColors[navId]}`;
+        } else {
+          navEl.className = 'flex flex-col items-center justify-center py-1.5 px-0.5 sm:px-1 rounded-xl transition relative theme-text-muted hover:text-blue-500';
         }
       });
 
@@ -3801,6 +4764,8 @@
       if (tabId === 'dashboard') updateDashboardUI();
       else if (tabId === 'remit') renderRemitPayoutList();
       else if (tabId === 'cashout') renderCashoutPayoutList();
+      else if (tabId === 'deposits') renderDepositsModule();
+      else if (tabId === 'u9') renderU9Module();
       else if (tabId === 'credit') renderCreditList();
       else if (tabId === 'expense') {
         renderExpenseList();
@@ -3871,7 +4836,7 @@
       return { senderName, receiverName, displayTitle, senderLabel, receiverLabel };
     }
 
-    // Helper for status text ("လက်ငင်းထုတ်ပေးပြီး" / "မထုတ်ပေးရသေးဘူး" for THB->MMK Remit & Cash-Out; "လက်ငင်း" / "အကြွေး" for Transfer & MMK->THB)
+    // Helper for status text
     function getTxStatusDisplay(tx) {
       const isPayoutFlow = (tx.type === 'REMIT' && tx.direction !== 'MMK_TO_THB') || (tx.type === 'CASHOUT' && tx.cashoutType !== 'TRANSFER');
       const isPaid = tx.status === 'PAID';
@@ -3897,6 +4862,8 @@
       updateDashboardUI();
       renderRemitPayoutList();
       renderCashoutPayoutList();
+      renderDepositsModule();
+      renderU9Module();
       renderCreditList();
       renderExpenseList();
       updateExpenseKPIs();
@@ -4318,6 +5285,39 @@
       const barBank = document.getElementById('ratioBarBank');
       if (barCash) barCash.style.width = `${cashPercent}%`;
       if (barBank) barBank.style.width = `${bankPercent}%`;
+
+      // Update Own Capital vs Customer Deposits vs Total Working Funds & U9 Overview on Dashboard
+      const depStats = computeDepositStats();
+      const ownCapMMK = Math.max(0, (cashInHand + bankBalance) - depStats.totalDepositMMK);
+      const ownCapTHB = Math.max(0, thbBal - depStats.totalDepositTHB);
+      const ownCapUnifiedMMK = ownCapMMK + (ownCapTHB * rateForConversion);
+      const depUnifiedMMK = depStats.totalDepositMMK + (depStats.totalDepositTHB * rateForConversion);
+
+      const dOwnMmkEl = document.getElementById('dashOwnCapitalMMK');
+      const dOwnThbEl = document.getElementById('dashOwnCapitalTHB');
+      const dDepMmkEl = document.getElementById('dashCustomerDepositsMMK');
+      const dDepThbEl = document.getElementById('dashCustomerDepositsTHB');
+      const dDepCntEl = document.getElementById('dashDepositCustomerCount');
+      const dWorkMmkEl = document.getElementById('dashTotalWorkingFundsMMK');
+      const dWorkSubEl = document.getElementById('dashTotalWorkingFundsSub');
+
+      if (dOwnMmkEl) dOwnMmkEl.textContent = formatMMK(ownCapUnifiedMMK);
+      if (dOwnThbEl) dOwnThbEl.textContent = `${formatTHB(ownCapTHB)} (အပ်ငွေနုတ်ပြီး)`;
+      if (dDepMmkEl) dDepMmkEl.textContent = formatMMK(depUnifiedMMK);
+      if (dDepThbEl) dDepThbEl.textContent = depStats.totalDepositTHB > 0 ? `${formatTHB(depStats.totalDepositTHB)} • ပြန်ပေးရန်တာဝန်` : 'ပြန်ပေးရန်တာဝန် (Liability)';
+      if (dDepCntEl) dDepCntEl.textContent = `${depStats.activeCustomersCount} ဦး`;
+      if (dWorkMmkEl) dWorkMmkEl.textContent = formatMMK(totalCapitalMMKUnified);
+      if (dWorkSubEl) dWorkSubEl.textContent = `ကိုယ်ပိုင် ${formatCompactMMK(ownCapUnifiedMMK)} + အပ်ငွေ ${formatCompactMMK(depUnifiedMMK)}`;
+
+      // Update U9 overview card on Dashboard
+      const u9Stats = computeU9Stats('ALL');
+      const dU9StockEl = document.getElementById('dashU9StockBalance');
+      const dU9RemCommEl = document.getElementById('dashU9RemainingCommission');
+      if (dU9StockEl) dU9StockEl.textContent = formatMMK(u9Data.billBalanceMMK || 0);
+      if (dU9RemCommEl) dU9RemCommEl.textContent = `ထုတ်ရန်ကျန်ကော်မရှင်: ${formatMMK(u9Stats.remainingComm)}`;
+
+      // Render Upcoming Withdrawal Notice Banner on Dashboard
+      renderWithdrawalNoticeBanners(depStats.pendingNotices);
 
       renderProfitTrendChart();
       renderRecentTransactions(periodTx.slice(0, 8));
@@ -5277,20 +6277,24 @@
         const paid = tx.paidAmount || 0;
         const rem = Math.max(0, (totalOwed || 0) - paid);
         const isSettled = tx.status === 'PAID' || rem <= 0;
+        const isU9BillCredit = tx.cashoutType === 'U9_BILL' || tx.channel === 'U9 ဖုန်းဘေလ်' || Boolean(tx.u9RecordId);
 
         return `
-          <div class="theme-card border ${isSettled ? 'border-slate-300 dark:border-slate-700' : 'border-rose-500/50'} rounded-2xl p-3.5 space-y-2.5 shadow-sm">
-            <div class="flex items-center justify-between">
+          <div class="theme-card border ${isSettled ? 'border-slate-300 dark:border-slate-700' : (isU9BillCredit ? 'border-cyan-500/60' : 'border-rose-500/50')} rounded-2xl p-3.5 space-y-2.5 shadow-sm">
+            <div class="flex items-center justify-between gap-2">
               <div class="flex items-center gap-2">
-                <span class="w-8 h-8 rounded-xl ${isSettled ? 'bg-slate-200 dark:bg-slate-700 text-slate-500' : 'bg-rose-500/20 text-rose-500'} flex items-center justify-center font-bold text-xs">
-                  ${isSettled ? '✓' : '!'}
+                <span class="w-8 h-8 rounded-xl ${isSettled ? 'bg-slate-200 dark:bg-slate-700 text-slate-500' : (isU9BillCredit ? 'bg-cyan-500/20 text-cyan-400' : 'bg-rose-500/20 text-rose-500')} flex items-center justify-center font-bold text-xs">
+                  ${isSettled ? '✓' : (isU9BillCredit ? 'U9' : '!')}
                 </span>
                 <div>
-                  <h4 class="text-xs font-bold theme-text-heading leading-tight">${tx.custName || 'အမည်မသိ'}</h4>
+                  <div class="flex flex-wrap items-center gap-1.5">
+                    <h4 class="text-xs font-bold theme-text-heading leading-tight">${tx.custName || 'အမည်မသိ'}</h4>
+                    ${isU9BillCredit ? `<span class="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-cyan-500/20 text-cyan-400 border border-cyan-500/40">📶 U9 ဖုန်းဘေလ်</span>` : ''}
+                  </div>
                   <p class="text-[10px] theme-text-muted">${tx.custPhone || 'ဖုန်းမရှိ'} • ${formatDateTime(tx.date)}</p>
                 </div>
               </div>
-              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isSettled ? 'bg-emerald-500/20 text-emerald-500' : 'bg-rose-500/20 text-rose-500 border border-rose-500/30'}">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold shrink-0 ${isSettled ? 'bg-emerald-500/20 text-emerald-500' : 'bg-rose-500/20 text-rose-500 border border-rose-500/30'}">
                 ${isSettled ? 'ပြန်ရပြီး' : 'မဆပ်ရသေး'}
               </span>
             </div>
@@ -5376,6 +6380,18 @@
       if (account === 'CASH') capital.cashMMK = (Number(capital.cashMMK) || 0) + amount;
       else if (account === 'BANK') capital.bankMMK = (Number(capital.bankMMK) || 0) + amount;
       else if (account === 'THB') capital.thbBalance = (Number(capital.thbBalance) || 0) + amount;
+
+      // Sync back to U9 record if this debt came from a U9 Phone Bill credit sale
+      if (tx.u9RecordId || tx.cashoutType === 'U9_BILL') {
+        const u9Rec = (u9Data.records || []).find(r => r.id === tx.u9RecordId || r.linkedTxId === tx.id);
+        if (u9Rec) {
+          if (tx.status === 'PAID') {
+            u9Rec.status = 'PAID';
+            u9Rec.note = (u9Rec.note ? u9Rec.note + ' | ' : '') + 'အကြွေးပြန်ရပြီး';
+          }
+          saveU9ToStorage();
+        }
+      }
 
       localStorage.setItem('thb_mmk_has_user_data', 'true');
       saveTransactionsToStorage();
@@ -6557,16 +7573,1308 @@
       closeCustomDateModal();
     };
 
+    // ============================================================================
+    // MODULE 1: အပ်ငွေစာရင်း (CUSTOMER SAVINGS / DEPOSITS MANAGEMENT)
+    // ============================================================================
+    function computeDepositStats() {
+      const custMap = {};
+      let totalDepositMMK = 0;
+      let totalDepositTHB = 0;
+      const pendingNotices = [];
+
+      // Process chronologically from oldest to newest for accurate running customer balances
+      const sortedAsc = [...deposits].sort((a, b) => new Date(a.date) - new Date(b.date));
+      sortedAsc.forEach(dep => {
+        const nameKey = (dep.custName || 'အမည်မသိ').trim();
+        if (!custMap[nameKey]) {
+          custMap[nameKey] = {
+            name: nameKey,
+            phone: dep.custPhone || '',
+            balanceMMK: 0,
+            balanceTHB: 0,
+            noticeMMK: 0,
+            noticeTHB: 0,
+            nextNoticeDate: '',
+            lastActivity: dep.date
+          };
+        }
+        const entry = custMap[nameKey];
+        if (dep.custPhone) entry.phone = dep.custPhone;
+        entry.lastActivity = dep.date;
+
+        const amt = Number(dep.amount) || 0;
+        const cur = dep.currency === 'THB' ? 'THB' : 'MMK';
+
+        if (dep.type === 'DEPOSIT_IN') {
+          if (cur === 'THB') entry.balanceTHB += amt;
+          else entry.balanceMMK += amt;
+        } else if (dep.type === 'WITHDRAW_OUT') {
+          if (cur === 'THB') entry.balanceTHB = Math.max(0, entry.balanceTHB - amt);
+          else entry.balanceMMK = Math.max(0, entry.balanceMMK - amt);
+        } else if (dep.type === 'WITHDRAW_NOTICE' && dep.noticeStatus !== 'COMPLETED') {
+          if (cur === 'THB') entry.noticeTHB += amt;
+          else entry.noticeMMK += amt;
+          if (dep.targetDate) entry.nextNoticeDate = dep.targetDate;
+          pendingNotices.push(dep);
+        }
+      });
+
+      const customerList = Object.values(custMap).sort((a, b) => (b.balanceMMK + b.balanceTHB * 130) - (a.balanceMMK + a.balanceTHB * 130));
+      let activeCustomersCount = 0;
+      customerList.forEach(c => {
+        totalDepositMMK += c.balanceMMK;
+        totalDepositTHB += c.balanceTHB;
+        if (c.balanceMMK > 0 || c.balanceTHB > 0) activeCustomersCount++;
+      });
+
+      pendingNotices.sort((a, b) => new Date(a.targetDate || a.date) - new Date(b.targetDate || b.date));
+
+      return {
+        totalDepositMMK,
+        totalDepositTHB,
+        activeCustomersCount,
+        customerList,
+        custMap,
+        pendingNotices
+      };
+    }
+
+    function renderWithdrawalNoticeBanners(pendingNotices) {
+      const dashBanner = document.getElementById('dashDepositNoticeBanner');
+      const dashCount = document.getElementById('dashNoticeCountBadge');
+      const dashList = document.getElementById('dashDepositNoticeList');
+
+      const tabBanner = document.getElementById('depositTabNoticeBanner');
+      const tabCount = document.getElementById('depositTabNoticeCount');
+      const tabList = document.getElementById('depositTabNoticeList');
+
+      const navBadge = document.getElementById('navDepositBadge');
+
+      if (!pendingNotices || pendingNotices.length === 0) {
+        if (dashBanner) dashBanner.classList.add('hidden');
+        if (tabBanner) tabBanner.classList.add('hidden');
+        if (navBadge) navBadge.classList.add('hidden');
+        return;
+      }
+
+      if (dashBanner) dashBanner.classList.remove('hidden');
+      if (tabBanner) tabBanner.classList.remove('hidden');
+      if (navBadge) navBadge.classList.remove('hidden');
+
+      if (dashCount) dashCount.textContent = `${pendingNotices.length} ခု`;
+      if (tabCount) tabCount.textContent = `${pendingNotices.length} ခု`;
+
+      const todayStr = new Date().toISOString().split('T')[0];
+
+      const renderCards = (isTabView) => pendingNotices.map(n => {
+        const target = n.targetDate || n.date?.split('T')[0] || todayStr;
+        const diffDays = Math.ceil((new Date(target + 'T00:00:00') - new Date(todayStr + 'T00:00:00')) / 86400000);
+        const dayBadge = diffDays < 0
+          ? `<span class="px-2 py-0.5 rounded bg-rose-500 text-white text-[10px] font-black">${Math.abs(diffDays)} ရက် ကျော်လွန်</span>`
+          : diffDays === 0
+          ? `<span class="px-2 py-0.5 rounded bg-rose-500 text-white text-[10px] font-black animate-pulse">ယနေ့ ထုတ်ပေးရမည်!</span>`
+          : `<span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/40 text-[10px] font-bold">${diffDays} ရက်အလို (${target})</span>`;
+
+        const amtFormatted = n.currency === 'THB' ? formatTHB(n.amount) : formatMMK(n.amount);
+        const accLabel = n.account === 'CASH' ? 'ငွေသား' : n.account === 'BANK' ? 'KPay/Bank' : 'ထိုင်းဘတ်';
+
+        return `
+          <div class="theme-card-sub border border-amber-500/50 rounded-xl p-2.5 sm:p-3 flex flex-col justify-between gap-2 text-xs">
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <div class="font-extrabold theme-text-heading flex items-center gap-1.5">
+                  <span>👤 ${n.custName}</span>
+                </div>
+                <div class="text-[10px] theme-text-muted mt-0.5">
+                  ထုတ်ပေးရမည့်ရက်: <span class="font-mono font-bold text-amber-400">${target}</span> • အကောင့်: <span class="font-semibold">${accLabel}</span>
+                </div>
+                ${n.note ? `<div class="text-[10px] theme-text-muted italic mt-0.5">"${n.note}"</div>` : ''}
+              </div>
+              <div class="text-right shrink-0">
+                <div class="text-sm font-black font-mono text-amber-400">${amtFormatted}</div>
+                <div class="mt-0.5">${dayBadge}</div>
+              </div>
+            </div>
+            <div class="flex items-center justify-end gap-1.5 pt-1.5 border-t border-amber-500/20">
+              <button type="button" onclick="fulfillDepositNotice('${n.id}')" class="px-3 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold shadow transition">
+                ✓ ယခု ငွေထုတ်ပေးမည် (Withdraw Out)
+              </button>
+              ${isTabView ? `
+                <button type="button" onclick="deleteDepositRecord('${n.id}')" class="px-2 py-1 rounded-lg theme-card border text-[10px] text-rose-400 hover:bg-rose-500/10 font-bold">
+                  ဖျက်မည်
+                </button>
+              ` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      if (dashList) dashList.innerHTML = renderCards(false);
+      if (tabList) tabList.innerHTML = renderCards(true);
+    }
+
+    const focusDepositForm = window.focusDepositForm = function() {
+      const form = document.getElementById('depositForm');
+      if (form) form.scrollIntoView({ behavior: 'smooth' });
+      const inp = document.getElementById('depositCustName');
+      if (inp) inp.focus();
+    };
+
+    const setDepositActionType = window.setDepositActionType = function(type) {
+      depositActionType = type;
+      const btnIn = document.getElementById('dep-type-in');
+      const btnNotice = document.getElementById('dep-type-notice');
+      const btnOut = document.getElementById('dep-type-out');
+      const targetGroup = document.getElementById('depositTargetDateGroup');
+      const amtLabel = document.getElementById('depositAmountLabel');
+      const accHint = document.getElementById('depositAccountHint');
+      const submitBtn = document.getElementById('depositSubmitBtn');
+
+      if (btnIn) {
+        btnIn.className = type === 'DEPOSIT_IN'
+          ? 'p-2.5 rounded-xl border border-emerald-500 bg-emerald-600/20 text-emerald-400 font-bold text-left flex items-center justify-between transition'
+          : 'p-2.5 rounded-xl border border-slate-700 theme-card-sub theme-text-muted hover:border-emerald-500 font-bold text-left flex items-center justify-between transition';
+      }
+      if (btnNotice) {
+        btnNotice.className = type === 'WITHDRAW_NOTICE'
+          ? 'p-2.5 rounded-xl border border-amber-500 bg-amber-500/20 text-amber-400 font-bold text-left flex items-center justify-between transition'
+          : 'p-2.5 rounded-xl border border-slate-700 theme-card-sub theme-text-muted hover:border-amber-500 font-bold text-left flex items-center justify-between transition';
+      }
+      if (btnOut) {
+        btnOut.className = type === 'WITHDRAW_OUT'
+          ? 'p-2.5 rounded-xl border border-rose-500 bg-rose-600/20 text-rose-400 font-bold text-left flex items-center justify-between transition'
+          : 'p-2.5 rounded-xl border border-slate-700 theme-card-sub theme-text-muted hover:border-rose-500 font-bold text-left flex items-center justify-between transition';
+      }
+
+      if (type === 'WITHDRAW_NOTICE') {
+        if (targetGroup) targetGroup.classList.remove('hidden');
+        setDepositNoticePlusDays(7);
+        if (amtLabel) amtLabel.innerHTML = 'ပြန်ထုတ်မည့် ငွေပမာဏ <span class="text-rose-500">*</span>';
+        if (accHint) accHint.textContent = '၁ ပတ်ကြိုမှတ်သားခြင်းဖြစ်သဖြင့် လက်ကျန်ငွေမှ ယခုချက်ချင်း မနုတ်သေးပါ';
+        if (submitBtn) {
+          submitBtn.className = 'w-full py-3 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 active:scale-98 text-slate-950 text-xs sm:text-sm font-extrabold shadow-md transition flex items-center justify-center gap-2';
+          submitBtn.innerHTML = '<span>🔔 ၁ ပတ်ကြိုတင် ငွေထုတ်ရက် မှတ်သားမည်</span>';
+        }
+      } else if (type === 'WITHDRAW_OUT') {
+        if (targetGroup) targetGroup.classList.add('hidden');
+        if (amtLabel) amtLabel.innerHTML = 'ပြန်ထုတ်ပေးသည့် ငွေပမာဏ <span class="text-rose-500">*</span>';
+        if (accHint) accHint.textContent = 'Customer အပ်ငွေလက်ကျန် နှင့် ရွေးချယ်ထားသော လည်ပတ်ငွေအကောင့်ထဲမှ အလိုအလျောက် နုတ်ယူပါမည်';
+        if (submitBtn) {
+          submitBtn.className = 'w-full py-3 px-4 rounded-xl bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 active:scale-98 text-white text-xs sm:text-sm font-bold shadow-md transition flex items-center justify-center gap-2';
+          submitBtn.innerHTML = '<span>📤 အပ်ငွေ ပြန်ထုတ်ပေးမှု သိမ်းမည်</span>';
+        }
+      } else {
+        if (targetGroup) targetGroup.classList.add('hidden');
+        if (amtLabel) amtLabel.innerHTML = 'အပ်နှံငွေ ပမာဏ <span class="text-rose-500">*</span>';
+        if (accHint) accHint.textContent = 'ငွေလာအပ်ပါက ရွေးချယ်ထားသော လည်ပတ်ငွေအကောင့်ထဲသို့ အလိုအလျောက် ပေါင်းထည့်ပေးပါမည်';
+        if (submitBtn) {
+          submitBtn.className = 'w-full py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 active:scale-98 text-white text-xs sm:text-sm font-bold shadow-md transition flex items-center justify-center gap-2';
+          submitBtn.innerHTML = '<span>📥 အပ်ငွေ လက်ခံစာရင်း သိမ်းမည်</span>';
+        }
+      }
+    };
+
+    const setDepositNoticePlusDays = window.setDepositNoticePlusDays = function(days) {
+      const targetEl = document.getElementById('depositTargetDate');
+      if (!targetEl) return;
+      const d = new Date(Date.now() + (Number(days) || 7) * 86400000);
+      targetEl.value = d.toISOString().split('T')[0];
+    };
+
+    const updateDepositCurrencyUI = window.updateDepositCurrencyUI = function() {
+      const cur = document.getElementById('depositCurrency')?.value || 'MMK';
+      const suf = document.getElementById('depositCurrencySuffix');
+      const accSel = document.getElementById('depositAccount');
+      if (suf) suf.textContent = cur === 'THB' ? '฿' : 'Ks';
+      if (accSel) {
+        if (cur === 'THB') accSel.value = 'THB';
+        else if (accSel.value === 'THB') accSel.value = 'CASH';
+      }
+    };
+
+    const setDepositQuickAmount = window.setDepositQuickAmount = function(amt) {
+      const el = document.getElementById('depositAmount');
+      if (el) el.value = amt;
+    };
+
+    const onDepositCustomerInput = window.onDepositCustomerInput = function() {
+      const nameVal = (document.getElementById('depositCustName')?.value || '').trim();
+      const hintBox = document.getElementById('depositCustBalanceHint');
+      const hintVal = document.getElementById('depositCustBalanceValue');
+      const phoneEl = document.getElementById('depositCustPhone');
+      if (!nameVal) {
+        if (hintBox) hintBox.classList.add('hidden');
+        return;
+      }
+      const stats = computeDepositStats();
+      const found = stats.custMap[nameVal];
+      if (found) {
+        if (hintBox) hintBox.classList.remove('hidden');
+        if (hintVal) {
+          hintVal.textContent = `${formatMMK(found.balanceMMK)}${found.balanceTHB > 0 ? ' • ' + formatTHB(found.balanceTHB) : ''}`;
+        }
+        if (phoneEl && !phoneEl.value && found.phone) {
+          phoneEl.value = found.phone;
+        }
+      } else {
+        if (hintBox) hintBox.classList.add('hidden');
+      }
+    };
+
+    const selectDepositorForForm = window.selectDepositorForForm = function(custName, actionType) {
+      const nameEl = document.getElementById('depositCustName');
+      if (nameEl) nameEl.value = custName;
+      onDepositCustomerInput();
+      if (actionType) setDepositActionType(actionType);
+      focusDepositForm();
+    };
+
+    const handleSaveDeposit = window.handleSaveDeposit = function(e) {
+      e.preventDefault();
+      const dateVal = document.getElementById('depositDate')?.value;
+      const custName = (document.getElementById('depositCustName')?.value || '').trim();
+      const custPhone = (document.getElementById('depositCustPhone')?.value || '').trim();
+      const currency = document.getElementById('depositCurrency')?.value || 'MMK';
+      const amount = parseFloat(document.getElementById('depositAmount')?.value) || 0;
+      const account = document.getElementById('depositAccount')?.value || 'CASH';
+      const targetDate = document.getElementById('depositTargetDate')?.value || '';
+      const note = (document.getElementById('depositNote')?.value || '').trim();
+
+      if (!custName || amount <= 0) {
+        showToast('အပ်နှံသူအမည် နှင့် ငွေပမာဏကို မှန်ကန်စွာ ဖြည့်သွင်းပေးပါ', 'error');
+        return;
+      }
+
+      const newDep = {
+        id: 'DEP-' + Date.now().toString().slice(-6),
+        type: depositActionType,
+        date: dateVal ? new Date(dateVal).toISOString() : new Date().toISOString(),
+        custName,
+        custPhone,
+        amount,
+        currency,
+        account,
+        targetDate: depositActionType === 'WITHDRAW_NOTICE' ? targetDate : '',
+        noticeStatus: depositActionType === 'WITHDRAW_NOTICE' ? 'PENDING' : 'NONE',
+        note
+      };
+
+      // Update Working Balance (Cash/KPay/THB) for Deposit In and Withdraw Out
+      if (depositActionType === 'DEPOSIT_IN') {
+        if (account === 'CASH') capital.cashMMK = (Number(capital.cashMMK) || 0) + amount;
+        else if (account === 'BANK') capital.bankMMK = (Number(capital.bankMMK) || 0) + amount;
+        else if (account === 'THB') capital.thbBalance = (Number(capital.thbBalance) || 0) + amount;
+        saveCapitalToStorage();
+        showToast(`📥 ${custName} ၏ အပ်ငွေ ${currency === 'THB' ? formatTHB(amount) : formatMMK(amount)} လက်ခံပြီး လည်ပတ်ငွေထဲ ပေါင်းထည့်ပြီးပါပြီ!`, 'success');
+      } else if (depositActionType === 'WITHDRAW_OUT') {
+        if (account === 'CASH') capital.cashMMK = (Number(capital.cashMMK) || 0) - amount;
+        else if (account === 'BANK') capital.bankMMK = (Number(capital.bankMMK) || 0) - amount;
+        else if (account === 'THB') capital.thbBalance = (Number(capital.thbBalance) || 0) - amount;
+
+        // Automatically mark any pending notice for this customer as COMPLETED
+        deposits.forEach(d => {
+          if (d.type === 'WITHDRAW_NOTICE' && d.noticeStatus === 'PENDING' && (d.custName || '').trim() === custName) {
+            d.noticeStatus = 'COMPLETED';
+          }
+        });
+        saveCapitalToStorage();
+        showToast(`📤 ${custName} သို့ အပ်ငွေ ${currency === 'THB' ? formatTHB(amount) : formatMMK(amount)} ပြန်ထုတ်ပေးပြီး လည်ပတ်ငွေမှ နုတ်ယူပြီးပါပြီ!`, 'success');
+      } else {
+        showToast(`🔔 ${custName} ၏ ၁ ပတ်ကြိုတင် ငွေထုတ်ရက် (${targetDate}) မှတ်သားပြီးပါပြီ!`, 'warning');
+      }
+
+      deposits.unshift(newDep);
+      localStorage.setItem('thb_mmk_has_user_data', 'true');
+      saveDepositsToStorage();
+
+      document.getElementById('depositAmount').value = '';
+      document.getElementById('depositNote').value = '';
+      onDepositCustomerInput();
+      updateAllUI();
+    };
+
+    const fulfillDepositNotice = window.fulfillDepositNotice = function(noticeId) {
+      const notice = deposits.find(d => d.id === noticeId);
+      if (!notice) return;
+
+      const amtText = notice.currency === 'THB' ? formatTHB(notice.amount) : formatMMK(notice.amount);
+      const accLabel = notice.account === 'CASH' ? 'ငွေသား (Cash)' : notice.account === 'BANK' ? 'KPay / Bank' : 'ထိုင်းဘတ် (THB)';
+      if (!confirm(`${notice.custName} ကြိုတင်အကြောင်းကြားထားသော အပ်ငွေ ${amtText} ကို ${accLabel} မှ ယခု ပြန်ထုတ်ပေးပြီးကြောင်း အတည်ပြုပါသလား?`)) {
+        return;
+      }
+
+      notice.noticeStatus = 'COMPLETED';
+
+      const withdrawRecord = {
+        id: 'DEP-' + Date.now().toString().slice(-6),
+        type: 'WITHDRAW_OUT',
+        date: new Date().toISOString(),
+        custName: notice.custName,
+        custPhone: notice.custPhone || '',
+        amount: Number(notice.amount) || 0,
+        currency: notice.currency || 'MMK',
+        account: notice.account || 'CASH',
+        targetDate: notice.targetDate || '',
+        noticeStatus: 'NONE',
+        note: `ကြိုမှတ်ထားသော အပ်ငွေပြန်ထုတ်ပေးခြင်း (${notice.note || ''})`.trim()
+      };
+
+      const amt = Number(notice.amount) || 0;
+      if (notice.account === 'CASH') capital.cashMMK = (Number(capital.cashMMK) || 0) - amt;
+      else if (notice.account === 'BANK') capital.bankMMK = (Number(capital.bankMMK) || 0) - amt;
+      else if (notice.account === 'THB') capital.thbBalance = (Number(capital.thbBalance) || 0) - amt;
+
+      deposits.unshift(withdrawRecord);
+      saveDepositsToStorage();
+      saveCapitalToStorage();
+      updateAllUI();
+      showToast(`✓ ${notice.custName} သို့ ${amtText} ပြန်ထုတ်ပေးပြီးကြောင်း မှတ်တမ်းတင်ပြီးပါပြီ!`, 'success');
+    };
+
+    const deleteDepositRecord = window.deleteDepositRecord = function(depId) {
+      const idx = deposits.findIndex(d => d.id === depId);
+      if (idx === -1) return;
+      const rec = deposits[idx];
+      if (!confirm(`"${rec.custName}" ၏ မှတ်တမ်းကို ဖျက်ရန် သေချာပါသလား? (လည်ပတ်ငွေ လက်ကျန်ကိုပါ မူလအတိုင်း ပြန်ချိန်ညှိပေးပါမည်)`)) return;
+
+      const amt = Number(rec.amount) || 0;
+      if (rec.type === 'DEPOSIT_IN') {
+        if (rec.account === 'CASH') capital.cashMMK = (Number(capital.cashMMK) || 0) - amt;
+        else if (rec.account === 'BANK') capital.bankMMK = (Number(capital.bankMMK) || 0) - amt;
+        else if (rec.account === 'THB') capital.thbBalance = (Number(capital.thbBalance) || 0) - amt;
+        saveCapitalToStorage();
+      } else if (rec.type === 'WITHDRAW_OUT') {
+        if (rec.account === 'CASH') capital.cashMMK = (Number(capital.cashMMK) || 0) + amt;
+        else if (rec.account === 'BANK') capital.bankMMK = (Number(capital.bankMMK) || 0) + amt;
+        else if (rec.account === 'THB') capital.thbBalance = (Number(capital.thbBalance) || 0) + amt;
+        saveCapitalToStorage();
+      }
+
+      deposits.splice(idx, 1);
+      saveDepositsToStorage();
+      updateAllUI();
+      showToast('အပ်ငွေမှတ်တမ်း ဖျက်သိမ်းပြီးပါပြီ', 'info');
+    };
+
+    const setDepositHistoryFilter = window.setDepositHistoryFilter = function(filter) {
+      depositHistoryFilter = filter;
+      const map = {
+        ALL: 'dep-hist-all',
+        DEPOSIT_IN: 'dep-hist-in',
+        WITHDRAW_NOTICE: 'dep-hist-notice',
+        WITHDRAW_OUT: 'dep-hist-out'
+      };
+      Object.keys(map).forEach(k => {
+        const btn = document.getElementById(map[k]);
+        if (!btn) return;
+        if (k === filter) {
+          btn.className = 'flex-1 py-1.5 rounded-lg font-bold bg-purple-600 text-white transition text-center shadow';
+        } else {
+          btn.className = 'flex-1 py-1.5 rounded-lg font-medium theme-text-muted hover:text-purple-400 transition text-center';
+        }
+      });
+      renderDepositsModule();
+    };
+
+    const renderDepositsModule = window.renderDepositsModule = function() {
+      syncSearchClearButton('depositSearchInput', 'depositSearchClearBtn');
+      const stats = computeDepositStats();
+      const rateForConversion = settings.dealerRate > 0 ? (100000 / settings.dealerRate) : 130;
+
+      const cashInHand = Number(capital.cashMMK) || 0;
+      const bankBalance = Number(capital.bankMMK) || 0;
+      const thbBal = Number(capital.thbBalance) || 0;
+      const totalWorkingMMK = cashInHand + bankBalance + (thbBal * rateForConversion);
+
+      const ownCapMMK = Math.max(0, (cashInHand + bankBalance) - stats.totalDepositMMK);
+      const ownCapTHB = Math.max(0, thbBal - stats.totalDepositTHB);
+      const ownCapUnifiedMMK = ownCapMMK + (ownCapTHB * rateForConversion);
+      const depUnifiedMMK = stats.totalDepositMMK + (stats.totalDepositTHB * rateForConversion);
+
+      let noticeTotalMMK = 0;
+      stats.pendingNotices.forEach(n => {
+        const amt = Number(n.amount) || 0;
+        noticeTotalMMK += (n.currency === 'THB') ? amt * rateForConversion : amt;
+      });
+
+      const kpiOwnMmk = document.getElementById('depKpiOwnCapMMK');
+      const kpiOwnThb = document.getElementById('depKpiOwnCapTHB');
+      const kpiDepMmk = document.getElementById('depKpiTotalDepositsMMK');
+      const kpiDepThb = document.getElementById('depKpiTotalDepositsTHB');
+      const kpiCustCnt = document.getElementById('depKpiCustCount');
+      const kpiWorkMmk = document.getElementById('depKpiWorkingFundsMMK');
+      const kpiWorkSub = document.getElementById('depKpiWorkingFundsSub');
+      const kpiNoticeMmk = document.getElementById('depKpiNoticeTotalMMK');
+      const kpiNoticeSub = document.getElementById('depKpiNoticeSub');
+
+      if (kpiOwnMmk) kpiOwnMmk.textContent = formatMMK(ownCapUnifiedMMK);
+      if (kpiOwnThb) kpiOwnThb.textContent = `${formatTHB(ownCapTHB)} (အပ်ငွေ မပါဝင်ပါ)`;
+      if (kpiDepMmk) kpiDepMmk.textContent = formatMMK(depUnifiedMMK);
+      if (kpiDepThb) kpiDepThb.textContent = stats.totalDepositTHB > 0 ? `${formatTHB(stats.totalDepositTHB)} (ပြန်ထုတ်ပေးရန်ကျန်)` : 'ပြန်ထုတ်ပေးရန်ကျန် (Liability)';
+      if (kpiCustCnt) kpiCustCnt.textContent = `${stats.activeCustomersCount} ဦး`;
+      if (kpiWorkMmk) kpiWorkMmk.textContent = formatMMK(totalWorkingMMK);
+      if (kpiWorkSub) kpiWorkSub.textContent = `ငွေသား ${formatCompactMMK(cashInHand)} + KPay ${formatCompactMMK(bankBalance)}`;
+      if (kpiNoticeMmk) kpiNoticeMmk.textContent = formatMMK(noticeTotalMMK);
+      if (kpiNoticeSub) kpiNoticeSub.textContent = `သတိပေးချက် ${stats.pendingNotices.length} ခု`;
+
+      // Populate datalist for customer autocomplete
+      const dl = document.getElementById('depositorNamesList');
+      if (dl) {
+        dl.innerHTML = stats.customerList.map(c => `<option value="${c.name.replace(/"/g, '&quot;')}"></option>`).join('');
+      }
+
+      // Render notice banners
+      renderWithdrawalNoticeBanners(stats.pendingNotices);
+
+      // Render Customer-wise Deposit Balance Cards
+      const custBadge = document.getElementById('depositActiveCustBadge');
+      if (custBadge) custBadge.textContent = `${stats.activeCustomersCount} ဦး`;
+
+      const custContainer = document.getElementById('depositCustomerSummaryList');
+      if (custContainer) {
+        if (stats.customerList.length === 0) {
+          custContainer.innerHTML = `<div class="col-span-full text-center py-6 theme-text-muted text-xs">အပ်ငွေစာရင်း မရှိသေးပါ</div>`;
+        } else {
+          custContainer.innerHTML = stats.customerList.map(c => {
+            const safeName = c.name.replace(/'/g, "\\'");
+            const hasNotice = c.noticeMMK > 0 || c.noticeTHB > 0;
+            return `
+              <div class="theme-card-sub border ${hasNotice ? 'border-amber-500/50' : 'border-purple-500/30'} p-3 rounded-xl space-y-2 text-xs">
+                <div class="flex items-start justify-between gap-2">
+                  <div>
+                    <div class="font-bold theme-text-heading">${c.name}</div>
+                    <div class="text-[10px] theme-text-muted font-mono">${c.phone || 'ဖုန်းမရှိ'}</div>
+                  </div>
+                  <div class="text-right">
+                    <div class="font-extrabold font-mono text-purple-400 text-sm">${formatMMK(c.balanceMMK)}</div>
+                    ${c.balanceTHB > 0 ? `<div class="text-[10px] font-mono text-blue-400 font-bold">${formatTHB(c.balanceTHB)}</div>` : ''}
+                  </div>
+                </div>
+                ${hasNotice ? `
+                  <div class="p-1.5 rounded-lg bg-amber-500/15 border border-amber-500/30 text-[10px] text-amber-400 font-semibold flex items-center justify-between">
+                    <span>🔔 ကြိုမှတ်ထား: ${c.noticeMMK > 0 ? formatMMK(c.noticeMMK) : formatTHB(c.noticeTHB)}</span>
+                    <span class="font-mono">${c.nextNoticeDate || ''}</span>
+                  </div>
+                ` : ''}
+                <div class="flex items-center gap-1.5 pt-1 border-t border-slate-700/40">
+                  <button type="button" onclick="selectDepositorForForm('${safeName}', 'DEPOSIT_IN')" class="flex-1 py-1 px-2 rounded-lg bg-emerald-600/20 text-emerald-400 hover:bg-emerald-600/30 text-[10px] font-bold">+ ငွေထပ်အပ်</button>
+                  <button type="button" onclick="selectDepositorForForm('${safeName}', 'WITHDRAW_NOTICE')" class="flex-1 py-1 px-2 rounded-lg bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 text-[10px] font-bold">🔔 ကြိုမှတ်</button>
+                  <button type="button" onclick="selectDepositorForForm('${safeName}', 'WITHDRAW_OUT')" class="flex-1 py-1 px-2 rounded-lg bg-rose-600/20 text-rose-400 hover:bg-rose-600/30 text-[10px] font-bold">- ပြန်ထုတ်</button>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+      }
+
+      // Render Deposit History List
+      const histContainer = document.getElementById('depositHistoryListContainer');
+      const histBadge = document.getElementById('depositHistoryCountBadge');
+      const search = (document.getElementById('depositSearchInput')?.value || '').toLowerCase().trim();
+
+      let filtered = [...deposits];
+      if (depositHistoryFilter !== 'ALL') {
+        filtered = filtered.filter(d => d.type === depositHistoryFilter);
+      }
+      if (search) {
+        filtered = filtered.filter(d =>
+          (d.custName && d.custName.toLowerCase().includes(search)) ||
+          (d.custPhone && d.custPhone.toLowerCase().includes(search)) ||
+          (d.note && d.note.toLowerCase().includes(search)) ||
+          (d.id && d.id.toLowerCase().includes(search))
+        );
+      }
+
+      if (histBadge) histBadge.textContent = `${filtered.length} ခု`;
+      if (!histContainer) return;
+
+      if (filtered.length === 0) {
+        histContainer.innerHTML = `<div class="text-center py-8 theme-card-sub rounded-xl border theme-text-muted text-xs">အပ်ငွေ/ထုတ်ငွေ မှတ်တမ်း မရှိသေးပါ</div>`;
+        return;
+      }
+
+      histContainer.innerHTML = filtered.map(d => {
+        const isDepIn = d.type === 'DEPOSIT_IN';
+        const isNotice = d.type === 'WITHDRAW_NOTICE';
+        const badgeHtml = isDepIn
+          ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">📥 ငွေလာအပ်သည်</span>`
+          : isNotice
+          ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/40">🔔 ၁ ပတ်ကြိုမှတ် (${d.noticeStatus === 'COMPLETED' ? 'ထုတ်ပေးပြီး' : (d.targetDate || '')})</span>`
+          : `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30">📤 ငွေပြန်ထုတ်ပေးသည်</span>`;
+
+        const amtFormatted = d.currency === 'THB' ? formatTHB(d.amount) : formatMMK(d.amount);
+        const amtColor = isDepIn ? 'text-emerald-400' : isNotice ? 'text-amber-400' : 'text-rose-400';
+        const sign = isDepIn ? '+' : isNotice ? '⏳ ' : '-';
+        const accText = d.account === 'CASH' ? 'ငွေသား' : d.account === 'BANK' ? 'KPay/Bank' : 'ထိုင်းဘတ်';
+
+        return `
+          <div class="theme-card-sub border p-3 rounded-xl space-y-1.5 text-xs">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-1.5">
+                <span class="font-mono text-[10px] text-purple-400 font-bold">#${d.id}</span>
+                <span class="text-[10px] theme-text-muted">• ${formatDateTime(d.date)}</span>
+              </div>
+              ${badgeHtml}
+            </div>
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <div class="font-bold theme-text-heading">${d.custName}</div>
+                <div class="text-[10px] theme-text-muted">
+                  အကောင့်: <span class="font-semibold">${accText}</span>
+                  ${d.custPhone ? ` • ဖုန်း: <span class="font-mono">${d.custPhone}</span>` : ''}
+                  ${d.targetDate ? ` • ထုတ်မည့်ရက်: <span class="font-mono text-amber-400 font-bold">${d.targetDate}</span>` : ''}
+                  ${d.note ? ` • မှတ်ချက်: ${d.note}` : ''}
+                </div>
+              </div>
+              <div class="text-right shrink-0">
+                <div class="text-sm font-extrabold font-mono ${amtColor}">${sign}${amtFormatted}</div>
+              </div>
+            </div>
+            <div class="flex items-center justify-end gap-2 pt-1.5 border-t border-slate-700/40">
+              ${isNotice && d.noticeStatus !== 'COMPLETED' ? `
+                <button type="button" onclick="fulfillDepositNotice('${d.id}')" class="px-2.5 py-1 rounded-lg bg-emerald-600 text-white text-[10px] font-bold">✓ ယခု ထုတ်ပေးမည်</button>
+              ` : ''}
+              <button type="button" onclick="deleteDepositRecord('${d.id}')" class="px-2 py-1 rounded-lg theme-card border text-[10px] text-rose-400 hover:bg-rose-500/10 font-semibold">ဖျက်မည်</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    };
+
+    const exportDepositHistoryCSV = window.exportDepositHistoryCSV = function() {
+      if (deposits.length === 0) {
+        showToast('ထုတ်ယူရန် အပ်ငွေမှတ်တမ်း မရှိသေးပါ', 'warning');
+        return;
+      }
+      const rows = deposits.map(d => ({
+        'ID': d.id,
+        'ရက်စွဲ': formatDateTime(d.date),
+        'အမျိုးအစား': d.type === 'DEPOSIT_IN' ? 'ငွေလာအပ်သည်' : d.type === 'WITHDRAW_NOTICE' ? 'ပြန်ထုတ်မည့်ရက် ကြိုမှတ်' : 'ငွေပြန်ထုတ်ပေးသည်',
+        'အပ်နှံသူအမည်': d.custName || '',
+        'ဖုန်းနံပါတ်': d.custPhone || '',
+        'ပမာဏ': d.amount || 0,
+        'ငွေကြေး': d.currency || 'MMK',
+        'အကောင့်': d.account || '',
+        'ပြန်ထုတ်မည့်ရက်': d.targetDate || '-',
+        'မှတ်ချက်': d.note || ''
+      }));
+      let csvContent = "\uFEFF";
+      const headers = Object.keys(rows[0]);
+      csvContent += headers.join(",") + "\r\n";
+      rows.forEach(r => {
+        csvContent += headers.map(h => `"${String(r[h] ?? '').replace(/"/g, '""')}"`).join(",") + "\r\n";
+      });
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `LabShwin_Deposits_${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('အပ်ငွေစာရင်း CSV ဖိုင်ကို ဒေါင်းလုဒ်ဆွဲပြီးပါပြီ!', 'success');
+    };
+
+    // ============================================================================
+    // MODULE 2: U9 ဖုန်းဘေလ် ကိုယ်စားလှယ်လုပ်ငန်း (U9 TELECOM BILL AGENT MODULE)
+    // ============================================================================
+    function getU9TargetMonthPrefix(filterMode) {
+      const now = new Date();
+      if (filterMode === 'CURRENT') {
+        return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+      }
+      if (filterMode === 'PREV') {
+        const d = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+      }
+      if (filterMode === 'CUSTOM') {
+        return u9SelectedMonth || `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+      }
+      return 'ALL';
+    }
+
+    function computeU9Stats(filterMode = u9MonthFilter) {
+      const monthPrefix = getU9TargetMonthPrefix(filterMode);
+      const records = Array.isArray(u9Data.records) ? u9Data.records : [];
+
+      let periodPrimaryPurchased = 0;
+      let periodStockReceived = 0;
+      let periodCommissionProfit = 0;
+      let periodExtraRetailProfit = 0;
+      let periodBillSold = 0;
+      let periodWithdrawnComm = 0;
+      let periodWithdrawnCash = 0;
+      let periodWithdrawnKPay = 0;
+
+      // Also compute all-time commission earned vs withdrawn for accurate Remaining Commission
+      let allTimeCommissionEarned = 0;
+      let allTimeWithdrawnComm = 0;
+      let allTimeWithdrawnCash = 0;
+      let allTimeWithdrawnKPay = 0;
+
+      records.forEach(r => {
+        const recMonth = (r.date || '').slice(0, 7);
+        const inPeriod = monthPrefix === 'ALL' || recMonth === monthPrefix;
+
+        if (r.type === 'BUY_PRIMARY') {
+          const comm = Number(r.commissionAmount) || 0;
+          allTimeCommissionEarned += comm;
+          if (inPeriod) {
+            periodPrimaryPurchased += Number(r.purchaseAmount) || 0;
+            periodStockReceived += Number(r.stockReceived) || 0;
+            periodCommissionProfit += comm;
+          }
+        } else if (r.type === 'SELL_BILL') {
+          const extra = Number(r.extraProfit) || 0;
+          allTimeCommissionEarned += extra;
+          if (inPeriod) {
+            periodBillSold += Number(r.billAmount) || 0;
+            periodExtraRetailProfit += extra;
+          }
+        } else if (r.type === 'WITHDRAW_COMM') {
+          const wAmt = Number(r.withdrawAmount) || 0;
+          allTimeWithdrawnComm += wAmt;
+          if (r.channel === 'CASH') allTimeWithdrawnCash += wAmt;
+          else allTimeWithdrawnKPay += wAmt;
+
+          if (inPeriod) {
+            periodWithdrawnComm += wAmt;
+            if (r.channel === 'CASH') periodWithdrawnCash += wAmt;
+            else periodWithdrawnKPay += wAmt;
+          }
+        }
+      });
+
+      const remainingComm = Math.max(0, allTimeCommissionEarned - allTimeWithdrawnComm);
+
+      return {
+        monthPrefix,
+        periodPrimaryPurchased,
+        periodStockReceived,
+        periodCommissionProfit,
+        periodExtraRetailProfit,
+        periodTotalProfit: periodCommissionProfit + periodExtraRetailProfit,
+        periodBillSold,
+        periodWithdrawnComm,
+        periodWithdrawnCash,
+        periodWithdrawnKPay,
+        allTimeCommissionEarned,
+        allTimeWithdrawnComm,
+        allTimeWithdrawnCash,
+        allTimeWithdrawnKPay,
+        remainingComm
+      };
+    }
+
+    const setU9MonthFilter = window.setU9MonthFilter = function(mode) {
+      u9MonthFilter = mode;
+      const map = {
+        CURRENT: 'u9-month-btn-current',
+        PREV: 'u9-month-btn-prev',
+        ALL: 'u9-month-btn-all'
+      };
+      Object.keys(map).forEach(k => {
+        const btn = document.getElementById(map[k]);
+        if (!btn) return;
+        if (k === mode) {
+          btn.className = 'px-2.5 py-1.5 rounded-lg font-bold bg-cyan-600 text-white transition shadow';
+        } else {
+          btn.className = 'px-2.5 py-1.5 rounded-lg font-medium theme-text-muted hover:text-cyan-400 transition';
+        }
+      });
+      const picker = document.getElementById('u9MonthPicker');
+      if (picker && mode !== 'CUSTOM') {
+        const prefix = getU9TargetMonthPrefix(mode);
+        if (prefix !== 'ALL') picker.value = prefix;
+      }
+      renderU9Module();
+    };
+
+    const setU9CustomMonth = window.setU9CustomMonth = function(yyyyMm) {
+      if (!yyyyMm) return;
+      u9SelectedMonth = yyyyMm;
+      u9MonthFilter = 'CUSTOM';
+      ['u9-month-btn-current', 'u9-month-btn-prev', 'u9-month-btn-all'].forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) btn.className = 'px-2.5 py-1.5 rounded-lg font-medium theme-text-muted hover:text-cyan-400 transition';
+      });
+      renderU9Module();
+    };
+
+    const setU9SubAction = window.setU9SubAction = function(subAction) {
+      u9SubAction = subAction;
+      const sellForm = document.getElementById('u9SellForm');
+      const primForm = document.getElementById('u9PrimaryForm');
+      const withForm = document.getElementById('u9WithdrawCommForm');
+
+      const btnSell = document.getElementById('u9-subtab-sell');
+      const btnPrim = document.getElementById('u9-subtab-primary');
+      const btnWith = document.getElementById('u9-subtab-withdraw');
+
+      if (sellForm) sellForm.classList.toggle('hidden', subAction !== 'SELL_BILL');
+      if (primForm) primForm.classList.toggle('hidden', subAction !== 'BUY_PRIMARY');
+      if (withForm) withForm.classList.toggle('hidden', subAction !== 'WITHDRAW_COMM');
+
+      if (btnSell) {
+        btnSell.className = subAction === 'SELL_BILL'
+          ? 'py-2.5 px-2 rounded-xl bg-cyan-600 text-white shadow text-center transition leading-tight'
+          : 'py-2.5 px-2 rounded-xl theme-text-muted hover:text-cyan-400 text-center transition leading-tight';
+      }
+      if (btnPrim) {
+        btnPrim.className = subAction === 'BUY_PRIMARY'
+          ? 'py-2.5 px-2 rounded-xl bg-indigo-600 text-white shadow text-center transition leading-tight'
+          : 'py-2.5 px-2 rounded-xl theme-text-muted hover:text-indigo-400 text-center transition leading-tight';
+      }
+      if (btnWith) {
+        btnWith.className = subAction === 'WITHDRAW_COMM'
+          ? 'py-2.5 px-2 rounded-xl bg-amber-500 text-slate-950 font-extrabold shadow text-center transition leading-tight'
+          : 'py-2.5 px-2 rounded-xl theme-text-muted hover:text-amber-400 text-center transition leading-tight';
+      }
+    };
+
+    // Sub-Action C Helpers: Sell Phone Bill
+    const onU9SellBillAmountInput = window.onU9SellBillAmountInput = function() {
+      const billAmt = parseFloat(document.getElementById('u9SellBillAmount')?.value) || 0;
+      const priceEl = document.getElementById('u9SellPriceAmount');
+      if (priceEl && (!priceEl.value || Number(priceEl.value) === 0 || priceEl.dataset.autoSync !== 'false')) {
+        priceEl.value = billAmt > 0 ? billAmt : '';
+      }
+      calcU9SellProfitLive();
+    };
+
+    const setU9QuickSellBill = window.setU9QuickSellBill = function(amt) {
+      const billEl = document.getElementById('u9SellBillAmount');
+      const priceEl = document.getElementById('u9SellPriceAmount');
+      if (billEl) billEl.value = amt;
+      if (priceEl) priceEl.value = amt;
+      calcU9SellProfitLive();
+    };
+
+    const calcU9SellProfitLive = window.calcU9SellProfitLive = function() {
+      const billAmt = parseFloat(document.getElementById('u9SellBillAmount')?.value) || 0;
+      const priceAmt = parseFloat(document.getElementById('u9SellPriceAmount')?.value) || 0;
+      const extra = Math.max(0, priceAmt - billAmt);
+      const prevEl = document.getElementById('u9SellExtraProfitPreview');
+      if (prevEl) prevEl.textContent = `+${formatMMK(extra)}`;
+    };
+
+    const updateU9SellPaymentHint = window.updateU9SellPaymentHint = function() {
+      const payType = document.querySelector('input[name="u9SellPaymentType"]:checked')?.value || 'CASH';
+      const hintEl = document.getElementById('u9SellPaymentHint');
+      if (!hintEl) return;
+      if (payType === 'CASH') {
+        hintEl.textContent = 'ဖုန်းဘေလ်လက်ကျန်မှ နုတ်ပြီး လက်ထဲရှိ ငွေသားစာရင်းသို့ ပေါင်းထည့်ပေးပါမည်';
+      } else if (payType === 'KPAY') {
+        hintEl.textContent = 'ဖုန်းဘေလ်လက်ကျန်မှ နုတ်ပြီး KPay / Bank စာရင်းသို့ ပေါင်းထည့်ပေးပါမည်';
+      } else {
+        hintEl.textContent = 'ဖုန်းဘေလ်လက်ကျန်မှ နုတ်ပြီး ပင်မ "အကြွေးစာရင်း" တွင် "U9 ဖုန်းဘေလ်" အမှတ်အသားဖြင့် အလိုအလျောက် ထည့်သွင်းပေးပါမည်';
+      }
+    };
+
+    const handleSaveU9Sell = window.handleSaveU9Sell = function(e) {
+      e.preventDefault();
+      const dateVal = document.getElementById('u9SellDate')?.value;
+      const custName = (document.getElementById('u9SellCustName')?.value || '').trim();
+      const custPhone = (document.getElementById('u9SellCustPhone')?.value || '').trim();
+      const billAmount = parseFloat(document.getElementById('u9SellBillAmount')?.value) || 0;
+      const sellingPrice = parseFloat(document.getElementById('u9SellPriceAmount')?.value) || billAmount;
+      const paymentType = document.querySelector('input[name="u9SellPaymentType"]:checked')?.value || 'CASH';
+      const note = (document.getElementById('u9SellNote')?.value || '').trim();
+
+      if (!custName || billAmount <= 0) {
+        showToast('ဝယ်သူအမည် နှင့် ရောင်းသည့် ဖုန်းဘေလ်ပမာဏ ဖြည့်သွင်းပေးပါ', 'error');
+        return;
+      }
+
+      const extraProfit = Math.max(0, sellingPrice - billAmount);
+      const u9Id = 'U9-' + Date.now().toString().slice(-6);
+      const isoDate = dateVal ? new Date(dateVal).toISOString() : new Date().toISOString();
+      let linkedTxId = '';
+
+      // 1. Deduct from Current U9 Bill Balance
+      u9Data.billBalanceMMK = Math.max(0, (Number(u9Data.billBalanceMMK) || 0) - billAmount);
+
+      // 2. Handle Cash, KPay, or Credit Ledger integration
+      if (paymentType === 'CASH') {
+        capital.cashMMK = (Number(capital.cashMMK) || 0) + sellingPrice;
+        saveCapitalToStorage();
+      } else if (paymentType === 'KPAY') {
+        capital.bankMMK = (Number(capital.bankMMK) || 0) + sellingPrice;
+        saveCapitalToStorage();
+      } else if (paymentType === 'CREDIT') {
+        linkedTxId = 'DEB-' + Date.now().toString().slice(-6);
+        const creditTx = {
+          id: linkedTxId,
+          u9RecordId: u9Id,
+          type: 'DIRECT_CREDIT',
+          cashoutType: 'U9_BILL',
+          date: isoDate,
+          custName,
+          custPhone,
+          channel: 'U9 ဖုန်းဘေလ်',
+          amountMMK: sellingPrice,
+          amountTHB: 0,
+          amountOwed: sellingPrice,
+          owedCurrency: 'MMK',
+          paidAmount: 0,
+          profitMMK: extraProfit,
+          status: 'UNPAID',
+          note: `U9 ဖုန်းဘေလ် အကြွေးရောင်း (${formatMMK(billAmount)})${note ? ' - ' + note : ''}`
+        };
+        transactions.unshift(creditTx);
+        saveTransactionsToStorage();
+      }
+
+      const newRec = {
+        id: u9Id,
+        type: 'SELL_BILL',
+        date: isoDate,
+        custName,
+        custPhone,
+        billAmount,
+        sellingPrice,
+        extraProfit,
+        paymentType,
+        status: paymentType === 'CREDIT' ? 'UNPAID' : 'PAID',
+        linkedTxId,
+        note
+      };
+
+      u9Data.records.unshift(newRec);
+      localStorage.setItem('thb_mmk_has_user_data', 'true');
+      saveU9ToStorage();
+
+      document.getElementById('u9SellCustName').value = '';
+      document.getElementById('u9SellCustPhone').value = '';
+      document.getElementById('u9SellBillAmount').value = '';
+      document.getElementById('u9SellPriceAmount').value = '';
+      document.getElementById('u9SellNote').value = '';
+      calcU9SellProfitLive();
+      updateAllUI();
+
+      if (paymentType === 'CREDIT') {
+        showToast(`📲 ${custName} သို့ U9 ဘေလ် ${formatMMK(billAmount)} အကြွေးရောင်းပြီး ပင်မအကြွေးစာရင်းသို့ ထည့်သွင်းပြီးပါပြီ!`, 'warning');
+      } else {
+        showToast(`📲 ${custName} သို့ U9 ဖုန်းဘေလ် ${formatMMK(billAmount)} ရောင်းချမှု သိမ်းဆည်းပြီးပါပြီ!`, 'success');
+      }
+    };
+
+    // Sub-Action A Helpers: Buy Monthly Primary Stock
+    const calcU9PrimaryLive = window.calcU9PrimaryLive = function(source) {
+      const purchaseAmt = parseFloat(document.getElementById('u9PrimaryPurchaseAmt')?.value) || 0;
+      const rateEl = document.getElementById('u9PrimaryCommRate');
+      const commAmtEl = document.getElementById('u9PrimaryCommAmt');
+      const stockEl = document.getElementById('u9PrimaryStockReceived');
+      const includeComm = document.getElementById('u9PrimaryCommInStock')?.checked ?? true;
+
+      let commAmt = parseFloat(commAmtEl?.value) || 0;
+      if (source === 'RATE') {
+        const rate = parseFloat(rateEl?.value) || 0;
+        commAmt = Math.round(purchaseAmt * (rate / 100));
+        if (commAmtEl) commAmtEl.value = commAmt > 0 ? commAmt : 0;
+      } else if (source === 'AMT' && purchaseAmt > 0) {
+        const pct = ((commAmt / purchaseAmt) * 100).toFixed(2);
+        if (rateEl) rateEl.value = Number(pct);
+      }
+
+      if (stockEl) {
+        stockEl.value = purchaseAmt > 0 ? (includeComm ? purchaseAmt + commAmt : purchaseAmt) : '';
+      }
+    };
+
+    const handleSaveU9Primary = window.handleSaveU9Primary = function(e) {
+      e.preventDefault();
+      const dateVal = document.getElementById('u9PrimaryDate')?.value;
+      const purchaseAmount = parseFloat(document.getElementById('u9PrimaryPurchaseAmt')?.value) || 0;
+      const commRate = parseFloat(document.getElementById('u9PrimaryCommRate')?.value) || 0;
+      const commissionAmount = parseFloat(document.getElementById('u9PrimaryCommAmt')?.value) || 0;
+      const stockReceived = parseFloat(document.getElementById('u9PrimaryStockReceived')?.value) || (purchaseAmount + commissionAmount);
+      const payMethod = document.getElementById('u9PrimaryPayMethod')?.value || 'U9_CAPITAL';
+      const note = (document.getElementById('u9PrimaryNote')?.value || '').trim();
+
+      if (purchaseAmount <= 0 || stockReceived <= 0) {
+        showToast('ဝယ်ယူသည့်ငွေ နှင့် ရရှိသည့် ဖုန်းဘေလ်ပမာဏကို ဖြည့်သွင်းပေးပါ', 'error');
+        return;
+      }
+
+      // Add to Current U9 Bill Balance
+      u9Data.billBalanceMMK = (Number(u9Data.billBalanceMMK) || 0) + stockReceived;
+
+      // Deduct from main wallet if paid via Cash or Bank
+      if (payMethod === 'CASH') {
+        capital.cashMMK = (Number(capital.cashMMK) || 0) - purchaseAmount;
+        saveCapitalToStorage();
+      } else if (payMethod === 'BANK') {
+        capital.bankMMK = (Number(capital.bankMMK) || 0) - purchaseAmount;
+        saveCapitalToStorage();
+      }
+
+      const newRec = {
+        id: 'U9-' + Date.now().toString().slice(-6),
+        type: 'BUY_PRIMARY',
+        date: dateVal ? new Date(dateVal).toISOString() : new Date().toISOString(),
+        purchaseAmount,
+        commRate,
+        commissionAmount,
+        stockReceived,
+        payMethod,
+        note
+      };
+
+      u9Data.records.unshift(newRec);
+      localStorage.setItem('thb_mmk_has_user_data', 'true');
+      saveU9ToStorage();
+
+      document.getElementById('u9PrimaryPurchaseAmt').value = '';
+      document.getElementById('u9PrimaryCommAmt').value = '';
+      document.getElementById('u9PrimaryStockReceived').value = '';
+      document.getElementById('u9PrimaryNote').value = '';
+      updateAllUI();
+      showToast(`📦 Primary ဘေလ် ${formatMMK(stockReceived)} (ကော်မရှင်အမြတ် +${formatMMK(commissionAmount)}) သိမ်းဆည်းပြီးပါပြီ!`, 'success');
+    };
+
+    // Sub-Action B Helpers: Withdraw U9 Commission Profit
+    const handleSaveU9WithdrawComm = window.handleSaveU9WithdrawComm = function(e) {
+      e.preventDefault();
+      const dateVal = document.getElementById('u9WithdrawDate')?.value;
+      const withdrawAmount = parseFloat(document.getElementById('u9WithdrawAmt')?.value) || 0;
+      const channel = document.querySelector('input[name="u9WithdrawChannel"]:checked')?.value || 'CASH';
+      const deductStock = document.getElementById('u9WithdrawDeductBillStock')?.checked ?? false;
+      const addToMain = document.getElementById('u9WithdrawAddToMainWallet')?.checked ?? true;
+      const note = (document.getElementById('u9WithdrawNote')?.value || '').trim();
+
+      if (withdrawAmount <= 0) {
+        showToast('ထုတ်ယူမည့် ကော်မရှင်ပမာဏကို ဖြည့်သွင်းပေးပါ', 'error');
+        return;
+      }
+
+      if (deductStock) {
+        u9Data.billBalanceMMK = Math.max(0, (Number(u9Data.billBalanceMMK) || 0) - withdrawAmount);
+      }
+
+      if (addToMain) {
+        if (channel === 'CASH') capital.cashMMK = (Number(capital.cashMMK) || 0) + withdrawAmount;
+        else capital.bankMMK = (Number(capital.bankMMK) || 0) + withdrawAmount;
+        saveCapitalToStorage();
+      }
+
+      const newRec = {
+        id: 'U9-' + Date.now().toString().slice(-6),
+        type: 'WITHDRAW_COMM',
+        date: dateVal ? new Date(dateVal).toISOString() : new Date().toISOString(),
+        withdrawAmount,
+        channel,
+        deductedFromStock: deductStock,
+        addedToMainWallet: addToMain,
+        note
+      };
+
+      u9Data.records.unshift(newRec);
+      localStorage.setItem('thb_mmk_has_user_data', 'true');
+      saveU9ToStorage();
+
+      document.getElementById('u9WithdrawAmt').value = '';
+      document.getElementById('u9WithdrawNote').value = '';
+      updateAllUI();
+      showToast(`💵 U9 ကော်မရှင်အမြတ် ${formatMMK(withdrawAmount)} (${channel === 'CASH' ? 'ငွေသား' : 'KPay'}) ထုတ်ယူမှု သိမ်းဆည်းပြီးပါပြီ!`, 'success');
+    };
+
+    const openU9CapitalModal = window.openU9CapitalModal = function() {
+      const capInp = document.getElementById('u9ModalCapitalInput');
+      const stockInp = document.getElementById('u9ModalStockInput');
+      if (capInp) capInp.value = Number(u9Data.capitalMMK) || 0;
+      if (stockInp) stockInp.value = Number(u9Data.billBalanceMMK) || 0;
+      const modal = document.getElementById('u9CapitalModal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        armBackTrap();
+      }
+    };
+
+    const closeU9CapitalModal = window.closeU9CapitalModal = function() {
+      const modal = document.getElementById('u9CapitalModal');
+      if (modal) modal.classList.add('hidden');
+    };
+
+    const handleSaveU9CapitalModal = window.handleSaveU9CapitalModal = function(e) {
+      e.preventDefault();
+      u9Data.capitalMMK = parseFloat(document.getElementById('u9ModalCapitalInput')?.value) || 0;
+      u9Data.billBalanceMMK = parseFloat(document.getElementById('u9ModalStockInput')?.value) || 0;
+      saveU9ToStorage();
+      closeU9CapitalModal();
+      updateAllUI();
+      showToast('U9 သီးသန့်အရင်း နှင့် ဖုန်းဘေလ်လက်ကျန် ပြင်ဆင်ပြီးပါပြီ!', 'success');
+    };
+
+    const setU9HistoryFilter = window.setU9HistoryFilter = function(filter) {
+      u9HistoryFilter = filter;
+      const map = {
+        ALL: 'u9-hist-all',
+        SELL_BILL: 'u9-hist-sell',
+        BUY_PRIMARY: 'u9-hist-primary',
+        WITHDRAW_COMM: 'u9-hist-withdraw'
+      };
+      Object.keys(map).forEach(k => {
+        const btn = document.getElementById(map[k]);
+        if (!btn) return;
+        if (k === filter) {
+          btn.className = 'flex-1 py-1.5 rounded-lg font-bold bg-cyan-600 text-white transition text-center shadow';
+        } else {
+          btn.className = 'flex-1 py-1.5 rounded-lg font-medium theme-text-muted hover:text-cyan-400 transition text-center';
+        }
+      });
+      renderU9Module();
+    };
+
+    const deleteU9Record = window.deleteU9Record = function(recId) {
+      const idx = (u9Data.records || []).findIndex(r => r.id === recId);
+      if (idx === -1) return;
+      const rec = u9Data.records[idx];
+      if (!confirm('ဤ U9 မှတ်တမ်းကို ဖျက်ရန် သေချာပါသလား? (ဖုန်းဘေလ်လက်ကျန်ကိုပါ ပြန်ချိန်ညှိပေးပါမည်)')) return;
+
+      if (rec.type === 'BUY_PRIMARY') {
+        u9Data.billBalanceMMK = Math.max(0, (Number(u9Data.billBalanceMMK) || 0) - (Number(rec.stockReceived) || 0));
+      } else if (rec.type === 'SELL_BILL') {
+        u9Data.billBalanceMMK = (Number(u9Data.billBalanceMMK) || 0) + (Number(rec.billAmount) || 0);
+        if (rec.linkedTxId) {
+          const txIdx = transactions.findIndex(t => t.id === rec.linkedTxId);
+          if (txIdx !== -1) {
+            transactions.splice(txIdx, 1);
+            saveTransactionsToStorage();
+          }
+        }
+      } else if (rec.type === 'WITHDRAW_COMM' && rec.deductedFromStock) {
+        u9Data.billBalanceMMK = (Number(u9Data.billBalanceMMK) || 0) + (Number(rec.withdrawAmount) || 0);
+      }
+
+      u9Data.records.splice(idx, 1);
+      saveU9ToStorage();
+      updateAllUI();
+      showToast('U9 မှတ်တမ်း ဖျက်သိမ်းပြီးပါပြီ', 'info');
+    };
+
+    const renderU9Module = window.renderU9Module = function() {
+      syncSearchClearButton('u9SearchInput', 'u9SearchClearBtn');
+      const stats = computeU9Stats(u9MonthFilter);
+
+      const capEl = document.getElementById('u9CardCapital');
+      const balEl = document.getElementById('u9CardBillBalance');
+      const soldSubEl = document.getElementById('u9CardSoldSub');
+      const primTitleEl = document.getElementById('u9CardPrimaryTitle');
+      const primTotEl = document.getElementById('u9CardPrimaryTotal');
+      const primSubEl = document.getElementById('u9CardPrimarySub');
+      const commTitleEl = document.getElementById('u9CardCommTitle');
+      const commTotEl = document.getElementById('u9CardCommTotal');
+      const extraSubEl = document.getElementById('u9CardExtraProfitSub');
+      const remCommEl = document.getElementById('u9CardRemainingComm');
+      const withCommEl = document.getElementById('u9CardWithdrawnComm');
+      const withCashEl = document.getElementById('u9CardWithdrawnCash');
+      const withKPayEl = document.getElementById('u9CardWithdrawnKPay');
+      const availFormEl = document.getElementById('u9WithdrawAvailableCommText');
+
+      const periodLabel = u9MonthFilter === 'CURRENT' ? 'ယခုလ' : u9MonthFilter === 'PREV' ? 'ပြီးခဲ့သောလ' : u9MonthFilter === 'ALL' ? 'စုစုပေါင်း' : stats.monthPrefix;
+
+      if (capEl) capEl.textContent = formatMMK(u9Data.capitalMMK || 0);
+      if (balEl) balEl.textContent = formatMMK(u9Data.billBalanceMMK || 0);
+      if (soldSubEl) soldSubEl.textContent = `${periodLabel} ရောင်းပြီး: ${formatMMK(stats.periodBillSold)}`;
+      if (primTitleEl) primTitleEl.textContent = `၃။ ${periodLabel} Primary ဝယ်ယူမှု`;
+      if (primTotEl) primTotEl.textContent = formatMMK(stats.periodPrimaryPurchased);
+      if (primSubEl) primSubEl.textContent = `ရရှိဘေလ်: ${formatMMK(stats.periodStockReceived)}`;
+      if (commTitleEl) commTitleEl.textContent = `၄။ ${periodLabel} ကော်မရှင်အမြတ်`;
+      if (commTotEl) commTotEl.textContent = `+${formatMMK(stats.periodTotalProfit)}`;
+      if (extraSubEl) extraSubEl.textContent = `Primary: +${formatCompactMMK(stats.periodCommissionProfit)} • လက်လီ: +${formatCompactMMK(stats.periodExtraRetailProfit)}`;
+      if (remCommEl) remCommEl.textContent = formatMMK(stats.remainingComm);
+      if (withCommEl) withCommEl.textContent = formatMMK(stats.periodWithdrawnComm);
+      if (withCashEl) withCashEl.textContent = `ငွေသား: ${formatMMK(stats.periodWithdrawnCash)}`;
+      if (withKPayEl) withKPayEl.textContent = `KPay: ${formatMMK(stats.periodWithdrawnKPay)}`;
+      if (availFormEl) availFormEl.textContent = formatMMK(stats.remainingComm);
+
+      // Filter U9 History List
+      const histContainer = document.getElementById('u9HistoryListContainer');
+      const histBadge = document.getElementById('u9HistoryCountBadge');
+      const search = (document.getElementById('u9SearchInput')?.value || '').toLowerCase().trim();
+
+      let filtered = Array.isArray(u9Data.records) ? [...u9Data.records] : [];
+      if (stats.monthPrefix !== 'ALL') {
+        filtered = filtered.filter(r => (r.date || '').slice(0, 7) === stats.monthPrefix);
+      }
+      if (u9HistoryFilter !== 'ALL') {
+        filtered = filtered.filter(r => r.type === u9HistoryFilter);
+      }
+      if (search) {
+        filtered = filtered.filter(r =>
+          (r.custName && r.custName.toLowerCase().includes(search)) ||
+          (r.custPhone && r.custPhone.toLowerCase().includes(search)) ||
+          (r.note && r.note.toLowerCase().includes(search)) ||
+          (r.id && r.id.toLowerCase().includes(search))
+        );
+      }
+
+      if (histBadge) histBadge.textContent = `${filtered.length} ခု`;
+      if (!histContainer) return;
+
+      if (filtered.length === 0) {
+        histContainer.innerHTML = `<div class="text-center py-8 theme-card-sub rounded-xl border theme-text-muted text-xs">ရွေးချယ်ထားသော ကာလအတွင်း U9 မှတ်တမ်း မရှိသေးပါ</div>`;
+        return;
+      }
+
+      histContainer.innerHTML = filtered.map(r => {
+        if (r.type === 'BUY_PRIMARY') {
+          return `
+            <div class="theme-card-sub border border-indigo-500/40 p-3 rounded-xl space-y-1.5 text-xs">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-1.5">
+                  <span class="font-mono text-[10px] text-indigo-400 font-bold">#${r.id}</span>
+                  <span class="text-[10px] theme-text-muted">• ${formatDateTime(r.date)}</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">📦 Primary ဘေလ်အဝယ် (${r.commRate || 0}%)</span>
+              </div>
+              <div class="flex items-start justify-between gap-2">
+                <div>
+                  <div class="font-bold theme-text-heading">Primary ဝယ်ယူငွေ: ${formatMMK(r.purchaseAmount)}</div>
+                  <div class="text-[10px] theme-text-muted">
+                    ရရှိသည့်ဘေလ်: <span class="font-mono font-bold text-cyan-400">+${formatMMK(r.stockReceived)}</span>
+                    ${r.note ? ` • မှတ်ချက်: ${r.note}` : ''}
+                  </div>
+                </div>
+                <div class="text-right shrink-0">
+                  <div class="text-sm font-extrabold font-mono text-emerald-400">+${formatMMK(r.commissionAmount)}</div>
+                  <div class="text-[10px] theme-text-muted">ကော်မရှင်အမြတ်</div>
+                </div>
+              </div>
+              <div class="flex justify-end pt-1 border-t border-slate-700/40">
+                <button type="button" onclick="deleteU9Record('${r.id}')" class="px-2 py-0.5 rounded-lg theme-card border text-[10px] text-rose-400 hover:bg-rose-500/10 font-semibold">ဖျက်မည်</button>
+              </div>
+            </div>
+          `;
+        }
+
+        if (r.type === 'WITHDRAW_COMM') {
+          const chText = r.channel === 'CASH' ? '💵 ငွေသား (Cash)' : '📱 KPay';
+          return `
+            <div class="theme-card-sub border border-amber-500/40 p-3 rounded-xl space-y-1.5 text-xs">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-1.5">
+                  <span class="font-mono text-[10px] text-amber-400 font-bold">#${r.id}</span>
+                  <span class="text-[10px] theme-text-muted">• ${formatDateTime(r.date)}</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">💵 ကော်မရှင်အမြတ် ထုတ်ယူခြင်း</span>
+              </div>
+              <div class="flex items-start justify-between gap-2">
+                <div>
+                  <div class="font-bold theme-text-heading">ထုတ်ယူသည့်နည်းလမ်း: ${chText}</div>
+                  <div class="text-[10px] theme-text-muted">
+                    ${r.note ? `မှတ်ချက်: ${r.note}` : 'ကော်မရှင်အမြတ်ထဲမှ ထုတ်ယူသည်'}
+                  </div>
+                </div>
+                <div class="text-right shrink-0">
+                  <div class="text-sm font-extrabold font-mono text-amber-400">-${formatMMK(r.withdrawAmount)}</div>
+                </div>
+              </div>
+              <div class="flex justify-end pt-1 border-t border-slate-700/40">
+                <button type="button" onclick="deleteU9Record('${r.id}')" class="px-2 py-0.5 rounded-lg theme-card border text-[10px] text-rose-400 hover:bg-rose-500/10 font-semibold">ဖျက်မည်</button>
+              </div>
+            </div>
+          `;
+        }
+
+        // SELL_BILL
+        const isCredit = r.paymentType === 'CREDIT';
+        const isUnpaid = r.status === 'UNPAID';
+        const payBadge = r.paymentType === 'CASH'
+          ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400">💵 လက်ငင်း (ငွေသား)</span>`
+          : r.paymentType === 'KPAY'
+          ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/20 text-blue-400">📱 လက်ငင်း (KPay)</span>`
+          : isUnpaid
+          ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/20 text-rose-400 border border-rose-500/40">⚠️ အကြွေး (မဆပ်ရသေး)</span>`
+          : `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400">✓ အကြွေး (ပြန်ရပြီး)</span>`;
+
+        return `
+          <div class="theme-card-sub border ${isCredit && isUnpaid ? 'border-rose-500/50' : 'border-cyan-500/30'} p-3 rounded-xl space-y-1.5 text-xs">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-1.5">
+                <span class="font-mono text-[10px] text-cyan-400 font-bold">#${r.id}</span>
+                <span class="text-[10px] theme-text-muted">• ${formatDateTime(r.date)}</span>
+              </div>
+              ${payBadge}
+            </div>
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <div class="font-bold theme-text-heading">📲 ${r.custName || 'Customer'}</div>
+                <div class="text-[10px] theme-text-muted">
+                  ရောင်းသည့်ဘေလ်: <span class="font-mono font-bold text-cyan-400">${formatMMK(r.billAmount)}</span>
+                  ${r.custPhone ? ` • ဖုန်း: <span class="font-mono">${r.custPhone}</span>` : ''}
+                  ${r.note ? ` • မှတ်ချက်: ${r.note}` : ''}
+                </div>
+              </div>
+              <div class="text-right shrink-0">
+                <div class="text-sm font-extrabold font-mono theme-text-heading">${formatMMK(r.sellingPrice || r.billAmount)}</div>
+                ${r.extraProfit > 0 ? `<div class="text-[10px] font-mono text-emerald-400">အပိုအမြတ်: +${formatMMK(r.extraProfit)}</div>` : ''}
+              </div>
+            </div>
+            <div class="flex items-center justify-between pt-1.5 border-t border-slate-700/40">
+              <div>
+                ${isCredit && isUnpaid && r.linkedTxId ? `
+                  <button type="button" onclick="openSettleModal('${r.linkedTxId}')" class="px-2.5 py-1 rounded-lg bg-emerald-600 text-white text-[10px] font-bold">✓ အကြွေးဆပ်မည်</button>
+                ` : ''}
+              </div>
+              <button type="button" onclick="deleteU9Record('${r.id}')" class="px-2 py-0.5 rounded-lg theme-card border text-[10px] text-rose-400 hover:bg-rose-500/10 font-semibold">ဖျက်မည်</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    };
+
+    const exportU9HistoryCSV = window.exportU9HistoryCSV = function() {
+      const records = u9Data.records || [];
+      if (records.length === 0) {
+        showToast('ထုတ်ယူရန် U9 ဖုန်းဘေလ်မှတ်တမ်း မရှိသေးပါ', 'warning');
+        return;
+      }
+      const rows = records.map(r => ({
+        'ID': r.id,
+        'ရက်စွဲ': formatDateTime(r.date),
+        'အမျိုးအစား': r.type === 'BUY_PRIMARY' ? 'Primary ဝယ်ယူခြင်း' : r.type === 'WITHDRAW_COMM' ? 'ကော်မရှင်အမြတ် ထုတ်ယူခြင်း' : 'ဖုန်းဘေလ် ပြန်ရောင်းခြင်း',
+        'ဝယ်သူအမည်': r.custName || '-',
+        'ဖုန်းနံပါတ်': r.custPhone || '-',
+        'ဘေလ်ပမာဏ / Primary အဝယ်': r.billAmount || r.purchaseAmount || r.withdrawAmount || 0,
+        'ရောင်းဈေး / ရရှိဘေလ်': r.sellingPrice || r.stockReceived || 0,
+        'ကော်မရှင် / အပိုအမြတ်': r.commissionAmount || r.extraProfit || 0,
+        'ငွေချေမှုပုံစံ': r.paymentType || r.channel || r.payMethod || '',
+        'အခြေအနေ': r.status || 'PAID',
+        'မှတ်ချက်': r.note || ''
+      }));
+      let csvContent = "\uFEFF";
+      const headers = Object.keys(rows[0]);
+      csvContent += headers.join(",") + "\r\n";
+      rows.forEach(r => {
+        csvContent += headers.map(h => `"${String(r[h] ?? '').replace(/"/g, '""')}"`).join(",") + "\r\n";
+      });
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `LabShwin_U9_Bills_${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('U9 ဖုန်းဘေလ် CSV ဖိုင်ကို ဒေါင်းလုဒ်ဆွဲပြီးပါပြီ!', 'success');
+    };
+
     // --- OFFLINE EXPORT / IMPORT ---
     const exportToGoogleDriveJSON = window.exportToGoogleDriveJSON = async function() {
       const backupData = {
         app: 'လာဘ်ရွှင် (Lab Shwin)',
-        version: '2.0',
+        version: '2.1',
         exportedAt: new Date().toISOString(),
         capital,
         settings,
         transactions,
-        expenses
+        expenses,
+        deposits,
+        u9Data
       };
 
       const jsonStr = JSON.stringify(backupData, null, 2);
@@ -6600,7 +8908,7 @@
     };
 
     const exportToExcel = window.exportToExcel = function() {
-      if (transactions.length === 0 && expenses.length === 0) {
+      if (transactions.length === 0 && expenses.length === 0 && deposits.length === 0 && (!u9Data.records || u9Data.records.length === 0)) {
         showToast('ဒေါင်းလုဒ်ဆွဲရန် မှတ်တမ်း မရှိသေးပါ', 'warning');
         return;
       }
@@ -6611,7 +8919,7 @@
         return {
           'Voucher ID': tx.id,
           'ရက်စွဲ': formatDateTime(tx.date),
-          'အမျိုးအစား': tx.type === 'REMIT' ? (tx.direction === 'MMK_TO_THB' ? 'မြန်မာကျပ် ➔ ထိုင်းဘတ်' : 'ထိုင်းဘတ် ➔ မြန်မာကျပ်') : 'KPay/ငွေထုတ်',
+          'အမျိုးအစား': tx.type === 'REMIT' ? (tx.direction === 'MMK_TO_THB' ? 'မြန်မာကျပ် ➔ ထိုင်းဘတ်' : 'ထိုင်းဘတ် ➔ မြန်မာကျပ်') : (tx.cashoutType === 'U9_BILL' ? 'U9 ဖုန်းဘေလ် (အကြွေး)' : 'KPay/ငွေထုတ်'),
           'လွှဲသူအမည်': tx.type === 'REMIT' ? (names.senderName || '-') : (tx.custName || ''),
           'ထုတ်ယူသူအမည်': tx.type === 'REMIT' ? (names.receiverName || '-') : '-',
           'Customer အမည် (စုစုပေါင်း)': names.displayTitle || '',
@@ -6637,6 +8945,32 @@
         'မှတ်ချက်': exp.note || ''
       }));
 
+      const depositRows = deposits.map(d => ({
+        'ID': d.id,
+        'ရက်စွဲ': formatDateTime(d.date),
+        'အမျိုးအစား': d.type === 'DEPOSIT_IN' ? 'ငွေလာအပ်သည်' : d.type === 'WITHDRAW_NOTICE' ? '၁ ပတ်ကြိုမှတ်' : 'ငွေပြန်ထုတ်ပေးသည်',
+        'အပ်နှံသူအမည်': d.custName || '',
+        'ဖုန်းနံပါတ်': d.custPhone || '',
+        'ပမာဏ': d.amount || 0,
+        'ငွေကြေး': d.currency || 'MMK',
+        'အကောင့်': d.account || '',
+        'ပြန်ထုတ်မည့်ရက်': d.targetDate || '-',
+        'မှတ်ချက်': d.note || ''
+      }));
+
+      const u9Rows = (u9Data.records || []).map(r => ({
+        'ID': r.id,
+        'ရက်စွဲ': formatDateTime(r.date),
+        'အမျိုးအစား': r.type === 'BUY_PRIMARY' ? 'Primary ဝယ်ယူခြင်း' : r.type === 'WITHDRAW_COMM' ? 'ကော်မရှင် ထုတ်ယူခြင်း' : 'ဖုန်းဘေလ် ရောင်းချခြင်း',
+        'အမည်': r.custName || '-',
+        'ဖုန်း': r.custPhone || '-',
+        'ပမာဏ (MMK)': r.billAmount || r.purchaseAmount || r.withdrawAmount || 0,
+        'ရောင်းဈေး/ရရှိဘေလ်': r.sellingPrice || r.stockReceived || 0,
+        'ကော်မရှင်/အမြတ်': r.commissionAmount || r.extraProfit || 0,
+        'ငွေချေမှု': r.paymentType || r.channel || r.payMethod || '',
+        'မှတ်ချက်': r.note || ''
+      }));
+
       const fileName = `LabShwin_Report_${new Date().toISOString().split('T')[0]}`;
 
       if (typeof XLSX !== 'undefined') {
@@ -6645,6 +8979,14 @@
           if (rows.length > 0) {
             const ws = XLSX.utils.json_to_sheet(rows);
             XLSX.utils.book_append_sheet(wb, ws, "အရောင်းအဝယ်စာရင်း");
+          }
+          if (depositRows.length > 0) {
+            const wsDep = XLSX.utils.json_to_sheet(depositRows);
+            XLSX.utils.book_append_sheet(wb, wsDep, "အပ်ငွေစာရင်း");
+          }
+          if (u9Rows.length > 0) {
+            const wsU9 = XLSX.utils.json_to_sheet(u9Rows);
+            XLSX.utils.book_append_sheet(wb, wsU9, "U9_ဖုန်းဘေလ်စာရင်း");
           }
           if (expenseRows.length > 0) {
             const wsExp = XLSX.utils.json_to_sheet(expenseRows);
@@ -6694,6 +9036,14 @@
                   expenses = data.expenses;
                   saveExpensesToStorage();
                 }
+                if (data.deposits && Array.isArray(data.deposits)) {
+                  deposits = data.deposits;
+                  saveDepositsToStorage();
+                }
+                if (data.u9Data && typeof data.u9Data === 'object') {
+                  u9Data = data.u9Data;
+                  saveU9ToStorage();
+                }
                 if (data.capital) capital = data.capital;
                 if (data.settings) settings = Object.assign(settings, data.settings);
                 localStorage.setItem('thb_mmk_has_user_data', 'true');
@@ -6703,7 +9053,7 @@
                 updateAllUI();
                 const banner = document.getElementById('phoneSwitchRestoreBanner');
                 if (banner) banner.classList.add('hidden');
-                showToast(`🎉 ဖိုင်မှ စာရင်းမှတ်တမ်း ${transactions.length} ခုနှင့် အသုံးစရိတ်များကို အောင်မြင်စွာ ပြန်လည်တင်သွင်းပြီးပါပြီ!`, 'success');
+                showToast(`🎉 ဖိုင်မှ စာရင်းမှတ်တမ်းများ အားလုံးကို အောင်မြင်စွာ ပြန်လည်တင်သွင်းပြီးပါပြီ!`, 'success');
               }
             } else {
               showToast('မမှန်ကန်သော JSON Backup ဖိုင်ဖြစ်နေပါသည်', 'error');
