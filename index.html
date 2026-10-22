@@ -349,20 +349,20 @@
         </div>
 
         <!-- 2. Profit Card -->
-        <div onclick="switchTab('expense')" class="cursor-pointer theme-card border hover:border-emerald-500/60 active:scale-[0.99] transition rounded-2xl p-3.5 relative overflow-hidden shadow-sm group">
+        <div onclick="openMasterSettlementModal()" class="cursor-pointer theme-card border hover:border-emerald-500/60 active:scale-[0.99] transition rounded-2xl p-3.5 relative overflow-hidden shadow-sm group">
           <div class="flex items-center justify-between mb-1.5">
             <span class="text-xs text-emerald-500 font-bold flex items-center gap-1">
               <svg class="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
-              အသားတင် အမြတ် (Net Profit)
+              အားလုံးခြုံ အသားတင်အမြတ်
             </span>
             <span class="text-[10px] bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 px-1.5 py-0.2 rounded font-bold" id="dashPeriodLabel">ယနေ့</span>
           </div>
           <div class="text-lg sm:text-xl font-bold text-emerald-500 font-mono leading-tight" id="dashTotalProfitMMK">+0 Ks</div>
           <div class="mt-2 text-[11px] theme-text-muted font-mono space-y-0.5">
-            <div class="flex justify-between"><span>အကြမ်းအမြတ်:</span> <span class="text-emerald-500 font-semibold" id="dashGrossProfitMMK">+0 Ks</span></div>
-            <div class="flex justify-between"><span>အသုံးစရိတ်:</span> <span class="text-rose-500 font-bold" id="dashTotalExpenseMMK">-0 Ks</span></div>
-            <div class="flex justify-between"><span>အသားတင်ဘတ်:</span> <span class="text-emerald-500 font-bold" id="dashProfitTHB">+0 THB</span></div>
-            <div class="text-[10px] text-amber-500 group-hover:underline text-right pt-0.5 font-semibold">အသုံးစရိတ် စီမံရန် ➔</div>
+            <div class="flex justify-between"><span>စုစုပေါင်းအကြမ်းမြတ်:</span> <span class="text-emerald-500 font-semibold" id="dashGrossProfitMMK">+0 Ks</span></div>
+            <div class="flex justify-between"><span>အသုံးစရိတ်နှုတ်:</span> <span class="text-rose-500 font-bold" id="dashTotalExpenseMMK">-0 Ks</span></div>
+            <div class="flex justify-between"><span>အသားတင်ဘတ်မြတ်:</span> <span class="text-emerald-500 font-bold" id="dashProfitTHB">+0 THB</span></div>
+            <div class="text-[10px] text-amber-500 group-hover:underline text-right pt-0.5 font-semibold">စာရင်းရှင်းတမ်း ကြည့်ရန် ➔</div>
           </div>
         </div>
 
@@ -454,6 +454,153 @@
         </div>
       </div>
 
+      <!-- ================= ALL-IN-ONE MASTER SETTLEMENT & PROFIT SUMMARY (အားလုံးခြုံ စာရင်းရှင်းတမ်း နှင့် အမြတ်ချုပ်) ================= -->
+      <div id="dashMasterSettlementCard" class="theme-card border-2 border-emerald-500/40 rounded-2xl p-4 sm:p-5 shadow-md space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 border-b pb-3">
+          <div class="flex items-start sm:items-center gap-2.5">
+            <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex items-center justify-center text-base font-bold shrink-0 shadow">📊</span>
+            <div>
+              <div class="flex items-center gap-2 flex-wrap">
+                <h3 class="text-xs sm:text-sm font-extrabold theme-text-heading">အားလုံးခြုံ စာရင်းရှင်းတမ်း နှင့် စုစုပေါင်းအမြတ်ချုပ် (Master Settlement)</h3>
+                <span id="masterSettlePeriodBadge" class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold">ယနေ့</span>
+              </div>
+              <p class="text-[11px] theme-text-muted mt-0.5">ငွေလွှဲ + KPay + U9 ဖုန်းဘေလ် အမြတ်အားလုံး၊ အသုံးစရိတ်၊ အပ်ငွေ၊ အကြွေး နှင့် လက်ကျန်ငွေ စာရင်းရှင်းတမ်းအပြည့်အစုံ</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5 self-start sm:self-auto">
+            <button type="button" onclick="openMasterSettlementModal()" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-[11px] font-extrabold shadow flex items-center gap-1.5 transition">
+              <span>🧾 စာရင်းရှင်းတမ်း ပြေစာထုတ်ရန်</span>
+            </button>
+            <button type="button" onclick="copyMasterSettlementText()" title="စာရင်းရှင်းတမ်း စာသား Copy ကူးရန်" class="px-2.5 py-1.5 rounded-xl theme-card-sub border hover:border-blue-500 text-blue-400 text-[11px] font-bold transition">
+              📋 Copy
+            </button>
+            <button type="button" onclick="exportMasterSettlementCSV()" title="CSV/Excel ထုတ်ရန်" class="px-2.5 py-1.5 rounded-xl theme-card-sub border hover:border-amber-500 text-amber-400 text-[11px] font-bold transition">
+              📥 CSV
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+          <!-- Left Box: ၁။ လုပ်ငန်းအားလုံး စုစုပေါင်း အမြတ်ငွေ စာရင်းရှင်းတမ်း -->
+          <div class="theme-card-sub border border-emerald-500/30 rounded-2xl p-3.5 space-y-2.5 text-xs">
+            <div class="flex items-center justify-between border-b border-slate-700/40 pb-2">
+              <span class="font-extrabold text-emerald-400 flex items-center gap-1.5">
+                <span>💰 ၁။ လုပ်ငန်းအားလုံး အမြတ်ငွေ စာရင်းချုပ်</span>
+              </span>
+              <span id="msProfitPeriodSub" class="text-[10px] font-mono theme-text-muted">ယနေ့အတွက်</span>
+            </div>
+
+            <div class="space-y-1.5 text-[11px]">
+              <div class="flex items-center justify-between py-1 border-b border-slate-700/20">
+                <div>
+                  <span class="font-semibold theme-text-heading">🇹🇭⇄🇲🇲 ထိုင်း-မြန်မာ ငွေလွှဲအမြတ်</span>
+                  <span id="msRemitCountText" class="text-[10px] theme-text-muted block">0 ကြိမ် • ပမာဏ 0 Ks</span>
+                </div>
+                <div class="text-right font-mono">
+                  <span id="msRemitProfitMMK" class="font-bold text-sky-400">+0 Ks</span>
+                  <span id="msRemitProfitTHB" class="text-[10px] text-emerald-400 block">+0 THB</span>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between py-1 border-b border-slate-700/20">
+                <div>
+                  <span class="font-semibold theme-text-heading">📱 KPay / Wave ငွေထုတ် & လွှဲအမြတ်</span>
+                  <span id="msCashoutCountText" class="text-[10px] theme-text-muted block">0 ကြိမ် • ပမာဏ 0 Ks</span>
+                </div>
+                <div class="text-right font-mono">
+                  <span id="msCashoutProfitMMK" class="font-bold text-amber-400">+0 Ks</span>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between py-1 border-b border-slate-700/20">
+                <div>
+                  <span class="font-semibold theme-text-heading">📶 U9 ဖုန်းဘေလ် ကော်မရှင် + လက်လီအမြတ်</span>
+                  <span id="msU9ProfitSubText" class="text-[10px] theme-text-muted block">Primary: +0 Ks • လက်လီ: +0 Ks</span>
+                </div>
+                <div class="text-right font-mono">
+                  <span id="msU9ProfitMMK" class="font-bold text-cyan-400">+0 Ks</span>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between pt-1 text-xs">
+                <span class="font-bold theme-text-heading">စုစုပေါင်း အကြမ်းအမြတ် (Gross Profit):</span>
+                <span id="msGrossProfitMMK" class="font-extrabold font-mono text-emerald-400">+0 Ks</span>
+              </div>
+
+              <div class="flex items-center justify-between text-xs">
+                <span class="font-semibold text-rose-400">နှုတ် (-) လုပ်ငန်း အသုံးစရိတ် စုစုပေါင်း:</span>
+                <span id="msTotalExpenseMMK" class="font-bold font-mono text-rose-400">-0 Ks</span>
+              </div>
+            </div>
+
+            <div class="p-2.5 rounded-xl bg-emerald-500/15 border border-emerald-500/40 flex items-center justify-between">
+              <div>
+                <span class="text-xs font-extrabold text-emerald-400 block">(=) အားလုံးခြုံ အသားတင်အမြတ်</span>
+                <span id="msNetProfitTHBSub" class="text-[10px] font-mono text-emerald-300">ဘတ်အမြတ်: +0 THB</span>
+              </div>
+              <div id="msNetProfitMMK" class="text-base sm:text-lg font-black font-mono text-emerald-400">+0 Ks</div>
+            </div>
+          </div>
+
+          <!-- Right Box: ၂။ လက်ကျန်ငွေ၊ အကြွေး၊ အပ်ငွေ နှင့် ကိုယ်ပိုင်အသားတင် စာရင်းရှင်းတမ်း -->
+          <div class="theme-card-sub border border-blue-500/30 rounded-2xl p-3.5 space-y-2.5 text-xs">
+            <div class="flex items-center justify-between border-b border-slate-700/40 pb-2">
+              <span class="font-extrabold text-blue-400 flex items-center gap-1.5">
+                <span>⚖️ ၂။ လက်ကျန်ငွေ နှင့် ပိုင်ဆိုင်မှု စာရင်းရှင်းတမ်း</span>
+              </span>
+              <span class="text-[10px] font-mono theme-text-muted">လက်ရှိအခြေအနေ</span>
+            </div>
+
+            <div class="space-y-1.5 text-[11px]">
+              <div class="flex items-center justify-between py-1 border-b border-slate-700/20">
+                <div>
+                  <span class="font-semibold theme-text-heading">(+) လက်ရှိ လည်ပတ်ငွေ (ငွေသား + KPay + ဘတ်)</span>
+                  <span id="msWorkingBreakdownText" class="text-[10px] theme-text-muted block">ငွေသား 0 • KPay 0 • ဘတ် 0</span>
+                </div>
+                <span id="msWorkingTotalMMK" class="font-bold font-mono text-blue-400">0 Ks</span>
+              </div>
+
+              <div class="flex items-center justify-between py-1 border-b border-slate-700/20">
+                <div>
+                  <span class="font-semibold theme-text-heading">(+) U9 ဖုန်းဘေလ် လက်ကျန် (Bill Stock)</span>
+                  <span id="msU9UnwithdrawnCommText" class="text-[10px] text-emerald-400 block">ထုတ်ရန်ကျန်ကော်မရှင်: 0 Ks</span>
+                </div>
+                <span id="msU9StockMMK" class="font-bold font-mono text-cyan-400">0 Ks</span>
+              </div>
+
+              <div class="flex items-center justify-between py-1 border-b border-slate-700/20">
+                <div>
+                  <span class="font-semibold theme-text-heading">(+) ရရန်ရှိ အကြွေးစုစုပေါင်း (Receivables)</span>
+                  <span id="msReceivablesSubText" class="text-[10px] theme-text-muted block">အကြွေး 0 ခု</span>
+                </div>
+                <span id="msReceivablesTotalMMK" class="font-bold font-mono text-amber-400">+0 Ks</span>
+              </div>
+
+              <div class="flex items-center justify-between py-1 border-b border-slate-700/20">
+                <div>
+                  <span class="font-semibold text-purple-400">(-) Customer အပ်ငွေ ပြန်ပေးရန် (Liability)</span>
+                  <span id="msLiabilitySubText" class="text-[10px] theme-text-muted block">အပ်နှံသူ 0 ဦး</span>
+                </div>
+                <span id="msLiabilityDepositsMMK" class="font-bold font-mono text-rose-400">-0 Ks</span>
+              </div>
+
+              <div class="flex items-center justify-between pt-0.5 text-[11px]">
+                <span class="theme-text-muted">မထုတ်ပေးရသေးသော ငွေလွှဲ/ငွေထုတ် (Pending Payouts):</span>
+                <span id="msPendingPayoutsText" class="font-mono font-semibold text-amber-400">0 Ks (0 ခု)</span>
+              </div>
+            </div>
+
+            <div class="p-2.5 rounded-xl bg-blue-500/15 border border-blue-500/40 flex items-center justify-between">
+              <div>
+                <span class="text-xs font-extrabold text-blue-400 block">(=) စာရင်းရှင်းပြီး အသားတင် ကိုယ်ပိုင်ငွေ</span>
+                <span class="text-[10px] theme-text-muted">(လက်ကျန် + ဘေလ် + အကြွေးရရန်) − အပ်ငွေ</span>
+              </div>
+              <div id="msFinalNetWorthMMK" class="text-base sm:text-lg font-black font-mono text-blue-400">0 Ks</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Quick Action Buttons -->
       <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
         <button onclick="switchTab('remit')" class="py-2.5 px-2.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 active:scale-98 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-blue-900/20 transition">
@@ -527,6 +674,10 @@
               <span class="flex items-center gap-1.5">
                 <span class="w-3 h-3 rounded-sm bg-gradient-to-t from-orange-600 to-amber-400 border border-amber-300/40 inline-block shadow-sm"></span>
                 <span class="font-semibold text-orange-500 dark:text-orange-400">KPay / ငွေထုတ်အမြတ်</span>
+              </span>
+              <span class="flex items-center gap-1.5">
+                <span class="w-3 h-3 rounded-sm bg-gradient-to-t from-teal-600 to-cyan-400 border border-cyan-300/40 inline-block shadow-sm"></span>
+                <span class="font-semibold text-cyan-500 dark:text-cyan-400">U9 ဖုန်းဘေလ်အမြတ်</span>
               </span>
               <span class="flex items-center gap-1">
                 <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 inline-block"></span>
@@ -2849,6 +3000,50 @@
     </div>
   </div>
 
+  <!-- 11. MASTER BUSINESS SETTLEMENT & PROFIT STATEMENT MODAL (အားလုံးခြုံ စာရင်းရှင်းတမ်း ပြေစာ) -->
+  <div id="masterSettlementModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 hidden">
+    <div class="theme-card border border-emerald-500/50 w-full max-w-lg rounded-3xl p-4 sm:p-5 shadow-2xl space-y-4 max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b pb-3">
+        <div class="flex items-center gap-2">
+          <span class="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-sm font-bold">🧾</span>
+          <div>
+            <h3 class="text-xs sm:text-sm font-extrabold theme-text-heading">လာဘ်ရွှင် (Lab Shwin) - အားလုံးခြုံ စာရင်းရှင်းတမ်း</h3>
+            <p class="text-[10px] theme-text-muted" id="msModalGeneratedAt">ထုတ်ယူသည့်အချိန်: -</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeMasterSettlementModal()" class="theme-text-muted hover:text-rose-500 p-1.5 rounded-full text-base font-bold">✕</button>
+      </div>
+
+      <!-- Period Selector inside Modal -->
+      <div class="flex items-center gap-1 theme-card-sub p-1 rounded-xl border text-xs">
+        <button type="button" onclick="setDashboardPeriod('today')" id="ms-modal-btn-today" class="flex-1 py-1.5 rounded-lg font-bold transition text-center bg-emerald-600 text-white">ယနေ့</button>
+        <button type="button" onclick="setDashboardPeriod('month')" id="ms-modal-btn-month" class="flex-1 py-1.5 rounded-lg font-medium transition text-center theme-text-muted">ယခုလ</button>
+        <button type="button" onclick="setDashboardPeriod('all')" id="ms-modal-btn-all" class="flex-1 py-1.5 rounded-lg font-medium transition text-center theme-text-muted">စုစုပေါင်း</button>
+      </div>
+
+      <!-- Printable / Shareable Statement Sheet -->
+      <div id="msModalStatementBody" class="theme-card-sub border rounded-2xl p-4 space-y-3 text-xs font-mono">
+        <!-- Populated dynamically by renderMasterSettlementModalContent() -->
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-1">
+        <button type="button" onclick="copyMasterSettlementText()" class="py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow flex items-center justify-center gap-1.5 transition">
+          <span>📋 စာသား Copy ကူးရန်</span>
+        </button>
+        <button type="button" onclick="shareMasterSettlementText()" class="py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow flex items-center justify-center gap-1.5 transition">
+          <span>📤 Viber / Share ပို့ရန်</span>
+        </button>
+        <button type="button" onclick="exportMasterSettlementCSV()" class="col-span-2 sm:col-span-1 py-2.5 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-extrabold shadow flex items-center justify-center gap-1.5 transition">
+          <span>📥 CSV ဒေါင်းလုဒ်</span>
+        </button>
+      </div>
+
+      <button type="button" onclick="closeMasterSettlementModal()" class="w-full py-2 rounded-xl theme-card-sub border text-xs font-bold theme-text-muted hover:text-rose-500 transition">
+        ပိတ်မည်
+      </button>
+    </div>
+  </div>
+
   <!-- TOAST NOTIFICATION CONTAINER -->
   <div id="toastContainer" class="fixed top-4 inset-x-0 z-50 flex flex-col items-center pointer-events-none px-4 space-y-2"></div>
 
@@ -3013,7 +3208,8 @@
       'appBrandModal',
       'phoneMigrationModal',
       'cloudRestorePromptModal',
-      'u9CapitalModal'
+      'u9CapitalModal',
+      'masterSettlementModal'
     ];
 
     let dashboardPeriod = 'today';
@@ -4942,12 +5138,12 @@
       return n.toLocaleString('en-US');
     }
 
-    const selectProfitBarDetails = window.selectProfitBarDetails = function(label, grossMMK, remitMMK, cashoutMMK, expMMK, netMMK, totalTHB, txCount) {
+    const selectProfitBarDetails = window.selectProfitBarDetails = function(label, grossMMK, remitMMK, cashoutMMK, u9MMK, expMMK, netMMK, totalTHB, txCount) {
       const infoEl = document.getElementById('profitChartSelectedInfo');
       if (!infoEl) return;
       const netClass = netMMK >= 0 ? 'text-emerald-500' : 'text-rose-500';
       const netSign = netMMK >= 0 ? '+' : '';
-      infoEl.innerHTML = `<span class="theme-text-heading font-bold">${label}:</span> <span class="${netClass} font-bold">အသားတင်: ${netSign}${formatMMK(netMMK)}</span> (<span class="text-emerald-500">အကြမ်း: +${formatMMK(grossMMK)}</span> • <span class="text-rose-500">အသုံး: -${formatMMK(expMMK)}</span> • <span class="text-sky-500 dark:text-sky-400">ငွေလွှဲ +${formatMMK(remitMMK)}</span> • <span class="text-orange-500 dark:text-orange-400">KPay +${formatMMK(cashoutMMK)}</span>${totalTHB > 0 ? ` • <span class="text-emerald-400">+${formatTHB(totalTHB)}</span>` : ''}) [${txCount} ခု]`;
+      infoEl.innerHTML = `<span class="theme-text-heading font-bold">${label}:</span> <span class="${netClass} font-bold">အသားတင်: ${netSign}${formatMMK(netMMK)}</span> (<span class="text-emerald-500">အကြမ်း: +${formatMMK(grossMMK)}</span> • <span class="text-rose-500">အသုံး: -${formatMMK(expMMK)}</span> • <span class="text-sky-500 dark:text-sky-400">ငွေလွှဲ +${formatMMK(remitMMK)}</span> • <span class="text-orange-500 dark:text-orange-400">KPay +${formatMMK(cashoutMMK)}</span> • <span class="text-cyan-400">U9 +${formatMMK(u9MMK)}</span>${totalTHB > 0 ? ` • <span class="text-emerald-400">+${formatTHB(totalTHB)}</span>` : ''}) [${txCount} ခု]`;
     };
 
     function renderProfitTrendChart() {
@@ -4977,6 +5173,7 @@
             isCurrent: i === 0,
             remitProfitMMK: 0,
             cashoutProfitMMK: 0,
+            u9ProfitMMK: 0,
             totalProfitMMK: 0,
             totalProfitTHB: 0,
             expenseMMK: 0,
@@ -4988,6 +5185,8 @@
 
         transactions.forEach(tx => {
           if (!tx.date) return;
+          // Skip U9 linked credit entries here because U9 profits are aggregated directly from u9Data.records
+          if (tx.u9RecordId || tx.cashoutType === 'U9_BILL') return;
           const d = new Date(tx.date);
           if (isNaN(d.getTime())) return;
           const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -5000,6 +5199,26 @@
             b.totalProfitMMK += pMmk;
             b.totalProfitTHB += pThb;
             b.count++;
+          }
+        });
+
+        (u9Data.records || []).forEach(r => {
+          if (!r.date) return;
+          const d = new Date(r.date);
+          if (isNaN(d.getTime())) return;
+          const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+          const b = buckets.find(item => item.key === key);
+          if (b) {
+            const u9Prof = r.type === 'BUY_PRIMARY'
+              ? (Number(r.commissionAmount) || 0)
+              : r.type === 'SELL_BILL'
+              ? (Number(r.extraProfit) || 0)
+              : 0;
+            if (u9Prof > 0 || r.type === 'SELL_BILL' || r.type === 'BUY_PRIMARY') {
+              b.u9ProfitMMK += u9Prof;
+              b.totalProfitMMK += u9Prof;
+              b.count++;
+            }
           }
         });
       } else {
@@ -5017,6 +5236,7 @@
             isCurrent: i === 0,
             remitProfitMMK: 0,
             cashoutProfitMMK: 0,
+            u9ProfitMMK: 0,
             totalProfitMMK: 0,
             totalProfitTHB: 0,
             expenseMMK: 0,
@@ -5028,6 +5248,7 @@
 
         transactions.forEach(tx => {
           if (!tx.date) return;
+          if (tx.u9RecordId || tx.cashoutType === 'U9_BILL') return;
           const d = new Date(tx.date);
           if (isNaN(d.getTime())) return;
           const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
@@ -5040,6 +5261,26 @@
             b.totalProfitMMK += pMmk;
             b.totalProfitTHB += pThb;
             b.count++;
+          }
+        });
+
+        (u9Data.records || []).forEach(r => {
+          if (!r.date) return;
+          const d = new Date(r.date);
+          if (isNaN(d.getTime())) return;
+          const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+          const b = buckets.find(item => item.key === key);
+          if (b) {
+            const u9Prof = r.type === 'BUY_PRIMARY'
+              ? (Number(r.commissionAmount) || 0)
+              : r.type === 'SELL_BILL'
+              ? (Number(r.extraProfit) || 0)
+              : 0;
+            if (u9Prof > 0 || r.type === 'SELL_BILL' || r.type === 'BUY_PRIMARY') {
+              b.u9ProfitMMK += u9Prof;
+              b.totalProfitMMK += u9Prof;
+              b.count++;
+            }
           }
         });
       }
@@ -5104,7 +5345,7 @@
       if (avgMmkEl) {
         avgMmkEl.textContent = (avgNetMMK >= 0 ? '+' : '-') + formatMMK(Math.abs(avgNetMMK));
       }
-      if (countEl) countEl.textContent = `အရောင်း ${periodTxCount} ခု • အသုံးစရိတ် -${formatMMK(periodExpenseMMK)}`;
+      if (countEl) countEl.textContent = `လုပ်ဆောင်ချက် ${periodTxCount} ခု • အသုံး -${formatMMK(periodExpenseMMK)}`;
       if (peakAmtEl) {
         const peakNet = peakBucket ? peakBucket.netProfitMMK : 0;
         peakAmtEl.textContent = (peakNet >= 0 ? '+' : '-') + formatMMK(Math.abs(peakNet));
@@ -5118,24 +5359,17 @@
         let remitSharePct = b.totalProfitMMK > 0
           ? Math.round((b.remitProfitMMK / b.totalProfitMMK) * 100)
           : 0;
-        let cashoutSharePct = b.totalProfitMMK > 0 ? (100 - remitSharePct) : 0;
+        let cashoutSharePct = b.totalProfitMMK > 0
+          ? Math.round((b.cashoutProfitMMK / b.totalProfitMMK) * 100)
+          : 0;
+        let u9SharePct = b.totalProfitMMK > 0
+          ? Math.max(0, 100 - remitSharePct - cashoutSharePct)
+          : 0;
 
-        // Ensure both segments remain clearly visible if both have positive profit
-        if (b.remitProfitMMK > 0 && b.cashoutProfitMMK > 0) {
-          if (remitSharePct < 15) {
-            remitSharePct = 15;
-            cashoutSharePct = 85;
-          } else if (cashoutSharePct < 15) {
-            cashoutSharePct = 15;
-            remitSharePct = 85;
-          }
-        }
-
-        const hasBothSegments = b.remitProfitMMK > 0 && b.cashoutProfitMMK > 0;
         const safeLabel = b.fullLabel.replace(/'/g, "\\'");
         const netColor = b.netProfitMMK >= 0 ? 'theme-text-heading' : 'text-rose-500';
         return `
-          <div onclick="selectProfitBarDetails('${safeLabel}', ${b.totalProfitMMK}, ${b.remitProfitMMK}, ${b.cashoutProfitMMK}, ${b.expenseMMK}, ${b.netProfitMMK}, ${b.totalProfitTHB}, ${b.count})" class="cursor-pointer flex flex-col items-center justify-end h-full group select-none">
+          <div onclick="selectProfitBarDetails('${safeLabel}', ${b.totalProfitMMK}, ${b.remitProfitMMK}, ${b.cashoutProfitMMK}, ${b.u9ProfitMMK}, ${b.expenseMMK}, ${b.netProfitMMK}, ${b.totalProfitTHB}, ${b.count})" class="cursor-pointer flex flex-col items-center justify-end h-full group select-none">
             <div class="text-[9px] sm:text-[10px] font-mono font-bold ${b.totalProfitMMK > 0 || b.expenseMMK > 0 ? netColor : 'theme-text-muted opacity-60'} mb-1 text-center leading-tight">
               ${b.netProfitMMK !== 0 ? (b.netProfitMMK > 0 ? '+' : '') + formatCompactMMK(b.netProfitMMK) : '0'}
               ${b.totalProfitTHB > 0 ? `<span class="block text-[8px] text-emerald-500 font-extrabold">+${Math.round(b.totalProfitTHB)}฿</span>` : ''}
@@ -5143,8 +5377,9 @@
             <div class="w-full max-w-[38px] bg-slate-500/10 rounded-t-lg h-24 flex flex-col justify-end overflow-hidden p-0.5 border border-transparent group-hover:border-sky-500/60 transition">
               <div class="w-full rounded-t-md overflow-hidden flex flex-col justify-end transition-all duration-500" style="height: ${totalHeightPct}%">
                 ${b.totalProfitMMK > 0 ? `
-                  ${cashoutSharePct > 0 ? `<div class="w-full bg-gradient-to-t from-orange-600 to-amber-400 ${hasBothSegments ? 'border-b-2 border-white/90 dark:border-slate-950/90' : ''} transition-all duration-300" style="height: ${cashoutSharePct}%" title="KPay / ငွေထုတ်အမြတ်: ${formatMMK(b.cashoutProfitMMK)}"></div>` : ''}
-                  ${remitSharePct > 0 ? `<div class="w-full bg-gradient-to-t from-indigo-600 to-sky-400 transition-all duration-300" style="height: ${remitSharePct}%" title="ထိုင်း-မြန်မာ ငွေလွှဲအမြတ်: ${formatMMK(b.remitProfitMMK)}"></div>` : ''}
+                  ${u9SharePct > 0 ? `<div class="w-full bg-gradient-to-t from-teal-600 to-cyan-400 border-b border-white/70 dark:border-slate-950/70 transition-all duration-300" style="height: ${Math.max(12, u9SharePct)}%" title="U9 ဖုန်းဘေလ်အမြတ်: ${formatMMK(b.u9ProfitMMK)}"></div>` : ''}
+                  ${cashoutSharePct > 0 ? `<div class="w-full bg-gradient-to-t from-orange-600 to-amber-400 border-b border-white/70 dark:border-slate-950/70 transition-all duration-300" style="height: ${Math.max(12, cashoutSharePct)}%" title="KPay / ငွေထုတ်အမြတ်: ${formatMMK(b.cashoutProfitMMK)}"></div>` : ''}
+                  ${remitSharePct > 0 ? `<div class="w-full bg-gradient-to-t from-indigo-600 to-sky-400 transition-all duration-300" style="height: ${Math.max(12, remitSharePct)}%" title="ထိုင်း-မြန်မာ ငွေလွှဲအမြတ်: ${formatMMK(b.remitProfitMMK)}"></div>` : ''}
                 ` : `
                   <div class="w-full h-full bg-slate-400/30 rounded-t-sm"></div>
                 `}
@@ -5177,23 +5412,84 @@
       });
     }
 
-    function updateDashboardUI() {
-      const periodTx = filterTransactionsByPeriod(transactions, dashboardPeriod);
-      const periodExp = filterExpensesByPeriod(expenses, dashboardPeriod);
+    function filterU9RecordsByPeriod(list, period) {
+      const now = new Date();
+      const todayStr = now.toISOString().split('T')[0];
+      const curYear = now.getFullYear();
+      const curMonth = now.getMonth();
 
-      let totalGrossProfitMMK = 0;
-      let totalProfitTHB = 0;
-      let profitMMKOnly = 0;
+      return (list || []).filter(rec => {
+        if (!rec.date) return false;
+        const d = new Date(rec.date);
+        const dStr = rec.date.split('T')[0];
+
+        if (period === 'today') return dStr === todayStr;
+        if (period === 'month') return d.getFullYear() === curYear && d.getMonth() === curMonth;
+        if (period === 'custom') return dStr === customSelectedDate;
+        return true;
+      });
+    }
+
+    // --- ALL-IN-ONE MASTER BUSINESS SETTLEMENT ENGINE (အားလုံးခြုံ စာရင်းရှင်းတမ်း တွက်ချက်မှု) ---
+    function computeMasterSettlement(period = dashboardPeriod) {
+      const rateForConversion = settings.dealerRate > 0 ? (100000 / settings.dealerRate) : 130;
+      const periodTx = filterTransactionsByPeriod(transactions, period);
+      const periodExp = filterExpensesByPeriod(expenses, period);
+      const periodU9 = filterU9RecordsByPeriod(u9Data.records || [], period);
+
+      let remitCount = 0;
+      let remitVolumeMMK = 0;
+      let remitVolumeTHB = 0;
+      let remitProfitMMK = 0;
+      let remitProfitTHB = 0;
+
+      let cashoutCount = 0;
+      let cashoutVolumeMMK = 0;
+      let cashoutProfitMMK = 0;
 
       periodTx.forEach(tx => {
-        if (tx.profitTHB) totalProfitTHB += Number(tx.profitTHB);
-        if (tx.profitMMK) {
-          totalGrossProfitMMK += Number(tx.profitMMK);
-          if (tx.type === 'CASHOUT') profitMMKOnly += Number(tx.profitMMK);
+        // Skip U9 credit records here since U9 profits are counted in periodU9
+        if (tx.u9RecordId || tx.cashoutType === 'U9_BILL') return;
+
+        if (tx.type === 'REMIT') {
+          remitCount++;
+          remitVolumeMMK += Number(tx.amountMMK) || 0;
+          remitVolumeTHB += Number(tx.customerTHB) || 0;
+          remitProfitMMK += Number(tx.profitMMK) || 0;
+          remitProfitTHB += Number(tx.profitTHB) || 0;
+        } else if (tx.type === 'CASHOUT') {
+          cashoutCount++;
+          cashoutVolumeMMK += Number(tx.amountMMK) || 0;
+          cashoutProfitMMK += Number(tx.profitMMK) || 0;
         }
       });
 
-      const rateForConversion = settings.dealerRate > 0 ? (100000 / settings.dealerRate) : 130;
+      let u9PrimaryCount = 0;
+      let u9PrimaryPurchasedMMK = 0;
+      let u9PrimaryCommMMK = 0;
+      let u9SellCount = 0;
+      let u9SoldBillMMK = 0;
+      let u9RetailExtraMMK = 0;
+      let u9WithdrawnCommMMK = 0;
+
+      periodU9.forEach(r => {
+        if (r.type === 'BUY_PRIMARY') {
+          u9PrimaryCount++;
+          u9PrimaryPurchasedMMK += Number(r.purchaseAmount) || 0;
+          u9PrimaryCommMMK += Number(r.commissionAmount) || 0;
+        } else if (r.type === 'SELL_BILL') {
+          u9SellCount++;
+          u9SoldBillMMK += Number(r.billAmount) || 0;
+          u9RetailExtraMMK += Number(r.extraProfit) || 0;
+        } else if (r.type === 'WITHDRAW_COMM') {
+          u9WithdrawnCommMMK += Number(r.withdrawAmount) || 0;
+        }
+      });
+
+      const u9ProfitMMK = u9PrimaryCommMMK + u9RetailExtraMMK;
+      const totalGrossProfitMMK = remitProfitMMK + cashoutProfitMMK + u9ProfitMMK;
+      const totalGrossProfitTHB = remitProfitTHB;
+
       let totalExpenseMMK = 0;
       let totalExpenseTHB = 0;
       periodExp.forEach(e => {
@@ -5207,14 +5503,33 @@
       });
 
       const netProfitMMK = totalGrossProfitMMK - totalExpenseMMK;
-      const netProfitTHB = totalProfitTHB - totalExpenseTHB;
+      const netProfitTHB = totalGrossProfitTHB - totalExpenseTHB;
+
+      // Full Balance Sheet & Settlement Numbers (All-Time Current State)
+      const cashInHand = Number(capital.cashMMK) || 0;
+      const bankBalance = Number(capital.bankMMK) || 0;
+      const thbBal = Number(capital.thbBalance) || 0;
+      const thbInMMK = thbBal * rateForConversion;
+      const totalWorkingMMK = cashInHand + bankBalance + thbInMMK;
+
+      const u9AllStats = computeU9Stats('ALL');
+      const u9StockBalance = Number(u9Data.billBalanceMMK) || 0;
+      const u9CapitalMMK = Number(u9Data.capitalMMK) || 0;
+      const u9RemainingComm = u9AllStats.remainingComm;
 
       let unpaidDebtMMK = 0;
       let unpaidDebtTHB = 0;
       let unpaidCount = 0;
+      let pendingPayoutMMK = 0;
+      let pendingPayoutCount = 0;
 
       transactions.forEach(tx => {
         if (tx.status === 'UNPAID') {
+          const isPayoutFlow = (tx.type === 'REMIT' && tx.direction !== 'MMK_TO_THB') || (tx.type === 'CASHOUT' && tx.cashoutType !== 'TRANSFER');
+          if (isPayoutFlow && tx.type !== 'DIRECT_CREDIT' && tx.cashoutType !== 'U9_BILL' && !tx.amountOwed) {
+            pendingPayoutCount++;
+            pendingPayoutMMK += Number(tx.amountMMK) || 0;
+          }
           unpaidCount++;
           const owedCur = tx.owedCurrency || (tx.type === 'REMIT' && tx.direction === 'THB_TO_MMK' ? 'THB' : 'MMK');
           const rem = (tx.amountOwed !== undefined ? tx.amountOwed : (owedCur === 'THB' ? (tx.customerTHB || 0) : (tx.amountMMK || 0))) - (tx.paidAmount || 0);
@@ -5227,72 +5542,126 @@
 
       const totalUnpaidMMKCombined = unpaidDebtMMK + (unpaidDebtTHB * rateForConversion);
 
-      const cashInHand = Number(capital.cashMMK) || 0;
-      const bankBalance = Number(capital.bankMMK) || 0;
-      const thbBal = Number(capital.thbBalance) || 0;
-      const totalCapitalMMKUnified = cashInHand + bankBalance + (thbBal * rateForConversion);
+      const depStats = computeDepositStats();
+      const depUnifiedMMK = depStats.totalDepositMMK + (depStats.totalDepositTHB * rateForConversion);
+      const ownCapMMK = Math.max(0, (cashInHand + bankBalance) - depStats.totalDepositMMK);
+      const ownCapTHB = Math.max(0, thbBal - depStats.totalDepositTHB);
+      const ownCapUnifiedMMK = ownCapMMK + (ownCapTHB * rateForConversion);
 
-      document.getElementById('dashTotalCapitalMMK').textContent = formatMMK(totalCapitalMMKUnified);
-      document.getElementById('dashCashBalance').textContent = formatMMK(cashInHand);
-      document.getElementById('dashBankBalance').textContent = formatMMK(bankBalance);
-      document.getElementById('dashThbBalance').textContent = formatTHB(thbBal);
+      // Final Net Business Equity after settling all receivables and customer deposit liabilities
+      const finalNetWorthMMK = (totalWorkingMMK + u9StockBalance + totalUnpaidMMKCombined) - depUnifiedMMK;
 
-      // Card 2: Net Profit & Gross Profit Breakdown
+      const periodLabel = period === 'today' ? 'ယနေ့ (Today)' : period === 'month' ? 'ယခုလ (This Month)' : period === 'custom' ? `ရက်စွဲ (${customSelectedDate})` : 'စုစုပေါင်း (All-Time)';
+
+      return {
+        period,
+        periodLabel,
+        rateForConversion,
+        remitCount,
+        remitVolumeMMK,
+        remitVolumeTHB,
+        remitProfitMMK,
+        remitProfitTHB,
+        cashoutCount,
+        cashoutVolumeMMK,
+        cashoutProfitMMK,
+        u9PrimaryCount,
+        u9PrimaryPurchasedMMK,
+        u9PrimaryCommMMK,
+        u9SellCount,
+        u9SoldBillMMK,
+        u9RetailExtraMMK,
+        u9WithdrawnCommMMK,
+        u9ProfitMMK,
+        totalGrossProfitMMK,
+        totalGrossProfitTHB,
+        expenseCount: periodExp.length,
+        totalExpenseMMK,
+        totalExpenseTHB,
+        netProfitMMK,
+        netProfitTHB,
+        cashInHand,
+        bankBalance,
+        thbBal,
+        thbInMMK,
+        totalWorkingMMK,
+        u9CapitalMMK,
+        u9StockBalance,
+        u9RemainingComm,
+        unpaidCount,
+        unpaidDebtMMK,
+        unpaidDebtTHB,
+        totalUnpaidMMKCombined,
+        pendingPayoutCount,
+        pendingPayoutMMK,
+        depStats,
+        depUnifiedMMK,
+        ownCapMMK,
+        ownCapTHB,
+        ownCapUnifiedMMK,
+        finalNetWorthMMK
+      };
+    }
+
+    function updateDashboardUI() {
+      const ms = computeMasterSettlement(dashboardPeriod);
+      const periodTx = filterTransactionsByPeriod(transactions, dashboardPeriod);
+
+      document.getElementById('dashTotalCapitalMMK').textContent = formatMMK(ms.totalWorkingMMK);
+      document.getElementById('dashCashBalance').textContent = formatMMK(ms.cashInHand);
+      document.getElementById('dashBankBalance').textContent = formatMMK(ms.bankBalance);
+      document.getElementById('dashThbBalance').textContent = formatTHB(ms.thbBal);
+
+      // Card 2: All-in-One Net Profit & Gross Profit Breakdown
       const netEl = document.getElementById('dashTotalProfitMMK');
       if (netEl) {
-        if (netProfitMMK >= 0) {
-          netEl.textContent = '+' + formatMMK(netProfitMMK);
+        if (ms.netProfitMMK >= 0) {
+          netEl.textContent = '+' + formatMMK(ms.netProfitMMK);
           netEl.className = 'text-lg sm:text-xl font-bold text-emerald-500 font-mono leading-tight';
         } else {
-          netEl.textContent = '-' + formatMMK(Math.abs(netProfitMMK));
+          netEl.textContent = '-' + formatMMK(Math.abs(ms.netProfitMMK));
           netEl.className = 'text-lg sm:text-xl font-bold text-rose-500 font-mono leading-tight';
         }
       }
 
       const grossEl = document.getElementById('dashGrossProfitMMK');
-      if (grossEl) grossEl.textContent = '+' + formatMMK(totalGrossProfitMMK);
+      if (grossEl) grossEl.textContent = '+' + formatMMK(ms.totalGrossProfitMMK);
 
       const expEl = document.getElementById('dashTotalExpenseMMK');
-      if (expEl) expEl.textContent = '-' + formatMMK(totalExpenseMMK) + (totalExpenseTHB > 0 ? ` (${formatTHB(totalExpenseTHB)})` : '');
+      if (expEl) expEl.textContent = '-' + formatMMK(ms.totalExpenseMMK) + (ms.totalExpenseTHB > 0 ? ` (${formatTHB(ms.totalExpenseTHB)})` : '');
 
       const thbProfitEl = document.getElementById('dashProfitTHB');
       if (thbProfitEl) {
-        thbProfitEl.textContent = (netProfitTHB >= 0 ? '+' : '') + formatTHB(netProfitTHB);
-        thbProfitEl.className = netProfitTHB >= 0 ? 'text-emerald-500 font-bold' : 'text-rose-500 font-bold';
+        thbProfitEl.textContent = (ms.netProfitTHB >= 0 ? '+' : '') + formatTHB(ms.netProfitTHB);
+        thbProfitEl.className = ms.netProfitTHB >= 0 ? 'text-emerald-500 font-bold' : 'text-rose-500 font-bold';
       }
 
-      document.getElementById('dashDebtCount').textContent = unpaidCount + ' ခု';
-      document.getElementById('dashDebtMMK').textContent = formatMMK(totalUnpaidMMKCombined);
-      document.getElementById('dashDebtTHB').textContent = formatTHB(unpaidDebtTHB);
-      document.getElementById('dashDebtMMKOnly').textContent = formatMMK(unpaidDebtMMK);
+      document.getElementById('dashDebtCount').textContent = ms.unpaidCount + ' ခု';
+      document.getElementById('dashDebtMMK').textContent = formatMMK(ms.totalUnpaidMMKCombined);
+      document.getElementById('dashDebtTHB').textContent = formatTHB(ms.unpaidDebtTHB);
+      document.getElementById('dashDebtMMKOnly').textContent = formatMMK(ms.unpaidDebtMMK);
 
       const navBadge = document.getElementById('navCreditBadge');
       if (navBadge) {
-        if (unpaidCount > 0) navBadge.classList.remove('hidden');
+        if (ms.unpaidCount > 0) navBadge.classList.remove('hidden');
         else navBadge.classList.add('hidden');
       }
 
-      const totalLiquidMMK = cashInHand + bankBalance;
+      const totalLiquidMMK = ms.cashInHand + ms.bankBalance;
       let cashPercent = 50;
       let bankPercent = 50;
       if (totalLiquidMMK > 0) {
-        cashPercent = Math.round((cashInHand / totalLiquidMMK) * 100);
+        cashPercent = Math.round((ms.cashInHand / totalLiquidMMK) * 100);
         bankPercent = 100 - cashPercent;
       }
-      document.getElementById('cashPercentText').textContent = `ငွေသား ${cashPercent}% (${formatMMK(cashInHand)})`;
-      document.getElementById('bankPercentText').textContent = `KPay ${bankPercent}% (${formatMMK(bankBalance)})`;
+      document.getElementById('cashPercentText').textContent = `ငွေသား ${cashPercent}% (${formatMMK(ms.cashInHand)})`;
+      document.getElementById('bankPercentText').textContent = `KPay ${bankPercent}% (${formatMMK(ms.bankBalance)})`;
       const barCash = document.getElementById('ratioBarCash');
       const barBank = document.getElementById('ratioBarBank');
       if (barCash) barCash.style.width = `${cashPercent}%`;
       if (barBank) barBank.style.width = `${bankPercent}%`;
 
       // Update Own Capital vs Customer Deposits vs Total Working Funds & U9 Overview on Dashboard
-      const depStats = computeDepositStats();
-      const ownCapMMK = Math.max(0, (cashInHand + bankBalance) - depStats.totalDepositMMK);
-      const ownCapTHB = Math.max(0, thbBal - depStats.totalDepositTHB);
-      const ownCapUnifiedMMK = ownCapMMK + (ownCapTHB * rateForConversion);
-      const depUnifiedMMK = depStats.totalDepositMMK + (depStats.totalDepositTHB * rateForConversion);
-
       const dOwnMmkEl = document.getElementById('dashOwnCapitalMMK');
       const dOwnThbEl = document.getElementById('dashOwnCapitalTHB');
       const dDepMmkEl = document.getElementById('dashCustomerDepositsMMK');
@@ -5301,23 +5670,65 @@
       const dWorkMmkEl = document.getElementById('dashTotalWorkingFundsMMK');
       const dWorkSubEl = document.getElementById('dashTotalWorkingFundsSub');
 
-      if (dOwnMmkEl) dOwnMmkEl.textContent = formatMMK(ownCapUnifiedMMK);
-      if (dOwnThbEl) dOwnThbEl.textContent = `${formatTHB(ownCapTHB)} (အပ်ငွေနုတ်ပြီး)`;
-      if (dDepMmkEl) dDepMmkEl.textContent = formatMMK(depUnifiedMMK);
-      if (dDepThbEl) dDepThbEl.textContent = depStats.totalDepositTHB > 0 ? `${formatTHB(depStats.totalDepositTHB)} • ပြန်ပေးရန်တာဝန်` : 'ပြန်ပေးရန်တာဝန် (Liability)';
-      if (dDepCntEl) dDepCntEl.textContent = `${depStats.activeCustomersCount} ဦး`;
-      if (dWorkMmkEl) dWorkMmkEl.textContent = formatMMK(totalCapitalMMKUnified);
-      if (dWorkSubEl) dWorkSubEl.textContent = `ကိုယ်ပိုင် ${formatCompactMMK(ownCapUnifiedMMK)} + အပ်ငွေ ${formatCompactMMK(depUnifiedMMK)}`;
+      if (dOwnMmkEl) dOwnMmkEl.textContent = formatMMK(ms.ownCapUnifiedMMK);
+      if (dOwnThbEl) dOwnThbEl.textContent = `${formatTHB(ms.ownCapTHB)} (အပ်ငွေနုတ်ပြီး)`;
+      if (dDepMmkEl) dDepMmkEl.textContent = formatMMK(ms.depUnifiedMMK);
+      if (dDepThbEl) dDepThbEl.textContent = ms.depStats.totalDepositTHB > 0 ? `${formatTHB(ms.depStats.totalDepositTHB)} • ပြန်ပေးရန်တာဝန်` : 'ပြန်ပေးရန်တာဝန် (Liability)';
+      if (dDepCntEl) dDepCntEl.textContent = `${ms.depStats.activeCustomersCount} ဦး`;
+      if (dWorkMmkEl) dWorkMmkEl.textContent = formatMMK(ms.totalWorkingMMK);
+      if (dWorkSubEl) dWorkSubEl.textContent = `ကိုယ်ပိုင် ${formatCompactMMK(ms.ownCapUnifiedMMK)} + အပ်ငွေ ${formatCompactMMK(ms.depUnifiedMMK)}`;
 
       // Update U9 overview card on Dashboard
-      const u9Stats = computeU9Stats('ALL');
       const dU9StockEl = document.getElementById('dashU9StockBalance');
       const dU9RemCommEl = document.getElementById('dashU9RemainingCommission');
-      if (dU9StockEl) dU9StockEl.textContent = formatMMK(u9Data.billBalanceMMK || 0);
-      if (dU9RemCommEl) dU9RemCommEl.textContent = `ထုတ်ရန်ကျန်ကော်မရှင်: ${formatMMK(u9Stats.remainingComm)}`;
+      if (dU9StockEl) dU9StockEl.textContent = formatMMK(ms.u9StockBalance);
+      if (dU9RemCommEl) dU9RemCommEl.textContent = `ထုတ်ရန်ကျန်ကော်မရှင်: ${formatMMK(ms.u9RemainingComm)}`;
+
+      // Populate Master Business Settlement Card on Dashboard
+      const setElText = (id, txt) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = txt;
+      };
+      setElText('masterSettlePeriodBadge', ms.periodLabel);
+      setElText('msProfitPeriodSub', `${ms.periodLabel} စာရင်းချုပ်`);
+      setElText('msRemitCountText', `${ms.remitCount} ကြိမ် • ပမာဏ ${formatMMK(ms.remitVolumeMMK)}`);
+      setElText('msRemitProfitMMK', `+${formatMMK(ms.remitProfitMMK)}`);
+      setElText('msRemitProfitTHB', `+${formatTHB(ms.remitProfitTHB)}`);
+      setElText('msCashoutCountText', `${ms.cashoutCount} ကြိမ် • ပမာဏ ${formatMMK(ms.cashoutVolumeMMK)}`);
+      setElText('msCashoutProfitMMK', `+${formatMMK(ms.cashoutProfitMMK)}`);
+      setElText('msU9ProfitSubText', `Primary ကော်မရှင်: +${formatMMK(ms.u9PrimaryCommMMK)} • လက်လီ: +${formatMMK(ms.u9RetailExtraMMK)}`);
+      setElText('msU9ProfitMMK', `+${formatMMK(ms.u9ProfitMMK)}`);
+      setElText('msGrossProfitMMK', `+${formatMMK(ms.totalGrossProfitMMK)}`);
+      setElText('msTotalExpenseMMK', `-${formatMMK(ms.totalExpenseMMK)} (${ms.expenseCount} ခု)`);
+
+      const msNetEl = document.getElementById('msNetProfitMMK');
+      if (msNetEl) {
+        msNetEl.textContent = (ms.netProfitMMK >= 0 ? '+' : '-') + formatMMK(Math.abs(ms.netProfitMMK));
+        msNetEl.className = ms.netProfitMMK >= 0
+          ? 'text-base sm:text-lg font-black font-mono text-emerald-400'
+          : 'text-base sm:text-lg font-black font-mono text-rose-400';
+      }
+      setElText('msNetProfitTHBSub', `ဘတ်အသားတင်အမြတ်: ${ms.netProfitTHB >= 0 ? '+' : ''}${formatTHB(ms.netProfitTHB)}`);
+
+      setElText('msWorkingBreakdownText', `ငွေသား ${formatCompactMMK(ms.cashInHand)} • KPay ${formatCompactMMK(ms.bankBalance)} • ဘတ် ${formatTHB(ms.thbBal)}`);
+      setElText('msWorkingTotalMMK', formatMMK(ms.totalWorkingMMK));
+      setElText('msU9UnwithdrawnCommText', `ထုတ်ရန်ကျန်ကော်မရှင်: ${formatMMK(ms.u9RemainingComm)} (U9 အရင်း: ${formatCompactMMK(ms.u9CapitalMMK)})`);
+      setElText('msU9StockMMK', formatMMK(ms.u9StockBalance));
+      setElText('msReceivablesSubText', `အကြွေး ${ms.unpaidCount} ခု (${formatMMK(ms.unpaidDebtMMK)} + ${formatTHB(ms.unpaidDebtTHB)})`);
+      setElText('msReceivablesTotalMMK', `+${formatMMK(ms.totalUnpaidMMKCombined)}`);
+      setElText('msLiabilitySubText', `အပ်နှံသူ ${ms.depStats.activeCustomersCount} ဦး • သတိပေးချက် ${ms.depStats.pendingNotices.length} ခု`);
+      setElText('msLiabilityDepositsMMK', `-${formatMMK(ms.depUnifiedMMK)}`);
+      setElText('msPendingPayoutsText', `${formatMMK(ms.pendingPayoutMMK)} (${ms.pendingPayoutCount} ခု)`);
+      setElText('msFinalNetWorthMMK', formatMMK(ms.finalNetWorthMMK));
+
+      // Keep modal updated if open
+      const msModal = document.getElementById('masterSettlementModal');
+      if (msModal && !msModal.classList.contains('hidden')) {
+        renderMasterSettlementModalContent(ms);
+      }
 
       // Render Upcoming Withdrawal Notice Banner on Dashboard
-      renderWithdrawalNoticeBanners(depStats.pendingNotices);
+      renderWithdrawalNoticeBanners(ms.depStats.pendingNotices);
 
       renderProfitTrendChart();
       renderRecentTransactions(periodTx.slice(0, 8));
@@ -8971,11 +9382,34 @@
         'မှတ်ချက်': r.note || ''
       }));
 
+      const msAll = computeMasterSettlement(dashboardPeriod);
+      const settlementSummaryRows = [
+        { 'စာရင်းရှင်းတမ်း အကြောင်းအရာ': `ကာလ (${msAll.periodLabel}) - ထိုင်း-မြန်မာ ငွေလွှဲအမြတ် (${msAll.remitCount} ကြိမ်)`, 'ပမာဏ (MMK)': msAll.remitProfitMMK, 'ပမာဏ (THB)': msAll.remitProfitTHB },
+        { 'စာရင်းရှင်းတမ်း အကြောင်းအရာ': `ကာလ (${msAll.periodLabel}) - KPay / Wave ငွေထုတ် & လွှဲအမြတ် (${msAll.cashoutCount} ကြိမ်)`, 'ပမာဏ (MMK)': msAll.cashoutProfitMMK, 'ပမာဏ (THB)': 0 },
+        { 'စာရင်းရှင်းတမ်း အကြောင်းအရာ': `ကာလ (${msAll.periodLabel}) - U9 ဖုန်းဘေလ် ကော်မရှင် + လက်လီအမြတ်`, 'ပမာဏ (MMK)': msAll.u9ProfitMMK, 'ပမာဏ (THB)': 0 },
+        { 'စာရင်းရှင်းတမ်း အကြောင်းအရာ': `ကာလ (${msAll.periodLabel}) - စုစုပေါင်း အကြမ်းအမြတ် (Gross Profit)`, 'ပမာဏ (MMK)': msAll.totalGrossProfitMMK, 'ပမာဏ (THB)': msAll.totalGrossProfitTHB },
+        { 'စာရင်းရှင်းတမ်း အကြောင်းအရာ': `ကာလ (${msAll.periodLabel}) - နှုတ် (-) လုပ်ငန်းအသုံးစရိတ် စုစုပေါင်း`, 'ပမာဏ (MMK)': -msAll.totalExpenseMMK, 'ပမာဏ (THB)': -msAll.totalExpenseTHB },
+        { 'စာရင်းရှင်းတမ်း အကြောင်းအရာ': `ကာလ (${msAll.periodLabel}) - (=) အားလုံးခြုံ အသားတင်အမြတ် (Net Profit)`, 'ပမာဏ (MMK)': msAll.netProfitMMK, 'ပမာဏ (THB)': msAll.netProfitTHB },
+        { 'စာရင်းရှင်းတမ်း အကြောင်းအရာ': '----------------------------------------', 'ပမာဏ (MMK)': '', 'ပမာဏ (THB)': '' },
+        { 'စာရင်းရှင်းတမ်း အကြောင်းအရာ': 'လက်ရှိ လက်ထဲရှိ ငွေသား (Cash in Hand)', 'ပမာဏ (MMK)': msAll.cashInHand, 'ပမာဏ (THB)': 0 },
+        { 'စာရင်းရှင်းတမ်း အကြောင်းအရာ': 'လက်ရှိ KPay / ဘဏ်လက်ကျန် (Bank/KPay)', 'ပမာဏ (MMK)': msAll.bankBalance, 'ပမာဏ (THB)': 0 },
+        { 'စာရင်းရှင်းတမ်း အကြောင်းအရာ': 'လက်ရှိ ထိုင်းဘတ်လက်ကျန် (THB Balance)', 'ပမာဏ (MMK)': Math.round(msAll.thbInMMK), 'ပမာဏ (THB)': msAll.thbBal },
+        { 'စာရင်းရှင်းတမ်း အကြောင်းအရာ': 'စုစုပေါင်း လည်ပတ်ငွေ (Total Working Funds)', 'ပမာဏ (MMK)': Math.round(msAll.totalWorkingMMK), 'ပမာဏ (THB)': msAll.thbBal },
+        { 'စာရင်းရှင်းတမ်း အကြောင်းအရာ': 'လက်ရှိ U9 ဖုန်းဘေလ် လက်ကျန် (Current U9 Stock)', 'ပမာဏ (MMK)': msAll.u9StockBalance, 'ပမာဏ (THB)': 0 },
+        { 'စာရင်းရှင်းတမ်း အကြောင်းအရာ': 'U9 ထုတ်ရန်ကျန် ကော်မရှင် (Remaining U9 Commission)', 'ပမာဏ (MMK)': msAll.u9RemainingComm, 'ပမာဏ (THB)': 0 },
+        { 'စာရင်းရှင်းတမ်း အကြောင်းအရာ': `ရရန်ရှိ အကြွေးစာရင်း စုစုပေါင်း (${msAll.unpaidCount} ခု)`, 'ပမာဏ (MMK)': Math.round(msAll.totalUnpaidMMKCombined), 'ပမာဏ (THB)': msAll.unpaidDebtTHB },
+        { 'စာရင်းရှင်းတမ်း အကြောင်းအရာ': `နှုတ် (-) Customer အပ်ငွေ ပြန်ပေးရန်တာဝန် (${msAll.depStats.activeCustomersCount} ဦး)`, 'ပမာဏ (MMK)': -Math.round(msAll.depUnifiedMMK), 'ပမာဏ (THB)': -msAll.depStats.totalDepositTHB },
+        { 'စာရင်းရှင်းတမ်း အကြောင်းအရာ': 'ကိုယ်ပိုင်အရင်း သီးသန့် (Own Capital excluding Deposits)', 'ပမာဏ (MMK)': Math.round(msAll.ownCapUnifiedMMK), 'ပမာဏ (THB)': msAll.ownCapTHB },
+        { 'စာရင်းရှင်းတမ်း အကြောင်းအရာ': '(=) စာရင်းရှင်းပြီး အသားတင် ကိုယ်ပိုင်ပိုင်ဆိုင်မှု စုစုပေါင်း (Final Net Equity)', 'ပမာဏ (MMK)': Math.round(msAll.finalNetWorthMMK), 'ပမာဏ (THB)': 0 }
+      ];
+
       const fileName = `LabShwin_Report_${new Date().toISOString().split('T')[0]}`;
 
       if (typeof XLSX !== 'undefined') {
         try {
           const wb = XLSX.utils.book_new();
+          const wsSummary = XLSX.utils.json_to_sheet(settlementSummaryRows);
+          XLSX.utils.book_append_sheet(wb, wsSummary, "စာရင်းရှင်းတမ်းချုပ်");
           if (rows.length > 0) {
             const ws = XLSX.utils.json_to_sheet(rows);
             XLSX.utils.book_append_sheet(wb, ws, "အရောင်းအဝယ်စာရင်း");
@@ -8993,7 +9427,7 @@
             XLSX.utils.book_append_sheet(wb, wsExp, "အသုံးစရိတ်များ");
           }
           XLSX.writeFile(wb, `${fileName}.xlsx`);
-          showToast('Excel (.xlsx) ဖိုင်ကို အောင်မြင်စွာ ဒေါင်းလုဒ်ဆွဲပြီးပါပြီ!', 'success');
+          showToast('စာရင်းရှင်းတမ်းချုပ် အပါအဝင် Excel (.xlsx) ဖိုင်ကို ဒေါင်းလုဒ်ဆွဲပြီးပါပြီ!', 'success');
           return;
         } catch (err) {
           console.warn('XLSX export fallback to CSV');
@@ -9018,6 +9452,208 @@
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
       showToast('CSV ဖိုင်ကို အောင်မြင်စွာ ဒေါင်းလုဒ်ဆွဲပြီးပါပြီ!', 'success');
+    };
+
+    // --- MASTER SETTLEMENT MODAL, SHARE & CSV EXPORT ---
+    function renderMasterSettlementModalContent(ms = computeMasterSettlement(dashboardPeriod)) {
+      const genEl = document.getElementById('msModalGeneratedAt');
+      if (genEl) genEl.textContent = `ထုတ်ယူသည့်အချိန်: ${formatDateTime(new Date().toISOString())} • ကာလ: ${ms.periodLabel}`;
+
+      ['today', 'month', 'all'].forEach(p => {
+        const btn = document.getElementById(`ms-modal-btn-${p}`);
+        if (!btn) return;
+        if (p === dashboardPeriod) {
+          btn.className = 'flex-1 py-1.5 rounded-lg font-bold transition text-center bg-emerald-600 text-white shadow';
+        } else {
+          btn.className = 'flex-1 py-1.5 rounded-lg font-medium transition text-center theme-text-muted hover:text-emerald-400';
+        }
+      });
+
+      const bodyEl = document.getElementById('msModalStatementBody');
+      if (!bodyEl) return;
+
+      const netColor = ms.netProfitMMK >= 0 ? 'text-emerald-400' : 'text-rose-400';
+      const netSign = ms.netProfitMMK >= 0 ? '+' : '-';
+
+      bodyEl.innerHTML = `
+        <div class="text-center border-b border-slate-700/50 pb-2.5 space-y-0.5">
+          <div class="text-sm font-black text-amber-400">🏺 လာဘ်ရွှင် (Lab Shwin)</div>
+          <div class="text-[11px] font-bold theme-text-heading">လုပ်ငန်းအားလုံး စုစုပေါင်း စာရင်းရှင်းတမ်း (${ms.periodLabel})</div>
+          <div class="text-[10px] theme-text-muted">ဒိုင်ပေါက်ဈေး: ${settings.dealerRate} THB • Customer ပေးဈေး: ${settings.customerRate} THB</div>
+        </div>
+
+        <div class="space-y-1.5 pt-1">
+          <div class="text-[11px] font-extrabold text-emerald-400">၁။ အမြတ်ငွေ စာရင်းရှင်းတမ်း (Profit & Loss)</div>
+          <div class="flex justify-between">
+            <span class="theme-text-muted">• ထိုင်း-မြန်မာ ငွေလွှဲအမြတ် (${ms.remitCount} ကြိမ်):</span>
+            <span class="font-bold text-sky-400">+${formatMMK(ms.remitProfitMMK)} (${formatTHB(ms.remitProfitTHB)})</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="theme-text-muted">• KPay/Wave ငွေထုတ်အမြတ် (${ms.cashoutCount} ကြိမ်):</span>
+            <span class="font-bold text-amber-400">+${formatMMK(ms.cashoutProfitMMK)}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="theme-text-muted">• U9 ဖုန်းဘေလ်အမြတ် (ကော်မရှင်+လက်လီ):</span>
+            <span class="font-bold text-cyan-400">+${formatMMK(ms.u9ProfitMMK)}</span>
+          </div>
+          <div class="flex justify-between pt-1 border-t border-slate-700/40 font-bold">
+            <span class="theme-text-heading">စုစုပေါင်း အကြမ်းအမြတ် (Gross Profit):</span>
+            <span class="text-emerald-400">+${formatMMK(ms.totalGrossProfitMMK)}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-rose-400">နှုတ် (-) လုပ်ငန်း အသုံးစရိတ် (${ms.expenseCount} ခု):</span>
+            <span class="font-bold text-rose-400">-${formatMMK(ms.totalExpenseMMK)}</span>
+          </div>
+          <div class="flex justify-between p-2 rounded-xl bg-emerald-500/15 border border-emerald-500/40 font-extrabold text-xs">
+            <span class="text-emerald-400">(=) အားလုံးခြုံ အသားတင်အမြတ်:</span>
+            <span class="${netColor}">${netSign}${formatMMK(Math.abs(ms.netProfitMMK))} (${ms.netProfitTHB >= 0 ? '+' : ''}${formatTHB(ms.netProfitTHB)})</span>
+          </div>
+        </div>
+
+        <div class="space-y-1.5 pt-2 border-t border-slate-700/50">
+          <div class="text-[11px] font-extrabold text-blue-400">၂။ လက်ကျန်ငွေ၊ အပ်ငွေ နှင့် အကြွေး စာရင်းရှင်းတမ်း</div>
+          <div class="flex justify-between">
+            <span class="theme-text-muted">• လက်ထဲရှိ ငွေသား (Cash in Hand):</span>
+            <span class="font-bold theme-text-heading">${formatMMK(ms.cashInHand)}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="theme-text-muted">• KPay / ဘဏ်လက်ကျန် (Bank/KPay):</span>
+            <span class="font-bold theme-text-heading">${formatMMK(ms.bankBalance)}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="theme-text-muted">• ထိုင်းဘတ် လက်ကျန် (THB Balance):</span>
+            <span class="font-bold text-blue-400">${formatTHB(ms.thbBal)} (~${formatMMK(ms.thbInMMK)})</span>
+          </div>
+          <div class="flex justify-between font-bold">
+            <span class="text-emerald-400">(+) စုစုပေါင်း လည်ပတ်ငွေ:</span>
+            <span class="text-emerald-400">${formatMMK(ms.totalWorkingMMK)}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="theme-text-muted">(+) U9 ဖုန်းဘေလ် လက်ကျန် (Stock):</span>
+            <span class="font-bold text-cyan-400">${formatMMK(ms.u9StockBalance)}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="theme-text-muted">(+) ရရန်ရှိ အကြွေးစုစုပေါင်း (${ms.unpaidCount} ခု):</span>
+            <span class="font-bold text-amber-400">+${formatMMK(ms.totalUnpaidMMKCombined)}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-purple-400">(-) Customer အပ်ငွေ ပြန်ပေးရန် (${ms.depStats.activeCustomersCount} ဦး):</span>
+            <span class="font-bold text-rose-400">-${formatMMK(ms.depUnifiedMMK)}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="theme-text-muted">• ကိုယ်ပိုင်အရင်း သီးသန့် (အပ်ငွေနုတ်ပြီး):</span>
+            <span class="font-bold text-blue-400">${formatMMK(ms.ownCapUnifiedMMK)}</span>
+          </div>
+          <div class="flex justify-between p-2 rounded-xl bg-blue-500/15 border border-blue-500/40 font-extrabold text-xs">
+            <span class="text-blue-400">(=) စာရင်းရှင်းပြီး အသားတင် ကိုယ်ပိုင်ငွေ:</span>
+            <span class="text-blue-400">${formatMMK(ms.finalNetWorthMMK)}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    const openMasterSettlementModal = window.openMasterSettlementModal = function() {
+      const modal = document.getElementById('masterSettlementModal');
+      if (!modal) return;
+      renderMasterSettlementModalContent();
+      modal.classList.remove('hidden');
+      armBackTrap();
+    };
+
+    const closeMasterSettlementModal = window.closeMasterSettlementModal = function() {
+      const modal = document.getElementById('masterSettlementModal');
+      if (modal) modal.classList.add('hidden');
+    };
+
+    function buildMasterSettlementPlainText() {
+      const ms = computeMasterSettlement(dashboardPeriod);
+      const netSign = ms.netProfitMMK >= 0 ? '+' : '-';
+      return (
+        `🏺 လာဘ်ရွှင် (Lab Shwin) - အားလုံးခြုံ စာရင်းရှင်းတမ်း\n` +
+        `📅 ကာလ: ${ms.periodLabel}\n` +
+        `🕒 အချိန်: ${formatDateTime(new Date().toISOString())}\n` +
+        `============================\n` +
+        `💰 [၁] အမြတ်ငွေ စာရင်းချုပ် (Profit Summary)\n` +
+        `• ထိုင်း-မြန်မာ ငွေလွှဲအမြတ် (${ms.remitCount} ကြိမ်): +${formatMMK(ms.remitProfitMMK)} (+${formatTHB(ms.remitProfitTHB)})\n` +
+        `• KPay/Wave ငွေထုတ်အမြတ် (${ms.cashoutCount} ကြိမ်): +${formatMMK(ms.cashoutProfitMMK)}\n` +
+        `• U9 ဖုန်းဘေလ်အမြတ် (ကော်မရှင်+လက်လီ): +${formatMMK(ms.u9ProfitMMK)}\n` +
+        `----------------------------\n` +
+        `➕ စုစုပေါင်း အကြမ်းအမြတ်: +${formatMMK(ms.totalGrossProfitMMK)}\n` +
+        `➖ လုပ်ငန်း အသုံးစရိတ် (${ms.expenseCount} ခု): -${formatMMK(ms.totalExpenseMMK)}\n` +
+        `✅ (=) အားလုံးခြုံ အသားတင်အမြတ်: ${netSign}${formatMMK(Math.abs(ms.netProfitMMK))} (${ms.netProfitTHB >= 0 ? '+' : ''}${formatTHB(ms.netProfitTHB)})\n` +
+        `============================\n` +
+        `⚖️ [၂] လက်ကျန်ငွေ နှင့် ပိုင်ဆိုင်မှု စာရင်းရှင်းတမ်း\n` +
+        `• လက်ထဲရှိ ငွေသား: ${formatMMK(ms.cashInHand)}\n` +
+        `• KPay / ဘဏ်လက်ကျန်: ${formatMMK(ms.bankBalance)}\n` +
+        `• ထိုင်းဘတ် လက်ကျန်: ${formatTHB(ms.thbBal)} (~${formatMMK(ms.thbInMMK)})\n` +
+        `• စုစုပေါင်း လည်ပတ်ငွေ: ${formatMMK(ms.totalWorkingMMK)}\n` +
+        `• U9 ဖုန်းဘေလ် လက်ကျန်: ${formatMMK(ms.u9StockBalance)} (ထုတ်ရန်ကျန်ကော်မရှင်: ${formatMMK(ms.u9RemainingComm)})\n` +
+        `• ရရန်ရှိ အကြွေးစုစုပေါင်း (${ms.unpaidCount} ခု): +${formatMMK(ms.totalUnpaidMMKCombined)}\n` +
+        `• နှုတ် (-) Customer အပ်ငွေ (${ms.depStats.activeCustomersCount} ဦး): -${formatMMK(ms.depUnifiedMMK)}\n` +
+        `• ကိုယ်ပိုင်အရင်း သီးသန့် (အပ်ငွေနုတ်ပြီး): ${formatMMK(ms.ownCapUnifiedMMK)}\n` +
+        `----------------------------\n` +
+        `🏆 (=) စာရင်းရှင်းပြီး အသားတင် ကိုယ်ပိုင်ငွေ: ${formatMMK(ms.finalNetWorthMMK)}\n` +
+        `============================`
+      );
+    }
+
+    const copyMasterSettlementText = window.copyMasterSettlementText = function() {
+      const txt = buildMasterSettlementPlainText();
+      navigator.clipboard.writeText(txt);
+      showToast('အားလုံးခြုံ စာရင်းရှင်းတမ်း စာသားကို Copy ကူးယူပြီးပါပြီ!', 'success');
+    };
+
+    const shareMasterSettlementText = window.shareMasterSettlementText = function() {
+      const txt = buildMasterSettlementPlainText();
+      if (navigator.share) {
+        navigator.share({
+          title: 'လာဘ်ရွှင် (Lab Shwin) - အားလုံးခြုံ စာရင်းရှင်းတမ်း',
+          text: txt
+        }).catch(() => {});
+      } else {
+        copyMasterSettlementText();
+      }
+    };
+
+    const exportMasterSettlementCSV = window.exportMasterSettlementCSV = function() {
+      const ms = computeMasterSettlement(dashboardPeriod);
+      const rows = [
+        { 'အပိုင်း': '၁။ အမြတ်ငွေ စာရင်းချုပ်', 'အကြောင်းအရာ': `ထိုင်း-မြန်မာ ငွေလွှဲအမြတ် (${ms.remitCount} ကြိမ်)`, 'ပမာဏ (MMK)': Math.round(ms.remitProfitMMK), 'ပမာဏ (THB)': ms.remitProfitTHB },
+        { 'အပိုင်း': '၁။ အမြတ်ငွေ စာရင်းချုပ်', 'အကြောင်းအရာ': `KPay / Wave ငွေထုတ် & လွှဲအမြတ် (${ms.cashoutCount} ကြိမ်)`, 'ပမာဏ (MMK)': Math.round(ms.cashoutProfitMMK), 'ပမာဏ (THB)': 0 },
+        { 'အပိုင်း': '၁။ အမြတ်ငွေ စာရင်းချုပ်', 'အကြောင်းအရာ': 'U9 Primary ကော်မရှင်အမြတ်', 'ပမာဏ (MMK)': Math.round(ms.u9PrimaryCommMMK), 'ပမာဏ (THB)': 0 },
+        { 'အပိုင်း': '၁။ အမြတ်ငွေ စာရင်းချုပ်', 'အကြောင်းအရာ': 'U9 ဖုန်းဘေလ် လက်လီအပိုအမြတ်', 'ပမာဏ (MMK)': Math.round(ms.u9RetailExtraMMK), 'ပမာဏ (THB)': 0 },
+        { 'အပိုင်း': '၁။ အမြတ်ငွေ စာရင်းချုပ်', 'အကြောင်းအရာ': 'စုစုပေါင်း အကြမ်းအမြတ် (Gross Profit)', 'ပမာဏ (MMK)': Math.round(ms.totalGrossProfitMMK), 'ပမာဏ (THB)': ms.totalGrossProfitTHB },
+        { 'အပိုင်း': '၁။ အမြတ်ငွေ စာရင်းချုပ်', 'အကြောင်းအရာ': `နှုတ် (-) လုပ်ငန်းအသုံးစရိတ် (${ms.expenseCount} ခု)`, 'ပမာဏ (MMK)': -Math.round(ms.totalExpenseMMK), 'ပမာဏ (THB)': -ms.totalExpenseTHB },
+        { 'အပိုင်း': '၁။ အမြတ်ငွေ စာရင်းချုပ်', 'အကြောင်းအရာ': '(=) အားလုံးခြုံ အသားတင်အမြတ် (Net Profit)', 'ပမာဏ (MMK)': Math.round(ms.netProfitMMK), 'ပမာဏ (THB)': ms.netProfitTHB },
+        { 'အပိုင်း': '၂။ လက်ကျန် နှင့် စာရင်းရှင်းတမ်း', 'အကြောင်းအရာ': 'လက်ထဲရှိ ငွေသား (Cash in Hand)', 'ပမာဏ (MMK)': Math.round(ms.cashInHand), 'ပမာဏ (THB)': 0 },
+        { 'အပိုင်း': '၂။ လက်ကျန် နှင့် စာရင်းရှင်းတမ်း', 'အကြောင်းအရာ': 'KPay / ဘဏ်လက်ကျန် (Bank/KPay)', 'ပမာဏ (MMK)': Math.round(ms.bankBalance), 'ပမာဏ (THB)': 0 },
+        { 'အပိုင်း': '၂။ လက်ကျန် နှင့် စာရင်းရှင်းတမ်း', 'အကြောင်းအရာ': 'ထိုင်းဘတ် လက်ကျန် (THB Balance)', 'ပမာဏ (MMK)': Math.round(ms.thbInMMK), 'ပမာဏ (THB)': ms.thbBal },
+        { 'အပိုင်း': '၂။ လက်ကျန် နှင့် စာရင်းရှင်းတမ်း', 'အကြောင်းအရာ': 'စုစုပေါင်း လည်ပတ်ငွေ (Working Funds)', 'ပမာဏ (MMK)': Math.round(ms.totalWorkingMMK), 'ပမာဏ (THB)': ms.thbBal },
+        { 'အပိုင်း': '၂။ လက်ကျန် နှင့် စာရင်းရှင်းတမ်း', 'အကြောင်းအရာ': 'U9 ဖုန်းဘေလ် လက်ကျန် (U9 Bill Stock)', 'ပမာဏ (MMK)': Math.round(ms.u9StockBalance), 'ပမာဏ (THB)': 0 },
+        { 'အပိုင်း': '၂။ လက်ကျန် နှင့် စာရင်းရှင်းတမ်း', 'အကြောင်းအရာ': 'U9 ထုတ်ရန်ကျန် ကော်မရှင်', 'ပမာဏ (MMK)': Math.round(ms.u9RemainingComm), 'ပမာဏ (THB)': 0 },
+        { 'အပိုင်း': '၂။ လက်ကျန် နှင့် စာရင်းရှင်းတမ်း', 'အကြောင်းအရာ': `ရရန်ရှိ အကြွေးစုစုပေါင်း (${ms.unpaidCount} ခု)`, 'ပမာဏ (MMK)': Math.round(ms.totalUnpaidMMKCombined), 'ပမာဏ (THB)': ms.unpaidDebtTHB },
+        { 'အပိုင်း': '၂။ လက်ကျန် နှင့် စာရင်းရှင်းတမ်း', 'အကြောင်းအရာ': `နှုတ် (-) Customer အပ်ငွေ ပြန်ပေးရန် (${ms.depStats.activeCustomersCount} ဦး)`, 'ပမာဏ (MMK)': -Math.round(ms.depUnifiedMMK), 'ပမာဏ (THB)': -ms.depStats.totalDepositTHB },
+        { 'အပိုင်း': '၂။ လက်ကျန် နှင့် စာရင်းရှင်းတမ်း', 'အကြောင်းအရာ': 'ကိုယ်ပိုင်အရင်း သီးသန့် (အပ်ငွေနုတ်ပြီး)', 'ပမာဏ (MMK)': Math.round(ms.ownCapUnifiedMMK), 'ပမာဏ (THB)': ms.ownCapTHB },
+        { 'အပိုင်း': '၂။ လက်ကျန် နှင့် စာရင်းရှင်းတမ်း', 'အကြောင်းအရာ': '(=) စာရင်းရှင်းပြီး အသားတင် ကိုယ်ပိုင်ငွေ (Final Net Worth)', 'ပမာဏ (MMK)': Math.round(ms.finalNetWorthMMK), 'ပမာဏ (THB)': 0 }
+      ];
+
+      let csvContent = "\uFEFF";
+      const headers = Object.keys(rows[0]);
+      csvContent += headers.join(",") + "\r\n";
+      rows.forEach(r => {
+        csvContent += headers.map(h => `"${String(r[h] ?? '').replace(/"/g, '""')}"`).join(",") + "\r\n";
+      });
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `LabShwin_Master_Settlement_${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('အားလုံးခြုံ စာရင်းရှင်းတမ်း CSV ဖိုင်ကို ဒေါင်းလုဒ်ဆွဲပြီးပါပြီ!', 'success');
     };
 
     const handleRestoreFile = window.handleRestoreFile = function(event) {
