@@ -211,9 +211,6 @@
       transform: scale(0.98);
     }
   </style>
-
-  <!-- Google Identity Services (GIS) SDK for OAuth2 Token Client Fallback -->
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-blue-600 selection:text-white">
 
@@ -2840,12 +2837,18 @@
         <button type="button" id="qsearch-filter-all" onclick="setQuickSearchFilter('ALL')" class="px-2.5 py-1 rounded-lg font-bold bg-blue-600 text-white shadow-sm transition">အားလုံး</button>
         <button type="button" id="qsearch-filter-remit" onclick="setQuickSearchFilter('REMIT')" class="px-2.5 py-1 rounded-lg font-medium theme-card-sub border theme-text-muted hover:text-blue-500 transition">ငွေလွှဲ (THB⇄MMK)</button>
         <button type="button" id="qsearch-filter-cashout" onclick="setQuickSearchFilter('CASHOUT')" class="px-2.5 py-1 rounded-lg font-medium theme-card-sub border theme-text-muted hover:text-emerald-500 transition">KPay / ငွေထုတ်</button>
+        <button type="button" id="qsearch-filter-deposit" onclick="setQuickSearchFilter('DEPOSIT')" class="px-2.5 py-1 rounded-lg font-medium theme-card-sub border theme-text-muted hover:text-purple-400 transition">🏦 အပ်ငွေ</button>
+        <button type="button" id="qsearch-filter-u9" onclick="setQuickSearchFilter('U9')" class="px-2.5 py-1 rounded-lg font-medium theme-card-sub border theme-text-muted hover:text-cyan-400 transition">📶 U9 ဘေလ်</button>
         <button type="button" id="qsearch-filter-unpaid" onclick="setQuickSearchFilter('UNPAID')" class="px-2.5 py-1 rounded-lg font-medium theme-card-sub border theme-text-muted hover:text-amber-500 transition">⏳ မထုတ်ရသေး / အကြွေး</button>
+        <button type="button" id="qsearch-filter-expense" onclick="setQuickSearchFilter('EXPENSE')" class="px-2.5 py-1 rounded-lg font-medium theme-card-sub border theme-text-muted hover:text-rose-400 transition">💸 အသုံးစရိတ်</button>
       </div>
 
-      <div class="flex items-center justify-between text-[11px] theme-text-muted px-1">
-        <span id="quickSearchResultCount">ရှာဖွေမှု ရလဒ်: 0 ခု</span>
-        <span>ဘောက်ချာ သို့မဟုတ် ပြင်ဆင်ရန် တိုက်ရိုက်နှိပ်နိုင်ပါသည်</span>
+      <div class="flex flex-wrap items-center justify-between gap-1 text-[11px] theme-text-muted px-1">
+        <div class="flex items-center gap-1.5 flex-wrap">
+          <span id="quickSearchResultCount">ရှာဖွေမှု ရလဒ်: 0 ခု</span>
+          <span id="quickSearchTotalSummary" class="font-mono font-bold text-blue-400"></span>
+        </div>
+        <button type="button" onclick="exportQuickSearchCSV()" class="text-[10px] font-bold text-emerald-400 hover:underline">📥 CSV ထုတ်မည်</button>
       </div>
 
       <!-- Results Container -->
@@ -4068,7 +4071,9 @@
     // Normalize a transaction object so it strictly adheres to firebase-blueprint.json & firestore.rules
     function normalizeTxForFirestore(tx, ownerId) {
       const safeId = String(tx.id || ('TX-' + Date.now())).replace(/[^a-zA-Z0-9_\-]/g, '_').slice(0, 120);
-      const validType = ['REMIT', 'CASHOUT', 'CREDIT'].includes(tx.type) ? tx.type : 'REMIT';
+      const validType = ['REMIT', 'CASHOUT', 'CREDIT'].includes(tx.type)
+        ? tx.type
+        : (tx.type === 'DIRECT_CREDIT' ? 'CREDIT' : 'REMIT');
       const validStatus = ['PAID', 'UNPAID'].includes(tx.status) ? tx.status : 'PAID';
       const validOwedCurr = ['MMK', 'THB', 'NONE'].includes(tx.owedCurrency) ? tx.owedCurrency : 'NONE';
 
@@ -4196,6 +4201,9 @@
         delete item.createdAt;
         delete item.updatedAt;
         delete item.ownerId;
+        if (item.type === 'CREDIT') {
+          item.type = 'DIRECT_CREDIT';
+        }
         return item;
       });
       cloudTxs.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -7864,17 +7872,21 @@
         let badgeClass = '';
 
         if (isPrimary) {
+          const pm = r.payMethod || r.paymentMethod;
+          const stockRec = Number(r.stockReceived ?? r.totalStockReceived) || 0;
+          const commAmt = Number(r.commissionAmount ?? r.commAmount) || 0;
           typeLabel = `📦 U9 Primary ဖုန်းဘေလ်အဝယ် (${r.commRate || 0}%)`;
           displayTitle = 'U9 Primary Stock ဝယ်ယူမှု';
-          channelOrAccount = r.paymentMethod === 'CASH' ? 'ငွေသား' : r.paymentMethod === 'BANK' ? 'KPay/Bank' : 'U9 သီးသန့်အရင်း';
+          channelOrAccount = pm === 'CASH' ? 'ငွေသား' : pm === 'BANK' ? 'KPay/Bank' : 'U9 သီးသန့်အရင်း';
           amountMMK = Number(r.purchaseAmount) || 0;
-          profitMMK = Number(r.commAmount) || 0;
-          statusText = `ဘေလ်ရရှိ: ${formatMMK(r.totalStockReceived || 0)}`;
+          profitMMK = commAmt;
+          statusText = `ဘေလ်ရရှိ: ${formatMMK(stockRec)}`;
           badgeClass = 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/30';
         } else if (isWithdrawComm) {
+          const ch = r.channel || r.withdrawMethod;
           typeLabel = '💰 U9 ကော်မရှင်အမြတ် ထုတ်ယူခြင်း';
           displayTitle = 'U9 ကော်မရှင် ထုတ်ယူမှု';
-          channelOrAccount = r.withdrawMethod === 'CASH' ? 'ငွေသား (Cash)' : 'KPay / Bank';
+          channelOrAccount = ch === 'CASH' ? 'ငွေသား (Cash)' : 'KPay / Bank';
           amountMMK = Number(r.withdrawAmount) || 0;
           profitMMK = 0;
           statusText = `${channelOrAccount} ဖြင့် ထုတ်ပြီး`;
@@ -7903,7 +7915,9 @@
           r.billAmount,
           r.sellingPrice,
           r.purchaseAmount,
+          r.stockReceived,
           r.totalStockReceived,
+          r.commissionAmount,
           r.commAmount,
           r.withdrawAmount,
           r.date,
@@ -8115,7 +8129,7 @@
             <div class="flex items-center justify-between gap-1.5 pt-1.5 border-t">
               <div>
                 ${isNotice && d.noticeStatus !== 'COMPLETED' ? `
-                  <button type="button" onclick="${closeSearchPrefix}fulfillWithdrawalNotice('${d.id}');" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-bold shadow">✓ ယခု ထုတ်ပေးမည်</button>
+                  <button type="button" onclick="${closeSearchPrefix}fulfillDepositNotice('${d.id}');" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-bold shadow">✓ ယခု ထုတ်ပေးမည်</button>
                 ` : `
                   <button type="button" onclick="${closeSearchPrefix}switchTab('deposits'); selectDepositorForForm('${safeName}', 'DEPOSIT_IN');" class="px-2.5 py-1 rounded-lg bg-purple-600/20 text-purple-400 text-[10px] font-bold">🏦 အပ်ငွေစာရင်းသို့</button>
                 `}
@@ -8393,6 +8407,14 @@
       tx.profitMMK = parseFloat(document.getElementById('editProfitMMK').value) || 0;
       tx.status = document.getElementById('editStatus').value;
       tx.note = document.getElementById('editNote').value.trim();
+
+      if (tx.u9RecordId || tx.cashoutType === 'U9_BILL') {
+        const u9Rec = (u9Data.records || []).find(r => r.id === tx.u9RecordId || r.linkedTxId === tx.id);
+        if (u9Rec) {
+          u9Rec.status = tx.status;
+          saveU9ToStorage();
+        }
+      }
 
       localStorage.setItem('thb_mmk_has_user_data', 'true');
       saveTransactionsToStorage();
@@ -9025,7 +9047,7 @@
       updateAllUI();
     };
 
-    const fulfillDepositNotice = window.fulfillDepositNotice = function(noticeId) {
+    const fulfillDepositNotice = window.fulfillDepositNotice = window.fulfillWithdrawalNotice = function(noticeId) {
       const notice = deposits.find(d => d.id === noticeId);
       if (!notice) return;
 
@@ -9846,7 +9868,7 @@
       if (search) {
         filtered = filtered.filter(r => {
           const typeText = r.type === 'BUY_PRIMARY' ? 'primary ဘေလ်အဝယ်' : r.type === 'WITHDRAW_COMM' ? 'ကော်မရှင် ထုတ်ယူ' : 'ဖုန်းဘေလ် အရောင်း';
-          const payText = r.paymentType === 'CASH' || r.withdrawMethod === 'CASH' || r.paymentMethod === 'CASH'
+          const payText = r.paymentType === 'CASH' || r.channel === 'CASH' || r.payMethod === 'CASH' || r.withdrawMethod === 'CASH' || r.paymentMethod === 'CASH'
             ? 'ငွေသား လက်ငင်း cash'
             : (r.paymentType === 'CREDIT' ? 'အကြွေး credit မဆပ်ရသေး' : 'kpay bank လက်ငင်း');
           return (
@@ -9858,7 +9880,8 @@
             String(r.billAmount || '').includes(search) ||
             String(r.sellingPrice || '').includes(search) ||
             String(r.purchaseAmount || '').includes(search) ||
-            String(r.commAmount || '').includes(search) ||
+            String(r.stockReceived || '').includes(search) ||
+            String(r.commissionAmount || r.commAmount || '').includes(search) ||
             String(r.withdrawAmount || '').includes(search) ||
             typeText.includes(search) ||
             payText.includes(search)
