@@ -1,4 +1,4 @@
-const CACHE_NAME = 'labshwin-cache-v5';
+const CACHE_NAME = 'labshwin-cache-v6';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

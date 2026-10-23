@@ -2211,53 +2211,32 @@
           <!-- Logged Out View -->
           <div id="gdriveAuthLoggedOut" class="space-y-3 py-1">
             <p class="text-xs theme-text-muted leading-relaxed text-center">
-              မိမိ၏ <strong>Gmail အကောင့်</strong> ဖြင့် ချိတ်ဆက်ထားရုံဖြင့် စာရင်းများအားလုံးကို Cloud ပေါ်သို့ အချိန်နှင့်တပြေးညီ အလိုအလျောက် Auto-Backup သိမ်းဆည်းပေးသွားပါမည်။
+              မိမိ၏ <strong>Google (Gmail) အကောင့်</strong> ဖြင့် တိုက်ရိုက် ချိတ်ဆက်ထားရုံဖြင့် စာရင်းများအားလုံးကို Cloud ပေါ်သို့ အချိန်နှင့်တပြေးညီ အလိုအလျောက် Auto-Backup သိမ်းဆည်းပေးသွားပါမည်။
             </p>
 
-            <!-- Method 1: 1-Click Google Popup Sign-In -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <button type="button" id="googleSignInBtn" onclick="handleGoogleSignIn()" class="gsi-button w-full shadow-sm py-2.5">
-                <svg width="18" height="18" viewBox="0 0 48 48">
+            <!-- 1-Click Official Google Sign-In -->
+            <div class="space-y-2">
+              <button type="button" id="googleSignInBtn" onclick="handleGoogleSignIn()" class="gsi-button w-full shadow-md py-3 text-xs sm:text-sm font-bold">
+                <svg width="20" height="20" viewBox="0 0 48 48">
                   <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
                   <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
                   <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path>
                   <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
                   <path fill="none" d="M0 0h48v48H0z"></path>
                 </svg>
-                <span id="googleSignInBtnText">Google ဖြင့် ချိတ်ဆက်မည်</span>
+                <span id="googleSignInBtnText">Google အကောင့်ဖြင့် ချိတ်ဆက်မည်</span>
               </button>
-              <button type="button" onclick="handleGISButtonSignIn(false)" class="py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-98 text-white text-xs font-bold shadow flex items-center justify-center gap-1.5 transition">
-                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
-                <span>Google OAuth ဖြင့် ချိတ်ရန်</span>
-              </button>
-            </div>
 
-            <!-- Method 2: Direct Gmail Input (Works 100% on ALL Mobile Browsers, WebViews & GitHub Pages without Popups) -->
-            <div class="pt-2 border-t border-slate-500/20 space-y-2 text-left">
-              <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold text-blue-500 flex items-center gap-1">
-                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                  Gmail လိပ်စာ ရိုက်ထည့်၍ တိုက်ရိုက်ချိတ်ရန် (Popup မလိုပါ)
-                </span>
-                <button type="button" onclick="handleGoogleRedirectSignIn()" class="text-[10px] text-emerald-500 hover:underline font-semibold">
-                  Redirect ဖြင့်ချိတ်ရန်
+              <div class="flex items-center justify-center pt-1">
+                <button type="button" onclick="handleGoogleRedirectSignIn()" class="text-[11px] text-blue-500 hover:underline font-semibold flex items-center gap-1">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                  <span>ဖုန်း Browser တွင် Popup ပိတ်နေပါက Redirect စနစ်ဖြင့် ချိတ်ဆက်ရန်</span>
                 </button>
               </div>
-              <form onsubmit="handleDirectGmailConnect(event)" class="space-y-2">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  <input type="email" id="directGmailInput" required placeholder="ဥပမာ - yourname@gmail.com" class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-mono">
-                  <input type="text" id="directGmailNameInput" placeholder="အမည် (ဥပမာ - လာဘ်ရွှင်)" class="w-full theme-input border rounded-xl px-3 py-2 text-xs">
-                </div>
-                <button type="submit" class="w-full py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-98 text-white text-xs font-bold shadow transition flex items-center justify-center gap-1.5">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                  Gmail အကောင့် တိုက်ရိုက် ချိတ်ဆက်မည်
-                </button>
-              </form>
             </div>
 
-            <div id="gdriveAuthErrorBox" class="hidden p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[11px] text-amber-500 text-left space-y-1">
+            <div id="gdriveAuthErrorBox" class="hidden p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[11px] text-amber-500 text-left space-y-1">
               <div id="gdriveAuthErrorText" class="font-semibold"></div>
-              <div class="text-[10px] theme-text-muted">အထက်ပါ "Gmail လိပ်စာ ရိုက်ထည့်၍ တိုက်ရိုက်ချိတ်ရန်" တွင် မိမိ Gmail ရိုက်ထည့်ပြီး ချက်ချင်း ချိတ်ဆက်သုံးစွဲနိုင်ပါသည်။</div>
             </div>
           </div>
 
@@ -3074,59 +3053,33 @@
 
       <!-- Logged Out View inside Modal -->
       <div id="modalGdriveLoggedOut" class="space-y-3.5">
-        <div class="p-3 rounded-2xl bg-blue-500/10 border border-blue-500/30 text-xs space-y-2">
+        <div class="p-4 rounded-2xl bg-blue-500/10 border border-blue-500/30 text-xs space-y-3">
           <div class="font-bold text-blue-400 flex items-center gap-1.5">
             <span>☁️</span>
-            <span>နည်းလမ်း (၁) - Google Popup ဖြင့် တိုက်ရိုက်ချိတ်ရန်</span>
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            <button type="button" onclick="handleFirebasePopupSignIn()" class="gsi-button w-full shadow-sm py-2.5 text-xs">
-              <svg width="16" height="16" viewBox="0 0 48 48">
-                <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
-                <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
-                <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path>
-                <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
-              </svg>
-              <span id="modalGoogleSignInBtnText">Google ဖြင့် ချိတ်မည်</span>
-            </button>
-            <button type="button" onclick="handleGISButtonSignIn(false)" class="py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-98 text-white text-xs font-bold shadow flex items-center justify-center gap-1.5 transition">
-              <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
-              <span>Google OAuth ချိတ်ရန်</span>
-            </button>
-          </div>
-        </div>
-
-        <div id="modalGdriveErrorBox" class="hidden p-2.5 rounded-xl bg-amber-500/15 border border-amber-500/40 text-[11px] text-amber-400 space-y-1">
-          <div id="modalGdriveErrorText" class="font-bold"></div>
-          <div class="text-[10px] theme-text-muted">အောက်ပါ နည်းလမ်း (၂) တွင် မိမိ Gmail လိပ်စာ ရိုက်ထည့်၍ Popup မလိုဘဲ ချက်ချင်း ချိတ်ဆက်နိုင်ပါသည်။</div>
-        </div>
-
-        <!-- Method 2: Instant Direct Gmail Connect (Never blocked by Popup Blockers or Iframes!) -->
-        <div class="p-3.5 rounded-2xl theme-card-sub border border-emerald-500/40 space-y-2.5">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-extrabold text-emerald-400 flex items-center gap-1.5">
-              <span>✉️</span>
-              <span>နည်းလမ်း (၂) - Gmail ရိုက်ထည့်၍ တိုက်ရိုက်ချိတ်ရန် (အမြန်ဆုံး)</span>
-            </span>
-            <span class="text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold">Popup မလိုပါ</span>
+            <span>Google (Gmail) အကောင့်ဖြင့် တိုက်ရိုက် ချိတ်ဆက်ရန်</span>
           </div>
           <p class="text-[11px] theme-text-muted leading-relaxed">
-            ဖုန်း Browser သို့မဟုတ် Preview တွင် Google Popup ပိတ်နေပါက မိမိ၏ Gmail လိပ်စာကို ရိုက်ထည့်ပြီး တိုက်ရိုက် ချိတ်ဆက်သိမ်းဆည်းနိုင်ပါသည်။
+            သင်၏ Google (Gmail) အကောင့်ကို ရွေးချယ်ချိတ်ဆက်ထားခြင်းဖြင့် စာရင်းများ၊ လက်ကျန်ငွေများနှင့် ဘောက်ချာမှတ်တမ်းအားလုံးကို Firebase Cloud ပေါ်သို့ အလိုအလျောက် လုံခြုံစွာ သိမ်းဆည်းပေးသွားပါမည်။
           </p>
-          <form onsubmit="handleDirectGmailConnect(event, 'modal')" class="space-y-2.5">
-            <div>
-              <label class="block text-[11px] font-semibold theme-text-heading mb-1">Gmail လိပ်စာ (Email Address) *</label>
-              <input type="email" id="modalDirectGmailInput" required placeholder="ဥပမာ - yourname@gmail.com" class="w-full theme-input border rounded-xl px-3 py-2.5 text-xs font-mono">
-            </div>
-            <div>
-              <label class="block text-[11px] font-semibold theme-text-heading mb-1">အမည် / ဆိုင်အမည် (Optional)</label>
-              <input type="text" id="modalDirectGmailNameInput" placeholder="ဥပမာ - လာဘ်ရွှင် (Lab Shwin)" class="w-full theme-input border rounded-xl px-3 py-2 text-xs">
-            </div>
-            <button type="submit" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 active:scale-98 text-white text-xs font-extrabold shadow-lg shadow-emerald-900/30 flex items-center justify-center gap-1.5 transition">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
-              <span>Gmail အကောင့် ချက်ချင်း ချိတ်ဆက်မည်</span>
-            </button>
-          </form>
+
+          <button type="button" onclick="handleGoogleSignIn()" class="gsi-button w-full shadow-md py-3 text-xs sm:text-sm font-bold">
+            <svg width="20" height="20" viewBox="0 0 48 48">
+              <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
+              <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
+              <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path>
+              <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
+            </svg>
+            <span id="modalGoogleSignInBtnText">Google အကောင့်ဖြင့် ချိတ်ဆက်မည်</span>
+          </button>
+
+          <button type="button" onclick="handleGoogleRedirectSignIn()" class="w-full py-2.5 px-3 rounded-xl theme-card-sub border border-blue-500/30 hover:border-blue-500 active:scale-98 text-blue-400 text-xs font-bold flex items-center justify-center gap-1.5 transition">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+            <span>Popup ပိတ်နေပါက Redirect စနစ်ဖြင့် ချိတ်ဆက်ရန်</span>
+          </button>
+        </div>
+
+        <div id="modalGdriveErrorBox" class="hidden p-3 rounded-xl bg-amber-500/15 border border-amber-500/40 text-[11px] text-amber-400 space-y-1">
+          <div id="modalGdriveErrorText" class="font-bold"></div>
         </div>
       </div>
 
@@ -3171,14 +3124,76 @@
   <!-- TOAST NOTIFICATION CONTAINER -->
   <div id="toastContainer" class="fixed top-4 inset-x-0 z-50 flex flex-col items-center pointer-events-none px-4 space-y-2"></div>
 
+  <!-- ================= FIREBASE BUNDLED SDK PRELOADER ================= -->
+  <script type="module">
+    import * as appMod from 'firebase/app';
+    import * as authMod from 'firebase/auth';
+    import * as fsMod from 'firebase/firestore';
+    window.__FIREBASE_BUNDLED_SDK__ = { appMod, authMod, fsMod };
+    if (typeof window.__applyFirebaseSDK === 'function') {
+      window.__applyFirebaseSDK(window.__FIREBASE_BUNDLED_SDK__);
+    }
+  </script>
+
   <!-- ================= JAVASCRIPT & EMBEDDED ASSETS ================= -->
   <script>
     let initializeApp, getAuth, signInWithPopup, signInWithRedirect, signInWithCredential, getRedirectResult, GoogleAuthProvider, onAuthStateChanged, signOut;
     let getFirestore, doc, getDoc, getDocFromServer, setDoc, updateDoc, deleteDoc, collection, getDocs, writeBatch, serverTimestamp, query, where;
     let firebaseSdkLoadPromise = null;
 
+    function applyFirebaseModules(appMod, authMod, fsMod) {
+      initializeApp = appMod.initializeApp;
+      getAuth = authMod.getAuth;
+      signInWithPopup = authMod.signInWithPopup;
+      signInWithRedirect = authMod.signInWithRedirect;
+      signInWithCredential = authMod.signInWithCredential;
+      getRedirectResult = authMod.getRedirectResult;
+      GoogleAuthProvider = authMod.GoogleAuthProvider;
+      onAuthStateChanged = authMod.onAuthStateChanged;
+      signOut = authMod.signOut;
+
+      getFirestore = fsMod.getFirestore;
+      doc = fsMod.doc;
+      getDoc = fsMod.getDoc;
+      getDocFromServer = fsMod.getDocFromServer;
+      setDoc = fsMod.setDoc;
+      updateDoc = fsMod.updateDoc;
+      deleteDoc = fsMod.deleteDoc;
+      collection = fsMod.collection;
+      getDocs = fsMod.getDocs;
+      writeBatch = fsMod.writeBatch;
+      serverTimestamp = fsMod.serverTimestamp;
+      query = fsMod.query;
+      where = fsMod.where;
+    }
+
+    window.__applyFirebaseSDK = function(bundled) {
+      if (bundled && bundled.appMod && bundled.authMod && bundled.fsMod) {
+        applyFirebaseModules(bundled.appMod, bundled.authMod, bundled.fsMod);
+        if (!auth && typeof initFirebaseAuth === 'function') {
+          initFirebaseAuth();
+        }
+      }
+    };
+
+    if (window.__FIREBASE_BUNDLED_SDK__) {
+      applyFirebaseModules(
+        window.__FIREBASE_BUNDLED_SDK__.appMod,
+        window.__FIREBASE_BUNDLED_SDK__.authMod,
+        window.__FIREBASE_BUNDLED_SDK__.fsMod
+      );
+    }
+
     async function ensureFirebaseSDKLoaded() {
       if (typeof initializeApp === 'function' && typeof getAuth === 'function' && typeof getFirestore === 'function') {
+        return true;
+      }
+      if (window.__FIREBASE_BUNDLED_SDK__) {
+        applyFirebaseModules(
+          window.__FIREBASE_BUNDLED_SDK__.appMod,
+          window.__FIREBASE_BUNDLED_SDK__.authMod,
+          window.__FIREBASE_BUNDLED_SDK__.fsMod
+        );
         return true;
       }
       if (!firebaseSdkLoadPromise) {
@@ -3187,29 +3202,7 @@
           import('https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js'),
           import('https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js')
         ]).then(([appMod, authMod, fsMod]) => {
-          initializeApp = appMod.initializeApp;
-          getAuth = authMod.getAuth;
-          signInWithPopup = authMod.signInWithPopup;
-          signInWithRedirect = authMod.signInWithRedirect;
-          signInWithCredential = authMod.signInWithCredential;
-          getRedirectResult = authMod.getRedirectResult;
-          GoogleAuthProvider = authMod.GoogleAuthProvider;
-          onAuthStateChanged = authMod.onAuthStateChanged;
-          signOut = authMod.signOut;
-
-          getFirestore = fsMod.getFirestore;
-          doc = fsMod.doc;
-          getDoc = fsMod.getDoc;
-          getDocFromServer = fsMod.getDocFromServer;
-          setDoc = fsMod.setDoc;
-          updateDoc = fsMod.updateDoc;
-          deleteDoc = fsMod.deleteDoc;
-          collection = fsMod.collection;
-          getDocs = fsMod.getDocs;
-          writeBatch = fsMod.writeBatch;
-          serverTimestamp = fsMod.serverTimestamp;
-          query = fsMod.query;
-          where = fsMod.where;
+          applyFirebaseModules(appMod, authMod, fsMod);
           return true;
         }).catch((err) => {
           console.warn('Firebase SDK load note:', err);
@@ -3450,7 +3443,7 @@
     if ('caches' in window) {
       caches.keys().then((keys) => {
         keys.forEach((k) => {
-          if (k !== 'labshwin-cache-v5') {
+          if (k !== 'labshwin-cache-v6') {
             caches.delete(k).catch(() => {});
           }
         });
@@ -3585,6 +3578,10 @@
         const raw = localStorage.getItem(STORAGE_KEY_LINKED_GMAIL);
         if (!raw) return null;
         const parsed = JSON.parse(raw);
+        if (parsed && parsed.authMode === 'direct_gmail') {
+          localStorage.removeItem(STORAGE_KEY_LINKED_GMAIL);
+          return null;
+        }
         if (parsed && parsed.email) return parsed;
       } catch (e) {}
       return null;
@@ -3596,22 +3593,35 @@
       return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
     }
 
+    let isFirebaseAuthListenerRegistered = false;
+
     async function initFirebaseAuth() {
-      // Restore previously connected Direct Gmail or GIS user immediately so UI is ready
-      const savedDirectUser = getSavedDirectGmailUser();
-      if (savedDirectUser) {
-        currentUser = savedDirectUser;
+      const savedGoogleUser = getSavedDirectGmailUser();
+      if (savedGoogleUser) {
+        currentUser = savedGoogleUser;
         updateAuthUI(currentUser, true);
+      } else {
+        currentUser = null;
+        updateAuthUI(null, false);
       }
 
       try {
         const loaded = await ensureFirebaseSDKLoaded();
         if (!loaded || typeof initializeApp !== 'function') return;
 
-        firebaseApp = initializeApp(firebaseConfig);
-        auth = getAuth(firebaseApp);
-        db = getFirestore(firebaseApp, firebaseConfig.firestoreDatabaseId);
-        testFirestoreConnection();
+        if (!firebaseApp) {
+          firebaseApp = initializeApp(firebaseConfig);
+        }
+        if (!auth) {
+          auth = getAuth(firebaseApp);
+        }
+        if (!db) {
+          db = getFirestore(firebaseApp, firebaseConfig.firestoreDatabaseId);
+          testFirestoreConnection();
+        }
+
+        if (isFirebaseAuthListenerRegistered) return;
+        isFirebaseAuthListenerRegistered = true;
 
         // Check if returning from a mobile Redirect Sign-In
         getRedirectResult(auth)
@@ -3656,10 +3666,11 @@
             }
           } else {
             const fallbackUser = getSavedDirectGmailUser();
-            if (fallbackUser) {
+            if (fallbackUser && fallbackUser.authMode !== 'firebase') {
               currentUser = fallbackUser;
               updateAuthUI(currentUser, true);
             } else if (!isSigningIn) {
+              localStorage.removeItem(STORAGE_KEY_LINKED_GMAIL);
               currentUser = null;
               updateAuthUI(null, false);
             }
@@ -3683,13 +3694,6 @@
           errBox.classList.add('hidden');
         }
       }
-      const savedUser = getSavedDirectGmailUser();
-      const modalEmailInput = document.getElementById('modalDirectGmailInput');
-      const modalNameInput = document.getElementById('modalDirectGmailNameInput');
-      if (savedUser && modalEmailInput && !modalEmailInput.value) {
-        modalEmailInput.value = savedUser.email || '';
-        if (modalNameInput) modalNameInput.value = savedUser.displayName || '';
-      }
       updateAuthUI(currentUser, Boolean(currentUser));
       modal.classList.remove('hidden');
       armBackTrap();
@@ -3700,7 +3704,7 @@
       if (modal) modal.classList.add('hidden');
     };
 
-    // Fallback using Google Identity Services (GIS) OAuth2 Token Client with basic profile/email scopes (NO unverified scope block!)
+    // Fallback using Google Identity Services (GIS) OAuth2 Token Client with basic profile/email scopes
     function signInWithGISBasic(includeDriveScope = false) {
       return new Promise((resolve, reject) => {
         if (!window.google || !window.google.accounts || !window.google.accounts.oauth2) {
@@ -3720,7 +3724,7 @@
               if (tokenResponse && tokenResponse.access_token) {
                 cachedAccessToken = tokenResponse.access_token;
 
-                // Also bridge the OAuth access token into Firebase Auth so Firestore rules pass seamlessly!
+                // Bridge the OAuth access token into Firebase Auth so Firestore rules pass seamlessly
                 if (auth && typeof signInWithCredential === 'function') {
                   try {
                     const fbCred = GoogleAuthProvider.credential(null, cachedAccessToken);
@@ -3782,11 +3786,13 @@
       });
     }
 
-    // Synchronous button handler for Google Identity Services OAuth (preserves browser user-gesture!)
     const handleGISButtonSignIn = window.handleGISButtonSignIn = async function(includeDriveScope = false) {
+      if (!includeDriveScope) {
+        return await handleGoogleSignIn();
+      }
       isSigningIn = true;
       try {
-        const gisResult = await signInWithGISBasic(includeDriveScope);
+        const gisResult = await signInWithGISBasic(true);
         if (gisResult?.user) {
           updateAuthUI(currentUser, true);
           closeGoogleConnectModal();
@@ -3799,10 +3805,7 @@
         }
       } catch (err) {
         console.warn('GIS Sign-in note:', err);
-        const msg = 'Google Popup ပိတ်ထားပါသည်။ အောက်ပါအကွက်တွင် မိမိ Gmail လိပ်စာ ရိုက်ထည့်၍ တိုက်ရိုက် ချိတ်ဆက်ပါ။';
-        openGoogleConnectModal(msg);
-        const modalInput = document.getElementById('modalDirectGmailInput');
-        if (modalInput) modalInput.focus();
+        showToast('Google အကောင့် ချိတ်ဆက်မှု မအောင်မြင်သေးပါ။ ထပ်မံကြိုးစားပေးပါ။', 'warning');
       } finally {
         isSigningIn = false;
       }
@@ -3813,32 +3816,52 @@
       return await handleGoogleSignIn();
     };
 
-    // Method 1: Primary 1-Click Google Sign-In
+    // Primary 1-Click Google Sign-In (Synchronous popup invocation to preserve browser user gesture!)
     const handleGoogleSignIn = window.handleGoogleSignIn = async function() {
       const btnText = document.getElementById('googleSignInBtnText');
       const modalBtnText = document.getElementById('modalGoogleSignInBtnText');
       const errBox = document.getElementById('gdriveAuthErrorBox');
       const errText = document.getElementById('gdriveAuthErrorText');
+      const modalErrBox = document.getElementById('modalGdriveErrorBox');
+      const modalErrText = document.getElementById('modalGdriveErrorText');
+
       if (errBox) errBox.classList.add('hidden');
+      if (modalErrBox) modalErrBox.classList.add('hidden');
       if (btnText) btnText.textContent = 'ချိတ်ဆက်နေပါသည်...';
       if (modalBtnText) modalBtnText.textContent = 'ချိတ်ဆက်နေပါသည်...';
 
       isSigningIn = true;
       try {
-        await ensureFirebaseSDKLoaded();
         if (!auth && typeof initializeApp === 'function') {
-          firebaseApp = initializeApp(firebaseConfig);
+          if (!firebaseApp) firebaseApp = initializeApp(firebaseConfig);
           auth = getAuth(firebaseApp);
-          db = getFirestore(firebaseApp, firebaseConfig.firestoreDatabaseId);
+          if (!db) db = getFirestore(firebaseApp, firebaseConfig.firestoreDatabaseId);
+        }
+
+        // CRITICAL: Invoke signInWithPopup synchronously BEFORE any await if auth & GoogleAuthProvider are ready!
+        let popupPromise = null;
+        if (auth && typeof signInWithPopup === 'function' && typeof GoogleAuthProvider === 'function') {
+          const provider = new GoogleAuthProvider();
+          provider.setCustomParameters({ prompt: 'select_account' });
+          popupPromise = signInWithPopup(auth, provider);
+        } else {
+          await ensureFirebaseSDKLoaded();
+          if (!auth && typeof initializeApp === 'function') {
+            if (!firebaseApp) firebaseApp = initializeApp(firebaseConfig);
+            auth = getAuth(firebaseApp);
+            if (!db) db = getFirestore(firebaseApp, firebaseConfig.firestoreDatabaseId);
+          }
+          if (auth && typeof signInWithPopup === 'function' && typeof GoogleAuthProvider === 'function') {
+            const provider = new GoogleAuthProvider();
+            provider.setCustomParameters({ prompt: 'select_account' });
+            popupPromise = signInWithPopup(auth, provider);
+          }
         }
 
         let connected = false;
 
-        if (auth) {
-          const provider = new GoogleAuthProvider();
-          provider.setCustomParameters({ prompt: 'select_account' });
-
-          const result = await signInWithPopup(auth, provider);
+        if (popupPromise) {
+          const result = await popupPromise;
           const credential = GoogleAuthProvider.credentialFromResult(result);
           if (credential?.accessToken) {
             cachedAccessToken = credential.accessToken;
@@ -3872,30 +3895,60 @@
         return false;
       } catch (err) {
         console.warn('Sign-in popup note:', err);
-        const msg = err?.code === 'auth/popup-closed-by-user'
-          ? 'Google အကောင့် ရွေးချယ်မှု ပိတ်လိုက်ပါသည်။ ပြန်နှိပ်ပါ သို့မဟုတ် အောက်ပါအကွက်တွင် Gmail ရိုက်ထည့်၍ တိုက်ရိုက်ချိတ်ဆက်ပါ။'
-          : 'Browser / Preview တွင် Popup ပိတ်ထားပါသည်။ အောက်ပါအကွက်တွင် မိမိ Gmail လိပ်စာ ရိုက်ထည့်၍ တိုက်ရိုက် ချိတ်ဆက်နိုင်ပါသည်။';
+        const code = err?.code || '';
+
+        // If domain is not in Firebase authorized domains, try GIS OAuth client fallback
+        if (code === 'auth/unauthorized-domain' || code === 'auth/operation-not-supported-in-this-environment') {
+          try {
+            const gisResult = await signInWithGISBasic(false);
+            if (gisResult?.user && currentUser) {
+              updateAuthUI(currentUser, true);
+              closeGoogleConnectModal();
+              showToast(`မင်္ဂလာပါ ${currentUser.displayName || ''} (Google ချိတ်ဆက်ပြီးပါပြီ)`, 'success');
+              if (autoBackupEnabled) {
+                await triggerDriveBackup(false);
+              }
+              return true;
+            }
+          } catch (gisErr) {
+            console.warn('GIS fallback note:', gisErr);
+          }
+        }
+
+        let msg = 'Google အကောင့် ချိတ်ဆက်ရာတွင် အခက်အခဲဖြစ်ပေါ်နေပါသည်။ ထပ်မံကြိုးစားပေးပါ သို့မဟုတ် Redirect စနစ်ဖြင့် ချိတ်ဆက်ပေးပါ။';
+        if (code === 'auth/popup-closed-by-user' || code === 'auth/cancelled-popup-request') {
+          msg = 'Google အကောင့် ရွေးချယ်သည့် ဝင်းဒိုးကို ပိတ်လိုက်ပါသည်။ ပြန်လည်ချိတ်ဆက်ရန် "Google အကောင့်ဖြင့် ချိတ်ဆက်မည်" ခလုတ်ကို ထပ်မံနှိပ်ပေးပါ။';
+        } else if (code === 'auth/popup-blocked') {
+          msg = 'Browser တွင် Popup ပိတ်ထားပါသည်။ အောက်ပါ "Popup ပိတ်နေပါက Redirect စနစ်ဖြင့် ချိတ်ဆက်ရန်" ခလုတ်ကို နှိပ်၍ ချိတ်ဆက်ပေးပါ။';
+        } else if (code === 'auth/network-request-failed') {
+          msg = 'အင်တာနက် လိုင်းချိတ်ဆက်မှု အခက်အခဲရှိနေပါသည်။ အင်တာနက်စစ်ဆေးပြီး ထပ်မံကြိုးစားပေးပါ။';
+        }
+
         if (errBox && errText) {
           errText.textContent = msg;
           errBox.classList.remove('hidden');
         }
-        openGoogleConnectModal(msg);
-        const modalInput = document.getElementById('modalDirectGmailInput');
-        if (modalInput) modalInput.focus();
+        if (modalErrBox && modalErrText) {
+          modalErrText.textContent = msg;
+          modalErrBox.classList.remove('hidden');
+        }
+        showToast(msg, 'warning');
         return false;
       } finally {
         isSigningIn = false;
-        if (btnText) btnText.textContent = 'Google ဖြင့် ချိတ်ဆက်မည်';
-        if (modalBtnText) modalBtnText.textContent = 'Google ဖြင့် ချိတ်မည်';
+        if (btnText) btnText.textContent = 'Google အကောင့်ဖြင့် ချိတ်ဆက်မည်';
+        if (modalBtnText) modalBtnText.textContent = 'Google အကောင့်ဖြင့် ချိတ်ဆက်မည်';
       }
     };
 
-    // Method 2: Mobile Redirect Sign-In Fallback
+    // Mobile Redirect Sign-In Fallback
     const handleGoogleRedirectSignIn = window.handleGoogleRedirectSignIn = async function() {
       try {
+        await ensureFirebaseSDKLoaded();
         if (!auth && typeof initializeApp === 'function') {
-          firebaseApp = initializeApp(firebaseConfig);
+          if (!firebaseApp) firebaseApp = initializeApp(firebaseConfig);
           auth = getAuth(firebaseApp);
+          if (!db) db = getFirestore(firebaseApp, firebaseConfig.firestoreDatabaseId);
         }
         if (auth) {
           showToast('Google အကောင့် ရွေးချယ်ရန် စာမျက်နှာသို့ ပို့ဆောင်နေပါသည်...', 'info');
@@ -3904,76 +3957,14 @@
           await signInWithRedirect(auth, provider);
         }
       } catch (err) {
-        openGoogleConnectModal('Gmail လိပ်စာကို အကွက်တွင် ရိုက်ထည့်၍ တိုက်ရိုက်ချိတ်ဆက်ပေးပါ');
+        console.warn('Redirect sign-in note:', err);
+        showToast('Redirect ချိတ်ဆက်မှု မအောင်မြင်ပါ။ Google အကောင့်ဖြင့် ချိတ်ဆက်မည် ခလုတ်ကို နှိပ်ပေးပါ။', 'warning');
       }
     };
 
-    // Method 3: Direct Gmail Address Connect (Works 100% on ALL Mobile Browsers, WebViews & Iframes without Popups)
-    const handleDirectGmailConnect = window.handleDirectGmailConnect = async function(e, source = 'card') {
+    const handleDirectGmailConnect = window.handleDirectGmailConnect = async function(e) {
       if (e) e.preventDefault();
-      const emailInput = source === 'modal'
-        ? document.getElementById('modalDirectGmailInput')
-        : document.getElementById('directGmailInput');
-      const nameInput = source === 'modal'
-        ? document.getElementById('modalDirectGmailNameInput')
-        : document.getElementById('directGmailNameInput');
-
-      const fallbackEmailInput = document.getElementById('directGmailInput');
-      const fallbackNameInput = document.getElementById('directGmailNameInput');
-
-      const rawEmail = ((emailInput?.value || fallbackEmailInput?.value) || '').trim().toLowerCase();
-      const rawName = ((nameInput?.value || fallbackNameInput?.value) || '').trim();
-
-      if (!rawEmail || !rawEmail.includes('@')) {
-        showToast('မှန်ကန်သော Gmail လိပ်စာ ထည့်သွင်းပေးပါ (ဥပမာ - name@gmail.com)', 'error');
-        return;
-      }
-
-      const displayName = rawName || rawEmail.split('@')[0];
-      currentUser = {
-        uid: 'gmail_' + rawEmail.replace(/[^a-zA-Z0-9_\-]/g, '_'),
-        displayName,
-        email: rawEmail,
-        photoURL: createAvatarDataUri(displayName),
-        authMode: 'direct_gmail'
-      };
-
-      localStorage.setItem(STORAGE_KEY_LINKED_GMAIL, JSON.stringify(currentUser));
-      const errBox = document.getElementById('gdriveAuthErrorBox');
-      if (errBox) errBox.classList.add('hidden');
-      const modalErrBox = document.getElementById('modalGdriveErrorBox');
-      if (modalErrBox) modalErrBox.classList.add('hidden');
-
-      updateAuthUI(currentUser, true);
-      closeGoogleConnectModal();
-      showToast(`မင်္ဂလာပါ ${displayName} (${rawEmail}) ချိတ်ဆက်ပြီးပါပြီ!`, 'success');
-
-      // Check if this Gmail already has a saved backup snapshot
-      const existingSnapRaw = localStorage.getItem(STORAGE_KEY_GMAIL_SNAPSHOT_PREFIX + rawEmail);
-      if (existingSnapRaw && isDemoOnlyData(transactions)) {
-        try {
-          const snap = JSON.parse(existingSnapRaw);
-          if (snap && Array.isArray(snap.transactions) && snap.transactions.length > 0) {
-            transactions = snap.transactions;
-            if (Array.isArray(snap.expenses)) expenses = snap.expenses;
-            if (Array.isArray(snap.deposits)) deposits = snap.deposits;
-            if (snap.u9Data && typeof snap.u9Data === 'object') u9Data = snap.u9Data;
-            if (snap.capital) capital = snap.capital;
-            if (snap.settings) settings = Object.assign(settings, snap.settings);
-            localStorage.setItem(STORAGE_KEY_TRANSACTIONS, JSON.stringify(transactions));
-            localStorage.setItem(STORAGE_KEY_EXPENSES, JSON.stringify(expenses));
-            localStorage.setItem(STORAGE_KEY_DEPOSITS, JSON.stringify(deposits));
-            localStorage.setItem(STORAGE_KEY_U9, JSON.stringify(u9Data));
-            localStorage.setItem(STORAGE_KEY_CAPITAL, JSON.stringify(capital));
-            localStorage.setItem(STORAGE_KEY_SETTINGS, JSON.stringify(settings));
-            updateAllUI();
-          }
-        } catch (err) {}
-      }
-
-      if (autoBackupEnabled) {
-        await triggerDriveBackup(false);
-      }
+      return await handleGoogleSignIn();
     };
 
     const handleGoogleSignOut = window.handleGoogleSignOut = async function() {
