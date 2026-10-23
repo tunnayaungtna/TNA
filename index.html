@@ -236,9 +236,9 @@
               <span class="text-xs sm:text-sm font-bold theme-text-heading">(Lab Shwin)</span>
             </h1>
             <!-- Google Drive Auto-Backup Indicator -->
-            <span id="gdriveStatusBadge" onclick="switchTab('capital'); openGoogleDriveSection();" class="cursor-pointer text-[10px] bg-slate-500/15 border border-slate-500/30 text-slate-400 px-2 py-0.5 rounded-full font-medium flex items-center gap-1 hover:border-emerald-500/50 transition">
+            <span id="gdriveStatusBadge" onclick="openGoogleConnectModal()" class="cursor-pointer text-[10px] bg-slate-500/15 border border-slate-500/30 text-slate-400 px-2 py-0.5 rounded-full font-medium flex items-center gap-1 hover:border-emerald-500/50 transition">
               <span id="gdrivePingDot" class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
-              <span id="gdriveStatusText">Drive ချိတ်ရန်</span>
+              <span id="gdriveStatusText">Gmail ချိတ်ရန်</span>
             </span>
           </div>
           <p class="text-[11px] theme-text-muted">ထိုင်း-မြန်မာ ငွေလွှဲ & KPay ငွေထုတ်စာရင်း</p>
@@ -266,13 +266,13 @@
           <svg id="moonIcon" class="w-4 h-4 hidden text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
         </button>
 
-        <!-- Search Voucher -->
-        <button onclick="openVoucherSearchModal()" title="ဘောက်ချာရှာရန်" class="p-2 rounded-xl theme-card-sub border hover:opacity-90 active:scale-95 transition theme-text-muted">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        <!-- Search Icon Button (Right next to Day/Night Mode Toggle) -->
+        <button onclick="openVoucherSearchModal()" title="စာရင်းအားလုံး နှင့် ဘောက်ချာ ရှာဖွေရန်" class="p-2 rounded-xl theme-card-sub border hover:opacity-90 active:scale-95 transition flex items-center justify-center theme-text-muted hover:text-blue-500">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
         </button>
 
         <!-- Google User Profile Pill (Visible when logged in) -->
-        <div id="userProfileHeaderPill" onclick="switchTab('capital'); openGoogleDriveSection();" class="hidden cursor-pointer items-center gap-1.5 p-1 pr-2 rounded-full theme-card-sub border hover:opacity-90 transition">
+        <div id="userProfileHeaderPill" onclick="openGoogleConnectModal()" class="hidden cursor-pointer items-center gap-1.5 p-1 pr-2 rounded-full theme-card-sub border hover:opacity-90 transition">
           <img id="userHeaderAvatar" src="" alt="avatar" class="w-6 h-6 rounded-full object-cover">
           <span id="userHeaderName" class="text-[11px] font-semibold max-w-[80px] sm:max-w-[120px] truncate theme-text-heading">User</span>
         </div>
@@ -297,12 +297,12 @@
           </button>
         </div>
 
-        <div id="driveNoticeStrip" onclick="switchTab('capital'); openGoogleDriveSection();" class="cursor-pointer flex items-center justify-between gap-2 px-3 py-1.5 rounded-xl theme-card border text-xs hover:border-blue-500/50 transition">
+        <div id="driveNoticeStrip" onclick="openGoogleConnectModal()" class="cursor-pointer flex items-center justify-between gap-2 px-3 py-1.5 rounded-xl theme-card border text-xs hover:border-blue-500/50 transition">
           <div class="flex items-center gap-2">
             <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
             <span class="theme-text-muted text-[11px]" id="dashSyncInfoText">Gmail ဖြင့် ချိတ်ပြီး Drive Auto-Backup လုပ်ထားပါ</span>
           </div>
-          <span class="text-blue-500 text-[10px] font-bold">စီမံရန် ➔</span>
+          <span class="text-blue-500 text-[10px] font-bold">ချိတ်ဆက်ရန် ➔</span>
         </div>
       </div>
 
@@ -2218,16 +2218,22 @@
             </p>
 
             <!-- Method 1: 1-Click Google Popup Sign-In -->
-            <button type="button" id="googleSignInBtn" onclick="handleGoogleSignIn()" class="gsi-button w-full shadow-sm py-2.5">
-              <svg width="18" height="18" viewBox="0 0 48 48">
-                <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
-                <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
-                <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path>
-                <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
-                <path fill="none" d="M0 0h48v48H0z"></path>
-              </svg>
-              <span id="googleSignInBtnText">Google (Gmail) ဖြင့် ချိတ်ဆက်မည်</span>
-            </button>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <button type="button" id="googleSignInBtn" onclick="handleGoogleSignIn()" class="gsi-button w-full shadow-sm py-2.5">
+                <svg width="18" height="18" viewBox="0 0 48 48">
+                  <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
+                  <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
+                  <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path>
+                  <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
+                  <path fill="none" d="M0 0h48v48H0z"></path>
+                </svg>
+                <span id="googleSignInBtnText">Google ဖြင့် ချိတ်ဆက်မည်</span>
+              </button>
+              <button type="button" onclick="handleGISButtonSignIn(false)" class="py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-98 text-white text-xs font-bold shadow flex items-center justify-center gap-1.5 transition">
+                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
+                <span>Google OAuth ဖြင့် ချိတ်ရန်</span>
+              </button>
+            </div>
 
             <!-- Method 2: Direct Gmail Input (Works 100% on ALL Mobile Browsers, WebViews & GitHub Pages without Popups) -->
             <div class="pt-2 border-t border-slate-500/20 space-y-2 text-left">
@@ -2357,12 +2363,12 @@
         </div>
       </div>
 
-      <!-- Subsection 3: All Transactions History Table -->
+      <!-- Subsection 3: All Transactions History Table (Unified across all modules) -->
       <div id="ledgerSection" class="theme-card border rounded-2xl p-4 sm:p-5 space-y-3 shadow-sm">
         <div class="flex flex-wrap items-center justify-between gap-2 border-b pb-2.5">
           <h3 class="text-xs sm:text-sm font-bold theme-text-heading flex items-center gap-1.5">
             <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
-            စာရင်းမှတ်တမ်း အားလုံး (All History)
+            စာရင်းမှတ်တမ်း အားလုံး (All Modules History)
           </h3>
           <div class="flex items-center gap-2">
             <span class="text-[10px] theme-tag-bg px-2.5 py-1 rounded-full font-bold" id="ledgerCountBadge">0 ခု</span>
@@ -2375,20 +2381,23 @@
 
         <div class="space-y-2">
           <div class="relative">
-            <input type="text" id="ledgerSearchInput" oninput="renderLedgerList()" placeholder="ရှာဖွေရန် (လွှဲသူ၊ ထုတ်သူ၊ ID၊ ဖုန်း)..." class="w-full theme-input border rounded-xl px-3.5 py-2 pl-9 pr-8 text-xs">
+            <input type="text" id="ledgerSearchInput" oninput="renderLedgerList()" placeholder="ရှာဖွေရန် (အမည်၊ လွှဲသူ/ထုတ်သူ၊ ဖုန်း၊ ID၊ အပ်ငွေ၊ U9 ဘေလ်၊ အကြွေး၊ အသုံးစရိတ်၊ ပမာဏ)..." class="w-full theme-input border rounded-xl px-3.5 py-2 pl-9 pr-8 text-xs">
             <svg class="w-4 h-4 theme-text-muted absolute left-3 top-2.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
             <button type="button" id="ledgerSearchClearBtn" onclick="clearSearchInput('ledgerSearchInput')" class="hidden absolute right-2.5 top-2 w-5 h-5 rounded-full bg-slate-500/20 hover:bg-rose-500/20 theme-text-muted hover:text-rose-500 flex items-center justify-center text-[11px] font-bold transition" title="ရှင်းလင်းရန်" aria-label="Clear search">✕</button>
           </div>
           <div class="flex flex-wrap gap-1.5 text-[11px]">
-            <button onclick="setLedgerTypeFilter('ALL')" id="history-filter-all" class="flex-1 min-w-[60px] py-1.5 px-2 rounded-lg bg-blue-600 text-white font-bold">အားလုံး</button>
-            <button onclick="setLedgerTypeFilter('REMIT_UNPAID')" id="history-filter-remit_unpaid" class="flex-1 min-w-[95px] py-1.5 px-2 rounded-lg theme-card-sub border theme-text-muted hover:text-amber-500">မထုတ်ပေးရသေး</button>
-            <button onclick="setLedgerTypeFilter('REMIT_PAID')" id="history-filter-remit_paid" class="flex-1 min-w-[85px] py-1.5 px-2 rounded-lg theme-card-sub border theme-text-muted hover:text-emerald-500">ထုတ်ပေးပြီး</button>
-            <button onclick="setLedgerTypeFilter('CASHOUT')" id="history-filter-cashout" class="flex-1 min-w-[65px] py-1.5 px-2 rounded-lg theme-card-sub border theme-text-muted hover:text-blue-500">ငွေထုတ်</button>
-            <button onclick="setLedgerTypeFilter('CREDIT')" id="history-filter-credit" class="flex-1 min-w-[65px] py-1.5 px-2 rounded-lg theme-card-sub border theme-text-muted hover:text-rose-500">အကြွေး</button>
+            <button onclick="setLedgerTypeFilter('ALL')" id="history-filter-all" class="flex-1 min-w-[60px] py-1.5 px-2 rounded-lg bg-blue-600 text-white font-bold shadow">အားလုံး</button>
+            <button onclick="setLedgerTypeFilter('REMIT_UNPAID')" id="history-filter-remit_unpaid" class="flex-1 min-w-[90px] py-1.5 px-2 rounded-lg theme-card-sub border theme-text-muted hover:text-amber-500">⏳ မထုတ်ရသေး</button>
+            <button onclick="setLedgerTypeFilter('REMIT_PAID')" id="history-filter-remit_paid" class="flex-1 min-w-[80px] py-1.5 px-2 rounded-lg theme-card-sub border theme-text-muted hover:text-emerald-500">✓ ထုတ်ပေးပြီး</button>
+            <button onclick="setLedgerTypeFilter('CASHOUT')" id="history-filter-cashout" class="flex-1 min-w-[75px] py-1.5 px-2 rounded-lg theme-card-sub border theme-text-muted hover:text-blue-500">🏧 ငွေထုတ်</button>
+            <button onclick="setLedgerTypeFilter('DEPOSIT')" id="history-filter-deposit" class="flex-1 min-w-[75px] py-1.5 px-2 rounded-lg theme-card-sub border theme-text-muted hover:text-purple-500">🏦 အပ်ငွေ</button>
+            <button onclick="setLedgerTypeFilter('U9')" id="history-filter-u9" class="flex-1 min-w-[75px] py-1.5 px-2 rounded-lg theme-card-sub border theme-text-muted hover:text-cyan-500">📶 U9 ဘေလ်</button>
+            <button onclick="setLedgerTypeFilter('CREDIT')" id="history-filter-credit" class="flex-1 min-w-[70px] py-1.5 px-2 rounded-lg theme-card-sub border theme-text-muted hover:text-rose-500">⚠️ အကြွေး</button>
+            <button onclick="setLedgerTypeFilter('EXPENSE')" id="history-filter-expense" class="flex-1 min-w-[80px] py-1.5 px-2 rounded-lg theme-card-sub border theme-text-muted hover:text-amber-500">💸 အသုံးစရိတ်</button>
           </div>
         </div>
 
-        <div id="ledgerListContainer" class="space-y-2 max-h-[420px] overflow-y-auto pr-1">
+        <div id="ledgerListContainer" class="space-y-2 max-h-[450px] overflow-y-auto pr-1">
           <!-- Rendered by JS -->
         </div>
       </div>
@@ -3044,13 +3053,125 @@
     </div>
   </div>
 
+  <!-- 12. GOOGLE ACCOUNT & CLOUD BACKUP QUICK MODAL (မည်သည့်စာမျက်နှာမှမဆို Google အကောင့် ချိတ်ဆက်ရန်) -->
+  <div id="googleConnectModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3.5 sm:p-4 hidden">
+    <div class="theme-card border border-emerald-500/50 w-full max-w-md rounded-3xl p-4 sm:p-5 shadow-2xl space-y-4 max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b pb-3">
+        <div class="flex items-center gap-2">
+          <div class="w-9 h-9 rounded-xl bg-emerald-600/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+          </div>
+          <div>
+            <h3 class="text-xs sm:text-sm font-extrabold theme-text-heading">Google (Gmail) ချိတ်ဆက်ခြင်း & Cloud Backup</h3>
+            <p class="text-[10px] theme-text-muted">စာရင်းများအားလုံးကို Gmail ဖြင့် အလိုအလျောက် သိမ်းဆည်းရန်</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeGoogleConnectModal()" class="theme-text-muted hover:text-rose-500 p-1.5 rounded-full text-base font-bold">✕</button>
+      </div>
+
+      <!-- Logged Out View inside Modal -->
+      <div id="modalGdriveLoggedOut" class="space-y-3.5">
+        <div class="p-3 rounded-2xl bg-blue-500/10 border border-blue-500/30 text-xs space-y-2">
+          <div class="font-bold text-blue-400 flex items-center gap-1.5">
+            <span>☁️</span>
+            <span>နည်းလမ်း (၁) - Google Popup ဖြင့် တိုက်ရိုက်ချိတ်ရန်</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <button type="button" onclick="handleFirebasePopupSignIn()" class="gsi-button w-full shadow-sm py-2.5 text-xs">
+              <svg width="16" height="16" viewBox="0 0 48 48">
+                <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
+                <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
+                <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path>
+                <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
+              </svg>
+              <span id="modalGoogleSignInBtnText">Google ဖြင့် ချိတ်မည်</span>
+            </button>
+            <button type="button" onclick="handleGISButtonSignIn(false)" class="py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-98 text-white text-xs font-bold shadow flex items-center justify-center gap-1.5 transition">
+              <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
+              <span>Google OAuth ချိတ်ရန်</span>
+            </button>
+          </div>
+        </div>
+
+        <div id="modalGdriveErrorBox" class="hidden p-2.5 rounded-xl bg-amber-500/15 border border-amber-500/40 text-[11px] text-amber-400 space-y-1">
+          <div id="modalGdriveErrorText" class="font-bold"></div>
+          <div class="text-[10px] theme-text-muted">အောက်ပါ နည်းလမ်း (၂) တွင် မိမိ Gmail လိပ်စာ ရိုက်ထည့်၍ Popup မလိုဘဲ ချက်ချင်း ချိတ်ဆက်နိုင်ပါသည်။</div>
+        </div>
+
+        <!-- Method 2: Instant Direct Gmail Connect (Never blocked by Popup Blockers or Iframes!) -->
+        <div class="p-3.5 rounded-2xl theme-card-sub border border-emerald-500/40 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-extrabold text-emerald-400 flex items-center gap-1.5">
+              <span>✉️</span>
+              <span>နည်းလမ်း (၂) - Gmail ရိုက်ထည့်၍ တိုက်ရိုက်ချိတ်ရန် (အမြန်ဆုံး)</span>
+            </span>
+            <span class="text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold">Popup မလိုပါ</span>
+          </div>
+          <p class="text-[11px] theme-text-muted leading-relaxed">
+            ဖုန်း Browser သို့မဟုတ် Preview တွင် Google Popup ပိတ်နေပါက မိမိ၏ Gmail လိပ်စာကို ရိုက်ထည့်ပြီး တိုက်ရိုက် ချိတ်ဆက်သိမ်းဆည်းနိုင်ပါသည်။
+          </p>
+          <form onsubmit="handleDirectGmailConnect(event, 'modal')" class="space-y-2.5">
+            <div>
+              <label class="block text-[11px] font-semibold theme-text-heading mb-1">Gmail လိပ်စာ (Email Address) *</label>
+              <input type="email" id="modalDirectGmailInput" required placeholder="ဥပမာ - yourname@gmail.com" class="w-full theme-input border rounded-xl px-3 py-2.5 text-xs font-mono">
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold theme-text-heading mb-1">အမည် / ဆိုင်အမည် (Optional)</label>
+              <input type="text" id="modalDirectGmailNameInput" placeholder="ဥပမာ - လာဘ်ရွှင် (Lab Shwin)" class="w-full theme-input border rounded-xl px-3 py-2 text-xs">
+            </div>
+            <button type="submit" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 active:scale-98 text-white text-xs font-extrabold shadow-lg shadow-emerald-900/30 flex items-center justify-center gap-1.5 transition">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+              <span>Gmail အကောင့် ချက်ချင်း ချိတ်ဆက်မည်</span>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Logged In View inside Modal -->
+      <div id="modalGdriveLoggedIn" class="hidden space-y-3.5">
+        <div class="flex items-center justify-between p-3 rounded-2xl theme-card-sub border border-emerald-500/40">
+          <div class="flex items-center gap-2.5">
+            <img id="modalUserAvatar" src="" alt="avatar" class="w-11 h-11 rounded-full border-2 border-emerald-500 object-cover">
+            <div>
+              <h4 id="modalUserName" class="text-xs sm:text-sm font-extrabold theme-text-heading">User</h4>
+              <p id="modalUserEmail" class="text-[11px] text-emerald-400 font-mono truncate max-w-[180px] sm:max-w-[230px]">user@gmail.com</p>
+              <span id="modalUserModeBadge" class="inline-block mt-0.5 text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold">Auto-Backup ချိတ်ဆက်ပြီး</span>
+            </div>
+          </div>
+          <button type="button" onclick="handleGoogleSignOut()" class="px-3 py-1.5 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-400 hover:bg-rose-600 hover:text-white text-xs font-bold transition">
+            အကောင့်ထွက်မည်
+          </button>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <button type="button" onclick="triggerDriveBackup(true)" class="py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+            <span>ယခု Backup သိမ်းမည်</span>
+          </button>
+          <button type="button" onclick="handleRestoreFromDrive()" class="py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-95 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+            <span>Backup ပြန်ယူမည်</span>
+          </button>
+        </div>
+
+        <button type="button" onclick="closeGoogleConnectModal(); switchTab('capital'); openGoogleDriveSection();" class="w-full py-2 rounded-xl theme-card-sub border text-xs font-semibold text-blue-400 hover:border-blue-500 transition">
+          ⚙️ အရင်း & Backup စီမံခန့်ခွဲမှု စာမျက်နှာသို့ သွားရန် ➔
+        </button>
+      </div>
+
+      <button type="button" onclick="closeGoogleConnectModal()" class="w-full py-2 rounded-xl theme-card-sub border text-xs font-bold theme-text-muted hover:text-rose-500 transition">
+        ပိတ်မည်
+      </button>
+    </div>
+  </div>
+
   <!-- TOAST NOTIFICATION CONTAINER -->
   <div id="toastContainer" class="fixed top-4 inset-x-0 z-50 flex flex-col items-center pointer-events-none px-4 space-y-2"></div>
 
   <!-- ================= JAVASCRIPT & EMBEDDED ASSETS ================= -->
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js';
-    import { getAuth, signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js';
+    import { getAuth, signInWithPopup, signInWithRedirect, signInWithCredential, getRedirectResult, GoogleAuthProvider, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js';
     import { getFirestore, doc, getDoc, getDocFromServer, setDoc, updateDoc, deleteDoc, collection, getDocs, writeBatch, serverTimestamp, query, where } from 'https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js';
 
     // --- Embedded Firebase Configuration (Completely Standalone) ---
@@ -3209,7 +3330,8 @@
       'phoneMigrationModal',
       'cloudRestorePromptModal',
       'u9CapitalModal',
-      'masterSettlementModal'
+      'masterSettlementModal',
+      'googleConnectModal'
     ];
 
     let dashboardPeriod = 'today';
@@ -3489,6 +3611,36 @@
       }
     }
 
+    const openGoogleConnectModal = window.openGoogleConnectModal = function(errorMessage = '') {
+      const modal = document.getElementById('googleConnectModal');
+      if (!modal) return;
+      const errBox = document.getElementById('modalGdriveErrorBox');
+      const errText = document.getElementById('modalGdriveErrorText');
+      if (errBox && errText) {
+        if (errorMessage) {
+          errText.textContent = errorMessage;
+          errBox.classList.remove('hidden');
+        } else {
+          errBox.classList.add('hidden');
+        }
+      }
+      const savedUser = getSavedDirectGmailUser();
+      const modalEmailInput = document.getElementById('modalDirectGmailInput');
+      const modalNameInput = document.getElementById('modalDirectGmailNameInput');
+      if (savedUser && modalEmailInput && !modalEmailInput.value) {
+        modalEmailInput.value = savedUser.email || '';
+        if (modalNameInput) modalNameInput.value = savedUser.displayName || '';
+      }
+      updateAuthUI(currentUser, Boolean(currentUser));
+      modal.classList.remove('hidden');
+      armBackTrap();
+    };
+
+    const closeGoogleConnectModal = window.closeGoogleConnectModal = function() {
+      const modal = document.getElementById('googleConnectModal');
+      if (modal) modal.classList.add('hidden');
+    };
+
     // Fallback using Google Identity Services (GIS) OAuth2 Token Client with basic profile/email scopes (NO unverified scope block!)
     function signInWithGISBasic(includeDriveScope = false) {
       return new Promise((resolve, reject) => {
@@ -3508,21 +3660,44 @@
             callback: async (tokenResponse) => {
               if (tokenResponse && tokenResponse.access_token) {
                 cachedAccessToken = tokenResponse.access_token;
-                try {
-                  const profRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-                    headers: { Authorization: `Bearer ${cachedAccessToken}` }
-                  });
-                  if (profRes.ok) {
-                    const prof = await profRes.json();
-                    currentUser = {
-                      uid: prof.sub ? `gis_${prof.sub}` : undefined,
-                      displayName: prof.name || prof.email?.split('@')[0] || 'Google User',
-                      email: prof.email || '',
-                      photoURL: prof.picture || createAvatarDataUri(prof.email),
-                      authMode: includeDriveScope ? 'drive' : 'gis'
-                    };
+
+                // Also bridge the OAuth access token into Firebase Auth so Firestore rules pass seamlessly!
+                if (auth && typeof signInWithCredential === 'function') {
+                  try {
+                    const fbCred = GoogleAuthProvider.credential(null, cachedAccessToken);
+                    const fbRes = await signInWithCredential(auth, fbCred);
+                    if (fbRes && fbRes.user) {
+                      currentUser = {
+                        uid: fbRes.user.uid,
+                        displayName: fbRes.user.displayName || fbRes.user.email?.split('@')[0] || 'Google User',
+                        email: fbRes.user.email || '',
+                        photoURL: fbRes.user.photoURL || createAvatarDataUri(fbRes.user.email),
+                        authMode: 'firebase'
+                      };
+                    }
+                  } catch (credErr) {
+                    console.warn('Firebase credential bridge note:', credErr?.message || credErr);
                   }
-                } catch (e) {}
+                }
+
+                if (!currentUser || !currentUser.email) {
+                  try {
+                    const profRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                      headers: { Authorization: `Bearer ${cachedAccessToken}` }
+                    });
+                    if (profRes.ok) {
+                      const prof = await profRes.json();
+                      currentUser = {
+                        uid: auth?.currentUser?.uid || (prof.sub ? `gis_${prof.sub}` : undefined),
+                        displayName: prof.name || prof.email?.split('@')[0] || 'Google User',
+                        email: prof.email || '',
+                        photoURL: prof.picture || createAvatarDataUri(prof.email),
+                        authMode: auth?.currentUser ? 'firebase' : (includeDriveScope ? 'drive' : 'gis')
+                      };
+                    }
+                  } catch (e) {}
+                }
+
                 if (!currentUser) {
                   currentUser = {
                     displayName: 'Google User',
@@ -3548,13 +3723,46 @@
       });
     }
 
-    // Method 1: Primary 1-Click Google Sign-In (Works for ALL Gmail users without 403 unverified scope block!)
+    // Synchronous button handler for Google Identity Services OAuth (preserves browser user-gesture!)
+    const handleGISButtonSignIn = window.handleGISButtonSignIn = async function(includeDriveScope = false) {
+      isSigningIn = true;
+      try {
+        const gisResult = await signInWithGISBasic(includeDriveScope);
+        if (gisResult?.user) {
+          updateAuthUI(currentUser, true);
+          closeGoogleConnectModal();
+          showToast(`မင်္ဂလာပါ ${currentUser.displayName || ''} (Google ချိတ်ဆက်ပြီးပါပြီ)`, 'success');
+          if (autoBackupEnabled) {
+            await checkOrSyncInitialCloudBackup();
+            await triggerDriveBackup(false);
+          }
+          return true;
+        }
+      } catch (err) {
+        console.warn('GIS Sign-in note:', err);
+        const msg = 'Google Popup ပိတ်ထားပါသည်။ အောက်ပါအကွက်တွင် မိမိ Gmail လိပ်စာ ရိုက်ထည့်၍ တိုက်ရိုက် ချိတ်ဆက်ပါ။';
+        openGoogleConnectModal(msg);
+        const modalInput = document.getElementById('modalDirectGmailInput');
+        if (modalInput) modalInput.focus();
+      } finally {
+        isSigningIn = false;
+      }
+      return false;
+    };
+
+    const handleFirebasePopupSignIn = window.handleFirebasePopupSignIn = async function() {
+      return await handleGoogleSignIn();
+    };
+
+    // Method 1: Primary 1-Click Google Sign-In
     const handleGoogleSignIn = window.handleGoogleSignIn = async function() {
       const btnText = document.getElementById('googleSignInBtnText');
+      const modalBtnText = document.getElementById('modalGoogleSignInBtnText');
       const errBox = document.getElementById('gdriveAuthErrorBox');
       const errText = document.getElementById('gdriveAuthErrorText');
       if (errBox) errBox.classList.add('hidden');
       if (btnText) btnText.textContent = 'ချိတ်ဆက်နေပါသည်...';
+      if (modalBtnText) modalBtnText.textContent = 'ချိတ်ဆက်နေပါသည်...';
 
       isSigningIn = true;
       try {
@@ -3566,38 +3774,24 @@
 
         let connected = false;
 
-        // Primary Method: Standard Firebase Google Sign-In WITHOUT restricted Workspace scopes
-        // This guarantees any end-user's Gmail account can sign in without Error 403: access_denied!
         if (auth) {
-          try {
-            const provider = new GoogleAuthProvider();
-            provider.setCustomParameters({ prompt: 'select_account' });
+          const provider = new GoogleAuthProvider();
+          provider.setCustomParameters({ prompt: 'select_account' });
 
-            const result = await signInWithPopup(auth, provider);
-            const credential = GoogleAuthProvider.credentialFromResult(result);
-            if (credential?.accessToken) {
-              cachedAccessToken = credential.accessToken;
-            }
-            currentUser = {
-              uid: result.user.uid,
-              displayName: result.user.displayName || result.user.email?.split('@')[0] || 'Google User',
-              email: result.user.email || '',
-              photoURL: result.user.photoURL || createAvatarDataUri(result.user.email),
-              authMode: 'firebase'
-            };
-            localStorage.setItem(STORAGE_KEY_LINKED_GMAIL, JSON.stringify(currentUser));
-            connected = true;
-          } catch (fbErr) {
-            console.warn('Firebase signInWithPopup fallback check:', fbErr?.code || fbErr?.message);
-            if (fbErr?.code === 'auth/popup-closed-by-user') {
-              throw fbErr;
-            }
-            // Fallback to Google Identity Services basic profile/email sign-in
-            const gisResult = await signInWithGISBasic(false);
-            if (gisResult?.user) {
-              connected = true;
-            }
+          const result = await signInWithPopup(auth, provider);
+          const credential = GoogleAuthProvider.credentialFromResult(result);
+          if (credential?.accessToken) {
+            cachedAccessToken = credential.accessToken;
           }
+          currentUser = {
+            uid: result.user.uid,
+            displayName: result.user.displayName || result.user.email?.split('@')[0] || 'Google User',
+            email: result.user.email || '',
+            photoURL: result.user.photoURL || createAvatarDataUri(result.user.email),
+            authMode: 'firebase'
+          };
+          localStorage.setItem(STORAGE_KEY_LINKED_GMAIL, JSON.stringify(currentUser));
+          connected = true;
         } else {
           const gisResult = await signInWithGISBasic(false);
           if (gisResult?.user) {
@@ -3607,9 +3801,11 @@
 
         if (connected && currentUser) {
           updateAuthUI(currentUser, true);
+          closeGoogleConnectModal();
           showToast(`မင်္ဂလာပါ ${currentUser.displayName || ''} (Google Auto-Backup ချိတ်ဆက်ပြီးပါပြီ)`, 'success');
           if (autoBackupEnabled) {
             await checkOrSyncInitialCloudBackup();
+            await triggerDriveBackup(false);
           }
           return true;
         }
@@ -3618,18 +3814,19 @@
         console.warn('Sign-in popup note:', err);
         const msg = err?.code === 'auth/popup-closed-by-user'
           ? 'Google အကောင့် ရွေးချယ်မှု ပိတ်လိုက်ပါသည်။ ပြန်နှိပ်ပါ သို့မဟုတ် အောက်ပါအကွက်တွင် Gmail ရိုက်ထည့်၍ တိုက်ရိုက်ချိတ်ဆက်ပါ။'
-          : 'Browser Popup ပိတ်ထားပါသည်။ အောက်ပါအကွက်တွင် မိမိ Gmail လိပ်စာ ရိုက်ထည့်၍ တိုက်ရိုက် ချိတ်ဆက်နိုင်ပါသည်။';
+          : 'Browser / Preview တွင် Popup ပိတ်ထားပါသည်။ အောက်ပါအကွက်တွင် မိမိ Gmail လိပ်စာ ရိုက်ထည့်၍ တိုက်ရိုက် ချိတ်ဆက်နိုင်ပါသည်။';
         if (errBox && errText) {
           errText.textContent = msg;
           errBox.classList.remove('hidden');
         }
-        const directInput = document.getElementById('directGmailInput');
-        if (directInput) directInput.focus();
-        showToast('အောက်ပါအကွက်တွင် Gmail ရိုက်ထည့်၍ တိုက်ရိုက်ချိတ်ဆက်နိုင်ပါသည်', 'info');
+        openGoogleConnectModal(msg);
+        const modalInput = document.getElementById('modalDirectGmailInput');
+        if (modalInput) modalInput.focus();
         return false;
       } finally {
         isSigningIn = false;
-        if (btnText) btnText.textContent = 'Google (Gmail) ဖြင့် ချိတ်ဆက်မည်';
+        if (btnText) btnText.textContent = 'Google ဖြင့် ချိတ်ဆက်မည်';
+        if (modalBtnText) modalBtnText.textContent = 'Google ဖြင့် ချိတ်မည်';
       }
     };
 
@@ -3647,19 +3844,25 @@
           await signInWithRedirect(auth, provider);
         }
       } catch (err) {
-        const directInput = document.getElementById('directGmailInput');
-        if (directInput) directInput.focus();
-        showToast('Gmail လိပ်စာကို အကွက်တွင် ရိုက်ထည့်၍ တိုက်ရိုက်ချိတ်ဆက်ပေးပါ', 'info');
+        openGoogleConnectModal('Gmail လိပ်စာကို အကွက်တွင် ရိုက်ထည့်၍ တိုက်ရိုက်ချိတ်ဆက်ပေးပါ');
       }
     };
 
-    // Method 3: Direct Gmail Address Connect (Works 100% on ALL Mobile Browsers, WebViews & GitHub Pages without Popups)
-    const handleDirectGmailConnect = window.handleDirectGmailConnect = async function(e) {
+    // Method 3: Direct Gmail Address Connect (Works 100% on ALL Mobile Browsers, WebViews & Iframes without Popups)
+    const handleDirectGmailConnect = window.handleDirectGmailConnect = async function(e, source = 'card') {
       if (e) e.preventDefault();
-      const emailInput = document.getElementById('directGmailInput');
-      const nameInput = document.getElementById('directGmailNameInput');
-      const rawEmail = (emailInput?.value || '').trim().toLowerCase();
-      const rawName = (nameInput?.value || '').trim();
+      const emailInput = source === 'modal'
+        ? document.getElementById('modalDirectGmailInput')
+        : document.getElementById('directGmailInput');
+      const nameInput = source === 'modal'
+        ? document.getElementById('modalDirectGmailNameInput')
+        : document.getElementById('directGmailNameInput');
+
+      const fallbackEmailInput = document.getElementById('directGmailInput');
+      const fallbackNameInput = document.getElementById('directGmailNameInput');
+
+      const rawEmail = ((emailInput?.value || fallbackEmailInput?.value) || '').trim().toLowerCase();
+      const rawName = ((nameInput?.value || fallbackNameInput?.value) || '').trim();
 
       if (!rawEmail || !rawEmail.includes('@')) {
         showToast('မှန်ကန်သော Gmail လိပ်စာ ထည့်သွင်းပေးပါ (ဥပမာ - name@gmail.com)', 'error');
@@ -3678,20 +3881,29 @@
       localStorage.setItem(STORAGE_KEY_LINKED_GMAIL, JSON.stringify(currentUser));
       const errBox = document.getElementById('gdriveAuthErrorBox');
       if (errBox) errBox.classList.add('hidden');
+      const modalErrBox = document.getElementById('modalGdriveErrorBox');
+      if (modalErrBox) modalErrBox.classList.add('hidden');
 
       updateAuthUI(currentUser, true);
+      closeGoogleConnectModal();
       showToast(`မင်္ဂလာပါ ${displayName} (${rawEmail}) ချိတ်ဆက်ပြီးပါပြီ!`, 'success');
 
       // Check if this Gmail already has a saved backup snapshot
       const existingSnapRaw = localStorage.getItem(STORAGE_KEY_GMAIL_SNAPSHOT_PREFIX + rawEmail);
-      if (existingSnapRaw && transactions.length <= 3) {
+      if (existingSnapRaw && isDemoOnlyData(transactions)) {
         try {
           const snap = JSON.parse(existingSnapRaw);
           if (snap && Array.isArray(snap.transactions) && snap.transactions.length > 0) {
             transactions = snap.transactions;
+            if (Array.isArray(snap.expenses)) expenses = snap.expenses;
+            if (Array.isArray(snap.deposits)) deposits = snap.deposits;
+            if (snap.u9Data && typeof snap.u9Data === 'object') u9Data = snap.u9Data;
             if (snap.capital) capital = snap.capital;
             if (snap.settings) settings = Object.assign(settings, snap.settings);
             localStorage.setItem(STORAGE_KEY_TRANSACTIONS, JSON.stringify(transactions));
+            localStorage.setItem(STORAGE_KEY_EXPENSES, JSON.stringify(expenses));
+            localStorage.setItem(STORAGE_KEY_DEPOSITS, JSON.stringify(deposits));
+            localStorage.setItem(STORAGE_KEY_U9, JSON.stringify(u9Data));
             localStorage.setItem(STORAGE_KEY_CAPITAL, JSON.stringify(capital));
             localStorage.setItem(STORAGE_KEY_SETTINGS, JSON.stringify(settings));
             updateAllUI();
@@ -3720,9 +3932,12 @@
     function updateAuthUI(user, isConnected = true) {
       const loggedOutDiv = document.getElementById('gdriveAuthLoggedOut');
       const loggedInDiv = document.getElementById('gdriveAuthLoggedIn');
+      const modalLoggedOutDiv = document.getElementById('modalGdriveLoggedOut');
+      const modalLoggedInDiv = document.getElementById('modalGdriveLoggedIn');
       const refreshBox = document.getElementById('gdriveTokenRefreshBox');
       const activeBox = document.getElementById('gdriveActiveStatusBox');
       const statusText = document.getElementById('gdriveStatusText');
+      const statusBadge = document.getElementById('gdriveStatusBadge');
       const pingDot = document.getElementById('gdrivePingDot');
       const headerPill = document.getElementById('userProfileHeaderPill');
       const dashNoticeText = document.getElementById('dashSyncInfoText');
@@ -3731,6 +3946,8 @@
       if (user) {
         if (loggedOutDiv) loggedOutDiv.classList.add('hidden');
         if (loggedInDiv) loggedInDiv.classList.remove('hidden');
+        if (modalLoggedOutDiv) modalLoggedOutDiv.classList.add('hidden');
+        if (modalLoggedInDiv) modalLoggedInDiv.classList.remove('hidden');
         if (refreshBox) refreshBox.classList.add('hidden');
         if (activeBox) activeBox.classList.remove('hidden');
 
@@ -3752,24 +3969,40 @@
         if (cardEmail) cardEmail.textContent = user.email || '';
         if (cardAvatar) cardAvatar.src = avatarSrc;
 
-        if (modeBadge) {
-          modeBadge.textContent = auth?.currentUser
-            ? 'Firebase Cloud Auto-Backup Active'
-            : 'Gmail Auto-Backup Active';
-        }
+        const mName = document.getElementById('modalUserName');
+        const mEmail = document.getElementById('modalUserEmail');
+        const mAvatar = document.getElementById('modalUserAvatar');
+        const mBadge = document.getElementById('modalUserModeBadge');
+        if (mName) mName.textContent = user.displayName || 'Google User';
+        if (mEmail) mEmail.textContent = user.email || '';
+        if (mAvatar) mAvatar.src = avatarSrc;
+
+        const badgeLabel = auth?.currentUser
+          ? 'Firebase Cloud Auto-Backup Active'
+          : 'Gmail Auto-Backup Active';
+        if (modeBadge) modeBadge.textContent = badgeLabel;
+        if (mBadge) mBadge.textContent = badgeLabel;
 
         if (statusText) statusText.textContent = 'Gmail ချိတ်ပြီး';
+        if (statusBadge) {
+          statusBadge.className = 'cursor-pointer text-[10px] bg-emerald-500/15 border border-emerald-500/40 text-emerald-400 px-2 py-0.5 rounded-full font-bold flex items-center gap-1 hover:border-emerald-400 transition';
+        }
         if (pingDot) pingDot.className = 'w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping';
         if (dashNoticeText) dashNoticeText.textContent = `Auto-Backup ချိတ်ဆက်ပြီး (${user.email})`;
       } else {
         if (loggedOutDiv) loggedOutDiv.classList.remove('hidden');
         if (loggedInDiv) loggedInDiv.classList.add('hidden');
+        if (modalLoggedOutDiv) modalLoggedOutDiv.classList.remove('hidden');
+        if (modalLoggedInDiv) modalLoggedInDiv.classList.add('hidden');
         if (headerPill) {
           headerPill.classList.add('hidden');
           headerPill.classList.remove('flex');
         }
 
         if (statusText) statusText.textContent = 'Gmail ချိတ်ရန်';
+        if (statusBadge) {
+          statusBadge.className = 'cursor-pointer text-[10px] bg-slate-500/15 border border-slate-500/30 text-slate-400 px-2 py-0.5 rounded-full font-medium flex items-center gap-1 hover:border-emerald-500/50 transition';
+        }
         if (pingDot) pingDot.className = 'w-1.5 h-1.5 rounded-full bg-slate-400';
         if (dashNoticeText) dashNoticeText.textContent = 'Gmail ဖြင့် ချိတ်ပြီး Auto-Backup လုပ်ထားပါ';
       }
@@ -3806,6 +4039,7 @@
         owedCurrency: validOwedCurr,
         paidAmount: Number(tx.paidAmount) || 0,
         settledDate: String(tx.settledDate || '').slice(0, 64),
+        note: String(tx.note || '').slice(0, 500)
       };
     }
 
@@ -3932,46 +4166,76 @@
     }
 
     const confirmRestoreCloudData = window.confirmRestoreCloudData = async function() {
-      if (!auth?.currentUser || !db) {
-        showToast('Google Account ဖြင့် ဦးစွာ ချိတ်ဆက်ပေးပါ', 'warning');
+      if (!auth?.currentUser && !currentUser) {
+        openGoogleConnectModal('Google Account ဖြင့် ဦးစွာ ချိတ်ဆက်ပေးပါ');
         return;
       }
-      const uid = auth.currentUser.uid;
       try {
         showToast('အရင်ဖုန်းမှ စာရင်းများကို Cloud မှ ရယူနေပါသည်...', 'info');
-        const backupRef = doc(db, 'userBackups', uid);
-        const snap = await getDoc(backupRef);
-        if (!snap.exists()) {
-          showToast('Cloud ပေါ်တွင် Backup မရှိသေးပါ', 'warning');
+        let restored = false;
+
+        if (auth?.currentUser && db) {
+          const uid = auth.currentUser.uid;
+          const backupRef = doc(db, 'userBackups', uid);
+          const snap = await getDoc(backupRef);
+          if (snap.exists()) {
+            const meta = snap.data();
+            const cloudTxs = await fetchCloudTransactions(uid);
+            const cloudExps = await fetchCloudExpenses(uid);
+
+            if (cloudTxs.length > 0 || cloudExps.length > 0) {
+              if (cloudTxs.length > 0) transactions = cloudTxs;
+              if (cloudExps.length > 0) {
+                expenses = cloudExps;
+                saveExpensesToStorage();
+              }
+              if (meta.cashMMK !== undefined) {
+                capital.cashMMK = Number(meta.cashMMK) || 0;
+                capital.bankMMK = Number(meta.bankMMK) || 0;
+                capital.thbBalance = Number(meta.thbBalance) || 0;
+              }
+              if (meta.dealerRate !== undefined) {
+                settings.dealerRate = Number(meta.dealerRate) || 755;
+                settings.customerRate = Number(meta.customerRate) || 780;
+              }
+              restored = true;
+            }
+          }
+        }
+
+        // Also check per-Gmail local snapshot for deposits, u9Data, or fallback transactions
+        const emailKey = (currentUser?.email || auth?.currentUser?.email || '').toLowerCase();
+        if (emailKey) {
+          const rawSnap = localStorage.getItem(STORAGE_KEY_GMAIL_SNAPSHOT_PREFIX + emailKey);
+          if (rawSnap) {
+            try {
+              const snapObj = JSON.parse(rawSnap);
+              if (!restored && Array.isArray(snapObj.transactions) && snapObj.transactions.length > 0) {
+                transactions = snapObj.transactions;
+                if (Array.isArray(snapObj.expenses)) {
+                  expenses = snapObj.expenses;
+                  saveExpensesToStorage();
+                }
+                if (snapObj.capital) capital = snapObj.capital;
+                if (snapObj.settings) settings = Object.assign(settings, snapObj.settings);
+                restored = true;
+              }
+              if (Array.isArray(snapObj.deposits)) {
+                deposits = snapObj.deposits;
+                saveDepositsToStorage();
+              }
+              if (snapObj.u9Data && typeof snapObj.u9Data === 'object') {
+                u9Data = snapObj.u9Data;
+                saveU9ToStorage();
+              }
+            } catch (e) {}
+          }
+        }
+
+        if (!restored) {
+          showToast('Cloud ပေါ်တွင် စာရင်းမှတ်တမ်း မတွေ့ရှိသေးပါ', 'warning');
           closeCloudRestorePromptModal();
           return;
-        }
-
-        const meta = snap.data();
-        const cloudTxs = await fetchCloudTransactions(uid);
-        const cloudExps = await fetchCloudExpenses(uid);
-
-        if (cloudTxs.length === 0 && cloudExps.length === 0) {
-          showToast('Cloud ပေါ်တွင် စာရင်းမှတ်တမ်း မတွေ့ရှိပါ', 'warning');
-          closeCloudRestorePromptModal();
-          return;
-        }
-
-        if (cloudTxs.length > 0) {
-          transactions = cloudTxs;
-        }
-        if (cloudExps.length > 0) {
-          expenses = cloudExps;
-          saveExpensesToStorage();
-        }
-        if (meta.cashMMK !== undefined) {
-          capital.cashMMK = Number(meta.cashMMK) || 0;
-          capital.bankMMK = Number(meta.bankMMK) || 0;
-          capital.thbBalance = Number(meta.thbBalance) || 0;
-        }
-        if (meta.dealerRate !== undefined) {
-          settings.dealerRate = Number(meta.dealerRate) || 755;
-          settings.customerRate = Number(meta.customerRate) || 780;
         }
 
         localStorage.setItem('thb_mmk_has_user_data', 'true');
@@ -3995,8 +4259,10 @@
 
     const handleGoogleSignInAndRestorePrompt = window.handleGoogleSignInAndRestorePrompt = async function() {
       closePhoneMigrationModal();
-      const ok = await handleGoogleSignIn();
-      if (!ok || !currentUser) return;
+      if (!currentUser && !auth?.currentUser) {
+        const ok = await handleGoogleSignIn();
+        if (!ok && !currentUser) return;
+      }
 
       if (auth?.currentUser && db) {
         const uid = auth.currentUser.uid;
@@ -4006,20 +4272,20 @@
           const snap = await getDoc(backupRef);
           if (snap.exists()) {
             const meta = snap.data();
-            const cloudCount = Number(meta.txCount) || 0;
-            if (cloudCount > 0) {
-              openCloudRestorePromptModal(cloudCount, meta);
-            } else {
-              showToast('ဤ Google Account တွင် သိမ်းထားသော စာရင်းမှတ်တမ်း မရှိသေးပါ', 'warning');
+            const cloudTxs = await fetchCloudTransactions(uid);
+            const cloudCount = cloudTxs.length || Number(meta.txCount) || 0;
+            if (cloudTxs.length > 0) {
+              openCloudRestorePromptModal(cloudTxs.length, meta);
+              return;
             }
-          } else {
-            showToast('ဤ Google Account တွင် Backup မရှိသေးပါ', 'warning');
           }
         } catch (e) {
           console.warn('Check cloud error:', e);
-          showToast('Cloud စစ်ဆေးရာတွင် အဆင်မပြေပါ', 'error');
         }
       }
+
+      // Fallback check via Google Drive or Gmail Snapshot
+      await handleRestoreFromDrive();
     };
 
     async function checkOrSyncInitialCloudBackup() {
@@ -4346,11 +4612,14 @@
         if (cachedAccessToken) {
           const payload = {
             app: 'လာဘ်ရွှင် (Lab Shwin)',
-            version: '2.0',
+            version: '2.1',
             savedAt: new Date().toISOString(),
             capital,
             settings,
-            transactions
+            transactions,
+            expenses,
+            deposits,
+            u9Data
           };
           const ok = await uploadPayloadToGoogleDrive(payload, true);
           if (ok) {
@@ -6180,13 +6449,19 @@
       if (search) {
         filtered = filtered.filter(t => {
           const names = getTxNames(t);
+          const stDisp = getTxStatusDisplay(t);
           return (
             names.displayTitle.toLowerCase().includes(search) ||
             names.senderName.toLowerCase().includes(search) ||
             names.receiverName.toLowerCase().includes(search) ||
             (t.custPhone && t.custPhone.toLowerCase().includes(search)) ||
+            (t.channel && t.channel.toLowerCase().includes(search)) ||
             (t.id && t.id.toLowerCase().includes(search)) ||
-            (t.note && t.note.toLowerCase().includes(search))
+            (t.note && t.note.toLowerCase().includes(search)) ||
+            (stDisp.text && stDisp.text.toLowerCase().includes(search)) ||
+            String(t.amountMMK || '').includes(search) ||
+            String(t.customerTHB || '').includes(search) ||
+            (t.date && t.date.toLowerCase().includes(search))
           );
         });
       }
@@ -6538,12 +6813,20 @@
       }
 
       if (search) {
-        filtered = filtered.filter(t =>
-          (t.custName && t.custName.toLowerCase().includes(search)) ||
-          (t.custPhone && t.custPhone.toLowerCase().includes(search)) ||
-          (t.id && t.id.toLowerCase().includes(search)) ||
-          (t.note && t.note.toLowerCase().includes(search))
-        );
+        filtered = filtered.filter(t => {
+          const stDisp = getTxStatusDisplay(t);
+          return (
+            (t.custName && t.custName.toLowerCase().includes(search)) ||
+            (t.custPhone && t.custPhone.toLowerCase().includes(search)) ||
+            (t.channel && t.channel.toLowerCase().includes(search)) ||
+            (t.id && t.id.toLowerCase().includes(search)) ||
+            (t.note && t.note.toLowerCase().includes(search)) ||
+            (stDisp.text && stDisp.text.toLowerCase().includes(search)) ||
+            String(t.amountMMK || '').includes(search) ||
+            String(t.profitMMK || t.fee || '').includes(search) ||
+            (t.date && t.date.toLowerCase().includes(search))
+          );
+        });
       }
 
       if (filtered.length === 0) {
@@ -6648,11 +6931,21 @@
       else if (creditFilter === 'PAID') creditTx = creditTx.filter(tx => tx.status === 'PAID');
 
       if (search) {
-        creditTx = creditTx.filter(tx => 
-          (tx.custName && tx.custName.toLowerCase().includes(search)) ||
-          (tx.custPhone && tx.custPhone.includes(search)) ||
-          (tx.id && tx.id.toLowerCase().includes(search))
-        );
+        creditTx = creditTx.filter(tx => {
+          const names = getTxNames(tx);
+          const isU9Bill = tx.cashoutType === 'U9_BILL' || tx.channel === 'U9 ဖုန်းဘေလ်' || Boolean(tx.u9RecordId);
+          return (
+            (tx.custName && tx.custName.toLowerCase().includes(search)) ||
+            (names.displayTitle && names.displayTitle.toLowerCase().includes(search)) ||
+            (tx.custPhone && tx.custPhone.toLowerCase().includes(search)) ||
+            (tx.id && tx.id.toLowerCase().includes(search)) ||
+            (tx.channel && tx.channel.toLowerCase().includes(search)) ||
+            (tx.note && tx.note.toLowerCase().includes(search)) ||
+            (isU9Bill && ('u9 ဖုန်းဘေလ် ဘေလ်'.includes(search))) ||
+            String(tx.amountOwed || tx.amountMMK || tx.customerTHB || '').includes(search) ||
+            (tx.date && tx.date.toLowerCase().includes(search))
+          );
+        });
       }
 
       let totalUnpaidMMK = 0;
@@ -7356,9 +7649,525 @@
       updateAllUI();
     };
 
+    // --- UNIFIED MULTI-MODULE SEARCH & HISTORY ENGINE ---
+    function buildUnifiedLedgerRecords(includeU9LinkedCreditTx = false) {
+      const items = [];
+
+      // 1. Remittance, Cashout, and Direct Credit transactions
+      (transactions || []).forEach(tx => {
+        const isU9LinkedCredit = Boolean(tx.u9RecordId || tx.cashoutType === 'U9_BILL');
+        if (isU9LinkedCredit && !includeU9LinkedCreditTx) {
+          // Avoid duplicate row in 'ALL' when the U9 record itself is already shown
+          return;
+        }
+        const names = getTxNames(tx);
+        const stDisp = getTxStatusDisplay(tx);
+        const isRemit = tx.type === 'REMIT';
+        const isCashout = tx.type === 'CASHOUT';
+        const isDirectCredit = tx.type === 'DIRECT_CREDIT';
+        const catType = isRemit ? 'REMIT' : (isCashout ? 'CASHOUT' : 'CREDIT');
+        const typeLabel = isRemit
+          ? (tx.direction === 'MMK_TO_THB' ? '🇲🇲 မြန်မာကျပ် ➔ 🇹🇭 ထိုင်းဘတ် ငွေလွှဲ' : '🇹🇭 ထိုင်းဘတ် ➔ 🇲🇲 မြန်မာကျပ် ငွေလွှဲ')
+          : isDirectCredit
+          ? (isU9LinkedCredit ? '📶 U9 ဖုန်းဘေလ် အကြွေး' : '⚠️ အကြွေးသီးသန့်')
+          : (tx.cashoutType === 'TRANSFER' ? '🔺 KPay ငွေလွှဲ' : '🔻 KPay ငွေထုတ်');
+
+        const amountMMK = Number(tx.amountMMK) || 0;
+        const amountTHB = Number(tx.customerTHB || tx.amountTHB) || 0;
+        const profitMMK = Number(tx.profitMMK ?? tx.fee) || 0;
+        const profitTHB = Number(tx.profitTHB) || 0;
+
+        const searchBlob = [
+          tx.id,
+          tx.custName,
+          tx.senderName,
+          tx.receiverName,
+          names.displayTitle,
+          tx.custPhone,
+          tx.channel,
+          tx.note,
+          stDisp.text,
+          typeLabel,
+          tx.status,
+          amountMMK,
+          amountTHB,
+          profitMMK,
+          profitTHB,
+          tx.date,
+          formatDateTime(tx.date),
+          isRemit ? 'ငွေလွှဲ remit thb mmk ထိုင်း မြန်မာ' : '',
+          isCashout ? 'kpay wave ငွေထုတ် cashout' : '',
+          tx.status === 'UNPAID' || isDirectCredit ? 'အကြွေး မထုတ်ပေးရသေး မဆပ်ရသေး unpaid credit' : 'ထုတ်ပေးပြီး လက်ငင်း paid'
+        ].join(' ').toLowerCase();
+
+        items.push({
+          source: 'TX',
+          moduleKey: catType,
+          id: tx.id || '',
+          date: tx.date || '',
+          displayTitle: names.displayTitle || tx.custName || 'Customer',
+          typeLabel,
+          channelOrAccount: tx.channel || 'KPay',
+          phone: tx.custPhone || '',
+          amountMMK,
+          amountTHB,
+          profitMMK,
+          profitTHB,
+          status: tx.status || 'PAID',
+          statusText: stDisp.text,
+          badgeClass: stDisp.badgeClass,
+          note: tx.note || '',
+          isUnpaidOrPending: tx.status === 'UNPAID',
+          raw: tx,
+          searchBlob
+        });
+      });
+
+      // 2. Customer Savings / Deposits (အပ်ငွေစာရင်း)
+      (deposits || []).forEach(d => {
+        const isDepIn = d.type === 'DEPOSIT_IN';
+        const isNotice = d.type === 'WITHDRAW_NOTICE';
+        const isCompletedNotice = isNotice && d.noticeStatus === 'COMPLETED';
+        const typeLabel = isDepIn
+          ? '🏦 အပ်ငွေသွင်း (ငွေလာအပ်သည်)'
+          : isNotice
+          ? `🔔 အပ်ငွေ ၁ ပတ်ကြိုမှတ် (${isCompletedNotice ? 'ထုတ်ပေးပြီး' : (d.targetDate || 'ရက်ချိန်း')})`
+          : '📤 အပ်ငွေပြန်ထုတ်ပေးသည်';
+
+        const accLabel = d.account === 'CASH' ? 'ငွေသား (Cash)' : d.account === 'BANK' ? 'KPay / Bank' : 'ထိုင်းဘတ် (THB)';
+        const statusText = isDepIn
+          ? 'အပ်ငွေလက်ခံပြီး'
+          : isNotice
+          ? (isCompletedNotice ? 'ထုတ်ပေးပြီး' : `ကြိုမှတ် (${d.targetDate || ''})`)
+          : 'ပြန်ထုတ်ပေးပြီး';
+
+        const badgeClass = isDepIn
+          ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+          : isNotice
+          ? 'bg-amber-500/20 text-amber-400 border border-amber-500/40'
+          : 'bg-rose-500/20 text-rose-400 border border-rose-500/30';
+
+        const amountMMK = d.currency === 'THB' ? 0 : (Number(d.amount) || 0);
+        const amountTHB = d.currency === 'THB' ? (Number(d.amount) || 0) : 0;
+
+        const searchBlob = [
+          d.id,
+          d.custName,
+          d.custPhone,
+          d.account,
+          accLabel,
+          d.currency,
+          d.amount,
+          d.targetDate,
+          d.note,
+          typeLabel,
+          statusText,
+          d.date,
+          formatDateTime(d.date),
+          'အပ်ငွေ စုငွေ deposit savings ငွေလာအပ် ကြိုမှတ် ပြန်ထုတ်'
+        ].join(' ').toLowerCase();
+
+        items.push({
+          source: 'DEPOSIT',
+          moduleKey: 'DEPOSIT',
+          id: d.id || '',
+          date: d.date || '',
+          displayTitle: d.custName || 'အပ်နှံသူ',
+          typeLabel,
+          channelOrAccount: accLabel,
+          phone: d.custPhone || '',
+          amountMMK,
+          amountTHB,
+          profitMMK: 0,
+          profitTHB: 0,
+          status: isNotice && !isCompletedNotice ? 'UNPAID' : 'PAID',
+          statusText,
+          badgeClass,
+          note: d.note || '',
+          isUnpaidOrPending: isNotice && !isCompletedNotice,
+          raw: d,
+          searchBlob
+        });
+      });
+
+      // 3. U9 Telecom Bill Agent Records (U9 ဖုန်းဘေလ်)
+      const u9Recs = (u9Data && Array.isArray(u9Data.records)) ? u9Data.records : [];
+      u9Recs.forEach(r => {
+        const isPrimary = r.type === 'BUY_PRIMARY';
+        const isWithdrawComm = r.type === 'WITHDRAW_COMM';
+        const isSell = r.type === 'SELL_BILL';
+        const isCreditUnpaid = isSell && (r.status === 'UNPAID' || r.paymentType === 'CREDIT') && r.status !== 'PAID';
+
+        let typeLabel = '';
+        let displayTitle = '';
+        let channelOrAccount = '';
+        let amountMMK = 0;
+        let profitMMK = 0;
+        let statusText = '';
+        let badgeClass = '';
+
+        if (isPrimary) {
+          typeLabel = `📦 U9 Primary ဖုန်းဘေလ်အဝယ် (${r.commRate || 0}%)`;
+          displayTitle = 'U9 Primary Stock ဝယ်ယူမှု';
+          channelOrAccount = r.paymentMethod === 'CASH' ? 'ငွေသား' : r.paymentMethod === 'BANK' ? 'KPay/Bank' : 'U9 သီးသန့်အရင်း';
+          amountMMK = Number(r.purchaseAmount) || 0;
+          profitMMK = Number(r.commAmount) || 0;
+          statusText = `ဘေလ်ရရှိ: ${formatMMK(r.totalStockReceived || 0)}`;
+          badgeClass = 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/30';
+        } else if (isWithdrawComm) {
+          typeLabel = '💰 U9 ကော်မရှင်အမြတ် ထုတ်ယူခြင်း';
+          displayTitle = 'U9 ကော်မရှင် ထုတ်ယူမှု';
+          channelOrAccount = r.withdrawMethod === 'CASH' ? 'ငွေသား (Cash)' : 'KPay / Bank';
+          amountMMK = Number(r.withdrawAmount) || 0;
+          profitMMK = 0;
+          statusText = `${channelOrAccount} ဖြင့် ထုတ်ပြီး`;
+          badgeClass = 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30';
+        } else {
+          typeLabel = '📶 U9 ဖုန်းဘေလ် ပြန်ရောင်းခြင်း';
+          displayTitle = r.custName || 'U9 ဘေလ်ဝယ်သူ';
+          channelOrAccount = r.paymentType === 'CASH' ? 'လက်ငင်း (ငွေသား)' : r.paymentType === 'KPAY' ? 'လက်ငင်း (KPay)' : 'အကြွေး (Credit)';
+          amountMMK = Number(r.sellingPrice || r.billAmount) || 0;
+          profitMMK = Number(r.extraProfit) || 0;
+          statusText = isCreditUnpaid ? '⚠️ အကြွေး (မဆပ်ရသေး)' : '✓ ရှင်းပြီး';
+          badgeClass = isCreditUnpaid
+            ? 'bg-rose-500/20 text-rose-400 border border-rose-500/40'
+            : 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30';
+        }
+
+        const searchBlob = [
+          r.id,
+          displayTitle,
+          r.custName,
+          r.custPhone,
+          typeLabel,
+          channelOrAccount,
+          statusText,
+          r.note,
+          r.billAmount,
+          r.sellingPrice,
+          r.purchaseAmount,
+          r.totalStockReceived,
+          r.commAmount,
+          r.withdrawAmount,
+          r.date,
+          formatDateTime(r.date),
+          'u9 ဖုန်းဘေလ် ဘေလ် ကော်မရှင် primary telecom bill'
+        ].join(' ').toLowerCase();
+
+        items.push({
+          source: 'U9',
+          moduleKey: 'U9',
+          id: r.id || '',
+          date: r.date || '',
+          displayTitle,
+          typeLabel,
+          channelOrAccount,
+          phone: r.custPhone || '',
+          amountMMK,
+          amountTHB: 0,
+          profitMMK,
+          profitTHB: 0,
+          status: isCreditUnpaid ? 'UNPAID' : 'PAID',
+          statusText,
+          badgeClass,
+          note: r.note || '',
+          isUnpaidOrPending: isCreditUnpaid,
+          raw: r,
+          searchBlob
+        });
+      });
+
+      // 4. Business Expenses (အသုံးစရိတ်များ)
+      (expenses || []).forEach(exp => {
+        const catLabel = getExpenseCategoryLabel(exp.category);
+        const accLabel = exp.paidAccount === 'CASH' ? 'ငွေသား (Cash)' : (exp.paidAccount === 'BANK' ? 'KPay / ဘဏ်' : 'ထိုင်းဘတ် (THB)');
+        const amountMMK = exp.currency === 'THB' ? 0 : (Number(exp.amount) || 0);
+        const amountTHB = exp.currency === 'THB' ? (Number(exp.amount) || 0) : 0;
+
+        const searchBlob = [
+          exp.id,
+          exp.title,
+          catLabel,
+          exp.category,
+          accLabel,
+          exp.paidAccount,
+          exp.currency,
+          exp.amount,
+          exp.note,
+          exp.date,
+          formatDateTime(exp.date),
+          'အသုံးစရိတ် စရိတ် expense မီးဖိုး အင်တာနက် လစာ ဆိုင်ခန်းခ'
+        ].join(' ').toLowerCase();
+
+        items.push({
+          source: 'EXPENSE',
+          moduleKey: 'EXPENSE',
+          id: exp.id || '',
+          date: exp.date || '',
+          displayTitle: exp.title || catLabel,
+          typeLabel: `💸 အသုံးစရိတ် (${catLabel})`,
+          channelOrAccount: accLabel,
+          phone: '',
+          amountMMK,
+          amountTHB,
+          profitMMK: 0,
+          profitTHB: 0,
+          status: 'PAID',
+          statusText: 'အသုံးစရိတ်',
+          badgeClass: 'bg-amber-500/20 text-amber-400 border border-amber-500/30',
+          note: exp.note || '',
+          isUnpaidOrPending: false,
+          raw: exp,
+          searchBlob
+        });
+      });
+
+      // Sort newest first
+      items.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+      return items;
+    }
+
+    function filterUnifiedRecords(filterType, rawQuery) {
+      const q = (rawQuery || '').toLowerCase().trim();
+      const allItems = buildUnifiedLedgerRecords(false);
+
+      return allItems.filter(item => {
+        if (filterType === 'REMIT' && item.moduleKey !== 'REMIT') return false;
+        if (filterType === 'REMIT_UNPAID' && !((item.moduleKey === 'REMIT' || item.moduleKey === 'CASHOUT') && item.status === 'UNPAID')) return false;
+        if (filterType === 'REMIT_PAID' && !((item.moduleKey === 'REMIT' || item.moduleKey === 'CASHOUT') && item.status === 'PAID')) return false;
+        if (filterType === 'CASHOUT' && item.moduleKey !== 'CASHOUT') return false;
+        if (filterType === 'DEPOSIT' && item.moduleKey !== 'DEPOSIT') return false;
+        if (filterType === 'U9' && item.moduleKey !== 'U9') return false;
+        if (filterType === 'EXPENSE' && item.moduleKey !== 'EXPENSE') return false;
+        if (filterType === 'CREDIT' || filterType === 'UNPAID') {
+          if (!item.isUnpaidOrPending && item.moduleKey !== 'CREDIT') return false;
+        }
+
+        if (!q) return true;
+        return item.searchBlob.includes(q);
+      });
+    }
+
+    function renderUnifiedRecordCard(item, isFromQuickSearchModal = false) {
+      const closeSearchPrefix = isFromQuickSearchModal ? 'closeVoucherSearchModal(); ' : '';
+      const refreshAfterToggle = isFromQuickSearchModal ? 'renderQuickSearchList();' : 'renderLedgerList();';
+
+      if (item.source === 'TX') {
+        const tx = item.raw;
+        const isRemit = tx.type === 'REMIT';
+        const isCashout = tx.type === 'CASHOUT';
+        const isDirectCredit = tx.type === 'DIRECT_CREDIT';
+        const names = getTxNames(tx);
+
+        return `
+          <div class="theme-card-sub border hover:border-blue-500/50 p-3 rounded-2xl space-y-1.5 text-xs transition">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="font-mono text-[10px] text-blue-500 font-bold">#${tx.id}</span>
+                <span class="text-[9px] px-2 py-0.5 rounded-full font-bold ${item.badgeClass}">${item.statusText}</span>
+              </div>
+              <span class="text-[10px] theme-text-muted">${formatDateTime(tx.date)}</span>
+            </div>
+
+            <div class="flex items-start justify-between gap-2">
+              <div class="space-y-0.5">
+                <div class="font-bold theme-text-heading text-xs">${names.displayTitle}</div>
+                <div class="text-[10px] theme-text-muted">
+                  <span class="font-semibold text-blue-400">${item.typeLabel}</span>
+                  • ချန်နယ်: <span class="font-semibold">${tx.channel || 'KPay'}</span>
+                  ${tx.custPhone ? ` • ဖုန်း: <span class="font-mono">${tx.custPhone}</span>` : ''}
+                  ${tx.note ? ` • မှတ်ချက်: ${tx.note}` : ''}
+                </div>
+              </div>
+              <div class="text-right shrink-0">
+                <div class="font-extrabold font-mono theme-text-heading">
+                  ${isRemit && tx.direction === 'MMK_TO_THB' ? formatTHB(tx.customerTHB) : (tx.owedCurrency === 'THB' ? formatTHB(tx.amountOwed || tx.amountTHB) : formatMMK(tx.amountMMK || tx.amountOwed))}
+                </div>
+                ${(tx.profitTHB || tx.profitMMK || tx.fee) ? `
+                  <div class="text-[10px] text-emerald-500 font-mono">
+                    အမြတ်: +${tx.profitTHB ? formatTHB(tx.profitTHB) : formatMMK(tx.profitMMK || tx.fee || 0)}
+                  </div>
+                ` : ''}
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between gap-1.5 pt-1.5 border-t">
+              <div class="flex items-center gap-1">
+                ${tx.status === 'UNPAID' && isRemit ? `
+                  <button type="button" onclick="toggleRemitPayoutStatus('${tx.id}'); ${refreshAfterToggle}" class="px-2.5 py-1 rounded-lg bg-emerald-600 text-white text-[10px] font-bold">✓ ထုတ်ပေးပြီးမှတ်မည်</button>
+                ` : ''}
+                ${tx.status === 'UNPAID' && isCashout ? `
+                  <button type="button" onclick="toggleCashoutPayoutStatus('${tx.id}'); ${refreshAfterToggle}" class="px-2.5 py-1 rounded-lg bg-emerald-600 text-white text-[10px] font-bold">
+                    ${tx.cashoutType === 'TRANSFER' ? '✓ လက်ငင်းရရှိမှတ်မည်' : '✓ ထုတ်ပေးပြီးမှတ်မည်'}
+                  </button>
+                ` : ''}
+                ${tx.status === 'UNPAID' && isDirectCredit ? `
+                  <button type="button" onclick="${closeSearchPrefix}openSettleModal('${tx.id}');" class="px-2.5 py-1 rounded-lg bg-emerald-600 text-white text-[10px] font-bold">✓ အကြွေးဆပ်မည်</button>
+                ` : ''}
+              </div>
+              <div class="flex items-center gap-1.5">
+                <button type="button" onclick="${closeSearchPrefix}openVoucherModal('${tx.id}');" class="px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-bold shadow-sm">
+                  📄 ဘောက်ချာ
+                </button>
+                <button type="button" onclick="${closeSearchPrefix}openEditModal('${tx.id}');" class="px-2.5 py-1 rounded-lg theme-card border text-blue-500 text-[10px] font-bold">
+                  ပြင်မည်
+                </button>
+                ${!isFromQuickSearchModal ? `
+                  <button type="button" onclick="deleteTransaction('${tx.id}')" class="px-2 py-1 rounded-lg bg-rose-600/15 text-rose-500 text-[10px] font-bold">ဖျက်မည်</button>
+                ` : ''}
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      if (item.source === 'DEPOSIT') {
+        const d = item.raw;
+        const isDepIn = d.type === 'DEPOSIT_IN';
+        const isNotice = d.type === 'WITHDRAW_NOTICE';
+        const amtFormatted = d.currency === 'THB' ? formatTHB(d.amount) : formatMMK(d.amount);
+        const amtColor = isDepIn ? 'text-emerald-400' : isNotice ? 'text-amber-400' : 'text-rose-400';
+        const sign = isDepIn ? '+' : isNotice ? '⏳ ' : '-';
+        const safeName = (d.custName || '').replace(/'/g, "\\'");
+
+        return `
+          <div class="theme-card-sub border border-purple-500/40 hover:border-purple-500 p-3 rounded-2xl space-y-1.5 text-xs transition">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="font-mono text-[10px] text-purple-400 font-bold">#${d.id}</span>
+                <span class="text-[9px] px-2 py-0.5 rounded-full font-bold ${item.badgeClass}">${item.typeLabel}</span>
+              </div>
+              <span class="text-[10px] theme-text-muted">${formatDateTime(d.date)}</span>
+            </div>
+
+            <div class="flex items-start justify-between gap-2">
+              <div class="space-y-0.5">
+                <div class="font-bold theme-text-heading text-xs">${d.custName || 'အပ်နှံသူ'}</div>
+                <div class="text-[10px] theme-text-muted">
+                  အကောင့်: <span class="font-semibold text-purple-400">${item.channelOrAccount}</span>
+                  ${d.custPhone ? ` • ဖုန်း: <span class="font-mono">${d.custPhone}</span>` : ''}
+                  ${d.note ? ` • မှတ်ချက်: ${d.note}` : ''}
+                </div>
+              </div>
+              <div class="text-right shrink-0">
+                <div class="font-extrabold font-mono ${amtColor}">${sign}${amtFormatted}</div>
+                <div class="text-[10px] theme-text-muted">${item.statusText}</div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between gap-1.5 pt-1.5 border-t">
+              <div>
+                ${isNotice && d.noticeStatus !== 'COMPLETED' ? `
+                  <button type="button" onclick="${closeSearchPrefix}fulfillWithdrawalNotice('${d.id}');" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-bold shadow">✓ ယခု ထုတ်ပေးမည်</button>
+                ` : `
+                  <button type="button" onclick="${closeSearchPrefix}switchTab('deposits'); selectDepositorForForm('${safeName}', 'DEPOSIT_IN');" class="px-2.5 py-1 rounded-lg bg-purple-600/20 text-purple-400 text-[10px] font-bold">🏦 အပ်ငွေစာရင်းသို့</button>
+                `}
+              </div>
+              <div class="flex items-center gap-1.5">
+                <button type="button" onclick="deleteDepositRecord('${d.id}'); ${refreshAfterToggle}" class="px-2 py-1 rounded-lg bg-rose-600/15 text-rose-500 text-[10px] font-bold">ဖျက်မည်</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      if (item.source === 'U9') {
+        const r = item.raw;
+        const isPrimary = r.type === 'BUY_PRIMARY';
+        const isWithdrawComm = r.type === 'WITHDRAW_COMM';
+        const isSell = r.type === 'SELL_BILL';
+        const isCreditUnpaid = isSell && (r.status === 'UNPAID' || r.paymentType === 'CREDIT') && r.status !== 'PAID';
+
+        return `
+          <div class="theme-card-sub border border-cyan-500/40 hover:border-cyan-500 p-3 rounded-2xl space-y-1.5 text-xs transition">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="font-mono text-[10px] text-cyan-400 font-bold">#${r.id}</span>
+                <span class="text-[9px] px-2 py-0.5 rounded-full font-bold ${item.badgeClass}">${item.typeLabel}</span>
+              </div>
+              <span class="text-[10px] theme-text-muted">${formatDateTime(r.date)}</span>
+            </div>
+
+            <div class="flex items-start justify-between gap-2">
+              <div class="space-y-0.5">
+                <div class="font-bold theme-text-heading text-xs">${item.displayTitle}</div>
+                <div class="text-[10px] theme-text-muted">
+                  <span class="font-semibold text-cyan-400">${item.channelOrAccount}</span>
+                  ${isSell ? ` • ဘေလ်ပမာဏ: <span class="font-mono font-bold">${formatMMK(r.billAmount)}</span>` : ''}
+                  ${r.custPhone ? ` • ဖုန်း: <span class="font-mono">${r.custPhone}</span>` : ''}
+                  ${r.note ? ` • မှတ်ချက်: ${r.note}` : ''}
+                </div>
+              </div>
+              <div class="text-right shrink-0">
+                <div class="font-extrabold font-mono ${isCreditUnpaid ? 'text-rose-400' : 'text-cyan-400'}">
+                  ${formatMMK(item.amountMMK)}
+                </div>
+                ${item.profitMMK > 0 ? `
+                  <div class="text-[10px] text-emerald-400 font-mono">အမြတ်: +${formatMMK(item.profitMMK)}</div>
+                ` : `<div class="text-[10px] theme-text-muted">${item.statusText}</div>`}
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between gap-1.5 pt-1.5 border-t">
+              <div>
+                ${isCreditUnpaid && r.linkedTxId ? `
+                  <button type="button" onclick="${closeSearchPrefix}openSettleModal('${r.linkedTxId}');" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-bold shadow">✓ အကြွေးဆပ်မည်</button>
+                ` : `
+                  <button type="button" onclick="${closeSearchPrefix}switchTab('u9');" class="px-2.5 py-1 rounded-lg bg-cyan-600/20 text-cyan-400 text-[10px] font-bold">📶 U9 စာရင်းသို့</button>
+                `}
+              </div>
+              <div class="flex items-center gap-1.5">
+                <button type="button" onclick="deleteU9Record('${r.id}'); ${refreshAfterToggle}" class="px-2 py-1 rounded-lg bg-rose-600/15 text-rose-500 text-[10px] font-bold">ဖျက်မည်</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      if (item.source === 'EXPENSE') {
+        const exp = item.raw;
+        const formattedAmt = exp.currency === 'THB' ? formatTHB(exp.amount) : formatMMK(exp.amount);
+        return `
+          <div class="theme-card-sub border border-amber-500/40 hover:border-amber-500 p-3 rounded-2xl space-y-1.5 text-xs transition">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="font-mono text-[10px] text-amber-400 font-bold">#${exp.id}</span>
+                <span class="text-[9px] px-2 py-0.5 rounded-full font-bold ${item.badgeClass}">${item.typeLabel}</span>
+              </div>
+              <span class="text-[10px] theme-text-muted">${formatDateTime(exp.date)}</span>
+            </div>
+
+            <div class="flex items-start justify-between gap-2">
+              <div class="space-y-0.5">
+                <div class="font-bold theme-text-heading text-xs">${exp.title}</div>
+                <div class="text-[10px] theme-text-muted">
+                  ငွေရှင်းအကောင့်: <span class="font-semibold text-amber-400">${item.channelOrAccount}</span>
+                  ${exp.note ? ` • မှတ်ချက်: ${exp.note}` : ''}
+                </div>
+              </div>
+              <div class="text-right shrink-0">
+                <div class="font-extrabold font-mono text-rose-500">-${formattedAmt}</div>
+                <div class="text-[10px] theme-text-muted">အသုံးစရိတ်</div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between gap-1.5 pt-1.5 border-t">
+              <span class="text-[10px] theme-text-muted">${getExpenseCategoryLabel(exp.category)}</span>
+              <div class="flex items-center gap-1.5">
+                <button type="button" onclick="${closeSearchPrefix}openEditExpenseModal('${exp.id}');" class="px-2.5 py-1 rounded-lg bg-blue-600/15 text-blue-500 text-[10px] font-bold">ပြင်မည်</button>
+                <button type="button" onclick="deleteExpense('${exp.id}'); ${refreshAfterToggle}" class="px-2 py-1 rounded-lg bg-rose-600/15 text-rose-500 text-[10px] font-bold">ဖျက်မည်</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      return '';
+    }
+
     const setLedgerTypeFilter = window.setLedgerTypeFilter = function(type) {
       ledgerTypeFilter = type;
-      ['all', 'remit_unpaid', 'remit_paid', 'cashout', 'credit'].forEach(t => {
+      ['all', 'remit_unpaid', 'remit_paid', 'cashout', 'deposit', 'u9', 'credit', 'expense'].forEach(t => {
         const btn = document.getElementById(`history-filter-${t}`);
         if (!btn) return;
         if (t === type.toLowerCase()) {
@@ -7372,64 +8181,30 @@
 
     function getFilteredLedgerTransactions() {
       const search = (document.getElementById('ledgerSearchInput')?.value || '').toLowerCase().trim();
-      let list = [...transactions];
-      if (ledgerTypeFilter === 'REMIT') list = list.filter(t => t.type === 'REMIT');
-      else if (ledgerTypeFilter === 'REMIT_UNPAID') list = list.filter(t => (t.type === 'REMIT' || t.type === 'CASHOUT') && t.status === 'UNPAID');
-      else if (ledgerTypeFilter === 'REMIT_PAID') list = list.filter(t => (t.type === 'REMIT' || t.type === 'CASHOUT') && t.status === 'PAID');
-      else if (ledgerTypeFilter === 'CASHOUT') list = list.filter(t => t.type === 'CASHOUT');
-      else if (ledgerTypeFilter === 'CREDIT') list = list.filter(t => t.status === 'UNPAID' || t.type === 'DIRECT_CREDIT');
-
-      if (search) {
-        list = list.filter(t => {
-          const names = getTxNames(t);
-          const stDisp = getTxStatusDisplay(t);
-          return (
-            (t.custName && t.custName.toLowerCase().includes(search)) ||
-            (t.senderName && t.senderName.toLowerCase().includes(search)) ||
-            (t.receiverName && t.receiverName.toLowerCase().includes(search)) ||
-            (names.displayTitle && names.displayTitle.toLowerCase().includes(search)) ||
-            (t.id && t.id.toLowerCase().includes(search)) ||
-            (t.custPhone && t.custPhone.toLowerCase().includes(search)) ||
-            (t.channel && t.channel.toLowerCase().includes(search)) ||
-            (t.note && t.note.toLowerCase().includes(search)) ||
-            (stDisp.text && stDisp.text.toLowerCase().includes(search)) ||
-            String(t.amountMMK || '').includes(search) ||
-            String(t.customerTHB || '').includes(search)
-          );
-        });
-      }
-      return list;
+      return filterUnifiedRecords(ledgerTypeFilter || 'ALL', search);
     }
 
-    const exportFilteredHistoryCSV = window.exportFilteredHistoryCSV = function() {
-      const filteredList = getFilteredLedgerTransactions();
-      if (filteredList.length === 0) {
+    function exportUnifiedItemsToCSV(items, filePrefix) {
+      if (!items || items.length === 0) {
         showToast('CSV ထုတ်ယူရန် လက်ရှိစစ်ထုတ်ထားသော မှတ်တမ်း မရှိပါ', 'warning');
         return;
       }
 
-      const rows = filteredList.map(tx => {
-        const names = getTxNames(tx);
-        const stDisp = getTxStatusDisplay(tx);
-        return {
-          'Voucher ID': tx.id || '',
-          'ရက်စွဲ': formatDateTime(tx.date),
-          'အမျိုးအစား': tx.type === 'REMIT'
-            ? (tx.direction === 'MMK_TO_THB' ? 'မြန်မာကျပ် ➔ ထိုင်းဘတ်' : 'ထိုင်းဘတ် ➔ မြန်မာကျပ်')
-            : (tx.type === 'DIRECT_CREDIT' ? 'အကြွေးသီးသန့်' : (tx.cashoutType === 'TRANSFER' ? 'KPay ငွေလွှဲ' : 'KPay ငွေထုတ်')),
-          'လွှဲသူအမည်': tx.type === 'REMIT' ? (names.senderName || '-') : (tx.custName || ''),
-          'ထုတ်ယူသူအမည်': tx.type === 'REMIT' ? (names.receiverName || '-') : '-',
-          'Customer အမည် (စုစုပေါင်း)': names.displayTitle || '',
-          'ဖုန်းနံပါတ်': tx.custPhone || '',
-          'ချန်နယ်': tx.channel || '',
-          'ငွေပမာဏ (MMK)': tx.amountMMK || 0,
-          'ဘတ်ငွေ (THB)': tx.amountTHB || tx.customerTHB || 0,
-          'အမြတ် (MMK)': tx.profitMMK || 0,
-          'အမြတ် (THB)': tx.profitTHB || 0,
-          'အခြေအနေ': stDisp.text,
-          'မှတ်ချက်': tx.note || ''
-        };
-      });
+      const rows = items.map(item => ({
+        'ID': item.id || '',
+        'ရက်စွဲ': formatDateTime(item.date),
+        'ကဏ္ဍ (Module)': item.source === 'TX' ? 'ငွေလွှဲ / KPay / အကြွေး' : item.source === 'DEPOSIT' ? 'အပ်ငွေစာရင်း' : item.source === 'U9' ? 'U9 ဖုန်းဘေလ်' : 'အသုံးစရိတ်',
+        'အမျိုးအစား': item.typeLabel || '',
+        'အမည် / အကြောင်းအရာ': item.displayTitle || '',
+        'ဖုန်းနံပါတ်': item.phone || '',
+        'ချန်နယ် / အကောင့်': item.channelOrAccount || '',
+        'ပမာဏ (MMK)': item.amountMMK || 0,
+        'ပမာဏ (THB)': item.amountTHB || 0,
+        'အမြတ် (MMK)': item.profitMMK || 0,
+        'အမြတ် (THB)': item.profitTHB || 0,
+        'အခြေအနေ': item.statusText || '',
+        'မှတ်ချက်': item.note || ''
+      }));
 
       let csvContent = "\uFEFF";
       const headers = Object.keys(rows[0]);
@@ -7439,9 +8214,8 @@
         csvContent += line + "\r\n";
       });
 
-      const filterSlug = (ledgerTypeFilter || 'ALL').toLowerCase();
       const dateStr = new Date().toISOString().split('T')[0];
-      const fileName = `LabShwin_History_${filterSlug}_${dateStr}.csv`;
+      const fileName = `${filePrefix}_${dateStr}.csv`;
 
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
@@ -7452,7 +8226,13 @@
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      showToast(`စစ်ထုတ်ထားသော မှတ်တမ်း (${filteredList.length} ခု) ကို CSV ဖိုင်အဖြစ် ဒေါင်းလုဒ်ဆွဲပြီးပါပြီ!`, 'success');
+      showToast(`စစ်ထုတ်ထားသော မှတ်တမ်း (${items.length} ခု) ကို CSV ဖိုင်အဖြစ် ဒေါင်းလုဒ်ဆွဲပြီးပါပြီ!`, 'success');
+    }
+
+    const exportFilteredHistoryCSV = window.exportFilteredHistoryCSV = function() {
+      const filteredList = getFilteredLedgerTransactions();
+      const filterSlug = (ledgerTypeFilter || 'ALL').toLowerCase();
+      exportUnifiedItemsToCSV(filteredList, `LabShwin_AllHistory_${filterSlug}`);
     };
 
     const renderLedgerList = window.renderLedgerList = function() {
@@ -7466,63 +8246,11 @@
       if (countBadge) countBadge.textContent = list.length + ' ခု';
 
       if (list.length === 0) {
-        container.innerHTML = `<div class="text-center py-6 theme-text-muted text-xs">မှတ်တမ်း မရှိပါ</div>`;
+        container.innerHTML = `<div class="text-center py-6 theme-text-muted text-xs">ကိုက်ညီသော မှတ်တမ်း မရှိပါ</div>`;
         return;
       }
 
-      container.innerHTML = list.map(tx => {
-        const isRemit = tx.type === 'REMIT';
-        const isCashout = tx.type === 'CASHOUT';
-        const names = getTxNames(tx);
-        const stDisp = getTxStatusDisplay(tx);
-        const remitSub = isRemit
-          ? (tx.direction === 'MMK_TO_THB'
-              ? `🇲🇲 မြန်မာ ➔ 🇹🇭 ထိုင်း • ပေးငွေ: ${formatMMK(tx.amountMMK)} / ရငွေ: ${formatTHB(tx.customerTHB)}`
-              : `🇹🇭 ထိုင်း ➔ 🇲🇲 မြန်မာ • ပေးငွေ: ${formatTHB(tx.customerTHB)} / ထုတ်ငွေ: ${formatMMK(tx.amountMMK)}`)
-          : `KPay/ငွေထုတ် • ${tx.channel}`;
-
-        return `
-          <div class="theme-card-sub border p-2.5 sm:p-3 rounded-xl space-y-1.5 text-xs">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-1.5">
-                <span class="font-mono text-[10px] text-blue-500 font-bold">${tx.id}</span>
-                <span class="text-[9px] px-1.5 py-0.2 rounded font-bold ${stDisp.badgeClass}">${stDisp.text}</span>
-              </div>
-              <span class="text-[10px] theme-text-muted">${formatDateTime(tx.date)}</span>
-            </div>
-
-            <div class="flex items-center justify-between">
-              <div>
-                <span class="font-bold theme-text-heading">${names.displayTitle}</span>
-                ${isRemit && names.senderName && names.receiverName ? `<span class="text-[10px] theme-text-muted block">${names.senderLabel}: ${names.senderName} | ${names.receiverLabel}: ${names.receiverName}</span>` : ''}
-                <span class="text-[10px] theme-text-muted block">${remitSub}</span>
-              </div>
-              <div class="text-right">
-                <span class="font-bold font-mono theme-text-heading">${isRemit && tx.direction === 'MMK_TO_THB' ? formatTHB(tx.customerTHB) : formatMMK(tx.amountMMK)}</span>
-                <span class="text-[10px] text-emerald-500 font-mono block">
-                  အမြတ်: ${tx.profitTHB ? formatTHB(tx.profitTHB) : formatMMK(tx.profitMMK)}
-                </span>
-              </div>
-            </div>
-
-            <div class="flex items-center justify-between gap-1.5 pt-1 border-t">
-              <div>
-                ${isRemit && tx.status === 'UNPAID' ? `
-                  <button onclick="toggleRemitPayoutStatus('${tx.id}')" class="px-2 py-1 rounded-lg bg-emerald-600 text-white text-[10px] font-bold">✓ ထုတ်ပေးပြီးမှတ်မည်</button>
-                ` : ''}
-                ${isCashout && tx.status === 'UNPAID' ? `
-                  <button onclick="toggleCashoutPayoutStatus('${tx.id}')" class="px-2 py-1 rounded-lg bg-emerald-600 text-white text-[10px] font-bold">✓ ထုတ်ပေးပြီးမှတ်မည်</button>
-                ` : ''}
-              </div>
-              <div class="flex items-center gap-1.5">
-                <button onclick="openVoucherModal('${tx.id}')" class="px-2 py-1 rounded-lg theme-card border text-[10px] font-semibold">ဘောက်ချာ</button>
-                <button onclick="openEditModal('${tx.id}')" class="px-2 py-1 rounded-lg bg-blue-600/15 text-blue-500 text-[10px] font-bold">ပြင်မည်</button>
-                <button onclick="deleteTransaction('${tx.id}')" class="px-2 py-1 rounded-lg bg-rose-600/15 text-rose-500 text-[10px] font-bold">ဖျက်မည်</button>
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
+      container.innerHTML = list.map(item => renderUnifiedRecordCard(item, false)).join('');
     };
 
     const deleteTransaction = window.deleteTransaction = function(txId) {
@@ -7812,7 +8540,10 @@
         ALL: 'qsearch-filter-all',
         REMIT: 'qsearch-filter-remit',
         CASHOUT: 'qsearch-filter-cashout',
-        UNPAID: 'qsearch-filter-unpaid'
+        DEPOSIT: 'qsearch-filter-deposit',
+        U9: 'qsearch-filter-u9',
+        UNPAID: 'qsearch-filter-unpaid',
+        EXPENSE: 'qsearch-filter-expense'
       };
       Object.entries(map).forEach(([key, id]) => {
         const btn = document.getElementById(id);
@@ -7826,45 +8557,38 @@
       renderQuickSearchList();
     };
 
+    const exportQuickSearchCSV = window.exportQuickSearchCSV = function() {
+      const q = (document.getElementById('quickSearchInput')?.value || '').toLowerCase().trim();
+      const list = filterUnifiedRecords(quickSearchTypeFilter || 'ALL', q);
+      const slug = (quickSearchTypeFilter || 'ALL').toLowerCase();
+      exportUnifiedItemsToCSV(list, `LabShwin_Search_${slug}`);
+    };
+
     const renderQuickSearchList = window.renderQuickSearchList = function() {
       syncSearchClearButton('quickSearchInput', 'quickSearchClearBtn');
       const container = document.getElementById('quickSearchListContainer');
       const countEl = document.getElementById('quickSearchResultCount');
+      const sumEl = document.getElementById('quickSearchTotalSummary');
       if (!container) return;
 
       const q = (document.getElementById('quickSearchInput')?.value || '').toLowerCase().trim();
-      let list = [...transactions];
+      const list = filterUnifiedRecords(quickSearchTypeFilter || 'ALL', q);
 
-      if (quickSearchTypeFilter === 'REMIT') {
-        list = list.filter(t => t.type === 'REMIT');
-      } else if (quickSearchTypeFilter === 'CASHOUT') {
-        list = list.filter(t => t.type === 'CASHOUT');
-      } else if (quickSearchTypeFilter === 'UNPAID') {
-        list = list.filter(t => t.status === 'UNPAID');
-      }
-
-      if (q) {
-        list = list.filter(t => {
-          const names = getTxNames(t);
-          const stDisp = getTxStatusDisplay(t);
-          return (
-            (t.id && t.id.toLowerCase().includes(q)) ||
-            (t.custName && t.custName.toLowerCase().includes(q)) ||
-            (names.displayTitle && names.displayTitle.toLowerCase().includes(q)) ||
-            (names.senderName && names.senderName.toLowerCase().includes(q)) ||
-            (names.receiverName && names.receiverName.toLowerCase().includes(q)) ||
-            (t.custPhone && t.custPhone.toLowerCase().includes(q)) ||
-            (t.channel && t.channel.toLowerCase().includes(q)) ||
-            (t.note && t.note.toLowerCase().includes(q)) ||
-            (stDisp.text && stDisp.text.toLowerCase().includes(q)) ||
-            String(t.amountMMK || '').includes(q) ||
-            String(t.customerTHB || '').includes(q)
-          );
-        });
-      }
+      let sumMMK = 0;
+      let sumTHB = 0;
+      list.forEach(item => {
+        sumMMK += Number(item.amountMMK) || 0;
+        sumTHB += Number(item.amountTHB) || 0;
+      });
 
       if (countEl) {
         countEl.textContent = `ရှာဖွေမှု ရလဒ်: ${list.length} ခု`;
+      }
+      if (sumEl) {
+        const parts = [];
+        if (sumMMK > 0) parts.push(formatMMK(sumMMK));
+        if (sumTHB > 0) parts.push(formatTHB(sumTHB));
+        sumEl.textContent = parts.length > 0 ? `• စုစုပေါင်း: ${parts.join(' + ')}` : '';
       }
 
       if (list.length === 0) {
@@ -7872,73 +8596,13 @@
           <div class="text-center py-10 theme-card-sub rounded-2xl border theme-text-muted text-xs space-y-1">
             <div class="text-base">🔍</div>
             <div>ကိုက်ညီသော စာရင်း သို့မဟုတ် ဘောက်ချာ ရှာမတွေ့ပါ</div>
+            <div class="text-[10px]">ငွေလွှဲ၊ KPay၊ အပ်ငွေစာရင်း၊ U9 ဖုန်းဘေလ်၊ အကြွေး နှင့် အသုံးစရိတ် အားလုံးတွင် ရှာဖွေထားပါသည်</div>
           </div>
         `;
         return;
       }
 
-      container.innerHTML = list.slice(0, 40).map(tx => {
-        const isRemit = tx.type === 'REMIT';
-        const isCashout = tx.type === 'CASHOUT';
-        const names = getTxNames(tx);
-        const stDisp = getTxStatusDisplay(tx);
-        const typeLabel = isRemit
-          ? (tx.direction === 'MMK_TO_THB' ? '🇲🇲 မြန်မာ ➔ 🇹🇭 ထိုင်း' : '🇹🇭 ထိုင်း ➔ 🇲🇲 မြန်မာ')
-          : (tx.cashoutType === 'TRANSFER' ? '🔺 KPay ငွေလွှဲ' : '🔻 KPay ငွေထုတ်');
-
-        return `
-          <div class="theme-card-sub border hover:border-blue-500/50 p-3 rounded-2xl space-y-1.5 text-xs transition">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-1.5">
-                <span class="font-mono text-[10px] text-blue-500 font-bold">#${tx.id}</span>
-                <span class="text-[9px] px-2 py-0.5 rounded-full font-bold ${stDisp.badgeClass}">${stDisp.text}</span>
-              </div>
-              <span class="text-[10px] theme-text-muted">${formatDateTime(tx.date)}</span>
-            </div>
-
-            <div class="flex items-start justify-between gap-2">
-              <div class="space-y-0.5">
-                <div class="font-bold theme-text-heading text-xs">${names.displayTitle}</div>
-                <div class="text-[10px] theme-text-muted">
-                  <span class="font-semibold text-blue-400">${typeLabel}</span>
-                  • ချန်နယ်: <span class="font-semibold">${tx.channel || 'KPay'}</span>
-                  ${tx.custPhone ? ` • ဖုန်း: <span class="font-mono">${tx.custPhone}</span>` : ''}
-                  ${tx.note ? ` • မှတ်ချက်: ${tx.note}` : ''}
-                </div>
-              </div>
-              <div class="text-right shrink-0">
-                <div class="font-extrabold font-mono theme-text-heading">
-                  ${isRemit && tx.direction === 'MMK_TO_THB' ? formatTHB(tx.customerTHB) : formatMMK(tx.amountMMK)}
-                </div>
-                <div class="text-[10px] text-emerald-500 font-mono">
-                  အမြတ်: +${tx.profitTHB ? formatTHB(tx.profitTHB) : formatMMK(tx.profitMMK || tx.fee || 0)}
-                </div>
-              </div>
-            </div>
-
-            <div class="flex items-center justify-between gap-1.5 pt-1.5 border-t">
-              <div>
-                ${tx.status === 'UNPAID' && isRemit ? `
-                  <button type="button" onclick="toggleRemitPayoutStatus('${tx.id}'); renderQuickSearchList();" class="px-2.5 py-1 rounded-lg bg-emerald-600 text-white text-[10px] font-bold">✓ ထုတ်ပေးပြီးမှတ်မည်</button>
-                ` : ''}
-                ${tx.status === 'UNPAID' && isCashout ? `
-                  <button type="button" onclick="toggleCashoutPayoutStatus('${tx.id}'); renderQuickSearchList();" class="px-2.5 py-1 rounded-lg bg-emerald-600 text-white text-[10px] font-bold">
-                    ${tx.cashoutType === 'TRANSFER' ? '✓ လက်ငင်းရရှိမှတ်မည်' : '✓ ထုတ်ပေးပြီးမှတ်မည်'}
-                  </button>
-                ` : ''}
-              </div>
-              <div class="flex items-center gap-1.5">
-                <button type="button" onclick="closeVoucherSearchModal(); openVoucherModal('${tx.id}');" class="px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-bold shadow-sm">
-                  📄 ဘောက်ချာကြည့်ရန်
-                </button>
-                <button type="button" onclick="closeVoucherSearchModal(); openEditModal('${tx.id}');" class="px-2.5 py-1 rounded-lg theme-card border text-blue-500 text-[10px] font-bold">
-                  ပြင်မည်
-                </button>
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
+      container.innerHTML = list.slice(0, 60).map(item => renderUnifiedRecordCard(item, true)).join('');
     };
 
     // --- QUICK RATE MODAL ---
@@ -8488,12 +9152,21 @@
         filtered = filtered.filter(d => d.type === depositHistoryFilter);
       }
       if (search) {
-        filtered = filtered.filter(d =>
-          (d.custName && d.custName.toLowerCase().includes(search)) ||
-          (d.custPhone && d.custPhone.toLowerCase().includes(search)) ||
-          (d.note && d.note.toLowerCase().includes(search)) ||
-          (d.id && d.id.toLowerCase().includes(search))
-        );
+        filtered = filtered.filter(d => {
+          const typeText = d.type === 'DEPOSIT_IN' ? 'ငွေလာအပ်သည် အပ်ငွေ' : d.type === 'WITHDRAW_NOTICE' ? 'ကြိုမှတ် ၁ပတ်ကြိုမှတ်' : 'ငွေပြန်ထုတ်ပေးသည် ပြန်ထုတ်';
+          const accText = d.account === 'CASH' ? 'ငွေသား cash' : d.account === 'BANK' ? 'kpay bank' : 'ထိုင်းဘတ် thb';
+          return (
+            (d.custName && d.custName.toLowerCase().includes(search)) ||
+            (d.custPhone && d.custPhone.toLowerCase().includes(search)) ||
+            (d.note && d.note.toLowerCase().includes(search)) ||
+            (d.id && d.id.toLowerCase().includes(search)) ||
+            (d.targetDate && d.targetDate.toLowerCase().includes(search)) ||
+            (d.date && d.date.toLowerCase().includes(search)) ||
+            String(d.amount || '').includes(search) ||
+            typeText.includes(search) ||
+            accText.includes(search)
+          );
+        });
       }
 
       if (histBadge) histBadge.textContent = `${filtered.length} ခု`;
@@ -9114,12 +9787,26 @@
         filtered = filtered.filter(r => r.type === u9HistoryFilter);
       }
       if (search) {
-        filtered = filtered.filter(r =>
-          (r.custName && r.custName.toLowerCase().includes(search)) ||
-          (r.custPhone && r.custPhone.toLowerCase().includes(search)) ||
-          (r.note && r.note.toLowerCase().includes(search)) ||
-          (r.id && r.id.toLowerCase().includes(search))
-        );
+        filtered = filtered.filter(r => {
+          const typeText = r.type === 'BUY_PRIMARY' ? 'primary ဘေလ်အဝယ်' : r.type === 'WITHDRAW_COMM' ? 'ကော်မရှင် ထုတ်ယူ' : 'ဖုန်းဘေလ် အရောင်း';
+          const payText = r.paymentType === 'CASH' || r.withdrawMethod === 'CASH' || r.paymentMethod === 'CASH'
+            ? 'ငွေသား လက်ငင်း cash'
+            : (r.paymentType === 'CREDIT' ? 'အကြွေး credit မဆပ်ရသေး' : 'kpay bank လက်ငင်း');
+          return (
+            (r.custName && r.custName.toLowerCase().includes(search)) ||
+            (r.custPhone && r.custPhone.toLowerCase().includes(search)) ||
+            (r.note && r.note.toLowerCase().includes(search)) ||
+            (r.id && r.id.toLowerCase().includes(search)) ||
+            (r.date && r.date.toLowerCase().includes(search)) ||
+            String(r.billAmount || '').includes(search) ||
+            String(r.sellingPrice || '').includes(search) ||
+            String(r.purchaseAmount || '').includes(search) ||
+            String(r.commAmount || '').includes(search) ||
+            String(r.withdrawAmount || '').includes(search) ||
+            typeText.includes(search) ||
+            payText.includes(search)
+          );
+        });
       }
 
       if (histBadge) histBadge.textContent = `${filtered.length} ခု`;
