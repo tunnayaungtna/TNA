@@ -3169,10 +3169,53 @@
   <div id="toastContainer" class="fixed top-4 inset-x-0 z-50 flex flex-col items-center pointer-events-none px-4 space-y-2"></div>
 
   <!-- ================= JAVASCRIPT & EMBEDDED ASSETS ================= -->
-  <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js';
-    import { getAuth, signInWithPopup, signInWithRedirect, signInWithCredential, getRedirectResult, GoogleAuthProvider, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js';
-    import { getFirestore, doc, getDoc, getDocFromServer, setDoc, updateDoc, deleteDoc, collection, getDocs, writeBatch, serverTimestamp, query, where } from 'https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js';
+  <script>
+    let initializeApp, getAuth, signInWithPopup, signInWithRedirect, signInWithCredential, getRedirectResult, GoogleAuthProvider, onAuthStateChanged, signOut;
+    let getFirestore, doc, getDoc, getDocFromServer, setDoc, updateDoc, deleteDoc, collection, getDocs, writeBatch, serverTimestamp, query, where;
+    let firebaseSdkLoadPromise = null;
+
+    async function ensureFirebaseSDKLoaded() {
+      if (typeof initializeApp === 'function' && typeof getAuth === 'function' && typeof getFirestore === 'function') {
+        return true;
+      }
+      if (!firebaseSdkLoadPromise) {
+        firebaseSdkLoadPromise = Promise.all([
+          import('https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js'),
+          import('https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js'),
+          import('https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js')
+        ]).then(([appMod, authMod, fsMod]) => {
+          initializeApp = appMod.initializeApp;
+          getAuth = authMod.getAuth;
+          signInWithPopup = authMod.signInWithPopup;
+          signInWithRedirect = authMod.signInWithRedirect;
+          signInWithCredential = authMod.signInWithCredential;
+          getRedirectResult = authMod.getRedirectResult;
+          GoogleAuthProvider = authMod.GoogleAuthProvider;
+          onAuthStateChanged = authMod.onAuthStateChanged;
+          signOut = authMod.signOut;
+
+          getFirestore = fsMod.getFirestore;
+          doc = fsMod.doc;
+          getDoc = fsMod.getDoc;
+          getDocFromServer = fsMod.getDocFromServer;
+          setDoc = fsMod.setDoc;
+          updateDoc = fsMod.updateDoc;
+          deleteDoc = fsMod.deleteDoc;
+          collection = fsMod.collection;
+          getDocs = fsMod.getDocs;
+          writeBatch = fsMod.writeBatch;
+          serverTimestamp = fsMod.serverTimestamp;
+          query = fsMod.query;
+          where = fsMod.where;
+          return true;
+        }).catch((err) => {
+          console.warn('Firebase SDK load note:', err);
+          firebaseSdkLoadPromise = null;
+          return false;
+        });
+      }
+      return firebaseSdkLoadPromise;
+    }
 
     // --- Embedded Firebase Configuration (Completely Standalone) ---
     const firebaseConfig = {
@@ -3400,11 +3443,21 @@
       if (touch) touch.href = blobUrl;
     }
 
-    // --- SERVICE WORKER REGISTRATION (PWA) ---
+    // --- SERVICE WORKER REGISTRATION (PWA) & STALE CACHE CLEANUP ---
+    if ('caches' in window) {
+      caches.keys().then((keys) => {
+        keys.forEach((k) => {
+          if (k !== 'labshwin-cache-v5') {
+            caches.delete(k).catch(() => {});
+          }
+        });
+      }).catch(() => {});
+    }
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js')
           .then((reg) => {
+            reg.update().catch(() => {});
             console.log('PWA ServiceWorker registered:', reg.scope);
           })
           .catch((err) => {
@@ -3540,7 +3593,7 @@
       return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
     }
 
-    function initFirebaseAuth() {
+    async function initFirebaseAuth() {
       // Restore previously connected Direct Gmail or GIS user immediately so UI is ready
       const savedDirectUser = getSavedDirectGmailUser();
       if (savedDirectUser) {
@@ -3549,6 +3602,9 @@
       }
 
       try {
+        const loaded = await ensureFirebaseSDKLoaded();
+        if (!loaded || typeof initializeApp !== 'function') return;
+
         firebaseApp = initializeApp(firebaseConfig);
         auth = getAuth(firebaseApp);
         db = getFirestore(firebaseApp, firebaseConfig.firestoreDatabaseId);
@@ -3766,6 +3822,7 @@
 
       isSigningIn = true;
       try {
+        await ensureFirebaseSDKLoaded();
         if (!auth && typeof initializeApp === 'function') {
           firebaseApp = initializeApp(firebaseConfig);
           auth = getAuth(firebaseApp);

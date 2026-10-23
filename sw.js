@@ -1,4 +1,4 @@
-const CACHE_NAME = 'labshwin-cache-v3';
+const CACHE_NAME = 'labshwin-cache-v5';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -42,13 +42,20 @@ self.addEventListener('fetch', (event) => {
     url.includes('gstatic.com') ||
     url.includes('firebase') ||
     url.includes('accounts.google.com') ||
-    url.includes('googleusercontent.com')
+    url.includes('googleusercontent.com') ||
+    url.includes('html-proxy')
   ) {
     return;
   }
 
-  // Network-First strategy for HTML / Navigation requests so updates load immediately
-  if (event.request.mode === 'navigate' || url.endsWith('.html') || url.endsWith('/')) {
+  // Network-First strategy for HTML, JS, and Navigation requests so updates always load immediately
+  if (
+    event.request.mode === 'navigate' ||
+    url.endsWith('.html') ||
+    url.endsWith('.js') ||
+    url.includes('.js?') ||
+    url.endsWith('/')
+  ) {
     event.respondWith(
       fetch(event.request)
         .then((networkResponse) => {
@@ -88,3 +95,4 @@ self.addEventListener('fetch', (event) => {
     })
   );
 });
+
