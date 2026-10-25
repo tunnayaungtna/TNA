@@ -51,10 +51,22 @@
   <!-- SheetJS CDN for Excel (.xlsx) Export & Import -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
+  <!-- html2canvas & jsPDF CDN for High-Fidelity Myanmar Unicode PDF Report Export -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
   <!-- Google Identity Services (GIS) SDK for OAuth2 / One-Tap Fallback -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 
   <style>
+    @keyframes pinShake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+    .pin-shake {
+      animation: pinShake 0.35s ease-in-out;
+    }
     body {
       font-family: 'Noto Sans Myanmar', Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       -webkit-font-smoothing: antialiased;
@@ -268,6 +280,11 @@
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
         </button>
 
+        <!-- Quick App Lock Button -->
+        <button id="headerLockBtn" onclick="handleHeaderLockClick()" title="App Lock ချရန် / Password သတ်မှတ်ရန်" class="p-2 rounded-xl theme-card-sub border hover:opacity-90 active:scale-95 transition flex items-center justify-center theme-text-muted hover:text-amber-500">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+        </button>
+
         <!-- Google User Profile Pill (Visible when logged in) -->
         <div id="userProfileHeaderPill" onclick="openGoogleConnectModal()" class="hidden cursor-pointer items-center gap-1.5 p-1 pr-2 rounded-full theme-card-sub border hover:opacity-90 transition">
           <img id="userHeaderAvatar" src="" alt="avatar" class="w-6 h-6 rounded-full object-cover">
@@ -464,7 +481,14 @@
               <p class="text-[11px] theme-text-muted mt-0.5">ငွေလွှဲ + KPay + U9 ဖုန်းဘေလ် အမြတ်အားလုံး၊ အသုံးစရိတ်၊ အပ်ငွေ၊ အကြွေး နှင့် လက်ကျန်ငွေ စာရင်းရှင်းတမ်းအပြည့်အစုံ</p>
             </div>
           </div>
-          <div class="flex items-center gap-1.5 self-start sm:self-auto">
+          <div class="flex flex-wrap items-center gap-1.5 self-start sm:self-auto">
+            <div class="flex items-center gap-1 theme-card-sub border border-emerald-500/40 rounded-xl px-2 py-1">
+              <span class="text-[10px] theme-text-muted font-bold">လရွေးရန်:</span>
+              <input type="month" id="dashMsMonthPicker" onchange="onDashMsMonthPickerChange(this.value)" class="bg-transparent text-[11px] font-mono font-bold theme-text-heading focus:outline-none">
+              <button type="button" onclick="generateMonthlyMasterSettlementPDF(document.getElementById('dashMsMonthPicker')?.value)" title="ရွေးချယ်ထားသော လအတွက် စာရင်းရှင်းတမ်း PDF ဒေါင်းလုဒ်ဆွဲရန်" class="px-2 py-1 rounded-lg bg-rose-600 hover:bg-rose-500 active:scale-95 text-white text-[10px] font-extrabold shadow flex items-center gap-1 transition">
+                <span>📄 လစဉ် PDF ထုတ်မည်</span>
+              </button>
+            </div>
             <button type="button" onclick="openMasterSettlementModal()" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-[11px] font-extrabold shadow flex items-center gap-1.5 transition">
               <span>🧾 စာရင်းရှင်းတမ်း ပြေစာထုတ်ရန်</span>
             </button>
@@ -2295,14 +2319,114 @@
 
       </div>
 
-      <!-- Offline File Export / Excel Tools -->
+      <!-- Subsection 2B: Application Number Password (PIN) Lock Settings Card -->
+      <div id="appLockSettingsSection" class="theme-card border border-amber-500/40 rounded-2xl p-4 sm:p-5 space-y-4 shadow-sm bg-gradient-to-r from-amber-950/15 via-slate-900/10 to-transparent">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b pb-2.5">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center text-base font-bold shrink-0">
+              🔒
+            </div>
+            <div>
+              <h3 class="text-xs sm:text-sm font-extrabold theme-text-heading flex items-center gap-2">
+                <span>App လုံခြုံရေး ဂဏန်းစကားဝှက် (Number Password Lock)</span>
+              </h3>
+              <p class="text-[11px] theme-text-muted">Application ကို မိမိကိုယ်ပိုင် ဂဏန်းစကားဝှက် (PIN Number) ဖြင့် လုံခြုံစွာ ပိတ်ထားနိုင်သည်</p>
+            </div>
+          </div>
+          <span id="appLockStatusBadge" class="text-[10px] px-2.5 py-1 rounded-full bg-slate-500/20 text-slate-400 border border-slate-500/30 font-bold">
+            🔓 Password Lock ပိတ်ထားသည်
+          </span>
+        </div>
+
+        <!-- View 1: When App Lock is NOT set yet (Setup Form) -->
+        <div id="appLockSetupBox" class="space-y-3">
+          <form id="appLockSetupForm" onsubmit="handleSetupAppPin(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
+            <div>
+              <label class="block text-xs font-semibold theme-text-heading mb-1">ဂဏန်းစကားဝှက် အသစ် (၄ လုံးမှ ၈ လုံး) <span class="text-rose-500">*</span></label>
+              <input type="password" inputmode="numeric" pattern="[0-9]*" minlength="4" maxlength="8" id="newAppPinInput" required placeholder="ဥပမာ - 1234" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="w-full theme-input border border-amber-500/40 rounded-xl px-3.5 py-2.5 text-sm font-mono font-bold tracking-widest text-center">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold theme-text-heading mb-1">ဂဏန်းစကားဝှက် အတည်ပြုရန် <span class="text-rose-500">*</span></label>
+              <input type="password" inputmode="numeric" pattern="[0-9]*" minlength="4" maxlength="8" id="confirmAppPinInput" required placeholder="ထပ်မံရိုက်ထည့်ပါ" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="w-full theme-input border border-amber-500/40 rounded-xl px-3.5 py-2.5 text-sm font-mono font-bold tracking-widest text-center">
+            </div>
+            <div>
+              <button type="submit" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 active:scale-98 text-slate-950 text-xs font-extrabold shadow-md transition flex items-center justify-center gap-1.5">
+                <span>🔒 Number Password သတ်မှတ်မည်</span>
+              </button>
+            </div>
+          </form>
+          <p class="text-[10px] theme-text-muted">💡 ဂဏန်းသီးသန့် (၀ မှ ၉ အတွင်း) အနည်းဆုံး ၄ လုံးမှ ၈ လုံးအထိ စိတ်ကြိုက်ပေးနိုင်ပါသည်။ သတ်မှတ်ပြီးပါက App ဖွင့်တိုင်း သို့မဟုတ် Lock ခလုတ်နှိပ်တိုင်း စကားဝှက်တောင်းပါမည်။</p>
+        </div>
+
+        <!-- View 2: When App Lock IS enabled (Manage / Lock Now / Change / Disable) -->
+        <div id="appLockManageBox" class="hidden space-y-3.5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div class="theme-card-sub border border-emerald-500/30 rounded-xl p-3 flex items-center justify-between">
+              <div>
+                <div class="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                  <span>Number Password ဖွင့်ထားပါသည်</span>
+                </div>
+                <div class="text-[10px] theme-text-muted mt-0.5" id="appLockPinLengthHint">ဂဏန်း ၄ လုံး စကားဝှက် သတ်မှတ်ထားသည်</div>
+              </div>
+              <button type="button" onclick="lockApplicationNow()" class="px-3 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 active:scale-95 text-slate-950 text-xs font-extrabold shadow transition flex items-center gap-1">
+                <span>🔒 ယခု Lock ချမည်</span>
+              </button>
+            </div>
+
+            <div class="theme-card-sub border rounded-xl p-3 flex items-center justify-between gap-2">
+              <div>
+                <label class="text-xs font-bold theme-text-heading block">အလိုအလျောက် Lock စနစ် (Auto-Lock)</label>
+                <span class="text-[10px] theme-text-muted">App ပိတ်ပြီး ပြန်ဖွင့်ချိန်နှင့် မသုံးဘဲထားချိန်</span>
+              </div>
+              <select id="appLockAutoMinutesSelect" onchange="handleAutoLockTimerChange(this.value)" class="theme-input border rounded-xl px-2.5 py-1.5 text-xs font-bold">
+                <option value="0">App စဖွင့်ချိန်တိုင်း</option>
+                <option value="1">၁ မိနစ် မသုံးလျှင်</option>
+                <option value="5">၅ မိနစ် မသုံးလျှင်</option>
+                <option value="15">၁၅ မိနစ် မသုံးလျှင်</option>
+                <option value="30">မိနစ် ၃၀ မသုံးလျှင်</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2 pt-1">
+            <button type="button" onclick="openAppPinActionModal('CHANGE')" class="flex-1 min-w-[140px] py-2.5 px-3 rounded-xl bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/40 text-blue-400 text-xs font-bold transition flex items-center justify-center gap-1.5">
+              <span>🔑 စကားဝှက် အသစ်ပြောင်းမည်</span>
+            </button>
+            <button type="button" onclick="openAppPinActionModal('DISABLE')" class="flex-1 min-w-[140px] py-2.5 px-3 rounded-xl bg-rose-600/15 hover:bg-rose-600/25 border border-rose-500/40 text-rose-400 text-xs font-bold transition flex items-center justify-center gap-1.5">
+              <span>🔓 Password Lock ပိတ်မည်</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Offline File Export / Excel & Monthly PDF Report Tools -->
       <div class="theme-card border rounded-2xl p-4 sm:p-5 space-y-3.5 shadow-sm">
         <div class="border-b pb-2 flex items-center justify-between">
           <h3 class="text-xs sm:text-sm font-bold theme-text-heading flex items-center gap-1.5">
             <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-            အော့ဖ်လိုင်း ဖိုင် Export & Excel စာရင်း
+            အော့ဖ်လိုင်း ဖိုင် Export, လစဉ် PDF စာရင်းရှင်းတမ်း & Excel စာရင်း
           </h3>
-          <span class="text-[10px] theme-text-muted">Excel / Sheets အသုံးပြုရန်</span>
+          <span class="text-[10px] theme-text-muted">PDF / Excel / JSON</span>
+        </div>
+
+        <!-- Monthly PDF Summary Report Generator Strip -->
+        <div class="theme-card-sub border border-rose-500/30 bg-rose-500/5 rounded-2xl p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="flex items-center gap-2.5">
+            <div class="w-10 h-10 rounded-xl bg-rose-600/20 text-rose-400 border border-rose-500/30 flex items-center justify-center text-base font-bold shrink-0">
+              📄
+            </div>
+            <div>
+              <div class="text-xs font-extrabold theme-text-heading">လစဉ် အားလုံးခြုံ စာရင်းရှင်းတမ်း PDF ထုတ်ယူရန် (Monthly PDF Report)</div>
+              <div class="text-[10px] theme-text-muted">ရွေးချယ်ထားသော လအလိုက် ငွေလွှဲ၊ KPay၊ U9၊ အသုံးစရိတ်၊ အပ်ငွေနှင့် လက်ကျန်စာရင်းချုပ် PDF</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 self-end sm:self-auto">
+            <input type="month" id="settingsMsMonthPicker" onchange="syncMsMonthPickers(this.value)" class="theme-input border border-rose-500/40 rounded-xl px-2.5 py-2 text-xs font-mono font-bold">
+            <button type="button" onclick="generateMonthlyMasterSettlementPDF(document.getElementById('settingsMsMonthPicker')?.value)" class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 active:scale-95 text-white text-xs font-extrabold shadow flex items-center gap-1.5 shrink-0 transition">
+              <span>📥 PDF ဒေါင်းရန်</span>
+            </button>
+          </div>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
@@ -3005,11 +3129,24 @@
         <button type="button" onclick="closeMasterSettlementModal()" class="theme-text-muted hover:text-rose-500 p-1.5 rounded-full text-base font-bold">✕</button>
       </div>
 
-      <!-- Period Selector inside Modal -->
-      <div class="flex items-center gap-1 theme-card-sub p-1 rounded-xl border text-xs">
-        <button type="button" onclick="setDashboardPeriod('today')" id="ms-modal-btn-today" class="flex-1 py-1.5 rounded-lg font-bold transition text-center bg-emerald-600 text-white">ယနေ့</button>
-        <button type="button" onclick="setDashboardPeriod('month')" id="ms-modal-btn-month" class="flex-1 py-1.5 rounded-lg font-medium transition text-center theme-text-muted">ယခုလ</button>
-        <button type="button" onclick="setDashboardPeriod('all')" id="ms-modal-btn-all" class="flex-1 py-1.5 rounded-lg font-medium transition text-center theme-text-muted">စုစုပေါင်း</button>
+      <!-- Period Selector & Month Picker inside Modal -->
+      <div class="space-y-2">
+        <div class="flex items-center gap-1 theme-card-sub p-1 rounded-xl border text-xs">
+          <button type="button" onclick="setDashboardPeriod('today')" id="ms-modal-btn-today" class="flex-1 py-1.5 rounded-lg font-bold transition text-center bg-emerald-600 text-white">ယနေ့</button>
+          <button type="button" onclick="setDashboardPeriod('month')" id="ms-modal-btn-month" class="flex-1 py-1.5 rounded-lg font-medium transition text-center theme-text-muted">ယခုလ</button>
+          <button type="button" onclick="setDashboardPeriod('all')" id="ms-modal-btn-all" class="flex-1 py-1.5 rounded-lg font-medium transition text-center theme-text-muted">စုစုပေါင်း</button>
+        </div>
+
+        <!-- Monthly Report Picker & Direct PDF Download Bar -->
+        <div class="flex flex-wrap items-center justify-between gap-2 p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-xs">
+          <div class="flex items-center gap-2">
+            <span class="font-bold text-rose-400">📅 လအလိုက် PDF စာရင်းချုပ်:</span>
+            <input type="month" id="msModalMonthPicker" onchange="onMsModalMonthChange(this.value)" class="theme-input border border-rose-500/40 rounded-lg px-2 py-1 text-xs font-mono font-bold">
+          </div>
+          <button type="button" id="msDownloadPdfBtn" onclick="generateMonthlyMasterSettlementPDF(document.getElementById('msModalMonthPicker')?.value)" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 active:scale-95 text-white text-xs font-extrabold shadow flex items-center gap-1.5 transition">
+            <span>📄 လစဉ် PDF ဒေါင်းလုဒ်</span>
+          </button>
+        </div>
       </div>
 
       <!-- Printable / Shareable Statement Sheet -->
@@ -3017,15 +3154,18 @@
         <!-- Populated dynamically by renderMasterSettlementModalContent() -->
       </div>
 
-      <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-1">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
+        <button type="button" onclick="generateMonthlyMasterSettlementPDF(document.getElementById('msModalMonthPicker')?.value)" class="py-2.5 px-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-extrabold shadow flex items-center justify-center gap-1.5 transition">
+          <span>📄 PDF ထုတ်မည်</span>
+        </button>
         <button type="button" onclick="copyMasterSettlementText()" class="py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow flex items-center justify-center gap-1.5 transition">
-          <span>📋 စာသား Copy ကူးရန်</span>
+          <span>📋 စာသား Copy</span>
         </button>
         <button type="button" onclick="shareMasterSettlementText()" class="py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow flex items-center justify-center gap-1.5 transition">
-          <span>📤 Viber / Share ပို့ရန်</span>
+          <span>📤 Share ပို့ရန်</span>
         </button>
-        <button type="button" onclick="exportMasterSettlementCSV()" class="col-span-2 sm:col-span-1 py-2.5 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-extrabold shadow flex items-center justify-center gap-1.5 transition">
-          <span>📥 CSV ဒေါင်းလုဒ်</span>
+        <button type="button" onclick="exportMasterSettlementCSV()" class="py-2.5 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-extrabold shadow flex items-center justify-center gap-1.5 transition">
+          <span>📥 CSV ဒေါင်းရန်</span>
         </button>
       </div>
 
@@ -3121,8 +3261,90 @@
     </div>
   </div>
 
+  <!-- 13. APP PIN CHANGE / DISABLE VERIFICATION MODAL -->
+  <div id="appPinActionModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="theme-card border border-amber-500/50 w-full max-w-sm rounded-3xl p-5 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b pb-2.5">
+        <h3 id="appPinActionModalTitle" class="text-xs sm:text-sm font-extrabold text-amber-400 flex items-center gap-1.5">
+          <span>🔑 ဂဏန်းစကားဝှက် ပြင်ဆင်ရန်</span>
+        </h3>
+        <button type="button" onclick="closeAppPinActionModal()" class="theme-text-muted hover:text-rose-500 p-1">✕</button>
+      </div>
+
+      <form id="appPinActionForm" onsubmit="handleConfirmAppPinAction(event)" class="space-y-3 text-xs">
+        <input type="hidden" id="appPinActionType" value="CHANGE">
+
+        <div>
+          <label class="block font-semibold theme-text-heading mb-1">လက်ရှိ ဂဏန်းစကားဝှက် (Current Password) <span class="text-rose-500">*</span></label>
+          <input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="8" id="currentAppPinVerifyInput" required placeholder="လက်ရှိ စကားဝှက် ရိုက်ထည့်ပါ" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="w-full theme-input border rounded-xl px-3.5 py-2.5 text-sm font-mono font-bold tracking-widest text-center">
+        </div>
+
+        <div id="appPinNewFieldsGroup" class="space-y-3 pt-1 border-t">
+          <div>
+            <label class="block font-semibold text-emerald-400 mb-1">ဂဏန်းစကားဝှက် အသစ် (၄ လုံးမှ ၈ လုံး) <span class="text-rose-500">*</span></label>
+            <input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="8" id="changeNewAppPinInput" placeholder="စကားဝှက်အသစ် ရိုက်ထည့်ပါ" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="w-full theme-input border border-emerald-500/40 rounded-xl px-3.5 py-2.5 text-sm font-mono font-bold tracking-widest text-center">
+          </div>
+          <div>
+            <label class="block font-semibold text-emerald-400 mb-1">စကားဝှက်အသစ် အတည်ပြုရန် <span class="text-rose-500">*</span></label>
+            <input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="8" id="changeConfirmAppPinInput" placeholder="စကားဝှက်အသစ် ထပ်မံရိုက်ထည့်ပါ" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="w-full theme-input border border-emerald-500/40 rounded-xl px-3.5 py-2.5 text-sm font-mono font-bold tracking-widest text-center">
+          </div>
+        </div>
+
+        <div class="flex gap-2 pt-2">
+          <button type="button" onclick="closeAppPinActionModal()" class="flex-1 py-2.5 rounded-xl theme-card-sub border theme-text-muted font-bold">မလုပ်တော့ပါ</button>
+          <button type="submit" id="appPinActionSubmitBtn" class="flex-1 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold shadow">အတည်ပြုမည်</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 14. FULL-SCREEN APPLICATION NUMBER PASSWORD (PIN) LOCK SCREEN OVERLAY -->
+  <div id="appLockOverlay" class="fixed inset-0 z-[90] bg-slate-950/98 backdrop-blur-xl flex flex-col items-center justify-center p-4 hidden select-none">
+    <div id="appLockCard" class="w-full max-w-xs sm:max-w-sm rounded-3xl bg-slate-900/90 border border-amber-500/30 p-6 shadow-2xl text-center space-y-5">
+      <div class="space-y-2">
+        <div class="w-16 h-16 mx-auto rounded-2xl overflow-hidden shadow-lg shadow-blue-600/30 border-2 border-amber-400/60" id="lockScreenAppIcon"></div>
+        <h2 class="text-base sm:text-lg font-extrabold text-white tracking-tight">လာဘ်ရွှင် (Lab Shwin)</h2>
+        <p class="text-xs text-amber-400 font-bold flex items-center justify-center gap-1">
+          <span>🔒</span>
+          <span>ဂဏန်းစကားဝှက် (Number Password) ရိုက်ထည့်ပါ</span>
+        </p>
+      </div>
+
+      <!-- PIN Dots Display -->
+      <div class="space-y-2">
+        <div id="pinDotsContainer" class="flex items-center justify-center gap-3 min-h-[44px] py-2 px-4 rounded-2xl bg-slate-950/80 border border-slate-800">
+          <!-- Populated dynamically -->
+        </div>
+        <p id="pinErrorMsg" class="text-[11px] text-rose-400 font-bold min-h-[16px]"></p>
+      </div>
+
+      <!-- Numeric Keypad (0-9) -->
+      <div class="grid grid-cols-3 gap-2.5 text-white font-mono">
+        <button type="button" onclick="pressPinKey('1')" class="h-14 rounded-2xl bg-slate-800/90 hover:bg-slate-700 active:scale-95 border border-slate-700/80 text-xl font-extrabold shadow transition">1</button>
+        <button type="button" onclick="pressPinKey('2')" class="h-14 rounded-2xl bg-slate-800/90 hover:bg-slate-700 active:scale-95 border border-slate-700/80 text-xl font-extrabold shadow transition">2</button>
+        <button type="button" onclick="pressPinKey('3')" class="h-14 rounded-2xl bg-slate-800/90 hover:bg-slate-700 active:scale-95 border border-slate-700/80 text-xl font-extrabold shadow transition">3</button>
+        <button type="button" onclick="pressPinKey('4')" class="h-14 rounded-2xl bg-slate-800/90 hover:bg-slate-700 active:scale-95 border border-slate-700/80 text-xl font-extrabold shadow transition">4</button>
+        <button type="button" onclick="pressPinKey('5')" class="h-14 rounded-2xl bg-slate-800/90 hover:bg-slate-700 active:scale-95 border border-slate-700/80 text-xl font-extrabold shadow transition">5</button>
+        <button type="button" onclick="pressPinKey('6')" class="h-14 rounded-2xl bg-slate-800/90 hover:bg-slate-700 active:scale-95 border border-slate-700/80 text-xl font-extrabold shadow transition">6</button>
+        <button type="button" onclick="pressPinKey('7')" class="h-14 rounded-2xl bg-slate-800/90 hover:bg-slate-700 active:scale-95 border border-slate-700/80 text-xl font-extrabold shadow transition">7</button>
+        <button type="button" onclick="pressPinKey('8')" class="h-14 rounded-2xl bg-slate-800/90 hover:bg-slate-700 active:scale-95 border border-slate-700/80 text-xl font-extrabold shadow transition">8</button>
+        <button type="button" onclick="pressPinKey('9')" class="h-14 rounded-2xl bg-slate-800/90 hover:bg-slate-700 active:scale-95 border border-slate-700/80 text-xl font-extrabold shadow transition">9</button>
+        <button type="button" onclick="clearPinInput()" class="h-14 rounded-2xl bg-rose-500/15 hover:bg-rose-500/25 active:scale-95 border border-rose-500/30 text-rose-400 text-xs font-sans font-extrabold shadow transition">ရှင်းမည်</button>
+        <button type="button" onclick="pressPinKey('0')" class="h-14 rounded-2xl bg-slate-800/90 hover:bg-slate-700 active:scale-95 border border-slate-700/80 text-xl font-extrabold shadow transition">0</button>
+        <button type="button" onclick="backspacePinInput()" class="h-14 rounded-2xl bg-slate-800/90 hover:bg-slate-700 active:scale-95 border border-slate-700/80 text-amber-400 text-lg font-extrabold shadow transition flex items-center justify-center">⌫</button>
+      </div>
+
+      <button type="button" onclick="submitPinUnlock()" class="w-full py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 active:scale-98 text-slate-950 text-xs sm:text-sm font-extrabold shadow-lg transition">
+        🔓 Lock ဖွင့်မည် (Unlock)
+      </button>
+    </div>
+  </div>
+
+  <!-- Off-screen container for high-resolution A4 Monthly PDF Rendering -->
+  <div id="pdfRenderWrapper" class="fixed left-[-9999px] top-0 pointer-events-none z-[-1]"></div>
+
   <!-- TOAST NOTIFICATION CONTAINER -->
-  <div id="toastContainer" class="fixed top-4 inset-x-0 z-50 flex flex-col items-center pointer-events-none px-4 space-y-2"></div>
+  <div id="toastContainer" class="fixed top-4 inset-x-0 z-[100] flex flex-col items-center pointer-events-none px-4 space-y-2"></div>
 
   <!-- ================= FIREBASE BUNDLED SDK PRELOADER ================= -->
   <script type="module">
@@ -3370,10 +3592,12 @@
       'cloudRestorePromptModal',
       'u9CapitalModal',
       'masterSettlementModal',
-      'googleConnectModal'
+      'googleConnectModal',
+      'appPinActionModal'
     ];
 
     let dashboardPeriod = 'today';
+    let msModalSelectedMonth = new Date().toISOString().slice(0, 7);
     let profitChartMode = 'daily';
     let customSelectedDate = new Date().toISOString().split('T')[0];
     let remitDirection = 'THB_TO_MMK';
@@ -3394,6 +3618,17 @@
     let currentVoucherTx = null;
     let deferredInstallPrompt = null;
 
+    // --- App Number Password (PIN) Lock State ---
+    const STORAGE_KEY_APP_LOCK = 'thb_mmk_app_lock_v1';
+    let appLockConfig = {
+      enabled: false,
+      pin: '',
+      autoLockMinutes: 0
+    };
+    let isAppLocked = false;
+    let enteredPinBuffer = '';
+    let inactivityLockTimer = null;
+
     // --- Firebase & Google Auth State ---
     const STORAGE_KEY_LINKED_GMAIL = 'thb_mmk_linked_gmail_user_v2';
     const STORAGE_KEY_GMAIL_SNAPSHOT_PREFIX = 'thb_mmk_gmail_backup_';
@@ -3412,6 +3647,7 @@
       injectAppIcons();
       applyTheme(currentTheme);
       loadStorageData();
+      initAppLockSystem();
       initDefaultDateTimeInputs();
       calcRemittanceLive();
       calcCashoutLive();
@@ -3427,9 +3663,11 @@
       const hEl = document.getElementById('headerAppIconContainer');
       const mEl = document.getElementById('modalAppIconContainer');
       const vEl = document.getElementById('voucherAppIconContainer');
+      const lEl = document.getElementById('lockScreenAppIcon');
       if (hEl) hEl.innerHTML = LAB_SHWIN_ICON_SVG;
       if (mEl) mEl.innerHTML = LAB_SHWIN_ICON_SVG;
       if (vEl) vEl.innerHTML = LAB_SHWIN_ICON_SVG;
+      if (lEl) lEl.innerHTML = LAB_SHWIN_ICON_SVG;
 
       const blob = new Blob([LAB_SHWIN_ICON_SVG], { type: 'image/svg+xml' });
       const blobUrl = URL.createObjectURL(blob);
@@ -5081,6 +5319,9 @@
       const u9PrimD = document.getElementById('u9PrimaryDate');
       const u9WithD = document.getElementById('u9WithdrawDate');
       const u9MonthPick = document.getElementById('u9MonthPicker');
+      const dashMsMonthPick = document.getElementById('dashMsMonthPicker');
+      const msModalMonthPick = document.getElementById('msModalMonthPicker');
+      const settingsMsMonthPick = document.getElementById('settingsMsMonthPicker');
       const customD = document.getElementById('customFilterDate');
 
       if (rDate) rDate.value = localIso;
@@ -5092,6 +5333,9 @@
       if (u9PrimD) u9PrimD.value = localIso;
       if (u9WithD) u9WithD.value = localIso;
       if (u9MonthPick) u9MonthPick.value = currentMonthStr;
+      if (dashMsMonthPick) dashMsMonthPick.value = currentMonthStr;
+      if (msModalMonthPick) msModalMonthPick.value = currentMonthStr;
+      if (settingsMsMonthPick) settingsMsMonthPick.value = currentMonthStr;
       if (customD) customD.value = todayDate;
 
       document.getElementById('remitDealerRate').value = settings.dealerRate;
@@ -5724,12 +5968,14 @@
       const todayStr = now.toISOString().split('T')[0];
       const curYear = now.getFullYear();
       const curMonth = now.getMonth();
+      const isMonthPattern = typeof period === 'string' && /^\d{4}-\d{2}$/.test(period);
 
       return list.filter(tx => {
         if (!tx.date) return false;
         const txDate = new Date(tx.date);
         const txDateStr = tx.date.split('T')[0];
 
+        if (isMonthPattern) return txDateStr.slice(0, 7) === period;
         if (period === 'today') return txDateStr === todayStr;
         if (period === 'month') return txDate.getFullYear() === curYear && txDate.getMonth() === curMonth;
         if (period === 'custom') return txDateStr === customSelectedDate;
@@ -5742,12 +5988,14 @@
       const todayStr = now.toISOString().split('T')[0];
       const curYear = now.getFullYear();
       const curMonth = now.getMonth();
+      const isMonthPattern = typeof period === 'string' && /^\d{4}-\d{2}$/.test(period);
 
       return (list || []).filter(rec => {
         if (!rec.date) return false;
         const d = new Date(rec.date);
         const dStr = rec.date.split('T')[0];
 
+        if (isMonthPattern) return dStr.slice(0, 7) === period;
         if (period === 'today') return dStr === todayStr;
         if (period === 'month') return d.getFullYear() === curYear && d.getMonth() === curMonth;
         if (period === 'custom') return dStr === customSelectedDate;
@@ -5876,7 +6124,20 @@
       // Final Net Business Equity after settling all receivables and customer deposit liabilities
       const finalNetWorthMMK = (totalWorkingMMK + u9StockBalance + totalUnpaidMMKCombined) - depUnifiedMMK;
 
-      const periodLabel = period === 'today' ? 'ယနေ့ (Today)' : period === 'month' ? 'ယခုလ (This Month)' : period === 'custom' ? `ရက်စွဲ (${customSelectedDate})` : 'စုစုပေါင်း (All-Time)';
+      const isMonthPattern = typeof period === 'string' && /^\d{4}-\d{2}$/.test(period);
+      let periodLabel = 'စုစုပေါင်း (All-Time)';
+      if (isMonthPattern) {
+        const [yr, mo] = period.split('-');
+        const mDate = new Date(Number(yr), Number(mo) - 1, 1);
+        const mName = mDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+        periodLabel = `${period} လစဉ်စာရင်းချုပ် (${mName})`;
+      } else if (period === 'today') {
+        periodLabel = 'ယနေ့ (Today)';
+      } else if (period === 'month') {
+        periodLabel = 'ယခုလ (This Month)';
+      } else if (period === 'custom') {
+        periodLabel = `ရက်စွဲ (${customSelectedDate})`;
+      }
 
       return {
         period,
@@ -7310,12 +7571,14 @@
       const todayStr = now.toISOString().split('T')[0];
       const curYear = now.getFullYear();
       const curMonth = now.getMonth();
+      const isMonthPattern = typeof period === 'string' && /^\d{4}-\d{2}$/.test(period);
 
       return (list || []).filter(exp => {
         if (!exp.date) return false;
         const expDate = new Date(exp.date);
         const expDateStr = exp.date.split('T')[0];
 
+        if (isMonthPattern) return expDateStr.slice(0, 7) === period;
         if (period === 'today') return expDateStr === todayStr;
         if (period === 'month') return expDate.getFullYear() === curYear && expDate.getMonth() === curMonth;
         if (period === 'custom') return expDateStr === customSelectedDate;
@@ -10412,6 +10675,723 @@
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
       showToast('အားလုံးခြုံ စာရင်းရှင်းတမ်း CSV ဖိုင်ကို ဒေါင်းလုဒ်ဆွဲပြီးပါပြီ!', 'success');
+    };
+
+    // ============================================================================
+    // MONTHLY MASTER SETTLEMENT PDF SUMMARY REPORT GENERATOR
+    // ============================================================================
+    const syncMsMonthPickers = window.syncMsMonthPickers = function(yyyyMm) {
+      if (!yyyyMm) return;
+      msModalSelectedMonth = yyyyMm;
+      ['dashMsMonthPicker', 'msModalMonthPicker', 'settingsMsMonthPicker'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el && el.value !== yyyyMm) el.value = yyyyMm;
+      });
+    };
+
+    const onDashMsMonthPickerChange = window.onDashMsMonthPickerChange = function(yyyyMm) {
+      if (!yyyyMm) return;
+      syncMsMonthPickers(yyyyMm);
+    };
+
+    const onMsModalMonthChange = window.onMsModalMonthChange = function(yyyyMm) {
+      if (!yyyyMm) return;
+      syncMsMonthPickers(yyyyMm);
+      const ms = computeMasterSettlement(yyyyMm);
+      renderMasterSettlementModalContent(ms);
+    };
+
+    // Minimal valid single-page JPEG-in-PDF binary builder fallback (works 100% offline without external libraries)
+    function createPdfBlobFromJpegDataUrl(jpegDataUrl, pageWidthPt, pageHeightPt) {
+      const base64 = jpegDataUrl.split(',')[1];
+      const binaryStr = atob(base64);
+      const imgBytes = new Uint8Array(binaryStr.length);
+      for (let i = 0; i < binaryStr.length; i++) {
+        imgBytes[i] = binaryStr.charCodeAt(i);
+      }
+
+      // Parse JPEG SOF header to get pixel dimensions
+      let pixelW = 1200;
+      let pixelH = 1697;
+      let offset = 2;
+      while (offset < imgBytes.length) {
+        if (imgBytes[offset] !== 0xFF) break;
+        const marker = imgBytes[offset + 1];
+        if (marker === 0xC0 || marker === 0xC2) {
+          pixelH = (imgBytes[offset + 5] << 8) | imgBytes[offset + 6];
+          pixelW = (imgBytes[offset + 7] << 8) | imgBytes[offset + 8];
+          break;
+        }
+        const segLen = (imgBytes[offset + 2] << 8) | imgBytes[offset + 3];
+        offset += 2 + segLen;
+      }
+
+      const encoder = new TextEncoder();
+      const chunks = [];
+      const offsets = [];
+      let byteLength = 0;
+
+      const pushStr = (s) => {
+        const b = encoder.encode(s);
+        chunks.push(b);
+        byteLength += b.length;
+      };
+      const pushBytes = (b) => {
+        chunks.push(b);
+        byteLength += b.length;
+      };
+
+      pushStr('%PDF-1.4\n%\xFF\xFF\xFF\xFF\n');
+
+      // 1: Catalog
+      offsets.push(byteLength);
+      pushStr('1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n');
+
+      // 2: Pages
+      offsets.push(byteLength);
+      pushStr('2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n');
+
+      // 3: Page
+      offsets.push(byteLength);
+      pushStr(`3 0 obj\n<< /Type /Page /Parent 2 0 R /Resources << /XObject << /Im1 4 0 R >> >> /MediaBox [0 0 ${pageWidthPt.toFixed(2)} ${pageHeightPt.toFixed(2)}] /Contents 5 0 R >>\nendobj\n`);
+
+      // 4: Image XObject
+      offsets.push(byteLength);
+      pushStr(`4 0 obj\n<< /Type /XObject /Subtype /Image /Width ${pixelW} /Height ${pixelH} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${imgBytes.length} >>\nstream\n`);
+      pushBytes(imgBytes);
+      pushStr('\nendstream\nendobj\n');
+
+      // 5: Content Stream
+      const contentStream = `q\n${pageWidthPt.toFixed(2)} 0 0 ${pageHeightPt.toFixed(2)} 0 0 cm\n/Im1 Do\nQ\n`;
+      offsets.push(byteLength);
+      pushStr(`5 0 obj\n<< /Length ${contentStream.length} >>\nstream\n${contentStream}endstream\nendobj\n`);
+
+      // XRef
+      const xrefOffset = byteLength;
+      pushStr(`xref\n0 6\n0000000000 65535 f \n`);
+      offsets.forEach(off => {
+        pushStr(String(off).padStart(10, '0') + ' 00000 n \n');
+      });
+      pushStr(`trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`);
+
+      return new Blob(chunks, { type: 'application/pdf' });
+    }
+
+    const generateMonthlyMasterSettlementPDF = window.generateMonthlyMasterSettlementPDF = window.downloadMasterSettlementPDF = async function(selectedMonthParam) {
+      const fallbackMonth = document.getElementById('msModalMonthPicker')?.value
+        || document.getElementById('dashMsMonthPicker')?.value
+        || document.getElementById('settingsMsMonthPicker')?.value
+        || new Date().toISOString().slice(0, 7);
+
+      const targetMonth = (typeof selectedMonthParam === 'string' && /^\d{4}-\d{2}$/.test(selectedMonthParam))
+        ? selectedMonthParam
+        : fallbackMonth;
+
+      syncMsMonthPickers(targetMonth);
+      showToast(`📄 ${targetMonth} လစဉ် စာရင်းရှင်းတမ်း PDF ဖိုင် ထုတ်ပေးနေပါသည်...`, 'info');
+
+      // Use existing Master Settlement calculation logic for the selected month
+      const ms = computeMasterSettlement(targetMonth);
+      const monthTxList = filterTransactionsByPeriod(transactions, targetMonth)
+        .filter(tx => !tx.u9RecordId && tx.cashoutType !== 'U9_BILL');
+      const monthExpList = filterExpensesByPeriod(expenses, targetMonth);
+      const monthDepList = (deposits || []).filter(d => (d.date || '').slice(0, 7) === targetMonth);
+
+      let monthDepositInMMK = 0;
+      let monthWithdrawOutMMK = 0;
+      monthDepList.forEach(d => {
+        const amt = Number(d.amount) || 0;
+        const inMmk = d.currency === 'THB' ? amt * ms.rateForConversion : amt;
+        if (d.type === 'DEPOSIT_IN') monthDepositInMMK += inMmk;
+        else if (d.type === 'WITHDRAW_OUT') monthWithdrawOutMMK += inMmk;
+      });
+
+      const netSign = ms.netProfitMMK >= 0 ? '+' : '-';
+      const netColorHex = ms.netProfitMMK >= 0 ? '#059669' : '#e11d48';
+      const generatedTimeStr = formatDateTime(new Date().toISOString());
+
+      // Build clean A4 printable HTML sheet for html2canvas rendering (preserves Myanmar Unicode shaping 100%)
+      const wrapper = document.getElementById('pdfRenderWrapper');
+      if (!wrapper) return;
+
+      const topTxRowsHtml = monthTxList.slice(0, 12).map((tx, idx) => {
+        const names = getTxNames(tx);
+        const typeLbl = tx.type === 'REMIT'
+          ? (tx.direction === 'MMK_TO_THB' ? 'MMK➔THB ငွေလွှဲ' : 'THB➔MMK ငွေလွှဲ')
+          : 'KPay/Wave ငွေထုတ်';
+        return `
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 6px 8px; font-size: 11px; color: #475569;">${idx + 1}</td>
+            <td style="padding: 6px 8px; font-size: 11px; color: #0f172a; font-weight: 600;">${formatDateTime(tx.date)}</td>
+            <td style="padding: 6px 8px; font-size: 11px; color: #1d4ed8; font-weight: 700;">${typeLbl}</td>
+            <td style="padding: 6px 8px; font-size: 11px; color: #0f172a; font-weight: 600;">${names.displayTitle}</td>
+            <td style="padding: 6px 8px; font-size: 11px; color: #0f172a; text-align: right; font-family: monospace; font-weight: 700;">${formatMMK(tx.amountMMK)}</td>
+            <td style="padding: 6px 8px; font-size: 11px; color: #059669; text-align: right; font-family: monospace; font-weight: 700;">+${formatMMK(tx.profitMMK || 0)}</td>
+          </tr>
+        `;
+      }).join('');
+
+      wrapper.innerHTML = `
+        <div id="pdfSheetContainer" style="width: 794px; background: #ffffff; color: #0f172a; padding: 36px 40px; font-family: 'Noto Sans Myanmar', Inter, sans-serif; box-sizing: border-box;">
+          <!-- Header Banner -->
+          <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #0d47a8; padding-bottom: 16px; margin-bottom: 20px;">
+            <div style="display: flex; align-items: center; gap: 14px;">
+              <div style="width: 54px; height: 54px; border-radius: 14px; overflow: hidden; border: 2px solid #f59e0b;">${LAB_SHWIN_ICON_SVG}</div>
+              <div>
+                <div style="font-size: 22px; font-weight: 800; color: #0d47a8; line-height: 1.2;">လာဘ်ရွှင် (Lab Shwin)</div>
+                <div style="font-size: 13px; font-weight: 700; color: #334155; margin-top: 2px;">ထိုင်း-မြန်မာ ငွေလွှဲ၊ KPay၊ အပ်ငွေ နှင့် U9 ဖုန်းဘေလ် လစဉ် စာရင်းရှင်းတမ်းချုပ်</div>
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <div style="display: inline-block; background: #0d47a8; color: #ffffff; font-size: 13px; font-weight: 800; padding: 5px 14px; border-radius: 999px;">
+                📅 ${ms.periodLabel}
+              </div>
+              <div style="font-size: 11px; color: #64748b; margin-top: 6px;">ထုတ်ယူသည့်အချိန်: ${generatedTimeStr}</div>
+              <div style="font-size: 11px; color: #475569; font-weight: 600;">ပေါက်ဈေး: ဒိုင် ${settings.dealerRate} / Customer ${settings.customerRate} THB</div>
+            </div>
+          </div>
+
+          <!-- Top 4 Executive KPIs -->
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px;">
+            <div style="background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 14px; padding: 12px;">
+              <div style="font-size: 11px; font-weight: 700; color: #166534;">၁။ လစဉ် အကြမ်းအမြတ်ချုပ်</div>
+              <div style="font-size: 17px; font-weight: 800; color: #15803d; font-family: monospace; margin-top: 4px;">+${formatMMK(ms.totalGrossProfitMMK)}</div>
+              <div style="font-size: 10px; color: #166534; margin-top: 2px;">ဘတ်အမြတ်: +${formatTHB(ms.totalGrossProfitTHB)}</div>
+            </div>
+            <div style="background: #fff1f2; border: 1.5px solid #fda4af; border-radius: 14px; padding: 12px;">
+              <div style="font-size: 11px; font-weight: 700; color: #9f1239;">၂။ လစဉ် အသုံးစရိတ်စုစုပေါင်း</div>
+              <div style="font-size: 17px; font-weight: 800; color: #e11d48; font-family: monospace; margin-top: 4px;">-${formatMMK(ms.totalExpenseMMK)}</div>
+              <div style="font-size: 10px; color: #9f1239; margin-top: 2px;">အသုံးစရိတ် ${ms.expenseCount} ကြိမ်</div>
+            </div>
+            <div style="background: #ecfdf5; border: 2px solid #10b981; border-radius: 14px; padding: 12px;">
+              <div style="font-size: 11px; font-weight: 800; color: #065f46;">၃။ လစဉ် အသားတင်အမြတ်</div>
+              <div style="font-size: 17px; font-weight: 900; color: ${netColorHex}; font-family: monospace; margin-top: 4px;">${netSign}${formatMMK(Math.abs(ms.netProfitMMK))}</div>
+              <div style="font-size: 10px; color: #065f46; margin-top: 2px;">အသားတင်ဘတ်: ${ms.netProfitTHB >= 0 ? '+' : ''}${formatTHB(ms.netProfitTHB)}</div>
+            </div>
+            <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 14px; padding: 12px;">
+              <div style="font-size: 11px; font-weight: 800; color: #1e40af;">၄။ အသားတင် ကိုယ်ပိုင်ငွေ</div>
+              <div style="font-size: 17px; font-weight: 900; color: #1d4ed8; font-family: monospace; margin-top: 4px;">${formatMMK(ms.finalNetWorthMMK)}</div>
+              <div style="font-size: 10px; color: #1e40af; margin-top: 2px;">အပ်ငွေနှုတ်ပြီး စာရင်းရှင်းလက်ကျန်</div>
+            </div>
+          </div>
+
+          <!-- Two-Column Master Settlement Details -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+            <!-- Left: Profit & Loss Breakdown -->
+            <div style="border: 1.5px solid #cbd5e1; border-radius: 16px; padding: 16px; background: #f8fafc;">
+              <div style="font-size: 13px; font-weight: 800; color: #0f172a; border-bottom: 1.5px solid #cbd5e1; padding-bottom: 8px; margin-bottom: 10px;">
+                💰 အပိုင်း (၁) လုပ်ငန်းအားလုံး အမြတ်ငွေ စာရင်းရှင်းတမ်း
+              </div>
+              <table style="width: 100%; border-collapse: collapse; font-size: 11.5px;">
+                <tr style="border-bottom: 1px dashed #cbd5e1;">
+                  <td style="padding: 6px 0; color: #334155;">• ထိုင်း-မြန်မာ ငွေလွှဲအမြတ် (${ms.remitCount} ကြိမ်)<br><span style="font-size: 10px; color: #64748b;">ငွေလွှဲပမာဏ: ${formatMMK(ms.remitVolumeMMK)}</span></td>
+                  <td style="padding: 6px 0; text-align: right; font-family: monospace; font-weight: 700; color: #0284c7;">+${formatMMK(ms.remitProfitMMK)}<br><span style="font-size: 10px; color: #059669;">(+${formatTHB(ms.remitProfitTHB)})</span></td>
+                </tr>
+                <tr style="border-bottom: 1px dashed #cbd5e1;">
+                  <td style="padding: 6px 0; color: #334155;">• KPay / Wave ငွေထုတ် & လွှဲအမြတ် (${ms.cashoutCount} ကြိမ်)<br><span style="font-size: 10px; color: #64748b;">ပမာဏ: ${formatMMK(ms.cashoutVolumeMMK)}</span></td>
+                  <td style="padding: 6px 0; text-align: right; font-family: monospace; font-weight: 700; color: #d97706;">+${formatMMK(ms.cashoutProfitMMK)}</td>
+                </tr>
+                <tr style="border-bottom: 1px dashed #cbd5e1;">
+                  <td style="padding: 6px 0; color: #334155;">• U9 Primary ကော်မရှင်အမြတ် (${ms.u9PrimaryCount} ကြိမ်)<br><span style="font-size: 10px; color: #64748b;">Primary အဝယ်: ${formatMMK(ms.u9PrimaryPurchasedMMK)}</span></td>
+                  <td style="padding: 6px 0; text-align: right; font-family: monospace; font-weight: 700; color: #0891b2;">+${formatMMK(ms.u9PrimaryCommMMK)}</td>
+                </tr>
+                <tr style="border-bottom: 1px dashed #cbd5e1;">
+                  <td style="padding: 6px 0; color: #334155;">• U9 ဖုန်းဘေလ် လက်လီအပိုအမြတ် (${ms.u9SellCount} ကြိမ်)<br><span style="font-size: 10px; color: #64748b;">ဘေလ်ရောင်းရငွေ: ${formatMMK(ms.u9SoldBillMMK)}</span></td>
+                  <td style="padding: 6px 0; text-align: right; font-family: monospace; font-weight: 700; color: #0891b2;">+${formatMMK(ms.u9RetailExtraMMK)}</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #94a3b8; font-weight: 800;">
+                  <td style="padding: 8px 0; color: #0f172a;">စုစုပေါင်း အကြမ်းအမြတ် (Gross Profit)</td>
+                  <td style="padding: 8px 0; text-align: right; font-family: monospace; color: #059669;">+${formatMMK(ms.totalGrossProfitMMK)}</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #cbd5e1;">
+                  <td style="padding: 6px 0; color: #e11d48; font-weight: 700;">နှုတ် (-) လုပ်ငန်း အသုံးစရိတ် (${ms.expenseCount} ခု)</td>
+                  <td style="padding: 6px 0; text-align: right; font-family: monospace; font-weight: 700; color: #e11d48;">-${formatMMK(ms.totalExpenseMMK)}</td>
+                </tr>
+                <tr style="background: #dcfce7;">
+                  <td style="padding: 8px 6px; font-weight: 800; color: #065f46; border-radius: 8px 0 0 8px;">(=) အားလုံးခြုံ အသားတင်အမြတ်</td>
+                  <td style="padding: 8px 6px; text-align: right; font-family: monospace; font-weight: 900; font-size: 13px; color: ${netColorHex}; border-radius: 0 8px 8px 0;">${netSign}${formatMMK(Math.abs(ms.netProfitMMK))}</td>
+                </tr>
+              </table>
+            </div>
+
+            <!-- Right: Balance Sheet & Equity Settlement -->
+            <div style="border: 1.5px solid #cbd5e1; border-radius: 16px; padding: 16px; background: #f8fafc;">
+              <div style="font-size: 13px; font-weight: 800; color: #0f172a; border-bottom: 1.5px solid #cbd5e1; padding-bottom: 8px; margin-bottom: 10px;">
+                ⚖️ အပိုင်း (၂) လက်ကျန်ငွေ၊ အပ်ငွေ နှင့် ပိုင်ဆိုင်မှု စာရင်းရှင်းတမ်း
+              </div>
+              <table style="width: 100%; border-collapse: collapse; font-size: 11.5px;">
+                <tr style="border-bottom: 1px dashed #cbd5e1;">
+                  <td style="padding: 6px 0; color: #334155;">• လက်ထဲရှိ ငွေသား (Cash in Hand MMK)</td>
+                  <td style="padding: 6px 0; text-align: right; font-family: monospace; font-weight: 700; color: #0f172a;">${formatMMK(ms.cashInHand)}</td>
+                </tr>
+                <tr style="border-bottom: 1px dashed #cbd5e1;">
+                  <td style="padding: 6px 0; color: #334155;">• KPay / ဘဏ်လက်ကျန် (Digital MMK)</td>
+                  <td style="padding: 6px 0; text-align: right; font-family: monospace; font-weight: 700; color: #0f172a;">${formatMMK(ms.bankBalance)}</td>
+                </tr>
+                <tr style="border-bottom: 1px dashed #cbd5e1;">
+                  <td style="padding: 6px 0; color: #334155;">• ထိုင်းဘတ် လက်ကျန် (${formatTHB(ms.thbBal)})</td>
+                  <td style="padding: 6px 0; text-align: right; font-family: monospace; font-weight: 700; color: #1d4ed8;">~${formatMMK(Math.round(ms.thbInMMK))}</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #94a3b8; font-weight: 800;">
+                  <td style="padding: 6px 0; color: #059669;">(+) စုစုပေါင်း လည်ပတ်ငွေ (Working Funds)</td>
+                  <td style="padding: 6px 0; text-align: right; font-family: monospace; color: #059669;">${formatMMK(Math.round(ms.totalWorkingMMK))}</td>
+                </tr>
+                <tr style="border-bottom: 1px dashed #cbd5e1;">
+                  <td style="padding: 6px 0; color: #334155;">(+) U9 ဖုန်းဘေလ် လက်ကျန် (Bill Stock)</td>
+                  <td style="padding: 6px 0; text-align: right; font-family: monospace; font-weight: 700; color: #0891b2;">+${formatMMK(ms.u9StockBalance)}</td>
+                </tr>
+                <tr style="border-bottom: 1px dashed #cbd5e1;">
+                  <td style="padding: 6px 0; color: #334155;">(+) ရရန်ရှိ အကြွေးစုစုပေါင်း (${ms.unpaidCount} ခု)</td>
+                  <td style="padding: 6px 0; text-align: right; font-family: monospace; font-weight: 700; color: #d97706;">+${formatMMK(Math.round(ms.totalUnpaidMMKCombined))}</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #cbd5e1;">
+                  <td style="padding: 6px 0; color: #9333ea; font-weight: 700;">(-) Customer အပ်ငွေ ပြန်ပေးရန် (${ms.depStats.activeCustomersCount} ဦး)</td>
+                  <td style="padding: 6px 0; text-align: right; font-family: monospace; font-weight: 700; color: #e11d48;">-${formatMMK(Math.round(ms.depUnifiedMMK))}</td>
+                </tr>
+                <tr style="border-bottom: 1px dashed #cbd5e1;">
+                  <td style="padding: 6px 0; color: #475569;">• ယခုလ အပ်ငွေအဝင် / အထွက်</td>
+                  <td style="padding: 6px 0; text-align: right; font-family: monospace; font-size: 10.5px; color: #475569;">+${formatCompactMMK(monthDepositInMMK)} / -${formatCompactMMK(monthWithdrawOutMMK)}</td>
+                </tr>
+                <tr style="background: #dbeafe;">
+                  <td style="padding: 8px 6px; font-weight: 800; color: #1e40af; border-radius: 8px 0 0 8px;">(=) စာရင်းရှင်းပြီး အသားတင် ကိုယ်ပိုင်ငွေ</td>
+                  <td style="padding: 8px 6px; text-align: right; font-family: monospace; font-weight: 900; font-size: 13px; color: #1d4ed8; border-radius: 0 8px 8px 0;">${formatMMK(Math.round(ms.finalNetWorthMMK))}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <!-- Monthly Transactions Summary Table -->
+          <div style="border: 1.5px solid #cbd5e1; border-radius: 16px; padding: 14px 16px; background: #ffffff;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <span style="font-size: 12px; font-weight: 800; color: #0f172a;">📋 ${ms.periodLabel} အရောင်းအဝယ် မှတ်တမ်းချုပ် (စုစုပေါင်း ${monthTxList.length} ကြိမ်)</span>
+              <span style="font-size: 10px; color: #64748b;">အပ်ငွေမှတ်တမ်း: ${monthDepList.length} ခု • အသုံးစရိတ်: ${monthExpList.length} ခု</span>
+            </div>
+            ${monthTxList.length > 0 ? `
+              <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                  <tr style="background: #f1f5f9; border-bottom: 1.5px solid #cbd5e1;">
+                    <th style="padding: 6px 8px; text-align: left; font-size: 10px; color: #475569;">စဉ်</th>
+                    <th style="padding: 6px 8px; text-align: left; font-size: 10px; color: #475569;">ရက်စွဲ</th>
+                    <th style="padding: 6px 8px; text-align: left; font-size: 10px; color: #475569;">အမျိုးအစား</th>
+                    <th style="padding: 6px 8px; text-align: left; font-size: 10px; color: #475569;">Customer အမည်</th>
+                    <th style="padding: 6px 8px; text-align: right; font-size: 10px; color: #475569;">ပမာဏ</th>
+                    <th style="padding: 6px 8px; text-align: right; font-size: 10px; color: #475569;">အမြတ်</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${topTxRowsHtml}
+                </tbody>
+              </table>
+              ${monthTxList.length > 12 ? `<div style="text-align: center; font-size: 10px; color: #64748b; padding-top: 6px;">+ အခြား မှတ်တမ်း (${monthTxList.length - 12}) ခု ကျန်ရှိပါသည်</div>` : ''}
+            ` : `
+              <div style="text-align: center; padding: 14px; font-size: 11px; color: #64748b;">ရွေးချယ်ထားသော လအတွင်း ငွေလွှဲ/ငွေထုတ် မှတ်တမ်း မရှိသေးပါ</div>
+            `}
+          </div>
+
+          <div style="margin-top: 14px; text-align: center; font-size: 10px; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 8px;">
+            လာဘ်ရွှင် (Lab Shwin) Financial & Remittance Management System • Generated on ${generatedTimeStr}
+          </div>
+        </div>
+      `;
+
+      const sheetEl = document.getElementById('pdfSheetContainer');
+      const fileName = `LabShwin_Monthly_Settlement_${targetMonth}.pdf`;
+
+      try {
+        let canvas = null;
+        if (typeof html2canvas === 'function' && sheetEl) {
+          canvas = await html2canvas(sheetEl, {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: '#ffffff',
+            logging: false
+          });
+        }
+
+        if (canvas) {
+          const imgData = canvas.toDataURL('image/jpeg', 0.95);
+          const pdfW = 595.28; // A4 width in pt
+          const pdfH = (canvas.height * pdfW) / canvas.width;
+
+          const jsPDFConstructor = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+          if (typeof jsPDFConstructor === 'function') {
+            const pdf = new jsPDFConstructor({
+              orientation: 'portrait',
+              unit: 'pt',
+              format: [pdfW, Math.max(841.89, pdfH)]
+            });
+            pdf.addImage(imgData, 'JPEG', 0, 0, pdfW, pdfH);
+            pdf.save(fileName);
+          } else {
+            const pdfBlob = createPdfBlobFromJpegDataUrl(imgData, pdfW, Math.max(841.89, pdfH));
+            const url = URL.createObjectURL(pdfBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          }
+          wrapper.innerHTML = '';
+          showToast(`✅ ${targetMonth} လစဉ် စာရင်းရှင်းတမ်း PDF (${fileName}) ဒေါင်းလုဒ်ဆွဲပြီးပါပြီ!`, 'success');
+          return;
+        }
+      } catch (err) {
+        console.warn('html2canvas PDF render fallback:', err);
+      }
+
+      // Pure Canvas 2D fallback (if offline / CDN unavailable)
+      try {
+        const c = document.createElement('canvas');
+        c.width = 1200;
+        c.height = 1697;
+        const ctx = c.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, c.width, c.height);
+
+        ctx.fillStyle = '#0d47a8';
+        ctx.fillRect(60, 50, 1080, 90);
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 34px "Noto Sans Myanmar", sans-serif';
+        ctx.fillText('လာဘ်ရွှင် (Lab Shwin) - လစဉ် စာရင်းရှင်းတမ်းချုပ်', 85, 105);
+
+        ctx.fillStyle = '#0f172a';
+        ctx.font = 'bold 24px "Noto Sans Myanmar", monospace';
+        const lines = buildMasterSettlementPlainTextForPeriod(targetMonth).split('\n');
+        let y = 190;
+        lines.forEach(line => {
+          ctx.fillText(line, 75, y);
+          y += 42;
+        });
+
+        const fallbackJpeg = c.toDataURL('image/jpeg', 0.92);
+        const pdfBlob = createPdfBlobFromJpegDataUrl(fallbackJpeg, 595.28, 841.89);
+        const url = URL.createObjectURL(pdfBlob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        wrapper.innerHTML = '';
+        showToast(`✅ ${targetMonth} လစဉ် စာရင်းရှင်းတမ်း PDF ဒေါင်းလုဒ်ဆွဲပြီးပါပြီ!`, 'success');
+      } catch (fallbackErr) {
+        console.error('PDF fallback error:', fallbackErr);
+        showToast('PDF ထုတ်ယူရာတွင် အခက်အခဲဖြစ်ပေါ်နေပါသည်', 'error');
+      }
+    };
+
+    function buildMasterSettlementPlainTextForPeriod(periodKey) {
+      const prev = dashboardPeriod;
+      dashboardPeriod = periodKey;
+      const txt = buildMasterSettlementPlainText();
+      dashboardPeriod = prev;
+      return txt;
+    }
+
+    // ============================================================================
+    // APPLICATION NUMBER PASSWORD (PIN) LOCK SYSTEM
+    // ============================================================================
+    function initAppLockSystem() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY_APP_LOCK);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') {
+            appLockConfig = {
+              enabled: Boolean(parsed.enabled && parsed.pin),
+              pin: String(parsed.pin || ''),
+              autoLockMinutes: Number(parsed.autoLockMinutes) || 0
+            };
+          }
+        }
+      } catch (e) {}
+
+      updateAppLockSettingsUI();
+
+      if (appLockConfig.enabled && appLockConfig.pin) {
+        lockApplicationNow(true);
+      }
+
+      // Keyboard listener for numeric PIN entry when Lock Screen is active
+      window.addEventListener('keydown', (e) => {
+        if (!isAppLocked) return;
+        if (e.key >= '0' && e.key <= '9') {
+          e.preventDefault();
+          pressPinKey(e.key);
+        } else if (e.key === 'Backspace') {
+          e.preventDefault();
+          backspacePinInput();
+        } else if (e.key === 'Enter') {
+          e.preventDefault();
+          submitPinUnlock();
+        } else if (e.key === 'Escape') {
+          e.preventDefault();
+          clearPinInput();
+        }
+      });
+
+      // Reset inactivity timer on user interaction
+      ['click', 'touchstart', 'keydown'].forEach(evt => {
+        document.addEventListener(evt, resetInactivityLockTimer, { passive: true });
+      });
+    }
+
+    function saveAppLockConfig() {
+      localStorage.setItem(STORAGE_KEY_APP_LOCK, JSON.stringify(appLockConfig));
+      updateAppLockSettingsUI();
+      resetInactivityLockTimer();
+    }
+
+    function resetInactivityLockTimer() {
+      if (inactivityLockTimer) {
+        clearTimeout(inactivityLockTimer);
+        inactivityLockTimer = null;
+      }
+      if (!appLockConfig.enabled || !appLockConfig.pin || isAppLocked) return;
+      const mins = Number(appLockConfig.autoLockMinutes) || 0;
+      if (mins > 0) {
+        inactivityLockTimer = setTimeout(() => {
+          lockApplicationNow(true);
+        }, mins * 60 * 1000);
+      }
+    }
+
+    function updateAppLockSettingsUI() {
+      const badge = document.getElementById('appLockStatusBadge');
+      const setupBox = document.getElementById('appLockSetupBox');
+      const manageBox = document.getElementById('appLockManageBox');
+      const lenHint = document.getElementById('appLockPinLengthHint');
+      const autoSel = document.getElementById('appLockAutoMinutesSelect');
+      const headerBtn = document.getElementById('headerLockBtn');
+
+      if (appLockConfig.enabled && appLockConfig.pin) {
+        if (badge) {
+          badge.className = 'text-[10px] px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 font-bold';
+          badge.textContent = '🔒 Password Lock ဖွင့်ထားသည်';
+        }
+        if (setupBox) setupBox.classList.add('hidden');
+        if (manageBox) manageBox.classList.remove('hidden');
+        if (lenHint) lenHint.textContent = `ဂဏန်း ${appLockConfig.pin.length} လုံး စကားဝှက်ဖြင့် ကာကွယ်ထားသည်`;
+        if (autoSel) autoSel.value = String(appLockConfig.autoLockMinutes || 0);
+        if (headerBtn) {
+          headerBtn.className = 'p-2 rounded-xl bg-amber-500/15 border border-amber-500/40 hover:bg-amber-500/25 active:scale-95 transition flex items-center justify-center text-amber-400';
+          headerBtn.title = 'App ကို ချက်ချင်း Lock ချရန်';
+        }
+      } else {
+        if (badge) {
+          badge.className = 'text-[10px] px-2.5 py-1 rounded-full bg-slate-500/20 text-slate-400 border border-slate-500/30 font-bold';
+          badge.textContent = '🔓 Password Lock ပိတ်ထားသည်';
+        }
+        if (setupBox) setupBox.classList.remove('hidden');
+        if (manageBox) manageBox.classList.add('hidden');
+        if (headerBtn) {
+          headerBtn.className = 'p-2 rounded-xl theme-card-sub border hover:opacity-90 active:scale-95 transition flex items-center justify-center theme-text-muted hover:text-amber-500';
+          headerBtn.title = 'Setting တွင် Number Password သတ်မှတ်ရန်';
+        }
+      }
+    }
+
+    const handleHeaderLockClick = window.handleHeaderLockClick = function() {
+      if (appLockConfig.enabled && appLockConfig.pin) {
+        lockApplicationNow(false);
+      } else {
+        switchTab('capital');
+        const sec = document.getElementById('appLockSettingsSection');
+        if (sec) sec.scrollIntoView({ behavior: 'smooth' });
+        const inp = document.getElementById('newAppPinInput');
+        if (inp) setTimeout(() => inp.focus(), 300);
+        showToast('🔒 App ကို Lock ချရန် ဂဏန်းစကားဝှက် ဦးစွာ သတ်မှတ်ပေးပါ', 'info');
+      }
+    };
+
+    const handleSetupAppPin = window.handleSetupAppPin = function(e) {
+      e.preventDefault();
+      const p1 = (document.getElementById('newAppPinInput')?.value || '').replace(/[^0-9]/g, '');
+      const p2 = (document.getElementById('confirmAppPinInput')?.value || '').replace(/[^0-9]/g, '');
+
+      if (p1.length < 4 || p1.length > 8) {
+        showToast('ဂဏန်းစကားဝှက်သည် အနည်းဆုံး ၄ လုံးမှ ၈ လုံးအတွင်း ဖြစ်ရပါမည်', 'error');
+        return;
+      }
+      if (p1 !== p2) {
+        showToast('ရိုက်ထည့်ထားသော ဂဏန်းစကားဝှက် နှစ်ခု မတူညီပါ! ပြန်လည်စစ်ဆေးပါ', 'error');
+        return;
+      }
+
+      appLockConfig.enabled = true;
+      appLockConfig.pin = p1;
+      saveAppLockConfig();
+
+      document.getElementById('newAppPinInput').value = '';
+      document.getElementById('confirmAppPinInput').value = '';
+      showToast('🔒 App Number Password အောင်မြင်စွာ သတ်မှတ်ပြီးပါပြီ!', 'success');
+    };
+
+    const handleAutoLockTimerChange = window.handleAutoLockTimerChange = function(val) {
+      appLockConfig.autoLockMinutes = Number(val) || 0;
+      saveAppLockConfig();
+      showToast('Auto-Lock အချိန် သတ်မှတ်ချက် သိမ်းဆည်းပြီးပါပြီ', 'success');
+    };
+
+    const openAppPinActionModal = window.openAppPinActionModal = function(actionType) {
+      const modal = document.getElementById('appPinActionModal');
+      if (!modal) return;
+      document.getElementById('appPinActionType').value = actionType;
+      document.getElementById('currentAppPinVerifyInput').value = '';
+      document.getElementById('changeNewAppPinInput').value = '';
+      document.getElementById('changeConfirmAppPinInput').value = '';
+
+      const titleEl = document.getElementById('appPinActionModalTitle');
+      const newGroup = document.getElementById('appPinNewFieldsGroup');
+      const submitBtn = document.getElementById('appPinActionSubmitBtn');
+
+      if (actionType === 'DISABLE') {
+        if (titleEl) titleEl.innerHTML = '<span>🔓 Password Lock ပိတ်ရန် အတည်ပြုပါ</span>';
+        if (newGroup) newGroup.classList.add('hidden');
+        if (submitBtn) {
+          submitBtn.textContent = 'Lock ပိတ်မည်';
+          submitBtn.className = 'flex-1 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-extrabold shadow';
+        }
+      } else {
+        if (titleEl) titleEl.innerHTML = '<span>🔑 ဂဏန်းစကားဝှက် အသစ်ပြောင်းရန်</span>';
+        if (newGroup) newGroup.classList.remove('hidden');
+        if (submitBtn) {
+          submitBtn.textContent = 'စကားဝှက် ပြောင်းမည်';
+          submitBtn.className = 'flex-1 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold shadow';
+        }
+      }
+
+      modal.classList.remove('hidden');
+      armBackTrap();
+      setTimeout(() => document.getElementById('currentAppPinVerifyInput')?.focus(), 100);
+    };
+
+    const closeAppPinActionModal = window.closeAppPinActionModal = function() {
+      const modal = document.getElementById('appPinActionModal');
+      if (modal) modal.classList.add('hidden');
+    };
+
+    const handleConfirmAppPinAction = window.handleConfirmAppPinAction = function(e) {
+      e.preventDefault();
+      const actionType = document.getElementById('appPinActionType')?.value || 'CHANGE';
+      const curPin = (document.getElementById('currentAppPinVerifyInput')?.value || '').trim();
+
+      if (curPin !== appLockConfig.pin) {
+        showToast('လက်ရှိ ဂဏန်းစကားဝှက် မှားယွင်းနေပါသည်!', 'error');
+        return;
+      }
+
+      if (actionType === 'DISABLE') {
+        appLockConfig.enabled = false;
+        appLockConfig.pin = '';
+        saveAppLockConfig();
+        closeAppPinActionModal();
+        showToast('🔓 App Password Lock ကို ပိတ်လိုက်ပါပြီ', 'info');
+        return;
+      }
+
+      const newP1 = (document.getElementById('changeNewAppPinInput')?.value || '').replace(/[^0-9]/g, '');
+      const newP2 = (document.getElementById('changeConfirmAppPinInput')?.value || '').replace(/[^0-9]/g, '');
+      if (newP1.length < 4 || newP1.length > 8) {
+        showToast('စကားဝှက်အသစ်သည် ဂဏန်း ၄ လုံးမှ ၈ လုံးအတွင်း ဖြစ်ရပါမည်', 'error');
+        return;
+      }
+      if (newP1 !== newP2) {
+        showToast('စကားဝှက်အသစ် နှစ်ခု မတူညီပါ!', 'error');
+        return;
+      }
+
+      appLockConfig.pin = newP1;
+      appLockConfig.enabled = true;
+      saveAppLockConfig();
+      closeAppPinActionModal();
+      showToast('🔑 ဂဏန်းစကားဝှက် အသစ် ပြောင်းလဲသိမ်းဆည်းပြီးပါပြီ!', 'success');
+    };
+
+    const lockApplicationNow = window.lockApplicationNow = function(silent = false) {
+      if (!appLockConfig.enabled || !appLockConfig.pin) {
+        handleHeaderLockClick();
+        return;
+      }
+      isAppLocked = true;
+      enteredPinBuffer = '';
+      const errEl = document.getElementById('pinErrorMsg');
+      if (errEl) errEl.textContent = '';
+      renderPinDots();
+      const overlay = document.getElementById('appLockOverlay');
+      if (overlay) overlay.classList.remove('hidden');
+      if (!silent) {
+        showToast('🔒 Application ကို Lock ချလိုက်ပါပြီ', 'info');
+      }
+    };
+
+    function renderPinDots() {
+      const container = document.getElementById('pinDotsContainer');
+      if (!container) return;
+      const targetLen = Math.max(4, (appLockConfig.pin || '').length || 4);
+      let html = '';
+      for (let i = 0; i < targetLen; i++) {
+        const filled = i < enteredPinBuffer.length;
+        html += `<span class="w-4 h-4 rounded-full transition-all duration-150 ${filled ? 'bg-amber-400 scale-110 shadow-md shadow-amber-400/50' : 'bg-slate-700 border border-slate-600'}"></span>`;
+      }
+      container.innerHTML = html;
+    }
+
+    const pressPinKey = window.pressPinKey = function(digit) {
+      if (!isAppLocked) return;
+      const maxLen = Math.max(8, (appLockConfig.pin || '').length || 4);
+      if (enteredPinBuffer.length >= maxLen) return;
+      enteredPinBuffer += String(digit);
+      const errEl = document.getElementById('pinErrorMsg');
+      if (errEl) errEl.textContent = '';
+      renderPinDots();
+
+      // Auto-unlock as soon as entered length matches the configured PIN length
+      if (appLockConfig.pin && enteredPinBuffer.length === appLockConfig.pin.length) {
+        setTimeout(() => {
+          submitPinUnlock();
+        }, 120);
+      }
+    };
+
+    const clearPinInput = window.clearPinInput = function() {
+      enteredPinBuffer = '';
+      const errEl = document.getElementById('pinErrorMsg');
+      if (errEl) errEl.textContent = '';
+      renderPinDots();
+    };
+
+    const backspacePinInput = window.backspacePinInput = function() {
+      if (enteredPinBuffer.length > 0) {
+        enteredPinBuffer = enteredPinBuffer.slice(0, -1);
+        renderPinDots();
+      }
+    };
+
+    const submitPinUnlock = window.submitPinUnlock = function() {
+      if (!isAppLocked) return;
+      if (enteredPinBuffer === appLockConfig.pin) {
+        isAppLocked = false;
+        enteredPinBuffer = '';
+        const overlay = document.getElementById('appLockOverlay');
+        if (overlay) overlay.classList.add('hidden');
+        resetInactivityLockTimer();
+        showToast('🔓 Lock ပွင့်သွားပါပြီ', 'success');
+      } else {
+        const errEl = document.getElementById('pinErrorMsg');
+        if (errEl) errEl.textContent = '❌ ဂဏန်းစကားဝှက် မှားယွင်းနေပါသည်! ပြန်လည်ကြိုးစားပါ';
+        const card = document.getElementById('appLockCard');
+        if (card) {
+          card.classList.remove('pin-shake');
+          void card.offsetWidth;
+          card.classList.add('pin-shake');
+        }
+        enteredPinBuffer = '';
+        renderPinDots();
+      }
     };
 
     const handleRestoreFile = window.handleRestoreFile = function(event) {
