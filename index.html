@@ -2389,6 +2389,47 @@
             </div>
           </div>
 
+          <!-- Extra Pro Security Options -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <label class="theme-card-sub border border-amber-500/25 rounded-xl p-3 flex items-center justify-between gap-2 cursor-pointer">
+              <div>
+                <div class="text-xs font-bold theme-text-heading flex items-center gap-1.5">
+                  <span>📱 App အပြင်ထွက်လျှင် အလိုအလျောက် Lock ချမည်</span>
+                </div>
+                <span class="text-[10px] theme-text-muted block">ဖုန်း Screen ပိတ်ချိန် သို့မဟုတ် အခြား App သို့ ပြောင်းချိန် (၁၀ စက္ကန့်အကြာ)</span>
+              </div>
+              <input type="checkbox" id="appLockMinimizeToggle" onchange="handleLockSecurityOptionChange()" class="w-4 h-4 accent-amber-500 rounded cursor-pointer shrink-0">
+            </label>
+
+            <label class="theme-card-sub border border-amber-500/25 rounded-xl p-3 flex items-center justify-between gap-2 cursor-pointer">
+              <div>
+                <div class="text-xs font-bold theme-text-heading flex items-center gap-1.5">
+                  <span>🔀 ဂဏန်းခလုတ် နေရာရောမည် (Scramble Keypad)</span>
+                </div>
+                <span class="text-[10px] theme-text-muted block">ဘေးမှကြည့်ပြီး လက်ချောင်းနေရာဖြင့် စကားဝှက် မခန့်မှန်းနိုင်အောင် ကာကွယ်ပေးသည်</span>
+              </div>
+              <input type="checkbox" id="appLockScrambleToggle" onchange="handleLockSecurityOptionChange()" class="w-4 h-4 accent-amber-500 rounded cursor-pointer shrink-0">
+            </label>
+          </div>
+
+          <!-- Brute-Force Protection & Security Activity Log Box -->
+          <div class="theme-card-sub border border-blue-500/25 rounded-xl p-3 space-y-2">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="text-[11px] font-bold text-blue-400 flex items-center gap-1.5">
+                <span>🛡️ အဆင့်မြင့် Brute-Force ကာကွယ်ရေး စနစ် (Active)</span>
+              </div>
+              <button type="button" id="clearSecurityLogBtn" onclick="clearAppLockSecurityLogs()" class="hidden text-[10px] px-2 py-0.5 rounded-lg bg-rose-500/15 text-rose-400 border border-rose-500/30 font-bold hover:bg-rose-500/25 transition">
+                မှတ်တမ်းရှင်းမည်
+              </button>
+            </div>
+            <p class="text-[10px] theme-text-muted leading-relaxed">
+              စကားဝှက် <strong>၄ ကြိမ်</strong> ဆက်တိုက်မှားပါက <strong>၁ မိနစ်</strong>၊ <strong>၈ ကြိမ်</strong> မှားပါက <strong>၅ မိနစ်</strong>၊ <strong>၁၂ ကြိမ်</strong> မှားပါက <strong>၁၅ မိနစ်</strong> အလိုအလျောက် Keypad ပိတ်သွားပြီး မှားယွင်းရိုက်ထည့်မှုများကို မှတ်တမ်းတင်ထားပေးပါသည်။
+            </p>
+            <div id="appLockSecurityLogContainer" class="hidden pt-1.5 border-t border-slate-700/60 space-y-1 max-h-28 overflow-y-auto text-[10px] font-mono">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+
           <div class="flex flex-wrap items-center gap-2 pt-1">
             <button type="button" onclick="openAppPinActionModal('CHANGE')" class="flex-1 min-w-[140px] py-2.5 px-3 rounded-xl bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/40 text-blue-400 text-xs font-bold transition flex items-center justify-center gap-1.5">
               <span>🔑 စကားဝှက် အသစ်ပြောင်းမည်</span>
@@ -3590,6 +3631,8 @@
       <form id="appPinActionForm" onsubmit="handleConfirmAppPinAction(event)" class="space-y-3 text-xs">
         <input type="hidden" id="appPinActionType" value="CHANGE">
 
+        <div id="appPinModalLockoutNotice" class="hidden p-2.5 rounded-xl bg-rose-500/15 border border-rose-500/40 text-rose-400 text-[11px] font-bold text-center"></div>
+
         <div>
           <label class="block font-semibold theme-text-heading mb-1">လက်ရှိ ဂဏန်းစကားဝှက် (Current Password) <span class="text-rose-500">*</span></label>
           <input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="8" id="currentAppPinVerifyInput" required placeholder="လက်ရှိ စကားဝှက် ရိုက်ထည့်ပါ" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="w-full theme-input border rounded-xl px-3.5 py-2.5 text-sm font-mono font-bold tracking-widest text-center">
@@ -3616,43 +3659,64 @@
 
   <!-- 14. FULL-SCREEN APPLICATION NUMBER PASSWORD (PIN) LOCK SCREEN OVERLAY -->
   <div id="appLockOverlay" style="touch-action: manipulation; -webkit-tap-highlight-color: transparent;" class="fixed inset-0 z-[90] bg-slate-950 flex flex-col items-center justify-center p-4 hidden select-none">
-    <div id="appLockCard" style="will-change: transform;" class="w-full max-w-xs sm:max-w-sm rounded-3xl bg-slate-900 border border-amber-500/30 p-6 shadow-2xl text-center space-y-5">
-      <div class="space-y-2">
+    <div id="appLockCard" style="will-change: transform;" class="w-full max-w-xs sm:max-w-sm rounded-3xl bg-slate-900 border border-amber-500/30 p-5 sm:p-6 shadow-2xl text-center space-y-4">
+      <div class="space-y-1.5">
         <div class="w-16 h-16 mx-auto rounded-2xl overflow-hidden shadow-md border-2 border-amber-400/60" id="lockScreenAppIcon"></div>
         <h2 class="text-base sm:text-lg font-extrabold text-white tracking-tight">လာဘ်ရွှင် (Lab Shwin)</h2>
-        <p class="text-xs text-amber-400 font-bold flex items-center justify-center gap-1">
+        <p id="lockScreenSubtitle" class="text-xs text-amber-400 font-bold flex items-center justify-center gap-1">
           <span>🔒</span>
           <span>ဂဏန်းစကားဝှက် (Number Password) ရိုက်ထည့်ပါ</span>
         </p>
       </div>
 
+      <!-- 1-Minute Lockout Countdown Box (Visible when >= 4 wrong attempts) -->
+      <div id="pinLockoutBanner" class="hidden p-3.5 rounded-2xl bg-rose-950/90 border-2 border-rose-500/80 text-center space-y-2 shadow-lg">
+        <div class="flex items-center justify-center gap-1.5 text-rose-300 text-xs font-extrabold">
+          <span>⛔</span>
+          <span id="pinLockoutTitle">စကားဝှက် ၄ ကြိမ် မှားယွင်းသောကြောင့် ခေတ္တ Lock ချထားပါသည်</span>
+        </div>
+        <div class="py-1.5 px-4 rounded-xl bg-slate-950/90 border border-rose-500/40 inline-flex items-center gap-2">
+          <span class="text-xs text-rose-400 font-bold">⏳ ပြန်နှိပ်နိုင်မည့်အချိန်:</span>
+          <span id="pinLockoutCountdownText" class="text-lg sm:text-xl font-mono font-black text-amber-400 tracking-wider">01:00</span>
+        </div>
+        <div class="w-full h-1.5 bg-slate-950 rounded-full overflow-hidden">
+          <div id="pinLockoutProgressBar" class="h-full bg-gradient-to-r from-rose-500 to-amber-400 transition-all duration-300" style="width: 100%;"></div>
+        </div>
+        <p class="text-[10px] text-rose-200/90 leading-snug">သတ်မှတ်အချိန် ပြည့်သွားပါက ဂဏန်းခလုတ်များ အလိုအလျောက် ပြန်ပွင့်လာပါမည်</p>
+      </div>
+
       <!-- PIN Dots Display -->
-      <div class="space-y-2">
+      <div class="space-y-1.5">
         <div id="pinDotsContainer" class="flex items-center justify-center gap-3 min-h-[44px] py-2 px-4 rounded-2xl bg-slate-950 border border-slate-800">
           <!-- Populated dynamically -->
         </div>
-        <p id="pinErrorMsg" class="text-[11px] text-rose-400 font-bold min-h-[16px]"></p>
+        <p id="pinErrorMsg" class="text-[11px] text-rose-400 font-bold min-h-[16px] leading-snug"></p>
       </div>
 
       <!-- Numeric Keypad (0-9) - Instant PointerDown Response -->
-      <div class="grid grid-cols-3 gap-2.5 text-white font-mono" style="touch-action: manipulation;">
-        <button type="button" onpointerdown="handlePinKeyPointer(event, '1')" onclick="handlePinKeyClick(event, '1')" class="h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-xl font-extrabold shadow-sm transition-colors duration-75">1</button>
-        <button type="button" onpointerdown="handlePinKeyPointer(event, '2')" onclick="handlePinKeyClick(event, '2')" class="h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-xl font-extrabold shadow-sm transition-colors duration-75">2</button>
-        <button type="button" onpointerdown="handlePinKeyPointer(event, '3')" onclick="handlePinKeyClick(event, '3')" class="h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-xl font-extrabold shadow-sm transition-colors duration-75">3</button>
-        <button type="button" onpointerdown="handlePinKeyPointer(event, '4')" onclick="handlePinKeyClick(event, '4')" class="h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-xl font-extrabold shadow-sm transition-colors duration-75">4</button>
-        <button type="button" onpointerdown="handlePinKeyPointer(event, '5')" onclick="handlePinKeyClick(event, '5')" class="h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-xl font-extrabold shadow-sm transition-colors duration-75">5</button>
-        <button type="button" onpointerdown="handlePinKeyPointer(event, '6')" onclick="handlePinKeyClick(event, '6')" class="h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-xl font-extrabold shadow-sm transition-colors duration-75">6</button>
-        <button type="button" onpointerdown="handlePinKeyPointer(event, '7')" onclick="handlePinKeyClick(event, '7')" class="h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-xl font-extrabold shadow-sm transition-colors duration-75">7</button>
-        <button type="button" onpointerdown="handlePinKeyPointer(event, '8')" onclick="handlePinKeyClick(event, '8')" class="h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-xl font-extrabold shadow-sm transition-colors duration-75">8</button>
-        <button type="button" onpointerdown="handlePinKeyPointer(event, '9')" onclick="handlePinKeyClick(event, '9')" class="h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-xl font-extrabold shadow-sm transition-colors duration-75">9</button>
-        <button type="button" onpointerdown="handlePinKeyPointer(event, 'CLEAR')" onclick="handlePinKeyClick(event, 'CLEAR')" class="h-14 rounded-2xl bg-rose-500/15 hover:bg-rose-500/25 active:bg-rose-500 active:text-white border border-rose-500/30 text-rose-400 text-xs font-sans font-extrabold shadow-sm transition-colors duration-75">ရှင်းမည်</button>
-        <button type="button" onpointerdown="handlePinKeyPointer(event, '0')" onclick="handlePinKeyClick(event, '0')" class="h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-xl font-extrabold shadow-sm transition-colors duration-75">0</button>
-        <button type="button" onpointerdown="handlePinKeyPointer(event, 'BACK')" onclick="handlePinKeyClick(event, 'BACK')" class="h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-amber-400 text-lg font-extrabold shadow-sm transition-colors duration-75 flex items-center justify-center">⌫</button>
+      <div id="pinKeypadGrid" class="grid grid-cols-3 gap-2.5 text-white font-mono transition-opacity duration-200" style="touch-action: manipulation;">
+        <button type="button" data-pin-digit-slot="0" onpointerdown="handlePinSlotPointer(event, 0)" onclick="handlePinSlotClick(event, 0)" class="pin-key-btn h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-xl font-extrabold shadow-sm transition-colors duration-75">1</button>
+        <button type="button" data-pin-digit-slot="1" onpointerdown="handlePinSlotPointer(event, 1)" onclick="handlePinSlotClick(event, 1)" class="pin-key-btn h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-xl font-extrabold shadow-sm transition-colors duration-75">2</button>
+        <button type="button" data-pin-digit-slot="2" onpointerdown="handlePinSlotPointer(event, 2)" onclick="handlePinSlotClick(event, 2)" class="pin-key-btn h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-xl font-extrabold shadow-sm transition-colors duration-75">3</button>
+        <button type="button" data-pin-digit-slot="3" onpointerdown="handlePinSlotPointer(event, 3)" onclick="handlePinSlotClick(event, 3)" class="pin-key-btn h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-xl font-extrabold shadow-sm transition-colors duration-75">4</button>
+        <button type="button" data-pin-digit-slot="4" onpointerdown="handlePinSlotPointer(event, 4)" onclick="handlePinSlotClick(event, 4)" class="pin-key-btn h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-xl font-extrabold shadow-sm transition-colors duration-75">5</button>
+        <button type="button" data-pin-digit-slot="5" onpointerdown="handlePinSlotPointer(event, 5)" onclick="handlePinSlotClick(event, 5)" class="pin-key-btn h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-xl font-extrabold shadow-sm transition-colors duration-75">6</button>
+        <button type="button" data-pin-digit-slot="6" onpointerdown="handlePinSlotPointer(event, 6)" onclick="handlePinSlotClick(event, 6)" class="pin-key-btn h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-xl font-extrabold shadow-sm transition-colors duration-75">7</button>
+        <button type="button" data-pin-digit-slot="7" onpointerdown="handlePinSlotPointer(event, 7)" onclick="handlePinSlotClick(event, 7)" class="pin-key-btn h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-xl font-extrabold shadow-sm transition-colors duration-75">8</button>
+        <button type="button" data-pin-digit-slot="8" onpointerdown="handlePinSlotPointer(event, 8)" onclick="handlePinSlotClick(event, 8)" class="pin-key-btn h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-xl font-extrabold shadow-sm transition-colors duration-75">9</button>
+        <button type="button" onpointerdown="handlePinKeyPointer(event, 'CLEAR')" onclick="handlePinKeyClick(event, 'CLEAR')" class="pin-key-btn h-14 rounded-2xl bg-rose-500/15 hover:bg-rose-500/25 active:bg-rose-500 active:text-white border border-rose-500/30 text-rose-400 text-xs font-sans font-extrabold shadow-sm transition-colors duration-75">ရှင်းမည်</button>
+        <button type="button" data-pin-digit-slot="9" onpointerdown="handlePinSlotPointer(event, 9)" onclick="handlePinSlotClick(event, 9)" class="pin-key-btn h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-xl font-extrabold shadow-sm transition-colors duration-75">0</button>
+        <button type="button" onpointerdown="handlePinKeyPointer(event, 'BACK')" onclick="handlePinKeyClick(event, 'BACK')" class="pin-key-btn h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-amber-400 text-lg font-extrabold shadow-sm transition-colors duration-75 flex items-center justify-center">⌫</button>
       </div>
 
-      <button type="button" onpointerdown="handlePinKeyPointer(event, 'SUBMIT')" onclick="handlePinKeyClick(event, 'SUBMIT')" class="w-full py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 text-xs sm:text-sm font-extrabold shadow-lg transition-colors duration-75">
-        🔓 Lock ဖွင့်မည် (Unlock)
-      </button>
+      <div class="flex items-center gap-2">
+        <button type="button" id="pinScrambleQuickBtn" onclick="toggleQuickKeypadScramble()" class="py-3 px-3 rounded-2xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[11px] font-bold text-slate-300 transition shrink-0" title="ဂဏန်းခလုတ် နေရာရောရန်">
+          🔀 ရောမည်
+        </button>
+        <button type="button" id="pinUnlockSubmitBtn" onpointerdown="handlePinKeyPointer(event, 'SUBMIT')" onclick="handlePinKeyClick(event, 'SUBMIT')" class="flex-1 py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 text-xs sm:text-sm font-extrabold shadow-lg transition-colors duration-75">
+          🔓 Lock ဖွင့်မည် (Unlock)
+        </button>
+      </div>
     </div>
   </div>
 
@@ -3941,11 +4005,21 @@
     let appLockConfig = {
       enabled: false,
       pin: '',
-      autoLockMinutes: 0
+      autoLockMinutes: 0,
+      lockOnMinimize: false,
+      scrambleKeypad: false,
+      failedAttempts: 0,
+      lockoutUntil: 0,
+      lockoutDurationMs: 60000,
+      unacknowledgedFailedCount: 0,
+      securityLogs: []
     };
     let isAppLocked = false;
     let enteredPinBuffer = '';
     let inactivityLockTimer = null;
+    let minimizeLockTimer = null;
+    let pinLockoutInterval = null;
+    let pinDigitMapping = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
     let lastPinPointerTime = 0;
     let deferredBootPending = false;
 
@@ -11968,7 +12042,7 @@
     }
 
     // ============================================================================
-    // APPLICATION NUMBER PASSWORD (PIN) LOCK SYSTEM
+    // APPLICATION NUMBER PASSWORD (PIN) LOCK & BRUTE-FORCE SECURITY SYSTEM
     // ============================================================================
     function initAppLockSystem() {
       try {
@@ -11979,7 +12053,14 @@
             appLockConfig = {
               enabled: Boolean(parsed.enabled && parsed.pin),
               pin: String(parsed.pin || ''),
-              autoLockMinutes: Number(parsed.autoLockMinutes) || 0
+              autoLockMinutes: Number(parsed.autoLockMinutes) || 0,
+              lockOnMinimize: Boolean(parsed.lockOnMinimize),
+              scrambleKeypad: Boolean(parsed.scrambleKeypad),
+              failedAttempts: Number(parsed.failedAttempts) || 0,
+              lockoutUntil: Number(parsed.lockoutUntil) || 0,
+              lockoutDurationMs: Number(parsed.lockoutDurationMs) || 60000,
+              unacknowledgedFailedCount: Number(parsed.unacknowledgedFailedCount) || 0,
+              securityLogs: Array.isArray(parsed.securityLogs) ? parsed.securityLogs.slice(0, 15) : []
             };
           }
         }
@@ -11994,6 +12075,10 @@
       // Keyboard listener for numeric PIN entry when Lock Screen is active
       window.addEventListener('keydown', (e) => {
         if (!isAppLocked) return;
+        if (isPinCurrentlyLockedOut()) {
+          e.preventDefault();
+          return;
+        }
         if (e.key >= '0' && e.key <= '9') {
           e.preventDefault();
           pressPinKey(e.key);
@@ -12013,12 +12098,245 @@
       ['click', 'touchstart', 'keydown'].forEach(evt => {
         document.addEventListener(evt, resetInactivityLockTimer, { passive: true });
       });
+
+      // Auto-Lock when app is minimized or screen turned off (if enabled)
+      document.addEventListener('visibilitychange', () => {
+        if (!appLockConfig.enabled || !appLockConfig.pin) return;
+        if (document.visibilityState === 'hidden') {
+          if (appLockConfig.lockOnMinimize && !isAppLocked) {
+            if (minimizeLockTimer) clearTimeout(minimizeLockTimer);
+            minimizeLockTimer = setTimeout(() => {
+              if (document.visibilityState === 'hidden' && !isAppLocked) {
+                lockApplicationNow(true);
+              }
+            }, 10000); // 10-second grace period
+          }
+        } else {
+          if (minimizeLockTimer) {
+            clearTimeout(minimizeLockTimer);
+            minimizeLockTimer = null;
+          }
+          if (isAppLocked) {
+            syncPinLockoutUI();
+          }
+        }
+      });
     }
 
     function saveAppLockConfig() {
-      localStorage.setItem(STORAGE_KEY_APP_LOCK, JSON.stringify(appLockConfig));
+      try {
+        localStorage.setItem(STORAGE_KEY_APP_LOCK, JSON.stringify(appLockConfig));
+      } catch (e) {}
       updateAppLockSettingsUI();
       resetInactivityLockTimer();
+    }
+
+    function isPinCurrentlyLockedOut() {
+      return Number(appLockConfig.lockoutUntil) > Date.now();
+    }
+
+    function getRemainingLockoutSeconds() {
+      const diff = Number(appLockConfig.lockoutUntil) - Date.now();
+      return diff > 0 ? Math.ceil(diff / 1000) : 0;
+    }
+
+    function formatLockoutCountdown(totalSeconds) {
+      const mins = Math.floor(totalSeconds / 60);
+      const secs = totalSeconds % 60;
+      return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+
+    function appendSecurityLog(eventText, level = 'warn') {
+      const nowStr = new Date().toLocaleString('en-GB', {
+        day: '2-digit',
+        month: 'short',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      });
+      if (!Array.isArray(appLockConfig.securityLogs)) {
+        appLockConfig.securityLogs = [];
+      }
+      appLockConfig.securityLogs.unshift({
+        time: nowStr,
+        text: eventText,
+        level
+      });
+      if (appLockConfig.securityLogs.length > 15) {
+        appLockConfig.securityLogs = appLockConfig.securityLogs.slice(0, 15);
+      }
+    }
+
+    const clearAppLockSecurityLogs = window.clearAppLockSecurityLogs = function() {
+      appLockConfig.securityLogs = [];
+      appLockConfig.unacknowledgedFailedCount = 0;
+      saveAppLockConfig();
+      showToast('🛡️ လုံခြုံရေး မှတ်တမ်းများကို ရှင်းလင်းပြီးပါပြီ', 'info');
+    };
+
+    function applyKeypadDigitOrder() {
+      const standard = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
+      if (appLockConfig.scrambleKeypad) {
+        const shuffled = [...standard];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          const temp = shuffled[i];
+          shuffled[i] = shuffled[j];
+          shuffled[j] = temp;
+        }
+        pinDigitMapping = shuffled;
+      } else {
+        pinDigitMapping = standard;
+      }
+
+      const buttons = document.querySelectorAll('[data-pin-digit-slot]');
+      buttons.forEach(btn => {
+        const slot = Number(btn.getAttribute('data-pin-digit-slot'));
+        if (!isNaN(slot) && pinDigitMapping[slot] !== undefined) {
+          btn.textContent = pinDigitMapping[slot];
+        }
+      });
+
+      const quickBtn = document.getElementById('pinScrambleQuickBtn');
+      if (quickBtn) {
+        quickBtn.className = appLockConfig.scrambleKeypad
+          ? 'py-3 px-3 rounded-2xl bg-amber-500/20 border border-amber-500/50 text-[11px] font-extrabold text-amber-300 transition shrink-0'
+          : 'py-3 px-3 rounded-2xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[11px] font-bold text-slate-300 transition shrink-0';
+        quickBtn.textContent = appLockConfig.scrambleKeypad ? '🔀 ရောထားသည်' : '🔀 ရောမည်';
+      }
+    }
+
+    const toggleQuickKeypadScramble = window.toggleQuickKeypadScramble = function() {
+      if (isPinCurrentlyLockedOut()) return;
+      appLockConfig.scrambleKeypad = !appLockConfig.scrambleKeypad;
+      saveAppLockConfig();
+      applyKeypadDigitOrder();
+    };
+
+    const handleLockSecurityOptionChange = window.handleLockSecurityOptionChange = function() {
+      const minToggle = document.getElementById('appLockMinimizeToggle');
+      const scrToggle = document.getElementById('appLockScrambleToggle');
+      if (minToggle) appLockConfig.lockOnMinimize = Boolean(minToggle.checked);
+      if (scrToggle) appLockConfig.scrambleKeypad = Boolean(scrToggle.checked);
+      saveAppLockConfig();
+      applyKeypadDigitOrder();
+      showToast('🛡️ လုံခြုံရေး သတ်မှတ်ချက်ကို သိမ်းဆည်းပြီးပါပြီ', 'success');
+    };
+
+    function recordFailedPinAttempt(sourceLabel = 'Lock Screen') {
+      appLockConfig.failedAttempts = (Number(appLockConfig.failedAttempts) || 0) + 1;
+      appLockConfig.unacknowledgedFailedCount = (Number(appLockConfig.unacknowledgedFailedCount) || 0) + 1;
+
+      const attempts = appLockConfig.failedAttempts;
+      // Trigger lockout every 4 wrong attempts (4 -> 1 min, 8 -> 5 mins, 12+ -> 15 mins)
+      if (attempts >= 4 && attempts % 4 === 0) {
+        let lockSeconds = 60; // Default 1 minute (60s) on 4th failed attempt
+        let tierLabel = '၁ မိနစ် (60 စက္ကန့်)';
+        if (attempts >= 12) {
+          lockSeconds = 900; // 15 minutes
+          tierLabel = '၁၅ မိနစ်';
+        } else if (attempts >= 8) {
+          lockSeconds = 300; // 5 minutes
+          tierLabel = '၅ မိနစ်';
+        }
+
+        appLockConfig.lockoutDurationMs = lockSeconds * 1000;
+        appLockConfig.lockoutUntil = Date.now() + appLockConfig.lockoutDurationMs;
+        appendSecurityLog(`⛔ စကားဝှက် (${attempts}) ကြိမ် မှားယွင်း၍ ${tierLabel} Lock ချခဲ့သည် (${sourceLabel})`, 'danger');
+        saveAppLockConfig();
+        syncPinLockoutUI();
+        return { lockedOut: true, attempts, lockSeconds, tierLabel };
+      } else {
+        const rem = 4 - (attempts % 4);
+        appendSecurityLog(`⚠️ စကားဝှက် အမှားရိုက်ထည့်မှု #${attempts} (${sourceLabel})`, 'warn');
+        saveAppLockConfig();
+        return { lockedOut: false, attempts, remainingBeforeLock: rem };
+      }
+    }
+
+    function syncPinLockoutUI() {
+      if (pinLockoutInterval) {
+        clearInterval(pinLockoutInterval);
+        pinLockoutInterval = null;
+      }
+
+      const banner = document.getElementById('pinLockoutBanner');
+      const titleEl = document.getElementById('pinLockoutTitle');
+      const countEl = document.getElementById('pinLockoutCountdownText');
+      const barEl = document.getElementById('pinLockoutProgressBar');
+      const keypadGrid = document.getElementById('pinKeypadGrid');
+      const submitBtn = document.getElementById('pinUnlockSubmitBtn');
+      const errEl = document.getElementById('pinErrorMsg');
+      const modalNotice = document.getElementById('appPinModalLockoutNotice');
+      const modalSubmitBtn = document.getElementById('appPinActionSubmitBtn');
+
+      const updateTick = () => {
+        const remSec = getRemainingLockoutSeconds();
+        if (remSec > 0) {
+          const formatted = formatLockoutCountdown(remSec);
+          const totalDurationSec = Math.max(60, Math.round((Number(appLockConfig.lockoutDurationMs) || 60000) / 1000));
+          const pct = Math.min(100, Math.max(0, (remSec / totalDurationSec) * 100));
+
+          if (banner) banner.classList.remove('hidden');
+          if (titleEl) {
+            const totalFails = Number(appLockConfig.failedAttempts) || 4;
+            titleEl.textContent = `စကားဝှက် (${totalFails}) ကြိမ် မှားယွင်းသောကြောင့် ခေတ္တ Lock ချထားပါသည်`;
+          }
+          if (countEl) countEl.textContent = formatted;
+          if (barEl) barEl.style.width = `${pct}%`;
+
+          if (keypadGrid) {
+            keypadGrid.classList.add('opacity-35', 'pointer-events-none');
+          }
+          if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.className = 'flex-1 py-3 rounded-2xl bg-slate-800 text-slate-500 border border-slate-700 text-xs sm:text-sm font-extrabold cursor-not-allowed';
+            submitBtn.textContent = `⏳ Lock ပိတ်ထားသည် (${formatted})`;
+          }
+          if (errEl) {
+            errEl.textContent = `🔒 လုံခြုံရေးအရ ${formatted} ပြည့်မှ စကားဝှက် ပြန်နှိပ်နိုင်ပါမည်`;
+          }
+          if (modalNotice) {
+            modalNotice.classList.remove('hidden');
+            modalNotice.textContent = `⛔ စကားဝှက် ၄ ကြိမ် မှားယွင်းထားသောကြောင့် ${formatted} စောင့်ဆိုင်းပြီးမှ ပြန်လည်ကြိုးစားပါ`;
+          }
+          if (modalSubmitBtn) {
+            modalSubmitBtn.disabled = true;
+            modalSubmitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+          }
+        } else {
+          if (pinLockoutInterval) {
+            clearInterval(pinLockoutInterval);
+            pinLockoutInterval = null;
+          }
+          if (appLockConfig.lockoutUntil > 0) {
+            appLockConfig.lockoutUntil = 0;
+            saveAppLockConfig();
+          }
+          if (banner) banner.classList.add('hidden');
+          if (keypadGrid) {
+            keypadGrid.classList.remove('opacity-35', 'pointer-events-none');
+          }
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.className = 'flex-1 py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 text-xs sm:text-sm font-extrabold shadow-lg transition-colors duration-75';
+            submitBtn.textContent = '🔓 Lock ဖွင့်မည် (Unlock)';
+          }
+          if (errEl && errEl.textContent.includes('ပြည့်မှ စကားဝှက်')) {
+            errEl.textContent = '✅ သတ်မှတ်အချိန် ပြည့်သွားပါပြီ။ စကားဝှက် ပြန်ရိုက်နိုင်ပါပြီ';
+          }
+          if (modalNotice) modalNotice.classList.add('hidden');
+          if (modalSubmitBtn) {
+            modalSubmitBtn.disabled = false;
+            modalSubmitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+          }
+        }
+      };
+
+      updateTick();
+      if (isPinCurrentlyLockedOut()) {
+        pinLockoutInterval = setInterval(updateTick, 250);
+      }
     }
 
     function resetInactivityLockTimer() {
@@ -12041,6 +12359,10 @@
       const manageBox = document.getElementById('appLockManageBox');
       const lenHint = document.getElementById('appLockPinLengthHint');
       const autoSel = document.getElementById('appLockAutoMinutesSelect');
+      const minToggle = document.getElementById('appLockMinimizeToggle');
+      const scrToggle = document.getElementById('appLockScrambleToggle');
+      const logBox = document.getElementById('appLockSecurityLogContainer');
+      const clearLogBtn = document.getElementById('clearSecurityLogBtn');
       const headerBtn = document.getElementById('headerLockBtn');
 
       if (appLockConfig.enabled && appLockConfig.pin) {
@@ -12052,6 +12374,27 @@
         if (manageBox) manageBox.classList.remove('hidden');
         if (lenHint) lenHint.textContent = `ဂဏန်း ${appLockConfig.pin.length} လုံး စကားဝှက်ဖြင့် ကာကွယ်ထားသည်`;
         if (autoSel) autoSel.value = String(appLockConfig.autoLockMinutes || 0);
+        if (minToggle) minToggle.checked = Boolean(appLockConfig.lockOnMinimize);
+        if (scrToggle) scrToggle.checked = Boolean(appLockConfig.scrambleKeypad);
+
+        const logs = Array.isArray(appLockConfig.securityLogs) ? appLockConfig.securityLogs : [];
+        if (logBox) {
+          if (logs.length > 0) {
+            logBox.classList.remove('hidden');
+            if (clearLogBtn) clearLogBtn.classList.remove('hidden');
+            logBox.innerHTML = logs.map(item => {
+              const colorCls = item.level === 'danger' ? 'text-rose-400 font-bold' : 'text-amber-300';
+              return `<div class="flex items-center justify-between gap-2 py-0.5 border-b border-slate-800/60 last:border-none">
+                <span class="${colorCls} truncate">${item.text}</span>
+                <span class="text-slate-400 shrink-0">${item.time}</span>
+              </div>`;
+            }).join('');
+          } else {
+            logBox.classList.add('hidden');
+            if (clearLogBtn) clearLogBtn.classList.add('hidden');
+          }
+        }
+
         if (headerBtn) {
           headerBtn.className = 'p-2 rounded-xl bg-amber-500/15 border border-amber-500/40 hover:bg-amber-500/25 active:scale-95 transition flex items-center justify-center text-amber-400';
           headerBtn.title = 'App ကို ချက်ချင်း Lock ချရန်';
@@ -12099,6 +12442,9 @@
 
       appLockConfig.enabled = true;
       appLockConfig.pin = p1;
+      appLockConfig.failedAttempts = 0;
+      appLockConfig.lockoutUntil = 0;
+      appLockConfig.unacknowledgedFailedCount = 0;
       saveAppLockConfig();
 
       document.getElementById('newAppPinInput').value = '';
@@ -12140,6 +12486,7 @@
         }
       }
 
+      syncPinLockoutUI();
       modal.classList.remove('hidden');
       armBackTrap();
       setTimeout(() => document.getElementById('currentAppPinVerifyInput')?.focus(), 100);
@@ -12152,13 +12499,32 @@
 
     const handleConfirmAppPinAction = window.handleConfirmAppPinAction = function(e) {
       e.preventDefault();
+      if (isPinCurrentlyLockedOut()) {
+        const rem = formatLockoutCountdown(getRemainingLockoutSeconds());
+        showToast(`⏳ ခေတ္တ Lock ကျနေပါသည်။ ${rem} ပြည့်မှ ပြန်လည်ကြိုးစားပါ`, 'error');
+        return;
+      }
+
       const actionType = document.getElementById('appPinActionType')?.value || 'CHANGE';
       const curPin = (document.getElementById('currentAppPinVerifyInput')?.value || '').trim();
 
       if (curPin !== appLockConfig.pin) {
-        showToast('လက်ရှိ ဂဏန်းစကားဝှက် မှားယွင်းနေပါသည်!', 'error');
+        document.getElementById('currentAppPinVerifyInput').value = '';
+        const res = recordFailedPinAttempt('Setting ပြင်ဆင်မှု');
+        if (res.lockedOut) {
+          closeAppPinActionModal();
+          lockApplicationNow(true);
+          showToast(`⛔ စကားဝှက် (${res.attempts}) ကြိမ် မှားယွင်းသောကြောင့် ${res.tierLabel} Lock ချလိုက်ပါပြီ!`, 'error');
+        } else {
+          showToast(`❌ လက်ရှိ စကားဝှက် မှားနေပါသည်! (နောက် ${res.remainingBeforeLock} ကြိမ်မှားပါက ၁ မိနစ် Lock ကျပါမည်)`, 'error');
+        }
         return;
       }
+
+      // Reset failed counters upon valid current PIN verification
+      appLockConfig.failedAttempts = 0;
+      appLockConfig.lockoutUntil = 0;
+      appLockConfig.unacknowledgedFailedCount = 0;
 
       if (actionType === 'DISABLE') {
         appLockConfig.enabled = false;
@@ -12196,7 +12562,9 @@
       enteredPinBuffer = '';
       const errEl = document.getElementById('pinErrorMsg');
       if (errEl) errEl.textContent = '';
+      applyKeypadDigitOrder();
       renderPinDots();
+      syncPinLockoutUI();
       const overlay = document.getElementById('appLockOverlay');
       if (overlay) overlay.classList.remove('hidden');
       if (!silent) {
@@ -12231,6 +12599,10 @@
     }
 
     function executePinAction(action) {
+      if (isPinCurrentlyLockedOut()) {
+        syncPinLockoutUI();
+        return;
+      }
       if (action === 'CLEAR') {
         clearPinInput();
       } else if (action === 'BACK') {
@@ -12241,6 +12613,16 @@
         pressPinKey(action);
       }
     }
+
+    const handlePinSlotPointer = window.handlePinSlotPointer = function(e, slotIndex) {
+      const digit = pinDigitMapping[slotIndex] !== undefined ? pinDigitMapping[slotIndex] : String(slotIndex);
+      handlePinKeyPointer(e, digit);
+    };
+
+    const handlePinSlotClick = window.handlePinSlotClick = function(e, slotIndex) {
+      const digit = pinDigitMapping[slotIndex] !== undefined ? pinDigitMapping[slotIndex] : String(slotIndex);
+      handlePinKeyClick(e, digit);
+    };
 
     const handlePinKeyPointer = window.handlePinKeyPointer = function(e, action) {
       if (!isAppLocked) return;
@@ -12260,7 +12642,7 @@
     };
 
     const pressPinKey = window.pressPinKey = function(digit) {
-      if (!isAppLocked) return;
+      if (!isAppLocked || isPinCurrentlyLockedOut()) return;
       const maxLen = Math.max(8, (appLockConfig.pin || '').length || 4);
       if (enteredPinBuffer.length >= maxLen) return;
       enteredPinBuffer += String(digit);
@@ -12279,6 +12661,7 @@
     };
 
     const clearPinInput = window.clearPinInput = function() {
+      if (isPinCurrentlyLockedOut()) return;
       enteredPinBuffer = '';
       const errEl = document.getElementById('pinErrorMsg');
       if (errEl && errEl.textContent) errEl.textContent = '';
@@ -12286,6 +12669,7 @@
     };
 
     const backspacePinInput = window.backspacePinInput = function() {
+      if (isPinCurrentlyLockedOut()) return;
       if (enteredPinBuffer.length > 0) {
         enteredPinBuffer = enteredPinBuffer.slice(0, -1);
         renderPinDots();
@@ -12294,19 +12678,57 @@
 
     const submitPinUnlock = window.submitPinUnlock = function() {
       if (!isAppLocked) return;
+      if (isPinCurrentlyLockedOut()) {
+        syncPinLockoutUI();
+        return;
+      }
+      if (!enteredPinBuffer) return;
+
       if (enteredPinBuffer === appLockConfig.pin) {
+        const priorIntrusionCount = Number(appLockConfig.unacknowledgedFailedCount) || 0;
+        appLockConfig.failedAttempts = 0;
+        appLockConfig.lockoutUntil = 0;
+        appLockConfig.unacknowledgedFailedCount = 0;
+        saveAppLockConfig();
+
         isAppLocked = false;
         enteredPinBuffer = '';
+        if (pinLockoutInterval) {
+          clearInterval(pinLockoutInterval);
+          pinLockoutInterval = null;
+        }
         const overlay = document.getElementById('appLockOverlay');
         if (overlay) overlay.classList.add('hidden');
         if (deferredBootPending) {
           completeBackgroundAppBoot();
         }
         resetInactivityLockTimer();
-        showToast('🔓 Lock ပွင့်သွားပါပြီ', 'success');
+
+        if (priorIntrusionCount > 0) {
+          showToast(`🛡️ သတိပေးချက် - ယခင်က စကားဝှက် (${priorIntrusionCount}) ကြိမ် မှားယွင်းရိုက်ထည့်ထားသည်ကို တွေ့ရှိရပါသည်!`, 'warning');
+        } else {
+          showToast('🔓 Lock ပွင့်သွားပါပြီ', 'success');
+        }
       } else {
+        const res = recordFailedPinAttempt('Lock Screen');
         const errEl = document.getElementById('pinErrorMsg');
-        if (errEl) errEl.textContent = '❌ ဂဏန်းစကားဝှက် မှားယွင်းနေပါသည်! ပြန်လည်ကြိုးစားပါ';
+        if (res.lockedOut) {
+          if (errEl) {
+            errEl.textContent = `⛔ စကားဝှက် (${res.attempts}) ကြိမ် မှားယွင်းသောကြောင့် ${res.tierLabel} Lock ချလိုက်ပါပြီ!`;
+          }
+          if (navigator.vibrate) {
+            try { navigator.vibrate([120, 80, 180]); } catch (e) {}
+          }
+        } else {
+          const stepInCycle = ((res.attempts - 1) % 4) + 1;
+          if (errEl) {
+            errEl.textContent = `❌ စကားဝှက် မှားနေပါသည် (${stepInCycle}/4) — နောက် (${res.remainingBeforeLock}) ကြိမ်မှားပါက ၁ မိနစ် Lock ကျပါမည်`;
+          }
+          if (navigator.vibrate) {
+            try { navigator.vibrate(60); } catch (e) {}
+          }
+        }
+
         const card = document.getElementById('appLockCard');
         if (card) {
           card.classList.remove('pin-shake');
