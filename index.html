@@ -2763,23 +2763,64 @@
     </div>
   </div>
 
-  <!-- 5. EDIT TRANSACTION MODAL -->
-  <div id="editModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-    <div class="theme-card border w-full max-w-sm rounded-3xl p-4 sm:p-5 shadow-2xl space-y-3 max-h-[90vh] overflow-y-auto">
-      <div class="flex items-center justify-between border-b pb-2">
+  <!-- 5. EDIT TRANSACTION MODAL (REMIT / CASHOUT / CREDIT) -->
+  <div id="editModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 hidden">
+    <div class="theme-card border w-full max-w-md rounded-3xl p-4 sm:p-5 shadow-2xl space-y-3 max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b pb-2.5">
         <h3 class="text-xs sm:text-sm font-bold theme-text-heading flex items-center gap-1.5">
           <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-          မှတ်တမ်း ပြင်ဆင်ရန် (Edit)
+          <span id="editModalHeaderTitle">မှတ်တမ်း ပြင်ဆင်ရန် (Edit Record)</span>
         </h3>
-        <button onclick="closeEditModal()" class="theme-text-muted p-1">✕</button>
+        <button type="button" onclick="closeEditModal()" class="theme-text-muted hover:text-rose-500 p-1">✕</button>
       </div>
 
-      <form id="editTxForm" onsubmit="handleSaveEditedTx(event)" class="space-y-3">
+      <form id="editTxForm" onsubmit="handleSaveEditedTx(event)" class="space-y-3 text-xs">
         <input type="hidden" id="editTxId">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <div>
+            <label class="block text-xs font-semibold theme-text-heading mb-1">ရက်စွဲနှင့် အချိန်</label>
+            <input type="datetime-local" id="editTxDate" class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-mono">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold theme-text-heading mb-1">ချန်နယ် / အကောင့်</label>
+            <input type="text" id="editTxChannel" list="editChannelList" placeholder="KPay / Wave / Cash / ဘဏ်" class="w-full theme-input border rounded-xl px-3 py-2 text-xs">
+            <datalist id="editChannelList">
+              <option value="KPay"></option>
+              <option value="KBZPay"></option>
+              <option value="WavePay"></option>
+              <option value="AYA Pay"></option>
+              <option value="CB Pay"></option>
+              <option value="ငွေသား (Cash)"></option>
+              <option value="ထိုင်းဘဏ် (THB Bank)"></option>
+              <option value="U9 ဖုန်းဘေလ်"></option>
+            </datalist>
+          </div>
+        </div>
+
+        <!-- Remit Direction Selector (Only for REMIT) -->
+        <div id="editRemitDirectionGroup" class="hidden">
+          <label class="block text-xs font-semibold theme-text-heading mb-1">ငွေလွှဲ လမ်းကြောင်း</label>
+          <select id="editRemitDirection" onchange="calcEditRemitLive()" class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-bold">
+            <option value="THB_TO_MMK">🇹🇭 ထိုင်းဘတ် ➔ 🇲🇲 မြန်မာကျပ် (THB to MMK)</option>
+            <option value="MMK_TO_THB">🇲🇲 မြန်မာကျပ် ➔ 🇹🇭 ထိုင်းဘတ် (MMK to THB)</option>
+          </select>
+        </div>
+
+        <!-- Cashout Type Selector (Only for CASHOUT) -->
+        <div id="editCashoutTypeGroup" class="hidden">
+          <label class="block text-xs font-semibold theme-text-heading mb-1">KPay / ငွေထုတ် အမျိုးအစား</label>
+          <select id="editCashoutType" class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-bold">
+            <option value="CASHOUT">🔻 ငွေထုတ် (Cash-Out: KPay ဝင် / ငွေသားပေး)</option>
+            <option value="TRANSFER">🔺 ငွေလွှဲ (Transfer: ငွေသားယူ / KPay လွှဲပေး)</option>
+          </select>
+        </div>
+
         <div id="editSingleCustNameGroup">
           <label class="block text-xs font-semibold theme-text-heading mb-1">Customer အမည်</label>
           <input type="text" id="editCustName" class="w-full theme-input border rounded-xl px-3 py-2 text-xs">
         </div>
+
         <div id="editRemitNamesGroup" class="grid grid-cols-1 sm:grid-cols-2 gap-2 hidden">
           <div>
             <label id="editSenderLabel" class="block text-xs font-semibold theme-text-heading mb-1">လွှဲသူအမည်</label>
@@ -2790,34 +2831,309 @@
             <input type="text" id="editReceiverName" class="w-full theme-input border rounded-xl px-3 py-2 text-xs">
           </div>
         </div>
+
         <div>
           <label class="block text-xs font-semibold theme-text-heading mb-1">ဖုန်းနံပါတ် / အကောင့်</label>
           <input type="text" id="editCustPhone" class="w-full theme-input border rounded-xl px-3 py-2 text-xs">
         </div>
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="block text-xs font-semibold theme-text-heading mb-1">ပမာဏ (MMK)</label>
-            <input type="number" step="any" id="editAmountMMK" class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-mono">
+
+        <!-- Remit Rates & THB Fields (Only for REMIT) -->
+        <div id="editRemitRatesGroup" class="hidden space-y-2.5 p-3 rounded-2xl theme-card-sub border border-blue-500/30">
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-[11px] font-semibold theme-text-heading mb-1">Customer ပေါက်ဈေး</label>
+              <input type="number" step="any" id="editCustomerRate" oninput="calcEditRemitLive()" class="w-full theme-input border rounded-xl px-3 py-1.5 text-xs font-mono font-bold">
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold theme-text-heading mb-1">ဒိုင်ပေါက်ဈေး (Dealer)</label>
+              <input type="number" step="any" id="editDealerRate" oninput="calcEditRemitLive()" class="w-full theme-input border rounded-xl px-3 py-1.5 text-xs font-mono font-bold">
+            </div>
           </div>
-          <div>
-            <label class="block text-xs font-semibold theme-text-heading mb-1">အမြတ် (MMK)</label>
-            <input type="number" step="any" id="editProfitMMK" class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-mono">
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-[11px] font-semibold theme-text-heading mb-1">Customer ဘတ် (THB)</label>
+              <input type="number" step="any" id="editCustomerTHB" class="w-full theme-input border rounded-xl px-3 py-1.5 text-xs font-mono font-bold text-blue-400">
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold theme-text-heading mb-1">ဘတ်အမြတ် (Profit THB)</label>
+              <input type="number" step="any" id="editProfitTHB" class="w-full theme-input border rounded-xl px-3 py-1.5 text-xs font-mono font-bold text-emerald-400">
+            </div>
           </div>
         </div>
+
+        <div id="editMainMmkGroup" class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-xs font-semibold theme-text-heading mb-1">ပမာဏ (MMK)</label>
+            <input type="number" step="any" id="editAmountMMK" oninput="calcEditRemitLive()" class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-mono font-bold">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold theme-text-heading mb-1">အမြတ် / ဝန်ဆောင်ခ (MMK)</label>
+            <input type="number" step="any" id="editProfitMMK" class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-mono font-bold text-emerald-400">
+          </div>
+        </div>
+
+        <!-- Credit Specific Fields (Shown for DIRECT_CREDIT or UNPAID) -->
+        <div id="editCreditFieldsGroup" class="hidden space-y-2 p-3 rounded-2xl theme-card-sub border border-rose-500/30">
+          <div class="text-[11px] font-bold text-rose-400">အကြွေးစာရင်း အချက်အလက်</div>
+          <div class="grid grid-cols-3 gap-2">
+            <div>
+              <label class="block text-[10px] font-semibold theme-text-heading mb-1">ငွေကြေး</label>
+              <select id="editOwedCurrency" class="w-full theme-input border rounded-xl px-2 py-1.5 text-xs font-bold">
+                <option value="MMK">MMK (Ks)</option>
+                <option value="THB">THB (฿)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[10px] font-semibold theme-text-heading mb-1">ရရန်ရှိ စုစုပေါင်း</label>
+              <input type="number" step="any" id="editAmountOwed" class="w-full theme-input border rounded-xl px-2.5 py-1.5 text-xs font-mono font-bold">
+            </div>
+            <div>
+              <label class="block text-[10px] font-semibold theme-text-heading mb-1">ဆပ်ပြီးပမာဏ</label>
+              <input type="number" step="any" id="editPaidAmount" class="w-full theme-input border rounded-xl px-2.5 py-1.5 text-xs font-mono font-bold text-emerald-400">
+            </div>
+          </div>
+        </div>
+
         <div>
-          <label class="block text-xs font-semibold theme-text-heading mb-1">ပေးချေမှု အခြေအနေ</label>
-          <select id="editStatus" class="w-full theme-input border rounded-xl px-3 py-2 text-xs">
+          <label class="block text-xs font-semibold theme-text-heading mb-1">ပေးချေမှု / ထုတ်ပေးမှု အခြေအနေ</label>
+          <select id="editStatus" onchange="onEditTxStatusChange()" class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-bold">
             <option value="PAID">လက်ငင်းရရှိ (PAID)</option>
             <option value="UNPAID">အကြွေး (UNPAID)</option>
           </select>
         </div>
+
         <div>
           <label class="block text-xs font-semibold theme-text-heading mb-1">မှတ်ချက်</label>
           <input type="text" id="editNote" class="w-full theme-input border rounded-xl px-3 py-2 text-xs">
         </div>
+
         <div class="flex gap-2 pt-2">
           <button type="button" onclick="closeEditModal()" class="flex-1 py-2.5 rounded-xl theme-card-sub border theme-text-muted text-xs font-bold">မလုပ်တော့ပါ</button>
-          <button type="submit" class="flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold">ပြင်ဆင်ချက် သိမ်းမည်</button>
+          <button type="submit" class="flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow">ပြင်ဆင်ချက် သိမ်းမည်</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 5C. EDIT DEPOSIT RECORD MODAL (အပ်ငွေ / ထုတ်ငွေ မှတ်တမ်း ပြင်ဆင်ရန်) -->
+  <div id="editDepositModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 hidden">
+    <div class="theme-card border border-purple-500/40 w-full max-w-sm rounded-3xl p-4 sm:p-5 shadow-2xl space-y-3 max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b pb-2">
+        <h3 class="text-xs sm:text-sm font-bold text-purple-400 flex items-center gap-1.5">
+          <span>🏦 အပ်ငွေ/ထုတ်ငွေ မှတ်တမ်း ပြင်ဆင်ရန်</span>
+        </h3>
+        <button type="button" onclick="closeEditDepositModal()" class="theme-text-muted hover:text-rose-500 p-1">✕</button>
+      </div>
+
+      <form id="editDepositForm" onsubmit="handleSaveEditedDeposit(event)" class="space-y-3 text-xs">
+        <input type="hidden" id="editDepId">
+
+        <div>
+          <label class="block font-semibold theme-text-heading mb-1">ရက်စွဲနှင့် အချိန်</label>
+          <input type="datetime-local" id="editDepDate" required class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-mono">
+        </div>
+
+        <div>
+          <label class="block font-semibold theme-text-heading mb-1">မှတ်တမ်း အမျိုးအစား</label>
+          <select id="editDepType" onchange="onEditDepositTypeChange()" class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-bold">
+            <option value="DEPOSIT_IN">📥 ငွေလာအပ်သည် (Deposit In)</option>
+            <option value="WITHDRAW_NOTICE">🔔 ၁ ပတ်ကြိုတင် ငွေထုတ်ရက် မှတ်သားချက်</option>
+            <option value="WITHDRAW_OUT">📤 အပ်ငွေ ပြန်ထုတ်ပေးသည် (Withdraw Out)</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <div>
+            <label class="block font-semibold theme-text-heading mb-1">အပ်နှံသူ အမည် <span class="text-rose-500">*</span></label>
+            <input type="text" id="editDepCustName" required class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-bold">
+          </div>
+          <div>
+            <label class="block font-semibold theme-text-heading mb-1">ဖုန်းနံပါတ်</label>
+            <input type="text" id="editDepCustPhone" class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-mono">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-semibold theme-text-heading mb-1">ငွေကြေး</label>
+            <select id="editDepCurrency" class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-bold">
+              <option value="MMK">မြန်မာကျပ် (Ks)</option>
+              <option value="THB">ထိုင်းဘတ် (฿)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-semibold theme-text-heading mb-1">ပမာဏ <span class="text-rose-500">*</span></label>
+            <input type="number" step="any" min="1" id="editDepAmount" required class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-mono font-bold">
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold theme-text-heading mb-1">လည်ပတ်ငွေ အကောင့် (Cash / KPay / THB)</label>
+          <select id="editDepAccount" class="w-full theme-input border rounded-xl px-3 py-2 text-xs">
+            <option value="CASH">💵 လက်ထဲရှိ ငွေသား (Cash in Hand MMK)</option>
+            <option value="BANK">📱 KPay / ဘဏ်အကောင့် (Digital MMK)</option>
+            <option value="THB">🇹🇭 ထိုင်းဘတ် လက်ကျန် (THB Balance)</option>
+          </select>
+        </div>
+
+        <div id="editDepNoticeFields" class="hidden grid grid-cols-2 gap-2 p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30">
+          <div>
+            <label class="block text-[11px] font-semibold text-amber-400 mb-1">ထုတ်ပေးရမည့်ရက်</label>
+            <input type="date" id="editDepTargetDate" class="w-full theme-input border rounded-xl px-2.5 py-1.5 text-xs font-mono">
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-amber-400 mb-1">သတိပေးချက် အခြေအနေ</label>
+            <select id="editDepNoticeStatus" class="w-full theme-input border rounded-xl px-2.5 py-1.5 text-xs font-bold">
+              <option value="PENDING">⏳ မထုတ်ပေးရသေး</option>
+              <option value="COMPLETED">✓ ထုတ်ပေးပြီး</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold theme-text-heading mb-1">မှတ်ချက်</label>
+          <input type="text" id="editDepNote" class="w-full theme-input border rounded-xl px-3 py-2 text-xs">
+        </div>
+
+        <div class="flex gap-2 pt-2">
+          <button type="button" onclick="closeEditDepositModal()" class="flex-1 py-2.5 rounded-xl theme-card-sub border theme-text-muted font-bold">မလုပ်တော့ပါ</button>
+          <button type="submit" class="flex-1 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold shadow">ပြင်ဆင်ချက် သိမ်းမည်</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 5D. EDIT U9 TELECOM RECORD MODAL (U9 ဖုန်းဘေလ် မှတ်တမ်း ပြင်ဆင်ရန်) -->
+  <div id="editU9Modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 hidden">
+    <div class="theme-card border border-cyan-500/40 w-full max-w-sm rounded-3xl p-4 sm:p-5 shadow-2xl space-y-3 max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b pb-2">
+        <h3 class="text-xs sm:text-sm font-bold text-cyan-400 flex items-center gap-1.5">
+          <span>📶 U9 ဖုန်းဘေလ် မှတ်တမ်း ပြင်ဆင်ရန်</span>
+        </h3>
+        <button type="button" onclick="closeEditU9Modal()" class="theme-text-muted hover:text-rose-500 p-1">✕</button>
+      </div>
+
+      <form id="editU9Form" onsubmit="handleSaveEditedU9(event)" class="space-y-3 text-xs">
+        <input type="hidden" id="editU9Id">
+        <input type="hidden" id="editU9Type">
+
+        <div>
+          <label class="block font-semibold theme-text-heading mb-1">ရက်စွဲနှင့် အချိန်</label>
+          <input type="datetime-local" id="editU9Date" required class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-mono">
+        </div>
+
+        <!-- SELL_BILL Fields -->
+        <div id="editU9SellGroup" class="space-y-2.5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <div>
+              <label class="block font-semibold theme-text-heading mb-1">ဝယ်သူ အမည်</label>
+              <input type="text" id="editU9CustName" class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-bold">
+            </div>
+            <div>
+              <label class="block font-semibold theme-text-heading mb-1">ဖုန်းနံပါတ်</label>
+              <input type="text" id="editU9CustPhone" class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-mono">
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block font-semibold theme-text-heading mb-1">ရောင်းသည့် ဘေလ်ပမာဏ</label>
+              <input type="number" step="any" id="editU9BillAmount" oninput="calcEditU9ModalLive()" class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-mono font-bold">
+            </div>
+            <div>
+              <label class="block font-semibold theme-text-heading mb-1">ရောင်းဈေး (ကျသင့်ငွေ)</label>
+              <input type="number" step="any" id="editU9SellingPrice" oninput="calcEditU9ModalLive()" class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-mono font-bold">
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block font-semibold theme-text-heading mb-1">ငွေချေစနစ်</label>
+              <select id="editU9PaymentType" onchange="calcEditU9ModalLive()" class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-bold">
+                <option value="CASH">💵 လက်ငင်း (ငွေသား)</option>
+                <option value="KPAY">📱 လက်ငင်း (KPay/Bank)</option>
+                <option value="CREDIT">⚠️ အကြွေး (Credit)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-semibold theme-text-heading mb-1">အပိုအမြတ် (Ks)</label>
+              <input type="number" step="any" id="editU9ExtraProfit" class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-mono font-bold text-emerald-400">
+            </div>
+          </div>
+          <div>
+            <label class="block font-semibold theme-text-heading mb-1">ပေးချေမှု အခြေအနေ</label>
+            <select id="editU9Status" class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-bold">
+              <option value="PAID">✓ လက်ငင်း / ပြန်ရပြီး (PAID)</option>
+              <option value="UNPAID">⏳ အကြွေး မဆပ်ရသေး (UNPAID)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- BUY_PRIMARY Fields -->
+        <div id="editU9PrimaryGroup" class="hidden space-y-2.5">
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block font-semibold theme-text-heading mb-1">ဝယ်ယူသည့်ငွေ (Ks)</label>
+              <input type="number" step="any" id="editU9PurchaseAmt" oninput="calcEditU9ModalLive('PRIMARY_RATE')" class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-mono font-bold">
+            </div>
+            <div>
+              <label class="block font-semibold theme-text-heading mb-1">ကော်မရှင် (%)</label>
+              <input type="number" step="any" id="editU9CommRate" oninput="calcEditU9ModalLive('PRIMARY_RATE')" class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-mono font-bold">
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block font-semibold theme-text-heading mb-1">ကော်မရှင်အမြတ် (Ks)</label>
+              <input type="number" step="any" id="editU9CommAmt" oninput="calcEditU9ModalLive('PRIMARY_AMT')" class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-mono font-bold text-emerald-400">
+            </div>
+            <div>
+              <label class="block font-semibold theme-text-heading mb-1">ရရှိသည့် စုစုပေါင်းဘေလ်</label>
+              <input type="number" step="any" id="editU9StockReceived" class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-mono font-bold text-cyan-400">
+            </div>
+          </div>
+          <div>
+            <label class="block font-semibold theme-text-heading mb-1">ငွေရှင်းသည့် အကောင့်</label>
+            <select id="editU9PayMethod" class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-bold">
+              <option value="U9_CAPITAL">📶 U9 သီးသန့်အရင်းငွေမှ</option>
+              <option value="CASH">💵 လက်ထဲရှိ ငွေသား (Cash MMK)</option>
+              <option value="BANK">📱 KPay / ဘဏ်အကောင့် (Bank MMK)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- WITHDRAW_COMM Fields -->
+        <div id="editU9WithdrawGroup" class="hidden space-y-2.5">
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block font-semibold theme-text-heading mb-1">ထုတ်ယူသည့် ကော်မရှင် (Ks)</label>
+              <input type="number" step="any" id="editU9WithdrawAmt" class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-mono font-bold text-amber-400">
+            </div>
+            <div>
+              <label class="block font-semibold theme-text-heading mb-1">ထုတ်ယူသည့် နည်းလမ်း</label>
+              <select id="editU9WithdrawChannel" class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-bold">
+                <option value="CASH">💵 ငွေသား (Cash)</option>
+                <option value="KPAY">📱 KPay / Bank</option>
+              </select>
+            </div>
+          </div>
+          <div class="space-y-1.5 pt-1">
+            <label class="flex items-center gap-2 text-[11px] theme-text-heading cursor-pointer">
+              <input type="checkbox" id="editU9DeductStock" class="rounded text-cyan-500">
+              <span>ဖုန်းဘေလ်လက်ကျန် (Bill Stock) ထဲမှ နုတ်ယူထားသည်</span>
+            </label>
+            <label class="flex items-center gap-2 text-[11px] theme-text-heading cursor-pointer">
+              <input type="checkbox" id="editU9AddMainWallet" class="rounded text-emerald-500">
+              <span>ပင်မ လည်ပတ်ငွေ (ငွေသား/KPay) ထဲသို့ ပေါင်းထည့်ထားသည်</span>
+            </label>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold theme-text-heading mb-1">မှတ်ချက်</label>
+          <input type="text" id="editU9Note" class="w-full theme-input border rounded-xl px-3 py-2 text-xs">
+        </div>
+
+        <div class="flex gap-2 pt-2">
+          <button type="button" onclick="closeEditU9Modal()" class="flex-1 py-2.5 rounded-xl theme-card-sub border theme-text-muted font-bold">မလုပ်တော့ပါ</button>
+          <button type="submit" class="flex-1 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold shadow">ပြင်ဆင်ချက် သိမ်းမည်</button>
         </div>
       </form>
     </div>
@@ -3299,10 +3615,10 @@
   </div>
 
   <!-- 14. FULL-SCREEN APPLICATION NUMBER PASSWORD (PIN) LOCK SCREEN OVERLAY -->
-  <div id="appLockOverlay" class="fixed inset-0 z-[90] bg-slate-950/98 backdrop-blur-xl flex flex-col items-center justify-center p-4 hidden select-none">
-    <div id="appLockCard" class="w-full max-w-xs sm:max-w-sm rounded-3xl bg-slate-900/90 border border-amber-500/30 p-6 shadow-2xl text-center space-y-5">
+  <div id="appLockOverlay" style="touch-action: manipulation; -webkit-tap-highlight-color: transparent;" class="fixed inset-0 z-[90] bg-slate-950 flex flex-col items-center justify-center p-4 hidden select-none">
+    <div id="appLockCard" style="will-change: transform;" class="w-full max-w-xs sm:max-w-sm rounded-3xl bg-slate-900 border border-amber-500/30 p-6 shadow-2xl text-center space-y-5">
       <div class="space-y-2">
-        <div class="w-16 h-16 mx-auto rounded-2xl overflow-hidden shadow-lg shadow-blue-600/30 border-2 border-amber-400/60" id="lockScreenAppIcon"></div>
+        <div class="w-16 h-16 mx-auto rounded-2xl overflow-hidden shadow-md border-2 border-amber-400/60" id="lockScreenAppIcon"></div>
         <h2 class="text-base sm:text-lg font-extrabold text-white tracking-tight">လာဘ်ရွှင် (Lab Shwin)</h2>
         <p class="text-xs text-amber-400 font-bold flex items-center justify-center gap-1">
           <span>🔒</span>
@@ -3312,29 +3628,29 @@
 
       <!-- PIN Dots Display -->
       <div class="space-y-2">
-        <div id="pinDotsContainer" class="flex items-center justify-center gap-3 min-h-[44px] py-2 px-4 rounded-2xl bg-slate-950/80 border border-slate-800">
+        <div id="pinDotsContainer" class="flex items-center justify-center gap-3 min-h-[44px] py-2 px-4 rounded-2xl bg-slate-950 border border-slate-800">
           <!-- Populated dynamically -->
         </div>
         <p id="pinErrorMsg" class="text-[11px] text-rose-400 font-bold min-h-[16px]"></p>
       </div>
 
-      <!-- Numeric Keypad (0-9) -->
-      <div class="grid grid-cols-3 gap-2.5 text-white font-mono">
-        <button type="button" onclick="pressPinKey('1')" class="h-14 rounded-2xl bg-slate-800/90 hover:bg-slate-700 active:scale-95 border border-slate-700/80 text-xl font-extrabold shadow transition">1</button>
-        <button type="button" onclick="pressPinKey('2')" class="h-14 rounded-2xl bg-slate-800/90 hover:bg-slate-700 active:scale-95 border border-slate-700/80 text-xl font-extrabold shadow transition">2</button>
-        <button type="button" onclick="pressPinKey('3')" class="h-14 rounded-2xl bg-slate-800/90 hover:bg-slate-700 active:scale-95 border border-slate-700/80 text-xl font-extrabold shadow transition">3</button>
-        <button type="button" onclick="pressPinKey('4')" class="h-14 rounded-2xl bg-slate-800/90 hover:bg-slate-700 active:scale-95 border border-slate-700/80 text-xl font-extrabold shadow transition">4</button>
-        <button type="button" onclick="pressPinKey('5')" class="h-14 rounded-2xl bg-slate-800/90 hover:bg-slate-700 active:scale-95 border border-slate-700/80 text-xl font-extrabold shadow transition">5</button>
-        <button type="button" onclick="pressPinKey('6')" class="h-14 rounded-2xl bg-slate-800/90 hover:bg-slate-700 active:scale-95 border border-slate-700/80 text-xl font-extrabold shadow transition">6</button>
-        <button type="button" onclick="pressPinKey('7')" class="h-14 rounded-2xl bg-slate-800/90 hover:bg-slate-700 active:scale-95 border border-slate-700/80 text-xl font-extrabold shadow transition">7</button>
-        <button type="button" onclick="pressPinKey('8')" class="h-14 rounded-2xl bg-slate-800/90 hover:bg-slate-700 active:scale-95 border border-slate-700/80 text-xl font-extrabold shadow transition">8</button>
-        <button type="button" onclick="pressPinKey('9')" class="h-14 rounded-2xl bg-slate-800/90 hover:bg-slate-700 active:scale-95 border border-slate-700/80 text-xl font-extrabold shadow transition">9</button>
-        <button type="button" onclick="clearPinInput()" class="h-14 rounded-2xl bg-rose-500/15 hover:bg-rose-500/25 active:scale-95 border border-rose-500/30 text-rose-400 text-xs font-sans font-extrabold shadow transition">ရှင်းမည်</button>
-        <button type="button" onclick="pressPinKey('0')" class="h-14 rounded-2xl bg-slate-800/90 hover:bg-slate-700 active:scale-95 border border-slate-700/80 text-xl font-extrabold shadow transition">0</button>
-        <button type="button" onclick="backspacePinInput()" class="h-14 rounded-2xl bg-slate-800/90 hover:bg-slate-700 active:scale-95 border border-slate-700/80 text-amber-400 text-lg font-extrabold shadow transition flex items-center justify-center">⌫</button>
+      <!-- Numeric Keypad (0-9) - Instant PointerDown Response -->
+      <div class="grid grid-cols-3 gap-2.5 text-white font-mono" style="touch-action: manipulation;">
+        <button type="button" onpointerdown="handlePinKeyPointer(event, '1')" onclick="handlePinKeyClick(event, '1')" class="h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-xl font-extrabold shadow-sm transition-colors duration-75">1</button>
+        <button type="button" onpointerdown="handlePinKeyPointer(event, '2')" onclick="handlePinKeyClick(event, '2')" class="h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-xl font-extrabold shadow-sm transition-colors duration-75">2</button>
+        <button type="button" onpointerdown="handlePinKeyPointer(event, '3')" onclick="handlePinKeyClick(event, '3')" class="h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-xl font-extrabold shadow-sm transition-colors duration-75">3</button>
+        <button type="button" onpointerdown="handlePinKeyPointer(event, '4')" onclick="handlePinKeyClick(event, '4')" class="h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-xl font-extrabold shadow-sm transition-colors duration-75">4</button>
+        <button type="button" onpointerdown="handlePinKeyPointer(event, '5')" onclick="handlePinKeyClick(event, '5')" class="h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-xl font-extrabold shadow-sm transition-colors duration-75">5</button>
+        <button type="button" onpointerdown="handlePinKeyPointer(event, '6')" onclick="handlePinKeyClick(event, '6')" class="h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-xl font-extrabold shadow-sm transition-colors duration-75">6</button>
+        <button type="button" onpointerdown="handlePinKeyPointer(event, '7')" onclick="handlePinKeyClick(event, '7')" class="h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-xl font-extrabold shadow-sm transition-colors duration-75">7</button>
+        <button type="button" onpointerdown="handlePinKeyPointer(event, '8')" onclick="handlePinKeyClick(event, '8')" class="h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-xl font-extrabold shadow-sm transition-colors duration-75">8</button>
+        <button type="button" onpointerdown="handlePinKeyPointer(event, '9')" onclick="handlePinKeyClick(event, '9')" class="h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-xl font-extrabold shadow-sm transition-colors duration-75">9</button>
+        <button type="button" onpointerdown="handlePinKeyPointer(event, 'CLEAR')" onclick="handlePinKeyClick(event, 'CLEAR')" class="h-14 rounded-2xl bg-rose-500/15 hover:bg-rose-500/25 active:bg-rose-500 active:text-white border border-rose-500/30 text-rose-400 text-xs font-sans font-extrabold shadow-sm transition-colors duration-75">ရှင်းမည်</button>
+        <button type="button" onpointerdown="handlePinKeyPointer(event, '0')" onclick="handlePinKeyClick(event, '0')" class="h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-xl font-extrabold shadow-sm transition-colors duration-75">0</button>
+        <button type="button" onpointerdown="handlePinKeyPointer(event, 'BACK')" onclick="handlePinKeyClick(event, 'BACK')" class="h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-amber-400 text-lg font-extrabold shadow-sm transition-colors duration-75 flex items-center justify-center">⌫</button>
       </div>
 
-      <button type="button" onclick="submitPinUnlock()" class="w-full py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 active:scale-98 text-slate-950 text-xs sm:text-sm font-extrabold shadow-lg transition">
+      <button type="button" onpointerdown="handlePinKeyPointer(event, 'SUBMIT')" onclick="handlePinKeyClick(event, 'SUBMIT')" class="w-full py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 text-xs sm:text-sm font-extrabold shadow-lg transition-colors duration-75">
         🔓 Lock ဖွင့်မည် (Unlock)
       </button>
     </div>
@@ -3585,6 +3901,8 @@
       'rateModal',
       'editModal',
       'editExpenseModal',
+      'editDepositModal',
+      'editU9Modal',
       'customDateModal',
       'voucherSearchModal',
       'appBrandModal',
@@ -3628,6 +3946,8 @@
     let isAppLocked = false;
     let enteredPinBuffer = '';
     let inactivityLockTimer = null;
+    let lastPinPointerTime = 0;
+    let deferredBootPending = false;
 
     // --- Firebase & Google Auth State ---
     const STORAGE_KEY_LINKED_GMAIL = 'thb_mmk_linked_gmail_user_v2';
@@ -3643,11 +3963,9 @@
     let isSyncingDrive = false;
 
     // --- Initialization (Runs at end of module after all functions are defined) ---
-    function bootApplication() {
-      injectAppIcons();
-      applyTheme(currentTheme);
-      loadStorageData();
-      initAppLockSystem();
+    function completeBackgroundAppBoot() {
+      if (!deferredBootPending) return;
+      deferredBootPending = false;
       initDefaultDateTimeInputs();
       calcRemittanceLive();
       calcCashoutLive();
@@ -3659,15 +3977,33 @@
       if (abToggle) abToggle.checked = autoBackupEnabled;
     }
 
+    function bootApplication() {
+      applyTheme(currentTheme);
+      loadStorageData();
+      initAppLockSystem();
+      injectAppIcons();
+
+      if (isAppLocked) {
+        // Defer heavy DOM rendering & Firebase network initialization until AFTER unlock (or idle)
+        // so the PIN keypad has 100% of CPU/GPU resources with zero main-thread jank.
+        deferredBootPending = true;
+      } else {
+        deferredBootPending = true;
+        completeBackgroundAppBoot();
+      }
+    }
+
     function injectAppIcons() {
       const hEl = document.getElementById('headerAppIconContainer');
       const mEl = document.getElementById('modalAppIconContainer');
       const vEl = document.getElementById('voucherAppIconContainer');
       const lEl = document.getElementById('lockScreenAppIcon');
+      // Filter-free version of the icon for the Lock Screen so GPU never recomputes SVG feDropShadow during PIN entry
+      const fastSvg = LAB_SHWIN_ICON_SVG.replace(/filter="url\(#ls[^)]+\)"/g, '');
+      if (lEl) lEl.innerHTML = fastSvg;
       if (hEl) hEl.innerHTML = LAB_SHWIN_ICON_SVG;
       if (mEl) mEl.innerHTML = LAB_SHWIN_ICON_SVG;
       if (vEl) vEl.innerHTML = LAB_SHWIN_ICON_SVG;
-      if (lEl) lEl.innerHTML = LAB_SHWIN_ICON_SVG;
 
       const blob = new Blob([LAB_SHWIN_ICON_SVG], { type: 'image/svg+xml' });
       const blobUrl = URL.createObjectURL(blob);
@@ -6346,12 +6682,12 @@
           : formatMMK(tx.amountMMK);
 
         return `
-          <div onclick="openVoucherModal('${tx.id}')" class="cursor-pointer theme-card-sub hover:opacity-95 active:scale-[0.99] border p-2.5 sm:p-3 rounded-xl flex items-center justify-between transition group">
-            <div class="flex items-center gap-2.5">
+          <div onclick="openVoucherModal('${tx.id}')" class="cursor-pointer theme-card-sub hover:opacity-95 active:scale-[0.99] border p-2.5 sm:p-3 rounded-xl flex items-center justify-between gap-2 transition group">
+            <div class="flex items-center gap-2.5 min-w-0">
               <div class="w-9 h-9 rounded-xl ${isRemit ? 'bg-blue-600/20 text-blue-500' : 'bg-emerald-600/20 text-emerald-500'} flex items-center justify-center font-bold text-xs shrink-0">
                 ${isRemit ? '⇄' : (tx.cashoutType === 'TRANSFER' ? '🔺' : '🔻')}
               </div>
-              <div>
+              <div class="min-w-0">
                 <div class="flex items-center gap-1.5 flex-wrap">
                   <h4 class="text-xs font-bold theme-text-heading group-hover:text-blue-500 transition leading-tight">${names.displayTitle}</h4>
                   <span class="text-[9px] px-1.5 py-0.2 rounded font-bold ${stDisp.badgeClass}">
@@ -6359,7 +6695,7 @@
                   </span>
                 </div>
                 ${subNamesHtml}
-                <div class="text-[10px] theme-text-muted mt-0.5 flex items-center gap-1.5">
+                <div class="text-[10px] theme-text-muted mt-0.5 flex items-center gap-1.5 flex-wrap">
                   <span>${formatDateTime(tx.date)}</span>
                   <span>•</span>
                   <span>${isRemit ? (tx.direction === 'MMK_TO_THB' ? '🇲🇲➔🇹🇭' : '🇹🇭➔🇲🇲') + ' • ' : ''}${tx.channel || 'KPay'}</span>
@@ -6367,11 +6703,16 @@
               </div>
             </div>
 
-            <div class="text-right">
-              <div class="text-xs font-bold font-mono theme-text-heading">${mainAmtDisplay}</div>
-              <div class="text-[10px] text-emerald-500 font-mono font-bold">
-                ${tx.profitTHB ? `+${formatTHB(tx.profitTHB)}` : `+${formatMMK(tx.profitMMK)}`}
+            <div class="flex items-center gap-2 shrink-0">
+              <div class="text-right">
+                <div class="text-xs font-bold font-mono theme-text-heading">${mainAmtDisplay}</div>
+                <div class="text-[10px] text-emerald-500 font-mono font-bold">
+                  ${tx.profitTHB ? `+${formatTHB(tx.profitTHB)}` : `+${formatMMK(tx.profitMMK)}`}
+                </div>
               </div>
+              <button type="button" onclick="event.stopPropagation(); openEditModal('${tx.id}')" class="px-2.5 py-1.5 rounded-lg bg-blue-600/15 hover:bg-blue-600/25 text-blue-500 text-[10px] font-bold transition shrink-0" title="ပြင်ဆင်ရန်">
+                ပြင်မည်
+              </button>
             </div>
           </div>
         `;
@@ -6852,7 +7193,8 @@
               </div>
               <div class="flex items-center gap-1.5">
                 <button type="button" onclick="openVoucherModal('${tx.id}')" class="px-2.5 py-1 rounded-lg theme-card border text-[10px] font-semibold">ဘောက်ချာ</button>
-                <button type="button" onclick="openEditModal('${tx.id}')" class="px-2.5 py-1 rounded-lg bg-blue-600/15 text-blue-500 text-[10px] font-bold">ပြင်မည်</button>
+                <button type="button" onclick="openEditModal('${tx.id}')" class="px-2.5 py-1 rounded-lg bg-blue-600/15 hover:bg-blue-600/25 text-blue-500 text-[10px] font-bold">ပြင်မည်</button>
+                <button type="button" onclick="deleteTransaction('${tx.id}')" class="px-2 py-1 rounded-lg bg-rose-600/15 hover:bg-rose-600/25 text-rose-500 text-[10px] font-bold">ဖျက်မည်</button>
               </div>
             </div>
           </div>
@@ -7211,7 +7553,8 @@
               </div>
               <div class="flex items-center gap-1.5">
                 <button type="button" onclick="openVoucherModal('${tx.id}')" class="px-2.5 py-1 rounded-lg theme-card border text-[10px] font-semibold">ဘောက်ချာ</button>
-                <button type="button" onclick="openEditModal('${tx.id}')" class="px-2.5 py-1 rounded-lg bg-blue-600/15 text-blue-500 text-[10px] font-bold">ပြင်မည်</button>
+                <button type="button" onclick="openEditModal('${tx.id}')" class="px-2.5 py-1 rounded-lg bg-blue-600/15 hover:bg-blue-600/25 text-blue-500 text-[10px] font-bold">ပြင်မည်</button>
+                <button type="button" onclick="deleteTransaction('${tx.id}')" class="px-2 py-1 rounded-lg bg-rose-600/15 hover:bg-rose-600/25 text-rose-500 text-[10px] font-bold">ဖျက်မည်</button>
               </div>
             </div>
           </div>
@@ -7333,18 +7676,24 @@
 
             ${tx.note ? `<p class="text-[10px] theme-text-muted italic">မှတ်ချက်: ${tx.note}</p>` : ''}
 
-            <div class="flex gap-2 pt-1 border-t">
+            <div class="flex flex-wrap items-center gap-1.5 pt-1 border-t">
               ${!isSettled ? `
-                <button onclick="openSettleModal('${tx.id}')" class="flex-1 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white text-xs font-bold transition flex items-center justify-center gap-1 shadow">
+                <button type="button" onclick="openSettleModal('${tx.id}')" class="flex-1 min-w-[110px] py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white text-xs font-bold transition flex items-center justify-center gap-1 shadow">
                   ပြန်ရပြီး (ဆပ်မည်)
                 </button>
               ` : `
-                <button onclick="openVoucherModal('${tx.id}')" class="flex-1 py-2 rounded-xl theme-card-sub border theme-text-muted text-xs font-semibold">
+                <button type="button" onclick="openVoucherModal('${tx.id}')" class="flex-1 min-w-[110px] py-2 rounded-xl theme-card-sub border theme-text-muted text-xs font-semibold">
                   ပြေစာကြည့်မည်
                 </button>
               `}
-              <button onclick="shareDebtReminder('${tx.id}')" class="px-3 py-2 rounded-xl theme-card-sub border text-blue-500 text-xs font-bold active:scale-95 transition flex items-center gap-1">
+              <button type="button" onclick="shareDebtReminder('${tx.id}')" class="px-2.5 py-2 rounded-xl theme-card-sub border text-blue-500 text-xs font-bold active:scale-95 transition flex items-center gap-1">
                 သတိပေးစာ
+              </button>
+              <button type="button" onclick="openEditModal('${tx.id}')" class="px-2.5 py-2 rounded-xl bg-blue-600/15 hover:bg-blue-600/25 text-blue-500 text-xs font-bold active:scale-95 transition">
+                ပြင်မည်
+              </button>
+              <button type="button" onclick="deleteTransaction('${tx.id}')" class="px-2.5 py-2 rounded-xl bg-rose-600/15 hover:bg-rose-600/25 text-rose-500 text-xs font-bold active:scale-95 transition">
+                ဖျက်မည်
               </button>
             </div>
           </div>
@@ -8389,6 +8738,7 @@
                 `}
               </div>
               <div class="flex items-center gap-1.5">
+                <button type="button" onclick="${closeSearchPrefix}openEditDepositModal('${d.id}');" class="px-2.5 py-1 rounded-lg bg-blue-600/15 text-blue-500 text-[10px] font-bold">ပြင်မည်</button>
                 <button type="button" onclick="deleteDepositRecord('${d.id}'); ${refreshAfterToggle}" class="px-2 py-1 rounded-lg bg-rose-600/15 text-rose-500 text-[10px] font-bold">ဖျက်မည်</button>
               </div>
             </div>
@@ -8442,6 +8792,7 @@
                 `}
               </div>
               <div class="flex items-center gap-1.5">
+                <button type="button" onclick="${closeSearchPrefix}openEditU9Modal('${r.id}');" class="px-2.5 py-1 rounded-lg bg-blue-600/15 text-blue-500 text-[10px] font-bold">ပြင်မည်</button>
                 <button type="button" onclick="deleteU9Record('${r.id}'); ${refreshAfterToggle}" class="px-2 py-1 rounded-lg bg-rose-600/15 text-rose-500 text-[10px] font-bold">ဖျက်မည်</button>
               </div>
             </div>
@@ -8578,29 +8929,141 @@
       container.innerHTML = list.map(item => renderUnifiedRecordCard(item, false)).join('');
     };
 
+    // Helper to compute wallet impact of a transaction (REMIT / CASHOUT)
+    function computeTxWalletDelta(tx) {
+      if (!tx) return { cashMMK: 0, bankMMK: 0, thbBalance: 0 };
+      if (tx.type === 'REMIT') {
+        const profThb = Number(tx.profitTHB) || 0;
+        const applyThb = (tx.status === 'PAID' || tx.direction === 'THB_TO_MMK');
+        return {
+          cashMMK: 0,
+          bankMMK: 0,
+          thbBalance: applyThb ? profThb : 0
+        };
+      }
+      if (tx.type === 'CASHOUT') {
+        const amt = Number(tx.amountMMK) || 0;
+        const fee = Number(tx.fee ?? tx.profitMMK) || 0;
+        const isTransfer = tx.cashoutType === 'TRANSFER';
+        const isPaid = tx.status === 'PAID';
+        if (isTransfer) {
+          return {
+            cashMMK: isPaid ? (amt + fee) : 0,
+            bankMMK: -amt,
+            thbBalance: 0
+          };
+        } else {
+          return {
+            cashMMK: isPaid ? -amt : 0,
+            bankMMK: amt + fee,
+            thbBalance: 0
+          };
+        }
+      }
+      return { cashMMK: 0, bankMMK: 0, thbBalance: 0 };
+    }
+
     const deleteTransaction = window.deleteTransaction = function(txId) {
+      const tx = transactions.find(t => t.id === txId);
+      if (!tx) return;
       if (!confirm('ဤမှတ်တမ်းကို အပြီးတိုင် ဖျက်ပစ်ရန် သေချာပါသလား?')) return;
+
+      const delta = computeTxWalletDelta(tx);
+      if (delta.cashMMK || delta.bankMMK || delta.thbBalance) {
+        capital.cashMMK = (Number(capital.cashMMK) || 0) - delta.cashMMK;
+        capital.bankMMK = (Number(capital.bankMMK) || 0) - delta.bankMMK;
+        capital.thbBalance = (Number(capital.thbBalance) || 0) - delta.thbBalance;
+        saveCapitalToStorage();
+      }
+
       transactions = transactions.filter(t => t.id !== txId);
       saveTransactionsToStorage();
       showToast('မှတ်တမ်းကို ဖျက်ပြီးပါပြီ', 'info');
       updateAllUI();
     };
 
-    // --- Edit Modal ---
+    // --- Comprehensive Edit Modal (REMIT / CASHOUT / DIRECT_CREDIT) ---
+    const calcEditRemitLive = window.calcEditRemitLive = function() {
+      const txId = document.getElementById('editTxId')?.value;
+      const tx = transactions.find(t => t.id === txId);
+      if (!tx || tx.type !== 'REMIT') return;
+
+      const dir = document.getElementById('editRemitDirection')?.value || tx.direction || 'THB_TO_MMK';
+      const amtMMK = parseFloat(document.getElementById('editAmountMMK')?.value) || 0;
+      const custRate = parseFloat(document.getElementById('editCustomerRate')?.value) || 0;
+      const dealerRate = parseFloat(document.getElementById('editDealerRate')?.value) || 0;
+      const lakhs = amtMMK / 100000;
+
+      if (custRate > 0) {
+        const custTHB = Number((lakhs * custRate).toFixed(2));
+        const custThbEl = document.getElementById('editCustomerTHB');
+        if (custThbEl) custThbEl.value = custTHB;
+
+        if (dealerRate > 0) {
+          const dealerTHB = lakhs * dealerRate;
+          const profitTHB = dir === 'THB_TO_MMK' ? (custTHB - dealerTHB) : Math.abs(dealerTHB - custTHB);
+          const profitMMK = (profitTHB / dealerRate) * 100000;
+          const profThbEl = document.getElementById('editProfitTHB');
+          const profMmkEl = document.getElementById('editProfitMMK');
+          if (profThbEl) profThbEl.value = Number(profitTHB.toFixed(2));
+          if (profMmkEl) profMmkEl.value = Math.round(profitMMK);
+        }
+      }
+    };
+
+    const onEditTxStatusChange = window.onEditTxStatusChange = function() {
+      const txId = document.getElementById('editTxId')?.value;
+      const tx = transactions.find(t => t.id === txId);
+      const statusVal = document.getElementById('editStatus')?.value || 'PAID';
+      const creditGroup = document.getElementById('editCreditFieldsGroup');
+      if (!creditGroup) return;
+      if ((tx && tx.type === 'DIRECT_CREDIT') || statusVal === 'UNPAID') {
+        creditGroup.classList.remove('hidden');
+      } else {
+        creditGroup.classList.add('hidden');
+      }
+    };
+
     const openEditModal = window.openEditModal = function(txId) {
       const tx = transactions.find(t => t.id === txId);
       if (!tx) return;
 
       document.getElementById('editTxId').value = tx.id;
+      const headerTitle = document.getElementById('editModalHeaderTitle');
       const singleGroup = document.getElementById('editSingleCustNameGroup');
       const remitGroup = document.getElementById('editRemitNamesGroup');
+      const remitDirGroup = document.getElementById('editRemitDirectionGroup');
+      const remitRatesGroup = document.getElementById('editRemitRatesGroup');
+      const cashoutTypeGroup = document.getElementById('editCashoutTypeGroup');
+      const creditFieldsGroup = document.getElementById('editCreditFieldsGroup');
       const statusSel = document.getElementById('editStatus');
       const names = getTxNames(tx);
 
+      // Populate Date/Time and Channel
+      const dtInput = document.getElementById('editTxDate');
+      if (dtInput) {
+        try {
+          const d = tx.date ? new Date(tx.date) : new Date();
+          const localIso = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+          dtInput.value = localIso;
+        } catch (e) {
+          dtInput.value = '';
+        }
+      }
+      const chInput = document.getElementById('editTxChannel');
+      if (chInput) chInput.value = tx.channel || 'KPay';
+
       const isPayoutFlow = (tx.type === 'REMIT' && tx.direction !== 'MMK_TO_THB') || (tx.type === 'CASHOUT' && tx.cashoutType !== 'TRANSFER');
+
       if (tx.type === 'REMIT') {
+        if (headerTitle) headerTitle.textContent = `ငွေလွှဲမှတ်တမ်း ပြင်ဆင်ရန် (#${tx.id})`;
         if (singleGroup) singleGroup.classList.add('hidden');
         if (remitGroup) remitGroup.classList.remove('hidden');
+        if (remitDirGroup) remitDirGroup.classList.remove('hidden');
+        if (remitRatesGroup) remitRatesGroup.classList.remove('hidden');
+        if (cashoutTypeGroup) cashoutTypeGroup.classList.add('hidden');
+
+        document.getElementById('editRemitDirection').value = tx.direction || 'THB_TO_MMK';
         const sLbl = document.getElementById('editSenderLabel');
         const rLbl = document.getElementById('editReceiverLabel');
         if (sLbl) sLbl.textContent = names.senderLabel + ' အမည်';
@@ -8608,23 +9071,57 @@
         document.getElementById('editSenderName').value = names.senderName || '';
         document.getElementById('editReceiverName').value = names.receiverName || '';
         document.getElementById('editCustName').value = names.displayTitle || '';
-      } else {
+        document.getElementById('editCustomerRate').value = tx.customerRate ?? '';
+        document.getElementById('editDealerRate').value = tx.dealerRate ?? '';
+        document.getElementById('editCustomerTHB').value = tx.customerTHB ?? 0;
+        document.getElementById('editProfitTHB').value = tx.profitTHB ?? 0;
+      } else if (tx.type === 'CASHOUT') {
+        if (headerTitle) headerTitle.textContent = `KPay/ငွေထုတ် မှတ်တမ်း ပြင်ဆင်ရန် (#${tx.id})`;
         if (singleGroup) singleGroup.classList.remove('hidden');
         if (remitGroup) remitGroup.classList.add('hidden');
+        if (remitDirGroup) remitDirGroup.classList.add('hidden');
+        if (remitRatesGroup) remitRatesGroup.classList.add('hidden');
+        if (cashoutTypeGroup) cashoutTypeGroup.classList.remove('hidden');
+        document.getElementById('editCashoutType').value = tx.cashoutType === 'TRANSFER' ? 'TRANSFER' : 'CASHOUT';
+        document.getElementById('editCustName').value = tx.custName || '';
+      } else {
+        if (headerTitle) headerTitle.textContent = `အကြွေးမှတ်တမ်း ပြင်ဆင်ရန် (#${tx.id})`;
+        if (singleGroup) singleGroup.classList.remove('hidden');
+        if (remitGroup) remitGroup.classList.add('hidden');
+        if (remitDirGroup) remitDirGroup.classList.add('hidden');
+        if (remitRatesGroup) remitRatesGroup.classList.add('hidden');
+        if (cashoutTypeGroup) cashoutTypeGroup.classList.add('hidden');
         document.getElementById('editCustName').value = tx.custName || '';
       }
+
       if (statusSel) {
-        statusSel.options[0].textContent = isPayoutFlow ? 'လက်ငင်းထုတ်ပေးပြီး (PAID)' : 'လက်ငင်း (PAID)';
-        statusSel.options[1].textContent = isPayoutFlow ? 'မထုတ်ပေးရသေးဘူး (UNPAID)' : 'အကြွေး (UNPAID)';
+        statusSel.options[0].textContent = isPayoutFlow ? 'လက်ငင်းထုတ်ပေးပြီး (PAID)' : 'လက်ငင်း / ပြန်ရပြီး (PAID)';
+        statusSel.options[1].textContent = isPayoutFlow ? 'မထုတ်ပေးရသေးဘူး (UNPAID)' : 'အကြွေး / မဆပ်ရသေး (UNPAID)';
       }
 
       document.getElementById('editCustPhone').value = tx.custPhone || '';
-      document.getElementById('editAmountMMK').value = tx.amountMMK || 0;
-      document.getElementById('editProfitMMK').value = tx.profitMMK || 0;
+      document.getElementById('editAmountMMK').value = tx.amountMMK ?? tx.amountOwed ?? 0;
+      document.getElementById('editProfitMMK').value = tx.profitMMK ?? tx.fee ?? 0;
       document.getElementById('editStatus').value = tx.status || 'PAID';
       document.getElementById('editNote').value = tx.note || '';
 
+      // Populate credit fields
+      const owedCur = tx.owedCurrency || (tx.type === 'REMIT' && tx.direction !== 'MMK_TO_THB' ? 'THB' : 'MMK');
+      const totalOwed = tx.amountOwed !== undefined ? tx.amountOwed : (owedCur === 'THB' ? tx.customerTHB : tx.amountMMK);
+      document.getElementById('editOwedCurrency').value = owedCur;
+      document.getElementById('editAmountOwed').value = totalOwed || 0;
+      document.getElementById('editPaidAmount').value = tx.paidAmount || 0;
+
+      if (creditFieldsGroup) {
+        if (tx.type === 'DIRECT_CREDIT' || tx.status === 'UNPAID' || (tx.paidAmount && tx.paidAmount > 0)) {
+          creditFieldsGroup.classList.remove('hidden');
+        } else {
+          creditFieldsGroup.classList.add('hidden');
+        }
+      }
+
       document.getElementById('editModal').classList.remove('hidden');
+      armBackTrap();
     };
 
     const closeEditModal = window.closeEditModal = function() {
@@ -8637,34 +9134,90 @@
       const tx = transactions.find(t => t.id === txId);
       if (!tx) return;
 
+      // 1. Reverse old wallet balance impact before applying edits
+      const oldDelta = computeTxWalletDelta(tx);
+
+      // 2. Apply common fields
+      const dateVal = document.getElementById('editTxDate')?.value;
+      if (dateVal) {
+        tx.date = new Date(dateVal).toISOString();
+      }
+      const chVal = (document.getElementById('editTxChannel')?.value || '').trim();
+      if (chVal) tx.channel = chVal;
+
+      tx.custPhone = document.getElementById('editCustPhone').value.trim();
+      tx.amountMMK = parseFloat(document.getElementById('editAmountMMK').value) || 0;
+      tx.profitMMK = parseFloat(document.getElementById('editProfitMMK').value) || 0;
+      tx.status = document.getElementById('editStatus').value;
+      tx.note = document.getElementById('editNote').value.trim();
+
       if (tx.type === 'REMIT') {
+        tx.direction = document.getElementById('editRemitDirection')?.value || tx.direction || 'THB_TO_MMK';
         const sName = (document.getElementById('editSenderName').value || '').trim();
         const rName = (document.getElementById('editReceiverName').value || '').trim();
         tx.senderName = sName;
         tx.receiverName = rName;
         tx.custName = (sName && rName) ? `${sName} ➔ ${rName}` : (sName || rName || 'Customer');
+
+        tx.lakhs = tx.amountMMK / 100000;
+        const cRate = parseFloat(document.getElementById('editCustomerRate')?.value);
+        const dRate = parseFloat(document.getElementById('editDealerRate')?.value);
+        if (!isNaN(cRate) && cRate > 0) tx.customerRate = cRate;
+        if (!isNaN(dRate) && dRate > 0) tx.dealerRate = dRate;
+
+        const cThb = parseFloat(document.getElementById('editCustomerTHB')?.value);
+        const pThb = parseFloat(document.getElementById('editProfitTHB')?.value);
+        if (!isNaN(cThb)) tx.customerTHB = cThb;
+        else if (tx.customerRate) tx.customerTHB = tx.lakhs * Number(tx.customerRate);
+
+        if (tx.dealerRate) tx.dealerTHB = tx.lakhs * Number(tx.dealerRate);
+        if (!isNaN(pThb)) tx.profitTHB = pThb;
       } else {
         tx.custName = document.getElementById('editCustName').value.trim() || 'Customer';
-      }
-
-      tx.custPhone = document.getElementById('editCustPhone').value.trim();
-      tx.amountMMK = parseFloat(document.getElementById('editAmountMMK').value) || 0;
-      if (tx.type === 'REMIT') {
-        tx.lakhs = tx.amountMMK / 100000;
-        if (tx.customerRate) {
-          tx.customerTHB = tx.lakhs * Number(tx.customerRate);
-        }
-        if (tx.dealerRate) {
-          tx.dealerTHB = tx.lakhs * Number(tx.dealerRate);
+        if (tx.type === 'CASHOUT') {
+          if (tx.cashoutType !== 'U9_BILL') {
+            tx.cashoutType = document.getElementById('editCashoutType')?.value || tx.cashoutType || 'CASHOUT';
+          }
+          tx.fee = tx.profitMMK;
         }
       }
-      tx.profitMMK = parseFloat(document.getElementById('editProfitMMK').value) || 0;
-      tx.status = document.getElementById('editStatus').value;
-      tx.note = document.getElementById('editNote').value.trim();
 
+      // 3. Handle credit/owed fields
+      const creditGroup = document.getElementById('editCreditFieldsGroup');
+      if (creditGroup && !creditGroup.classList.contains('hidden')) {
+        tx.owedCurrency = document.getElementById('editOwedCurrency')?.value || 'MMK';
+        const editedOwed = parseFloat(document.getElementById('editAmountOwed')?.value);
+        const editedPaid = parseFloat(document.getElementById('editPaidAmount')?.value);
+        if (!isNaN(editedOwed) && editedOwed >= 0) {
+          tx.amountOwed = editedOwed;
+          if (tx.type === 'DIRECT_CREDIT' && tx.owedCurrency === 'MMK') {
+            tx.amountMMK = editedOwed;
+          } else if (tx.type === 'DIRECT_CREDIT' && tx.owedCurrency === 'THB') {
+            tx.amountTHB = editedOwed;
+          }
+        }
+        if (!isNaN(editedPaid) && editedPaid >= 0) {
+          tx.paidAmount = editedPaid;
+        }
+      } else if (tx.status === 'UNPAID') {
+        tx.amountOwed = tx.type === 'CASHOUT' && tx.cashoutType === 'TRANSFER' ? (tx.amountMMK + tx.profitMMK) : tx.amountMMK;
+      }
+
+      // 4. Reconcile new wallet balance impact
+      const newDelta = computeTxWalletDelta(tx);
+      capital.cashMMK = (Number(capital.cashMMK) || 0) - oldDelta.cashMMK + newDelta.cashMMK;
+      capital.bankMMK = (Number(capital.bankMMK) || 0) - oldDelta.bankMMK + newDelta.bankMMK;
+      capital.thbBalance = (Number(capital.thbBalance) || 0) - oldDelta.thbBalance + newDelta.thbBalance;
+      saveCapitalToStorage();
+
+      // 5. Sync linked U9 record if applicable
       if (tx.u9RecordId || tx.cashoutType === 'U9_BILL') {
         const u9Rec = (u9Data.records || []).find(r => r.id === tx.u9RecordId || r.linkedTxId === tx.id);
         if (u9Rec) {
+          u9Rec.custName = tx.custName;
+          u9Rec.custPhone = tx.custPhone;
+          u9Rec.sellingPrice = tx.amountMMK;
+          u9Rec.extraProfit = tx.profitMMK;
           u9Rec.status = tx.status;
           saveU9ToStorage();
         }
@@ -9107,6 +9660,9 @@
               <button type="button" onclick="fulfillDepositNotice('${n.id}')" class="px-3 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold shadow transition">
                 ✓ ယခု ငွေထုတ်ပေးမည် (Withdraw Out)
               </button>
+              <button type="button" onclick="openEditDepositModal('${n.id}')" class="px-2.5 py-1 rounded-lg bg-blue-600/15 hover:bg-blue-600/25 text-blue-400 text-[10px] font-bold">
+                ပြင်မည်
+              </button>
               ${isTabView ? `
                 <button type="button" onclick="deleteDepositRecord('${n.id}')" class="px-2 py-1 rounded-lg theme-card border text-[10px] text-rose-400 hover:bg-rose-500/10 font-bold">
                   ဖျက်မည်
@@ -9468,6 +10024,7 @@
                   <button type="button" onclick="selectDepositorForForm('${safeName}', 'DEPOSIT_IN')" class="flex-1 py-1 px-2 rounded-lg bg-emerald-600/20 text-emerald-400 hover:bg-emerald-600/30 text-[10px] font-bold">+ ငွေထပ်အပ်</button>
                   <button type="button" onclick="selectDepositorForForm('${safeName}', 'WITHDRAW_NOTICE')" class="flex-1 py-1 px-2 rounded-lg bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 text-[10px] font-bold">🔔 ကြိုမှတ်</button>
                   <button type="button" onclick="selectDepositorForForm('${safeName}', 'WITHDRAW_OUT')" class="flex-1 py-1 px-2 rounded-lg bg-rose-600/20 text-rose-400 hover:bg-rose-600/30 text-[10px] font-bold">- ပြန်ထုတ်</button>
+                  <button type="button" onclick="openLatestDepositEditForCustomer('${safeName}')" class="py-1 px-2 rounded-lg bg-blue-600/15 text-blue-400 hover:bg-blue-600/25 text-[10px] font-bold" title="မှတ်တမ်းပြင်ဆင်ရန်">ပြင်မည်</button>
                 </div>
               </div>
             `;
@@ -9551,11 +10108,121 @@
               ${isNotice && d.noticeStatus !== 'COMPLETED' ? `
                 <button type="button" onclick="fulfillDepositNotice('${d.id}')" class="px-2.5 py-1 rounded-lg bg-emerald-600 text-white text-[10px] font-bold">✓ ယခု ထုတ်ပေးမည်</button>
               ` : ''}
+              <button type="button" onclick="openEditDepositModal('${d.id}')" class="px-2.5 py-1 rounded-lg bg-blue-600/15 hover:bg-blue-600/25 text-blue-400 text-[10px] font-bold">ပြင်မည်</button>
               <button type="button" onclick="deleteDepositRecord('${d.id}')" class="px-2 py-1 rounded-lg theme-card border text-[10px] text-rose-400 hover:bg-rose-500/10 font-semibold">ဖျက်မည်</button>
             </div>
           </div>
         `;
       }).join('');
+    };
+
+    // --- Edit Deposit Modal Functions ---
+    function computeDepositWalletDelta(rec) {
+      if (!rec) return { cashMMK: 0, bankMMK: 0, thbBalance: 0 };
+      const amt = Number(rec.amount) || 0;
+      const sign = rec.type === 'DEPOSIT_IN' ? 1 : (rec.type === 'WITHDRAW_OUT' ? -1 : 0);
+      if (sign === 0) return { cashMMK: 0, bankMMK: 0, thbBalance: 0 };
+      return {
+        cashMMK: rec.account === 'CASH' ? sign * amt : 0,
+        bankMMK: rec.account === 'BANK' ? sign * amt : 0,
+        thbBalance: rec.account === 'THB' ? sign * amt : 0
+      };
+    }
+
+    const onEditDepositTypeChange = window.onEditDepositTypeChange = function() {
+      const t = document.getElementById('editDepType')?.value || 'DEPOSIT_IN';
+      const noticeFields = document.getElementById('editDepNoticeFields');
+      if (noticeFields) {
+        noticeFields.classList.toggle('hidden', t !== 'WITHDRAW_NOTICE');
+      }
+    };
+
+    const openLatestDepositEditForCustomer = window.openLatestDepositEditForCustomer = function(custName) {
+      const rec = deposits.find(d => (d.custName || '').trim() === (custName || '').trim());
+      if (rec) {
+        openEditDepositModal(rec.id);
+      }
+    };
+
+    const openEditDepositModal = window.openEditDepositModal = function(depId) {
+      const rec = deposits.find(d => d.id === depId);
+      if (!rec) return;
+
+      document.getElementById('editDepId').value = rec.id;
+      const dtEl = document.getElementById('editDepDate');
+      if (dtEl) {
+        try {
+          const d = rec.date ? new Date(rec.date) : new Date();
+          dtEl.value = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+        } catch (e) {
+          dtEl.value = '';
+        }
+      }
+      document.getElementById('editDepType').value = rec.type || 'DEPOSIT_IN';
+      document.getElementById('editDepCustName').value = rec.custName || '';
+      document.getElementById('editDepCustPhone').value = rec.custPhone || '';
+      document.getElementById('editDepCurrency').value = rec.currency || 'MMK';
+      document.getElementById('editDepAmount').value = rec.amount || 0;
+      document.getElementById('editDepAccount').value = rec.account || 'CASH';
+      document.getElementById('editDepTargetDate').value = rec.targetDate || '';
+      document.getElementById('editDepNoticeStatus').value = rec.noticeStatus === 'COMPLETED' ? 'COMPLETED' : 'PENDING';
+      document.getElementById('editDepNote').value = rec.note || '';
+
+      onEditDepositTypeChange();
+      document.getElementById('editDepositModal').classList.remove('hidden');
+      armBackTrap();
+    };
+
+    const closeEditDepositModal = window.closeEditDepositModal = function() {
+      document.getElementById('editDepositModal').classList.add('hidden');
+    };
+
+    const handleSaveEditedDeposit = window.handleSaveEditedDeposit = function(e) {
+      e.preventDefault();
+      const depId = document.getElementById('editDepId')?.value;
+      const rec = deposits.find(d => d.id === depId);
+      if (!rec) return;
+
+      const newCustName = (document.getElementById('editDepCustName')?.value || '').trim();
+      const newAmount = parseFloat(document.getElementById('editDepAmount')?.value) || 0;
+      if (!newCustName || newAmount <= 0) {
+        showToast('အပ်နှံသူအမည် နှင့် ပမာဏကို မှန်ကန်စွာ ဖြည့်သွင်းပေးပါ', 'error');
+        return;
+      }
+
+      // 1. Reverse old wallet balance impact
+      const oldDelta = computeDepositWalletDelta(rec);
+
+      // 2. Apply updated fields
+      const dateVal = document.getElementById('editDepDate')?.value;
+      if (dateVal) rec.date = new Date(dateVal).toISOString();
+      rec.type = document.getElementById('editDepType')?.value || 'DEPOSIT_IN';
+      rec.custName = newCustName;
+      rec.custPhone = (document.getElementById('editDepCustPhone')?.value || '').trim();
+      rec.currency = document.getElementById('editDepCurrency')?.value || 'MMK';
+      rec.amount = newAmount;
+      rec.account = document.getElementById('editDepAccount')?.value || 'CASH';
+      if (rec.type === 'WITHDRAW_NOTICE') {
+        rec.targetDate = document.getElementById('editDepTargetDate')?.value || '';
+        rec.noticeStatus = document.getElementById('editDepNoticeStatus')?.value || 'PENDING';
+      } else {
+        rec.targetDate = '';
+        rec.noticeStatus = 'NONE';
+      }
+      rec.note = (document.getElementById('editDepNote')?.value || '').trim();
+
+      // 3. Apply new wallet balance impact
+      const newDelta = computeDepositWalletDelta(rec);
+      capital.cashMMK = (Number(capital.cashMMK) || 0) - oldDelta.cashMMK + newDelta.cashMMK;
+      capital.bankMMK = (Number(capital.bankMMK) || 0) - oldDelta.bankMMK + newDelta.bankMMK;
+      capital.thbBalance = (Number(capital.thbBalance) || 0) - oldDelta.thbBalance + newDelta.thbBalance;
+
+      localStorage.setItem('thb_mmk_has_user_data', 'true');
+      saveDepositsToStorage();
+      saveCapitalToStorage();
+      closeEditDepositModal();
+      updateAllUI();
+      showToast('အပ်ငွေ/ထုတ်ငွေ မှတ်တမ်းကို အောင်မြင်စွာ ပြင်ဆင်ပြီးပါပြီ!', 'success');
     };
 
     const exportDepositHistoryCSV = window.exportDepositHistoryCSV = function() {
@@ -10044,31 +10711,235 @@
       renderU9Module();
     };
 
+    function computeU9RecordImpact(rec) {
+      if (!rec) return { stockDelta: 0, cashDelta: 0, bankDelta: 0 };
+      if (rec.type === 'BUY_PRIMARY') {
+        const stock = Number(rec.stockReceived) || 0;
+        const pAmt = Number(rec.purchaseAmount) || 0;
+        return {
+          stockDelta: stock,
+          cashDelta: rec.payMethod === 'CASH' ? -pAmt : 0,
+          bankDelta: rec.payMethod === 'BANK' ? -pAmt : 0
+        };
+      }
+      if (rec.type === 'SELL_BILL') {
+        const billAmt = Number(rec.billAmount) || 0;
+        const sellPrice = Number(rec.sellingPrice ?? rec.billAmount) || 0;
+        return {
+          stockDelta: -billAmt,
+          cashDelta: rec.paymentType === 'CASH' ? sellPrice : 0,
+          bankDelta: rec.paymentType === 'KPAY' ? sellPrice : 0
+        };
+      }
+      if (rec.type === 'WITHDRAW_COMM') {
+        const wAmt = Number(rec.withdrawAmount) || 0;
+        return {
+          stockDelta: rec.deductedFromStock ? -wAmt : 0,
+          cashDelta: (rec.addedToMainWallet && rec.channel === 'CASH') ? wAmt : 0,
+          bankDelta: (rec.addedToMainWallet && rec.channel !== 'CASH') ? wAmt : 0
+        };
+      }
+      return { stockDelta: 0, cashDelta: 0, bankDelta: 0 };
+    }
+
     const deleteU9Record = window.deleteU9Record = function(recId) {
       const idx = (u9Data.records || []).findIndex(r => r.id === recId);
       if (idx === -1) return;
       const rec = u9Data.records[idx];
-      if (!confirm('ဤ U9 မှတ်တမ်းကို ဖျက်ရန် သေချာပါသလား? (ဖုန်းဘေလ်လက်ကျန်ကိုပါ ပြန်ချိန်ညှိပေးပါမည်)')) return;
+      if (!confirm('ဤ U9 မှတ်တမ်းကို ဖျက်ရန် သေချာပါသလား? (ဖုန်းဘေလ်လက်ကျန်နှင့် လည်ပတ်ငွေကိုပါ ပြန်ချိန်ညှိပေးပါမည်)')) return;
 
-      if (rec.type === 'BUY_PRIMARY') {
-        u9Data.billBalanceMMK = Math.max(0, (Number(u9Data.billBalanceMMK) || 0) - (Number(rec.stockReceived) || 0));
-      } else if (rec.type === 'SELL_BILL') {
-        u9Data.billBalanceMMK = (Number(u9Data.billBalanceMMK) || 0) + (Number(rec.billAmount) || 0);
-        if (rec.linkedTxId) {
-          const txIdx = transactions.findIndex(t => t.id === rec.linkedTxId);
-          if (txIdx !== -1) {
-            transactions.splice(txIdx, 1);
-            saveTransactionsToStorage();
-          }
+      const impact = computeU9RecordImpact(rec);
+      u9Data.billBalanceMMK = Math.max(0, (Number(u9Data.billBalanceMMK) || 0) - impact.stockDelta);
+      if (impact.cashDelta || impact.bankDelta) {
+        capital.cashMMK = (Number(capital.cashMMK) || 0) - impact.cashDelta;
+        capital.bankMMK = (Number(capital.bankMMK) || 0) - impact.bankDelta;
+        saveCapitalToStorage();
+      }
+
+      if (rec.type === 'SELL_BILL' && rec.linkedTxId) {
+        const txIdx = transactions.findIndex(t => t.id === rec.linkedTxId);
+        if (txIdx !== -1) {
+          transactions.splice(txIdx, 1);
+          saveTransactionsToStorage();
         }
-      } else if (rec.type === 'WITHDRAW_COMM' && rec.deductedFromStock) {
-        u9Data.billBalanceMMK = (Number(u9Data.billBalanceMMK) || 0) + (Number(rec.withdrawAmount) || 0);
       }
 
       u9Data.records.splice(idx, 1);
       saveU9ToStorage();
       updateAllUI();
       showToast('U9 မှတ်တမ်း ဖျက်သိမ်းပြီးပါပြီ', 'info');
+    };
+
+    // --- Edit U9 Record Modal Functions ---
+    const calcEditU9ModalLive = window.calcEditU9ModalLive = function(source) {
+      const type = document.getElementById('editU9Type')?.value;
+      if (type === 'SELL_BILL') {
+        const bAmt = parseFloat(document.getElementById('editU9BillAmount')?.value) || 0;
+        const sPrice = parseFloat(document.getElementById('editU9SellingPrice')?.value) || 0;
+        const extra = Math.max(0, sPrice - bAmt);
+        const extraEl = document.getElementById('editU9ExtraProfit');
+        if (extraEl) extraEl.value = extra;
+      } else if (type === 'BUY_PRIMARY') {
+        const pAmt = parseFloat(document.getElementById('editU9PurchaseAmt')?.value) || 0;
+        const rateEl = document.getElementById('editU9CommRate');
+        const commEl = document.getElementById('editU9CommAmt');
+        const stockEl = document.getElementById('editU9StockReceived');
+        let cAmt = parseFloat(commEl?.value) || 0;
+        if (source === 'PRIMARY_RATE') {
+          const r = parseFloat(rateEl?.value) || 0;
+          cAmt = Math.round(pAmt * (r / 100));
+          if (commEl) commEl.value = cAmt;
+        } else if (source === 'PRIMARY_AMT' && pAmt > 0) {
+          if (rateEl) rateEl.value = Number(((cAmt / pAmt) * 100).toFixed(2));
+        }
+        if (stockEl && pAmt > 0) {
+          stockEl.value = pAmt + cAmt;
+        }
+      }
+    };
+
+    const openEditU9Modal = window.openEditU9Modal = function(recId) {
+      const rec = (u9Data.records || []).find(r => r.id === recId);
+      if (!rec) return;
+
+      document.getElementById('editU9Id').value = rec.id;
+      document.getElementById('editU9Type').value = rec.type || 'SELL_BILL';
+      const dtEl = document.getElementById('editU9Date');
+      if (dtEl) {
+        try {
+          const d = rec.date ? new Date(rec.date) : new Date();
+          dtEl.value = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+        } catch (e) {
+          dtEl.value = '';
+        }
+      }
+      document.getElementById('editU9Note').value = rec.note || '';
+
+      const sellGroup = document.getElementById('editU9SellGroup');
+      const primGroup = document.getElementById('editU9PrimaryGroup');
+      const withGroup = document.getElementById('editU9WithdrawGroup');
+
+      if (sellGroup) sellGroup.classList.toggle('hidden', rec.type !== 'SELL_BILL');
+      if (primGroup) primGroup.classList.toggle('hidden', rec.type !== 'BUY_PRIMARY');
+      if (withGroup) withGroup.classList.toggle('hidden', rec.type !== 'WITHDRAW_COMM');
+
+      if (rec.type === 'SELL_BILL') {
+        document.getElementById('editU9CustName').value = rec.custName || '';
+        document.getElementById('editU9CustPhone').value = rec.custPhone || '';
+        document.getElementById('editU9BillAmount').value = rec.billAmount || 0;
+        document.getElementById('editU9SellingPrice').value = rec.sellingPrice ?? rec.billAmount ?? 0;
+        document.getElementById('editU9PaymentType').value = rec.paymentType || 'CASH';
+        document.getElementById('editU9ExtraProfit').value = rec.extraProfit || 0;
+        document.getElementById('editU9Status').value = rec.status || (rec.paymentType === 'CREDIT' ? 'UNPAID' : 'PAID');
+      } else if (rec.type === 'BUY_PRIMARY') {
+        document.getElementById('editU9PurchaseAmt').value = rec.purchaseAmount || 0;
+        document.getElementById('editU9CommRate').value = rec.commRate || 0;
+        document.getElementById('editU9CommAmt').value = rec.commissionAmount || 0;
+        document.getElementById('editU9StockReceived').value = rec.stockReceived || 0;
+        document.getElementById('editU9PayMethod').value = rec.payMethod || 'U9_CAPITAL';
+      } else if (rec.type === 'WITHDRAW_COMM') {
+        document.getElementById('editU9WithdrawAmt').value = rec.withdrawAmount || 0;
+        document.getElementById('editU9WithdrawChannel').value = rec.channel || 'CASH';
+        document.getElementById('editU9DeductStock').checked = Boolean(rec.deductedFromStock);
+        document.getElementById('editU9AddMainWallet').checked = rec.addedToMainWallet !== false;
+      }
+
+      document.getElementById('editU9Modal').classList.remove('hidden');
+      armBackTrap();
+    };
+
+    const closeEditU9Modal = window.closeEditU9Modal = function() {
+      document.getElementById('editU9Modal').classList.add('hidden');
+    };
+
+    const handleSaveEditedU9 = window.handleSaveEditedU9 = function(e) {
+      e.preventDefault();
+      const recId = document.getElementById('editU9Id')?.value;
+      const rec = (u9Data.records || []).find(r => r.id === recId);
+      if (!rec) return;
+
+      // 1. Reverse old impact
+      const oldImpact = computeU9RecordImpact(rec);
+
+      // 2. Apply changes
+      const dateVal = document.getElementById('editU9Date')?.value;
+      if (dateVal) rec.date = new Date(dateVal).toISOString();
+      rec.note = (document.getElementById('editU9Note')?.value || '').trim();
+
+      if (rec.type === 'SELL_BILL') {
+        rec.custName = (document.getElementById('editU9CustName')?.value || '').trim() || 'Customer';
+        rec.custPhone = (document.getElementById('editU9CustPhone')?.value || '').trim();
+        rec.billAmount = parseFloat(document.getElementById('editU9BillAmount')?.value) || 0;
+        rec.sellingPrice = parseFloat(document.getElementById('editU9SellingPrice')?.value) || rec.billAmount;
+        rec.extraProfit = parseFloat(document.getElementById('editU9ExtraProfit')?.value) || Math.max(0, rec.sellingPrice - rec.billAmount);
+        rec.paymentType = document.getElementById('editU9PaymentType')?.value || 'CASH';
+        rec.status = document.getElementById('editU9Status')?.value || 'PAID';
+
+        // Sync or create/update linked Credit Transaction
+        if (rec.paymentType === 'CREDIT') {
+          let linkedTx = rec.linkedTxId ? transactions.find(t => t.id === rec.linkedTxId) : null;
+          if (!linkedTx) {
+            rec.linkedTxId = 'DEB-' + Date.now().toString().slice(-6);
+            linkedTx = {
+              id: rec.linkedTxId,
+              u9RecordId: rec.id,
+              type: 'DIRECT_CREDIT',
+              cashoutType: 'U9_BILL',
+              date: rec.date,
+              custName: rec.custName,
+              custPhone: rec.custPhone,
+              channel: 'U9 ဖုန်းဘေလ်',
+              amountMMK: rec.sellingPrice,
+              amountTHB: 0,
+              amountOwed: rec.sellingPrice,
+              owedCurrency: 'MMK',
+              paidAmount: rec.status === 'PAID' ? rec.sellingPrice : 0,
+              profitMMK: rec.extraProfit,
+              status: rec.status,
+              note: `U9 ဖုန်းဘေလ် အကြွေးရောင်း (${formatMMK(rec.billAmount)})${rec.note ? ' - ' + rec.note : ''}`
+            };
+            transactions.unshift(linkedTx);
+          } else {
+            linkedTx.date = rec.date;
+            linkedTx.custName = rec.custName;
+            linkedTx.custPhone = rec.custPhone;
+            linkedTx.amountMMK = rec.sellingPrice;
+            linkedTx.amountOwed = rec.sellingPrice;
+            linkedTx.profitMMK = rec.extraProfit;
+            linkedTx.status = rec.status;
+            if (rec.status === 'PAID') linkedTx.paidAmount = rec.sellingPrice;
+          }
+          saveTransactionsToStorage();
+        } else if (rec.linkedTxId) {
+          transactions = transactions.filter(t => t.id !== rec.linkedTxId);
+          rec.linkedTxId = '';
+          saveTransactionsToStorage();
+        }
+      } else if (rec.type === 'BUY_PRIMARY') {
+        rec.purchaseAmount = parseFloat(document.getElementById('editU9PurchaseAmt')?.value) || 0;
+        rec.commRate = parseFloat(document.getElementById('editU9CommRate')?.value) || 0;
+        rec.commissionAmount = parseFloat(document.getElementById('editU9CommAmt')?.value) || 0;
+        rec.stockReceived = parseFloat(document.getElementById('editU9StockReceived')?.value) || (rec.purchaseAmount + rec.commissionAmount);
+        rec.payMethod = document.getElementById('editU9PayMethod')?.value || 'U9_CAPITAL';
+      } else if (rec.type === 'WITHDRAW_COMM') {
+        rec.withdrawAmount = parseFloat(document.getElementById('editU9WithdrawAmt')?.value) || 0;
+        rec.channel = document.getElementById('editU9WithdrawChannel')?.value || 'CASH';
+        rec.deductedFromStock = Boolean(document.getElementById('editU9DeductStock')?.checked);
+        rec.addedToMainWallet = Boolean(document.getElementById('editU9AddMainWallet')?.checked);
+      }
+
+      // 3. Apply new impact
+      const newImpact = computeU9RecordImpact(rec);
+      u9Data.billBalanceMMK = Math.max(0, (Number(u9Data.billBalanceMMK) || 0) - oldImpact.stockDelta + newImpact.stockDelta);
+      capital.cashMMK = (Number(capital.cashMMK) || 0) - oldImpact.cashDelta + newImpact.cashDelta;
+      capital.bankMMK = (Number(capital.bankMMK) || 0) - oldImpact.bankDelta + newImpact.bankDelta;
+
+      localStorage.setItem('thb_mmk_has_user_data', 'true');
+      saveU9ToStorage();
+      saveCapitalToStorage();
+      closeEditU9Modal();
+      updateAllUI();
+      showToast('U9 ဖုန်းဘေလ် မှတ်တမ်းကို အောင်မြင်စွာ ပြင်ဆင်ပြီးပါပြီ!', 'success');
     };
 
     const renderU9Module = window.renderU9Module = function() {
@@ -10175,7 +11046,8 @@
                   <div class="text-[10px] theme-text-muted">ကော်မရှင်အမြတ်</div>
                 </div>
               </div>
-              <div class="flex justify-end pt-1 border-t border-slate-700/40">
+              <div class="flex justify-end gap-1.5 pt-1 border-t border-slate-700/40">
+                <button type="button" onclick="openEditU9Modal('${r.id}')" class="px-2.5 py-0.5 rounded-lg bg-blue-600/15 hover:bg-blue-600/25 text-blue-400 text-[10px] font-bold">ပြင်မည်</button>
                 <button type="button" onclick="deleteU9Record('${r.id}')" class="px-2 py-0.5 rounded-lg theme-card border text-[10px] text-rose-400 hover:bg-rose-500/10 font-semibold">ဖျက်မည်</button>
               </div>
             </div>
@@ -10204,7 +11076,8 @@
                   <div class="text-sm font-extrabold font-mono text-amber-400">-${formatMMK(r.withdrawAmount)}</div>
                 </div>
               </div>
-              <div class="flex justify-end pt-1 border-t border-slate-700/40">
+              <div class="flex justify-end gap-1.5 pt-1 border-t border-slate-700/40">
+                <button type="button" onclick="openEditU9Modal('${r.id}')" class="px-2.5 py-0.5 rounded-lg bg-blue-600/15 hover:bg-blue-600/25 text-blue-400 text-[10px] font-bold">ပြင်မည်</button>
                 <button type="button" onclick="deleteU9Record('${r.id}')" class="px-2 py-0.5 rounded-lg theme-card border text-[10px] text-rose-400 hover:bg-rose-500/10 font-semibold">ဖျက်မည်</button>
               </div>
             </div>
@@ -10251,7 +11124,10 @@
                   <button type="button" onclick="openSettleModal('${r.linkedTxId}')" class="px-2.5 py-1 rounded-lg bg-emerald-600 text-white text-[10px] font-bold">✓ အကြွေးဆပ်မည်</button>
                 ` : ''}
               </div>
-              <button type="button" onclick="deleteU9Record('${r.id}')" class="px-2 py-0.5 rounded-lg theme-card border text-[10px] text-rose-400 hover:bg-rose-500/10 font-semibold">ဖျက်မည်</button>
+              <div class="flex items-center gap-1.5">
+                <button type="button" onclick="openEditU9Modal('${r.id}')" class="px-2.5 py-0.5 rounded-lg bg-blue-600/15 hover:bg-blue-600/25 text-blue-400 text-[10px] font-bold">ပြင်မည်</button>
+                <button type="button" onclick="deleteU9Record('${r.id}')" class="px-2 py-0.5 rounded-lg theme-card border text-[10px] text-rose-400 hover:bg-rose-500/10 font-semibold">ဖျက်မည်</button>
+              </div>
             </div>
           </div>
         `;
@@ -11332,13 +12208,56 @@
       const container = document.getElementById('pinDotsContainer');
       if (!container) return;
       const targetLen = Math.max(4, (appLockConfig.pin || '').length || 4);
-      let html = '';
-      for (let i = 0; i < targetLen; i++) {
-        const filled = i < enteredPinBuffer.length;
-        html += `<span class="w-4 h-4 rounded-full transition-all duration-150 ${filled ? 'bg-amber-400 scale-110 shadow-md shadow-amber-400/50' : 'bg-slate-700 border border-slate-600'}"></span>`;
+      const currentChildren = container.children;
+
+      // Only rebuild DOM nodes if PIN dot count changed; otherwise toggle classes in-place (< 0.5ms)
+      if (currentChildren.length !== targetLen) {
+        let html = '';
+        for (let i = 0; i < targetLen; i++) {
+          html += `<span class="w-4 h-4 rounded-full bg-slate-700 border border-slate-600"></span>`;
+        }
+        container.innerHTML = html;
       }
-      container.innerHTML = html;
+
+      const filledLen = enteredPinBuffer.length;
+      for (let i = 0; i < targetLen; i++) {
+        const dot = currentChildren[i];
+        if (!dot) continue;
+        const filled = i < filledLen;
+        dot.className = filled
+          ? 'w-4 h-4 rounded-full bg-amber-400 scale-110 shadow-sm'
+          : 'w-4 h-4 rounded-full bg-slate-700 border border-slate-600';
+      }
     }
+
+    function executePinAction(action) {
+      if (action === 'CLEAR') {
+        clearPinInput();
+      } else if (action === 'BACK') {
+        backspacePinInput();
+      } else if (action === 'SUBMIT') {
+        submitPinUnlock();
+      } else {
+        pressPinKey(action);
+      }
+    }
+
+    const handlePinKeyPointer = window.handlePinKeyPointer = function(e, action) {
+      if (!isAppLocked) return;
+      if (e && e.button && e.button !== 0) return;
+      if (e && e.cancelable) e.preventDefault();
+      lastPinPointerTime = performance.now();
+      executePinAction(action);
+    };
+
+    const handlePinKeyClick = window.handlePinKeyClick = function(e, action) {
+      // Ignore synthetic click if pointerdown already handled this tap within the last 450ms
+      if (performance.now() - lastPinPointerTime < 450) {
+        if (e && e.cancelable) e.preventDefault();
+        return;
+      }
+      executePinAction(action);
+    };
 
     const pressPinKey = window.pressPinKey = function(digit) {
       if (!isAppLocked) return;
@@ -11346,21 +12265,23 @@
       if (enteredPinBuffer.length >= maxLen) return;
       enteredPinBuffer += String(digit);
       const errEl = document.getElementById('pinErrorMsg');
-      if (errEl) errEl.textContent = '';
+      if (errEl && errEl.textContent) errEl.textContent = '';
       renderPinDots();
 
-      // Auto-unlock as soon as entered length matches the configured PIN length
+      // Auto-unlock smoothly as soon as entered length matches the configured PIN length
       if (appLockConfig.pin && enteredPinBuffer.length === appLockConfig.pin.length) {
-        setTimeout(() => {
-          submitPinUnlock();
-        }, 120);
+        requestAnimationFrame(() => {
+          setTimeout(() => {
+            submitPinUnlock();
+          }, 35);
+        });
       }
     };
 
     const clearPinInput = window.clearPinInput = function() {
       enteredPinBuffer = '';
       const errEl = document.getElementById('pinErrorMsg');
-      if (errEl) errEl.textContent = '';
+      if (errEl && errEl.textContent) errEl.textContent = '';
       renderPinDots();
     };
 
@@ -11378,6 +12299,9 @@
         enteredPinBuffer = '';
         const overlay = document.getElementById('appLockOverlay');
         if (overlay) overlay.classList.add('hidden');
+        if (deferredBootPending) {
+          completeBackgroundAppBoot();
+        }
         resetInactivityLockTimer();
         showToast('🔓 Lock ပွင့်သွားပါပြီ', 'success');
       } else {
