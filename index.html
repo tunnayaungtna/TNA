@@ -992,7 +992,7 @@
         </div>
 
         <!-- Filtered List Container -->
-        <div id="remitPayoutListContainer" class="space-y-2.5 max-h-[460px] overflow-y-auto pr-1">
+        <div id="remitPayoutListContainer" class="space-y-2.5 max-h-[680px] overflow-y-auto pr-1">
           <!-- Rendered by JS -->
         </div>
       </div>
@@ -1231,7 +1231,7 @@
         </div>
 
         <!-- Filtered List Container -->
-        <div id="cashoutPayoutListContainer" class="space-y-2.5 max-h-[460px] overflow-y-auto pr-1">
+        <div id="cashoutPayoutListContainer" class="space-y-2.5 max-h-[680px] overflow-y-auto pr-1">
           <!-- Rendered by JS -->
         </div>
       </div>
@@ -1291,7 +1291,7 @@
         </div>
       </div>
 
-      <div id="creditListContainer" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div id="creditListContainer" class="space-y-2.5 max-h-[720px] overflow-y-auto pr-1">
         <!-- Rendered by JS -->
       </div>
     </section>
@@ -1506,7 +1506,7 @@
             </div>
 
             <!-- Expense List Container -->
-            <div id="expenseListContainer" class="space-y-2 max-h-[480px] overflow-y-auto pr-1">
+            <div id="expenseListContainer" class="space-y-2 max-h-[680px] overflow-y-auto pr-1">
               <!-- Rendered by JS -->
             </div>
           </div>
@@ -1749,7 +1749,7 @@
               <button type="button" id="depositSearchClearBtn" onclick="clearSearchInput('depositSearchInput')" class="hidden absolute right-2.5 top-2 w-5 h-5 rounded-full bg-slate-500/20 hover:bg-rose-500/20 theme-text-muted hover:text-rose-500 flex items-center justify-center text-[11px] font-bold transition" title="ရှင်းလင်းရန်">✕</button>
             </div>
 
-            <div id="depositHistoryListContainer" class="space-y-2 max-h-[420px] overflow-y-auto pr-1">
+            <div id="depositHistoryListContainer" class="space-y-2 max-h-[680px] overflow-y-auto pr-1">
               <!-- Populated by JS -->
             </div>
           </div>
@@ -2112,7 +2112,7 @@
               <button type="button" id="u9SearchClearBtn" onclick="clearSearchInput('u9SearchInput')" class="hidden absolute right-2.5 top-2 w-5 h-5 rounded-full bg-slate-500/20 hover:bg-rose-500/20 theme-text-muted hover:text-rose-500 flex items-center justify-center text-[11px] font-bold transition" title="ရှင်းလင်းရန်">✕</button>
             </div>
 
-            <div id="u9HistoryListContainer" class="space-y-2 max-h-[500px] overflow-y-auto pr-1">
+            <div id="u9HistoryListContainer" class="space-y-2 max-h-[680px] overflow-y-auto pr-1">
               <!-- Populated by JS -->
             </div>
           </div>
@@ -2538,7 +2538,7 @@
           </div>
         </div>
 
-        <div id="ledgerListContainer" class="space-y-2 max-h-[450px] overflow-y-auto pr-1">
+        <div id="ledgerListContainer" class="space-y-2 max-h-[720px] overflow-y-auto pr-1">
           <!-- Rendered by JS -->
         </div>
       </div>
@@ -5985,6 +5985,367 @@
              d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
     }
 
+    function formatTimeOnly(isoString) {
+      if (!isoString) return '-';
+      const d = new Date(isoString);
+      if (isNaN(d.getTime())) return '-';
+      return d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+    }
+
+    // ============================================================================
+    // MULTI-DAY TRANSACTION ORGANIZATION, DATE GROUPING & COMPACT VIEW SYSTEM
+    // (နေ့စဉ် ရက်များစွာ စာရင်းများ နေ့ရက်အလိုက် အုပ်စုဖွဲ့ပြသခြင်း နှင့် အမြန်ကြည့်ရှုသည့်စနစ်)
+    // ============================================================================
+    const STORAGE_KEY_LIST_VIEW_MODE = 'thb_mmk_list_view_mode';
+    let listDisplayMode = localStorage.getItem(STORAGE_KEY_LIST_VIEW_MODE) === 'COMPACT' ? 'COMPACT' : 'CARD';
+
+    const multiDayState = {
+      remit: { dateFilter: 'ALL', customDate: '', limit: 60, collapsedDays: {}, forceMode: 'AUTO' },
+      cashout: { dateFilter: 'ALL', customDate: '', limit: 60, collapsedDays: {}, forceMode: 'AUTO' },
+      credit: { dateFilter: 'ALL', customDate: '', limit: 60, collapsedDays: {}, forceMode: 'AUTO' },
+      expense: { dateFilter: 'ALL', customDate: '', limit: 60, collapsedDays: {}, forceMode: 'AUTO' },
+      deposits: { dateFilter: 'ALL', customDate: '', limit: 60, collapsedDays: {}, forceMode: 'AUTO' },
+      u9: { dateFilter: 'ALL', customDate: '', limit: 60, collapsedDays: {}, forceMode: 'AUTO' },
+      ledger: { dateFilter: 'ALL', customDate: '', limit: 80, collapsedDays: {}, forceMode: 'AUTO' },
+      quickSearch: { dateFilter: 'ALL', customDate: '', limit: 80, collapsedDays: {}, forceMode: 'AUTO' }
+    };
+
+    const BURMESE_WEEKDAYS = ['တနင်္ဂနွေ', 'တနင်္လာ', 'အင်္ဂါ', 'ဗုဒ္ဓဟူး', 'ကြာသပတေး', 'သောကြာ', 'စနေ'];
+
+    function getLocalDayKey(isoString) {
+      if (!isoString) return 'UNKNOWN';
+      const d = new Date(isoString);
+      if (isNaN(d.getTime())) {
+        return String(isoString).slice(0, 10) || 'UNKNOWN';
+      }
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd}`;
+    }
+
+    function formatDayHeaderInfo(dayKey) {
+      if (!dayKey || dayKey === 'UNKNOWN') {
+        return { mainTitle: 'ရက်စွဲ မသိရှိပါ', subLabel: '', isToday: false, isYesterday: false };
+      }
+      const now = new Date();
+      const todayKey = getLocalDayKey(now.toISOString());
+      const yest = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
+      const yestKey = `${yest.getFullYear()}-${String(yest.getMonth() + 1).padStart(2, '0')}-${String(yest.getDate()).padStart(2, '0')}`;
+
+      const parts = dayKey.split('-');
+      const d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]), 12, 0, 0);
+      const weekday = BURMESE_WEEKDAYS[d.getDay()] || '';
+      const formattedDate = d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+
+      const todayNoon = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 12, 0, 0);
+      const diffDays = Math.round((todayNoon - d) / 86400000);
+
+      if (dayKey === todayKey) {
+        return {
+          mainTitle: `ယနေ့ (${formattedDate})`,
+          subLabel: `${weekday}နေ့ • Today`,
+          isToday: true,
+          isYesterday: false
+        };
+      }
+      if (dayKey === yestKey) {
+        return {
+          mainTitle: `မနေ့က (${formattedDate})`,
+          subLabel: `${weekday}နေ့ • Yesterday`,
+          isToday: false,
+          isYesterday: true
+        };
+      }
+      const relText = diffDays > 1 ? `လွန်ခဲ့သော ${diffDays} ရက်` : (diffDays < 0 ? `နောက် ${Math.abs(diffDays)} ရက်` : '');
+      return {
+        mainTitle: `${formattedDate} (${weekday}နေ့)`,
+        subLabel: relText,
+        isToday: false,
+        isYesterday: false
+      };
+    }
+
+    function refreshListKeyView(listKey) {
+      if (listKey === 'remit') renderRemitPayoutList();
+      else if (listKey === 'cashout') renderCashoutPayoutList();
+      else if (listKey === 'credit') renderCreditList();
+      else if (listKey === 'expense') renderExpenseList();
+      else if (listKey === 'deposits') renderDepositsModule();
+      else if (listKey === 'u9') renderU9Module();
+      else if (listKey === 'ledger') renderLedgerList();
+      else if (listKey === 'quickSearch') renderQuickSearchList();
+    }
+
+    const toggleGlobalListDisplayMode = window.toggleGlobalListDisplayMode = function(mode) {
+      listDisplayMode = mode === 'COMPACT' ? 'COMPACT' : 'CARD';
+      localStorage.setItem(STORAGE_KEY_LIST_VIEW_MODE, listDisplayMode);
+      updateAllUI();
+      const qModal = document.getElementById('voucherSearchModal');
+      if (qModal && !qModal.classList.contains('hidden')) {
+        renderQuickSearchList();
+      }
+    };
+
+    const setMultiDayFilter = window.setMultiDayFilter = function(listKey, filterVal) {
+      const st = multiDayState[listKey];
+      if (!st) return;
+      st.dateFilter = filterVal;
+      st.limit = 60;
+      st.collapsedDays = {};
+      st.forceMode = 'AUTO';
+      refreshListKeyView(listKey);
+    };
+
+    const setMultiDayCustomDate = window.setMultiDayCustomDate = function(listKey, yyyyMmDd) {
+      const st = multiDayState[listKey];
+      if (!st) return;
+      if (!yyyyMmDd) {
+        st.dateFilter = 'ALL';
+        st.customDate = '';
+      } else {
+        st.dateFilter = 'CUSTOM';
+        st.customDate = yyyyMmDd;
+      }
+      st.limit = 80;
+      st.collapsedDays = {};
+      st.forceMode = 'EXPAND_ALL';
+      refreshListKeyView(listKey);
+    };
+
+    const toggleDayGroupCollapse = window.toggleDayGroupCollapse = function(listKey, dayKey, defaultCollapsed = false) {
+      const st = multiDayState[listKey];
+      if (!st) return;
+      const currentVal = st.collapsedDays[dayKey] !== undefined
+        ? st.collapsedDays[dayKey]
+        : (st.forceMode === 'COLLAPSE_ALL' ? true : st.forceMode === 'EXPAND_ALL' ? false : defaultCollapsed);
+      st.collapsedDays[dayKey] = !currentVal;
+      refreshListKeyView(listKey);
+    };
+
+    const setAllDaysCollapseState = window.setAllDaysCollapseState = function(listKey, collapseAll) {
+      const st = multiDayState[listKey];
+      if (!st) return;
+      st.collapsedDays = {};
+      st.forceMode = collapseAll ? 'COLLAPSE_ALL' : 'EXPAND_ALL';
+      refreshListKeyView(listKey);
+    };
+
+    const loadMoreMultiDayItems = window.loadMoreMultiDayItems = function(listKey, showAll = false) {
+      const st = multiDayState[listKey];
+      if (!st) return;
+      st.limit = showAll ? 999999 : (st.limit + 80);
+      refreshListKeyView(listKey);
+    };
+
+    function filterItemsByMultiDayState(items, listKey, getDateFn) {
+      const st = multiDayState[listKey];
+      if (!st || st.dateFilter === 'ALL') return items;
+
+      const now = new Date();
+      const todayKey = getLocalDayKey(now.toISOString());
+      const yest = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
+      const yestKey = `${yest.getFullYear()}-${String(yest.getMonth() + 1).padStart(2, '0')}-${String(yest.getDate()).padStart(2, '0')}`;
+      const curMonthPrefix = todayKey.slice(0, 7);
+      const sevenDaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6, 0, 0, 0);
+
+      return items.filter(item => {
+        const rawDate = getDateFn(item);
+        const dayKey = getLocalDayKey(rawDate);
+        if (st.dateFilter === 'TODAY') return dayKey === todayKey;
+        if (st.dateFilter === 'YESTERDAY') return dayKey === yestKey;
+        if (st.dateFilter === 'MONTH') return dayKey.slice(0, 7) === curMonthPrefix;
+        if (st.dateFilter === 'CUSTOM') return st.customDate ? dayKey === st.customDate : true;
+        if (st.dateFilter === '7DAYS') {
+          const d = new Date(rawDate);
+          return !isNaN(d.getTime()) && d >= sevenDaysAgo;
+        }
+        return true;
+      });
+    }
+
+    function renderMultiDayToolbarHtml(listKey, totalMatchedCount, totalDaysCount, hideDatePills = false) {
+      const st = multiDayState[listKey] || { dateFilter: 'ALL', customDate: '' };
+      const df = st.dateFilter || 'ALL';
+      const pillClass = (active) => active
+        ? 'px-2.5 py-1 rounded-lg bg-blue-600 text-white font-bold shadow-sm transition text-[11px]'
+        : 'px-2 py-1 rounded-lg theme-card border theme-text-muted hover:text-blue-400 transition text-[11px] font-medium';
+
+      const dateFilterBar = hideDatePills ? '' : `
+        <div class="flex flex-wrap items-center justify-between gap-1.5 pb-1.5 border-b border-slate-700/30">
+          <div class="flex flex-wrap items-center gap-1">
+            <span class="text-[10px] font-bold theme-text-muted mr-0.5">📅 ရက်စွဲစစ်ရန်:</span>
+            <button type="button" onclick="setMultiDayFilter('${listKey}', 'ALL')" class="${pillClass(df === 'ALL')}">အားလုံး</button>
+            <button type="button" onclick="setMultiDayFilter('${listKey}', 'TODAY')" class="${pillClass(df === 'TODAY')}">ယနေ့</button>
+            <button type="button" onclick="setMultiDayFilter('${listKey}', 'YESTERDAY')" class="${pillClass(df === 'YESTERDAY')}">မနေ့က</button>
+            <button type="button" onclick="setMultiDayFilter('${listKey}', '7DAYS')" class="${pillClass(df === '7DAYS')}">၇ ရက်</button>
+            <button type="button" onclick="setMultiDayFilter('${listKey}', 'MONTH')" class="${pillClass(df === 'MONTH')}">ယခုလ</button>
+          </div>
+          <div class="flex items-center gap-1">
+            <input type="date" value="${df === 'CUSTOM' ? st.customDate : ''}" onchange="setMultiDayCustomDate('${listKey}', this.value)" class="theme-input border ${df === 'CUSTOM' ? 'border-blue-500 text-blue-400' : ''} rounded-lg px-2 py-0.5 text-[11px] font-mono font-bold" title="ကြည့်ရှုလိုသည့် ရက်စွဲအတိအကျ ရွေးချယ်ရန်">
+            ${df === 'CUSTOM' ? `<button type="button" onclick="setMultiDayCustomDate('${listKey}', '')" class="px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-400 text-[10px] font-bold" title="ရက်စွဲစစ်ထုတ်မှု ဖြုတ်ရန်">✕</button>` : ''}
+          </div>
+        </div>
+      `;
+
+      return `
+        <div class="theme-card-sub border border-blue-500/20 rounded-xl p-2 space-y-1.5 text-xs mb-2">
+          ${dateFilterBar}
+          <div class="flex flex-wrap items-center justify-between gap-1.5">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-blue-500/10 text-blue-400 border border-blue-500/20 text-[10px] font-bold">
+                📆 ${totalDaysCount} ရက်စာ • စာရင်း ${totalMatchedCount} ခု
+              </span>
+              ${totalDaysCount > 1 ? `
+                <button type="button" onclick="setAllDaysCollapseState('${listKey}', false)" class="px-2 py-0.5 rounded-md theme-card border text-[10px] theme-text-muted hover:text-emerald-400 font-semibold transition" title="ရက်အားလုံး ဖွင့်ကြည့်ရန်">
+                  🔽 ရက်အားလုံးချဲ့
+                </button>
+                <button type="button" onclick="setAllDaysCollapseState('${listKey}', true)" class="px-2 py-0.5 rounded-md theme-card border text-[10px] theme-text-muted hover:text-amber-400 font-semibold transition" title="ရက်အလိုက် စာရင်းချုပ်သာ ကြည့်ရန်">
+                  🔼 ရက်အားလုံးချုံ့
+                </button>
+              ` : ''}
+            </div>
+            <div class="flex items-center gap-1 theme-card p-0.5 rounded-lg border text-[10px]">
+              <button type="button" onclick="toggleGlobalListDisplayMode('CARD')" class="px-2 py-0.5 rounded-md font-bold transition ${listDisplayMode === 'CARD' ? 'bg-blue-600 text-white shadow-sm' : 'theme-text-muted hover:text-blue-400'}">
+                🃏 အသေးစိတ်
+              </button>
+              <button type="button" onclick="toggleGlobalListDisplayMode('COMPACT')" class="px-2 py-0.5 rounded-md font-bold transition ${listDisplayMode === 'COMPACT' ? 'bg-emerald-600 text-white shadow-sm' : 'theme-text-muted hover:text-emerald-400'}">
+                📋 အကျဉ်းချုပ်
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderMultiDayGroupedList({
+      listKey,
+      items,
+      getDateFn,
+      getSummaryMetricsFn,
+      renderCardFn,
+      renderCompactFn,
+      emptyHtml,
+      hideDatePills = false
+    }) {
+      const st = multiDayState[listKey] || { dateFilter: 'ALL', customDate: '', limit: 60, collapsedDays: {}, forceMode: 'AUTO' };
+      const dateFiltered = filterItemsByMultiDayState(items, listKey, getDateFn);
+
+      // Count unique days across all matched items
+      const allDayKeysSet = new Set();
+      dateFiltered.forEach(it => allDayKeysSet.add(getLocalDayKey(getDateFn(it))));
+      const totalDaysCount = allDayKeysSet.size;
+
+      const toolbarHtml = renderMultiDayToolbarHtml(listKey, dateFiltered.length, totalDaysCount, hideDatePills);
+
+      if (dateFiltered.length === 0) {
+        return toolbarHtml + emptyHtml;
+      }
+
+      const visibleSlice = dateFiltered.slice(0, st.limit);
+      const remainingCount = Math.max(0, dateFiltered.length - visibleSlice.length);
+
+      // Group visible items by dayKey preserving order (newest day first)
+      const groupsMap = new Map();
+      visibleSlice.forEach(item => {
+        const dKey = getLocalDayKey(getDateFn(item));
+        if (!groupsMap.has(dKey)) {
+          groupsMap.set(dKey, []);
+        }
+        groupsMap.get(dKey).push(item);
+      });
+
+      let dayIndex = 0;
+      const groupsHtml = [];
+
+      groupsMap.forEach((dayItems, dayKey) => {
+        const info = formatDayHeaderInfo(dayKey);
+        // Smart default: keep first 5 days expanded, auto-collapse older days when there are > 5 days so user isn't overwhelmed
+        const defaultCollapsed = totalDaysCount > 5 && dayIndex >= 5;
+        const isCollapsed = st.collapsedDays[dayKey] !== undefined
+          ? st.collapsedDays[dayKey]
+          : (st.forceMode === 'COLLAPSE_ALL' ? true : st.forceMode === 'EXPAND_ALL' ? false : defaultCollapsed);
+
+        let sumMMK = 0;
+        let sumTHB = 0;
+        let profitMMK = 0;
+        let profitTHB = 0;
+
+        dayItems.forEach(it => {
+          const m = getSummaryMetricsFn ? getSummaryMetricsFn(it) : { mmk: 0, thb: 0, profitMMK: 0, profitTHB: 0 };
+          sumMMK += Number(m.mmk) || 0;
+          sumTHB += Number(m.thb) || 0;
+          profitMMK += Number(m.profitMMK) || 0;
+          profitTHB += Number(m.profitTHB) || 0;
+        });
+
+        const summaryParts = [];
+        if (sumMMK > 0) summaryParts.push(`<span class="font-mono font-extrabold theme-text-heading">${formatMMK(sumMMK)}</span>`);
+        if (sumTHB > 0) summaryParts.push(`<span class="font-mono font-extrabold text-blue-400">${formatTHB(sumTHB)}</span>`);
+        if (profitMMK > 0 || profitTHB > 0) {
+          const pStr = profitTHB > 0 ? `+${formatTHB(profitTHB)}` : `+${formatMMK(profitMMK)}`;
+          summaryParts.push(`<span class="font-mono font-bold text-emerald-400">အမြတ် ${pStr}</span>`);
+        }
+
+        const headerBorder = info.isToday
+          ? 'border-blue-500/50 bg-blue-950/30'
+          : info.isYesterday
+          ? 'border-indigo-500/40 bg-indigo-950/20'
+          : 'border-slate-700/60 theme-card-sub';
+
+        const badgeColor = info.isToday
+          ? 'bg-blue-600 text-white'
+          : info.isYesterday
+          ? 'bg-indigo-600/80 text-white'
+          : 'bg-slate-700 text-slate-200';
+
+        const rowsHtml = isCollapsed
+          ? ''
+          : `<div class="${listDisplayMode === 'COMPACT' ? 'space-y-1' : 'space-y-2'} pt-1.5">
+              ${dayItems.map(it => (listDisplayMode === 'COMPACT' && renderCompactFn) ? renderCompactFn(it) : renderCardFn(it)).join('')}
+             </div>`;
+
+        groupsHtml.push(`
+          <div class="space-y-1">
+            <!-- Sticky Collapsible Day Header -->
+            <div onclick="toggleDayGroupCollapse('${listKey}', '${dayKey}', ${defaultCollapsed})" class="sticky top-0 z-10 cursor-pointer select-none border ${headerBorder} backdrop-blur-md px-3 py-2 rounded-xl flex flex-wrap items-center justify-between gap-2 shadow-sm hover:border-blue-500/60 transition">
+              <div class="flex items-center gap-2">
+                <span class="w-5 h-5 rounded-lg ${badgeColor} flex items-center justify-center text-[10px] font-black transition-transform ${isCollapsed ? '' : 'rotate-90'}">
+                  ▶
+                </span>
+                <div>
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    <span class="text-xs font-extrabold theme-text-heading">${info.mainTitle}</span>
+                    <span class="text-[10px] px-2 py-0.2 rounded-full ${badgeColor} font-bold font-mono">${dayItems.length} ကြိမ်</span>
+                  </div>
+                  ${info.subLabel ? `<div class="text-[10px] theme-text-muted leading-tight">${info.subLabel}</div>` : ''}
+                </div>
+              </div>
+              <div class="text-right text-[11px] flex flex-wrap items-center gap-2">
+                ${summaryParts.join(' <span class="theme-text-muted">•</span> ')}
+                <span class="text-[10px] theme-text-muted font-semibold ml-1">${isCollapsed ? 'ဖွင့်ကြည့်ရန် ▾' : 'ချုံ့ရန် ▴'}</span>
+              </div>
+            </div>
+            ${rowsHtml}
+          </div>
+        `);
+        dayIndex++;
+      });
+
+      const loadMoreHtml = remainingCount > 0 ? `
+        <div class="pt-2 flex flex-wrap items-center justify-center gap-2">
+          <button type="button" onclick="loadMoreMultiDayItems('${listKey}', false)" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow transition">
+            ⬇ နောက်ထပ် စာရင်းဟောင်းများ ဆက်ကြည့်ရန် (+80 ခု • ကျန် ${remainingCount} ခု)
+          </button>
+          <button type="button" onclick="loadMoreMultiDayItems('${listKey}', true)" class="px-3 py-2 rounded-xl theme-card-sub border hover:border-blue-500 text-xs font-bold theme-text-muted hover:text-blue-400 transition">
+            အားလုံး ဖော်ပြရန် (${dateFiltered.length} ခုလုံး)
+          </button>
+        </div>
+      ` : '';
+
+      return toolbarHtml + `<div class="space-y-3">${groupsHtml.join('')}</div>` + loadMoreHtml;
+    }
+
     // Helper to extract sender & receiver names cleanly for both new and legacy transactions
     function getTxNames(tx) {
       let senderName = (tx.senderName || '').trim();
@@ -7198,82 +7559,122 @@
         });
       }
 
-      if (filtered.length === 0) {
-        const emptyMsg = remitPayoutFilter === 'UNPAID'
-          ? 'မထုတ်ပေးရသေးသည့် ငွေလွှဲစာရင်း မရှိပါ (အားလုံး ထုတ်ပေးပြီးဖြစ်ပါသည်)'
-          : remitPayoutFilter === 'PAID'
-          ? 'လက်ငင်းထုတ်ပေးပြီးသည့် ငွေလွှဲမှတ်တမ်း မရှိသေးပါ'
-          : 'ငွေလွှဲမှတ်တမ်း မရှိသေးပါ';
-        container.innerHTML = `
-          <div class="text-center py-8 theme-card-sub rounded-xl border theme-text-muted text-xs">
-            ${emptyMsg}
-          </div>
-        `;
-        return;
-      }
+      const emptyHtml = `
+        <div class="text-center py-8 theme-card-sub rounded-xl border theme-text-muted text-xs">
+          ${remitPayoutFilter === 'UNPAID'
+            ? 'မထုတ်ပေးရသေးသည့် ငွေလွှဲစာရင်း မရှိပါ (အားလုံး ထုတ်ပေးပြီးဖြစ်ပါသည်)'
+            : remitPayoutFilter === 'PAID'
+            ? 'လက်ငင်းထုတ်ပေးပြီးသည့် ငွေလွှဲမှတ်တမ်း မရှိသေးပါ'
+            : 'ငွေလွှဲမှတ်တမ်း မရှိသေးပါ'}
+        </div>
+      `;
 
-      container.innerHTML = filtered.map(tx => {
-        const names = getTxNames(tx);
-        const isPaid = tx.status === 'PAID';
-        const isMmkToThb = tx.direction === 'MMK_TO_THB';
-
-        return `
-          <div class="theme-card-sub border ${isPaid ? 'border-emerald-500/30' : 'border-amber-500/50'} p-3 rounded-xl space-y-2 text-xs">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-1.5">
-                <span class="font-mono text-[10px] text-blue-500 font-bold">${tx.id}</span>
-                <span class="text-[10px] theme-text-muted">• ${formatDateTime(tx.date)}</span>
-              </div>
-              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isPaid ? 'bg-emerald-500/20 text-emerald-500 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-500 border border-amber-500/40'}">
-                ${isPaid ? '✓ လက်ငင်းထုတ်ပေးပြီး' : '⏳ မထုတ်ပေးရသေးဘူး'}
-              </span>
-            </div>
-
-            <div class="flex items-start justify-between gap-2">
-              <div class="space-y-0.5">
-                <div class="font-bold theme-text-heading text-xs">${names.displayTitle}</div>
-                <div class="text-[11px] theme-text-muted">
-                  <span>${names.senderLabel}: <strong class="theme-text-heading">${names.senderName || '-'}</strong></span>
-                  <span class="mx-1">➔</span>
-                  <span>${names.receiverLabel}: <strong class="text-emerald-500">${names.receiverName || '-'}</strong></span>
-                </div>
-                <div class="text-[10px] theme-text-muted">
-                  ချန်နယ်: <span class="font-semibold">${tx.channel || 'KPay'}</span>
-                  ${tx.custPhone ? ` • ဖုန်း/အကောင့်: <span class="font-mono">${tx.custPhone}</span>` : ''}
-                  ${tx.note ? ` • မှတ်ချက်: ${tx.note}` : ''}
+      container.innerHTML = renderMultiDayGroupedList({
+        listKey: 'remit',
+        items: filtered,
+        getDateFn: tx => tx.date,
+        getSummaryMetricsFn: tx => ({
+          mmk: Number(tx.amountMMK) || 0,
+          thb: Number(tx.customerTHB) || 0,
+          profitMMK: Number(tx.profitMMK) || 0,
+          profitTHB: Number(tx.profitTHB) || 0
+        }),
+        emptyHtml,
+        renderCompactFn: tx => {
+          const names = getTxNames(tx);
+          const isPaid = tx.status === 'PAID';
+          const isMmkToThb = tx.direction === 'MMK_TO_THB';
+          return `
+            <div class="theme-card-sub border ${isPaid ? 'border-emerald-500/25' : 'border-amber-500/45'} px-2.5 py-2 rounded-xl flex items-center justify-between gap-2 text-xs hover:border-blue-500/50 transition">
+              <div class="flex items-center gap-2 min-w-0">
+                <span class="w-2 h-2 rounded-full shrink-0 ${isPaid ? 'bg-emerald-500' : 'bg-amber-500 animate-pulse'}"></span>
+                <div class="min-w-0">
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    <span class="font-bold theme-text-heading truncate">${names.displayTitle}</span>
+                    <span class="text-[9px] px-1.5 py-0.2 rounded font-semibold theme-card border">${tx.channel || 'KPay'}</span>
+                  </div>
+                  <div class="text-[10px] theme-text-muted font-mono">
+                    ${formatTimeOnly(tx.date)} • #${tx.id} ${tx.custPhone ? `• ${tx.custPhone}` : ''}
+                  </div>
                 </div>
               </div>
-              <div class="text-right shrink-0">
-                <div class="text-xs sm:text-sm font-extrabold font-mono ${isPaid ? 'text-emerald-500' : 'text-amber-500'}">
-                  ${isMmkToThb ? formatTHB(tx.customerTHB) : formatMMK(tx.amountMMK)}
+              <div class="flex items-center gap-1.5 shrink-0">
+                <div class="text-right mr-1">
+                  <div class="font-extrabold font-mono ${isPaid ? 'text-emerald-500' : 'text-amber-500'}">${isMmkToThb ? formatTHB(tx.customerTHB) : formatMMK(tx.amountMMK)}</div>
+                  <div class="text-[9px] font-mono theme-text-muted">${isMmkToThb ? formatMMK(tx.amountMMK) : formatTHB(tx.customerTHB)}</div>
                 </div>
-                <div class="text-[10px] theme-text-muted font-mono">
-                  ${isMmkToThb ? `ပေးငွေ: ${formatMMK(tx.amountMMK)}` : `ဘတ်: ${formatTHB(tx.customerTHB)}`}
-                </div>
+                <button type="button" onclick="toggleRemitPayoutStatus('${tx.id}')" class="px-2 py-1 rounded-lg ${isPaid ? 'theme-card border theme-text-muted hover:text-amber-400' : 'bg-emerald-600 text-white'} text-[10px] font-bold" title="${isPaid ? 'မထုတ်ပေးရသေးသို့ ပြန်ပြောင်းရန်' : 'ထုတ်ပေးပြီးမှတ်ရန်'}">
+                  ${isPaid ? '✓' : 'ထုတ်မည်'}
+                </button>
+                <button type="button" onclick="openVoucherModal('${tx.id}')" class="px-2 py-1 rounded-lg theme-card border text-[10px] font-semibold">ပြေစာ</button>
+                <button type="button" onclick="openEditModal('${tx.id}')" class="px-2 py-1 rounded-lg bg-blue-600/15 text-blue-500 text-[10px] font-bold">ပြင်</button>
               </div>
             </div>
+          `;
+        },
+        renderCardFn: tx => {
+          const names = getTxNames(tx);
+          const isPaid = tx.status === 'PAID';
+          const isMmkToThb = tx.direction === 'MMK_TO_THB';
 
-            <div class="flex flex-wrap items-center justify-between gap-1.5 pt-2 border-t">
-              <div>
-                ${!isPaid ? `
-                  <button type="button" onclick="toggleRemitPayoutStatus('${tx.id}')" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold shadow flex items-center gap-1 transition">
-                    <span>✓ ယခု ထုတ်ပေးပြီးကြောင်း မှတ်မည်</span>
-                  </button>
-                ` : `
-                  <button type="button" onclick="toggleRemitPayoutStatus('${tx.id}')" class="px-2.5 py-1 rounded-lg theme-card border text-[10px] theme-text-muted hover:text-amber-500 font-semibold transition">
-                    ⏳ မထုတ်ပေးရသေးသို့ ပြန်ပြောင်းရန်
-                  </button>
-                `}
+          return `
+            <div class="theme-card-sub border ${isPaid ? 'border-emerald-500/30' : 'border-amber-500/50'} p-3 rounded-xl space-y-2 text-xs">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-1.5">
+                  <span class="font-mono text-[10px] text-blue-500 font-bold">${tx.id}</span>
+                  <span class="text-[10px] theme-text-muted">• ${formatDateTime(tx.date)}</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isPaid ? 'bg-emerald-500/20 text-emerald-500 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-500 border border-amber-500/40'}">
+                  ${isPaid ? '✓ လက်ငင်းထုတ်ပေးပြီး' : '⏳ မထုတ်ပေးရသေးဘူး'}
+                </span>
               </div>
-              <div class="flex items-center gap-1.5">
-                <button type="button" onclick="openVoucherModal('${tx.id}')" class="px-2.5 py-1 rounded-lg theme-card border text-[10px] font-semibold">ဘောက်ချာ</button>
-                <button type="button" onclick="openEditModal('${tx.id}')" class="px-2.5 py-1 rounded-lg bg-blue-600/15 hover:bg-blue-600/25 text-blue-500 text-[10px] font-bold">ပြင်မည်</button>
-                <button type="button" onclick="deleteTransaction('${tx.id}')" class="px-2 py-1 rounded-lg bg-rose-600/15 hover:bg-rose-600/25 text-rose-500 text-[10px] font-bold">ဖျက်မည်</button>
+
+              <div class="flex items-start justify-between gap-2">
+                <div class="space-y-0.5">
+                  <div class="font-bold theme-text-heading text-xs">${names.displayTitle}</div>
+                  <div class="text-[11px] theme-text-muted">
+                    <span>${names.senderLabel}: <strong class="theme-text-heading">${names.senderName || '-'}</strong></span>
+                    <span class="mx-1">➔</span>
+                    <span>${names.receiverLabel}: <strong class="text-emerald-500">${names.receiverName || '-'}</strong></span>
+                  </div>
+                  <div class="text-[10px] theme-text-muted">
+                    ချန်နယ်: <span class="font-semibold">${tx.channel || 'KPay'}</span>
+                    ${tx.custPhone ? ` • ဖုန်း/အကောင့်: <span class="font-mono">${tx.custPhone}</span>` : ''}
+                    ${tx.note ? ` • မှတ်ချက်: ${tx.note}` : ''}
+                  </div>
+                </div>
+                <div class="text-right shrink-0">
+                  <div class="text-xs sm:text-sm font-extrabold font-mono ${isPaid ? 'text-emerald-500' : 'text-amber-500'}">
+                    ${isMmkToThb ? formatTHB(tx.customerTHB) : formatMMK(tx.amountMMK)}
+                  </div>
+                  <div class="text-[10px] theme-text-muted font-mono">
+                    ${isMmkToThb ? `ပေးငွေ: ${formatMMK(tx.amountMMK)}` : `ဘတ်: ${formatTHB(tx.customerTHB)}`}
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap items-center justify-between gap-1.5 pt-2 border-t">
+                <div>
+                  ${!isPaid ? `
+                    <button type="button" onclick="toggleRemitPayoutStatus('${tx.id}')" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold shadow flex items-center gap-1 transition">
+                      <span>✓ ယခု ထုတ်ပေးပြီးကြောင်း မှတ်မည်</span>
+                    </button>
+                  ` : `
+                    <button type="button" onclick="toggleRemitPayoutStatus('${tx.id}')" class="px-2.5 py-1 rounded-lg theme-card border text-[10px] theme-text-muted hover:text-amber-500 font-semibold transition">
+                      ⏳ မထုတ်ပေးရသေးသို့ ပြန်ပြောင်းရန်
+                    </button>
+                  `}
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <button type="button" onclick="openVoucherModal('${tx.id}')" class="px-2.5 py-1 rounded-lg theme-card border text-[10px] font-semibold">ဘောက်ချာ</button>
+                  <button type="button" onclick="openEditModal('${tx.id}')" class="px-2.5 py-1 rounded-lg bg-blue-600/15 hover:bg-blue-600/25 text-blue-500 text-[10px] font-bold">ပြင်မည်</button>
+                  <button type="button" onclick="deleteTransaction('${tx.id}')" class="px-2 py-1 rounded-lg bg-rose-600/15 hover:bg-rose-600/25 text-rose-500 text-[10px] font-bold">ဖျက်မည်</button>
+                </div>
               </div>
             </div>
-          </div>
-        `;
-      }).join('');
+          `;
+        }
+      });
     };
 
     // --- TAB 3: LOCAL CASHOUT & TRANSFER ---
@@ -7562,78 +7963,117 @@
         });
       }
 
-      if (filtered.length === 0) {
-        const emptyMsg = cashoutPayoutFilter === 'UNPAID'
-          ? 'မထုတ်ပေးရသေးသည့် ငွေထုတ်စာရင်း မရှိပါ (အားလုံး ထုတ်ပေးပြီးဖြစ်ပါသည်)'
-          : cashoutPayoutFilter === 'PAID'
-          ? 'လက်ငင်းထုတ်ပေးပြီးသည့် ငွေထုတ်မှတ်တမ်း မရှိသေးပါ'
-          : 'KPay / ငွေထုတ် မှတ်တမ်း မရှိသေးပါ';
-        container.innerHTML = `
-          <div class="text-center py-8 theme-card-sub rounded-xl border theme-text-muted text-xs">
-            ${emptyMsg}
-          </div>
-        `;
-        return;
-      }
+      const emptyHtml = `
+        <div class="text-center py-8 theme-card-sub rounded-xl border theme-text-muted text-xs">
+          ${cashoutPayoutFilter === 'UNPAID'
+            ? 'မထုတ်ပေးရသေးသည့် ငွေထုတ်စာရင်း မရှိပါ (အားလုံး ထုတ်ပေးပြီးဖြစ်ပါသည်)'
+            : cashoutPayoutFilter === 'PAID'
+            ? 'လက်ငင်းထုတ်ပေးပြီးသည့် ငွေထုတ်မှတ်တမ်း မရှိသေးပါ'
+            : 'KPay / ငွေထုတ် မှတ်တမ်း မရှိသေးပါ'}
+        </div>
+      `;
 
-      container.innerHTML = filtered.map(tx => {
-        const isPaid = tx.status === 'PAID';
-        const isTransfer = tx.cashoutType === 'TRANSFER';
-        const stDisp = getTxStatusDisplay(tx);
-
-        return `
-          <div class="theme-card-sub border ${isPaid ? 'border-emerald-500/30' : (isTransfer ? 'border-rose-500/50' : 'border-amber-500/50')} p-3 rounded-xl space-y-2 text-xs">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-1.5">
-                <span class="font-mono text-[10px] text-emerald-500 font-bold">${tx.id}</span>
-                <span class="text-[10px] theme-text-muted">• ${formatDateTime(tx.date)}</span>
-              </div>
-              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${stDisp.badgeClass}">
-                ${isPaid ? '✓ ' + stDisp.text : (isTransfer ? '⚠️ ' + stDisp.text : '⏳ ' + stDisp.text)}
-              </span>
-            </div>
-
-            <div class="flex items-start justify-between gap-2">
-              <div class="space-y-0.5">
-                <div class="font-bold theme-text-heading text-xs">${tx.custName || 'အမည်မသိ'}</div>
-                <div class="text-[10px] theme-text-muted">
-                  အမျိုးအစား: <span class="font-semibold">${isTransfer ? '🔺 ငွေလွှဲ (Transfer)' : '🔻 ငွေထုတ် (Cash-Out)'}</span>
-                  • ချန်နယ်: <span class="font-semibold">${tx.channel || 'KPay'}</span>
-                  ${tx.custPhone ? ` • ဖုန်း: <span class="font-mono">${tx.custPhone}</span>` : ''}
-                  ${tx.note ? ` • မှတ်ချက်: ${tx.note}` : ''}
+      container.innerHTML = renderMultiDayGroupedList({
+        listKey: 'cashout',
+        items: filtered,
+        getDateFn: tx => tx.date,
+        getSummaryMetricsFn: tx => ({
+          mmk: Number(tx.amountMMK) || 0,
+          thb: 0,
+          profitMMK: Number(tx.profitMMK || tx.fee) || 0,
+          profitTHB: 0
+        }),
+        emptyHtml,
+        renderCompactFn: tx => {
+          const isPaid = tx.status === 'PAID';
+          const isTransfer = tx.cashoutType === 'TRANSFER';
+          return `
+            <div class="theme-card-sub border ${isPaid ? 'border-emerald-500/25' : (isTransfer ? 'border-rose-500/45' : 'border-amber-500/45')} px-2.5 py-2 rounded-xl flex items-center justify-between gap-2 text-xs hover:border-emerald-500/50 transition">
+              <div class="flex items-center gap-2 min-w-0">
+                <span class="w-2 h-2 rounded-full shrink-0 ${isPaid ? 'bg-emerald-500' : 'bg-amber-500 animate-pulse'}"></span>
+                <div class="min-w-0">
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    <span class="font-bold theme-text-heading truncate">${tx.custName || 'အမည်မသိ'}</span>
+                    <span class="text-[9px] px-1.5 py-0.2 rounded font-semibold theme-card border">${isTransfer ? '🔺လွှဲ' : '🔻ထုတ်'} • ${tx.channel || 'KPay'}</span>
+                  </div>
+                  <div class="text-[10px] theme-text-muted font-mono">
+                    ${formatTimeOnly(tx.date)} • #${tx.id} ${tx.custPhone ? `• ${tx.custPhone}` : ''}
+                  </div>
                 </div>
               </div>
-              <div class="text-right shrink-0">
-                <div class="text-xs sm:text-sm font-extrabold font-mono ${isPaid ? 'text-emerald-500' : (isTransfer ? 'text-rose-500' : 'text-amber-500')}">
-                  ${formatMMK(tx.amountMMK)}
+              <div class="flex items-center gap-1.5 shrink-0">
+                <div class="text-right mr-1">
+                  <div class="font-extrabold font-mono ${isPaid ? 'text-emerald-500' : 'text-amber-500'}">${formatMMK(tx.amountMMK)}</div>
+                  <div class="text-[9px] font-mono text-emerald-400">+${formatMMK(tx.profitMMK || tx.fee || 0)}</div>
                 </div>
-                <div class="text-[10px] text-emerald-500 font-mono">
-                  အမြတ်: +${formatMMK(tx.profitMMK || tx.fee || 0)}
-                </div>
+                <button type="button" onclick="toggleCashoutPayoutStatus('${tx.id}')" class="px-2 py-1 rounded-lg ${isPaid ? 'theme-card border theme-text-muted hover:text-amber-400' : 'bg-emerald-600 text-white'} text-[10px] font-bold">
+                  ${isPaid ? '✓' : 'ထုတ်မည်'}
+                </button>
+                <button type="button" onclick="openVoucherModal('${tx.id}')" class="px-2 py-1 rounded-lg theme-card border text-[10px] font-semibold">ပြေစာ</button>
+                <button type="button" onclick="openEditModal('${tx.id}')" class="px-2 py-1 rounded-lg bg-blue-600/15 text-blue-500 text-[10px] font-bold">ပြင်</button>
               </div>
             </div>
+          `;
+        },
+        renderCardFn: tx => {
+          const isPaid = tx.status === 'PAID';
+          const isTransfer = tx.cashoutType === 'TRANSFER';
+          const stDisp = getTxStatusDisplay(tx);
 
-            <div class="flex flex-wrap items-center justify-between gap-1.5 pt-2 border-t">
-              <div>
-                ${!isPaid ? `
-                  <button type="button" onclick="toggleCashoutPayoutStatus('${tx.id}')" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold shadow flex items-center gap-1 transition">
-                    <span>${isTransfer ? '✓ လက်ငင်းရရှိပြီးကြောင်း မှတ်မည်' : '✓ ယခု ထုတ်ပေးပြီးကြောင်း မှတ်မည်'}</span>
-                  </button>
-                ` : `
-                  <button type="button" onclick="toggleCashoutPayoutStatus('${tx.id}')" class="px-2.5 py-1 rounded-lg theme-card border text-[10px] theme-text-muted hover:text-amber-500 font-semibold transition">
-                    ${isTransfer ? '⚠️ အကြွေးသို့ ပြန်ပြောင်းရန်' : '⏳ မထုတ်ပေးရသေးသို့ ပြန်ပြောင်းရန်'}
-                  </button>
-                `}
+          return `
+            <div class="theme-card-sub border ${isPaid ? 'border-emerald-500/30' : (isTransfer ? 'border-rose-500/50' : 'border-amber-500/50')} p-3 rounded-xl space-y-2 text-xs">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-1.5">
+                  <span class="font-mono text-[10px] text-emerald-500 font-bold">${tx.id}</span>
+                  <span class="text-[10px] theme-text-muted">• ${formatDateTime(tx.date)}</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${stDisp.badgeClass}">
+                  ${isPaid ? '✓ ' + stDisp.text : (isTransfer ? '⚠️ ' + stDisp.text : '⏳ ' + stDisp.text)}
+                </span>
               </div>
-              <div class="flex items-center gap-1.5">
-                <button type="button" onclick="openVoucherModal('${tx.id}')" class="px-2.5 py-1 rounded-lg theme-card border text-[10px] font-semibold">ဘောက်ချာ</button>
-                <button type="button" onclick="openEditModal('${tx.id}')" class="px-2.5 py-1 rounded-lg bg-blue-600/15 hover:bg-blue-600/25 text-blue-500 text-[10px] font-bold">ပြင်မည်</button>
-                <button type="button" onclick="deleteTransaction('${tx.id}')" class="px-2 py-1 rounded-lg bg-rose-600/15 hover:bg-rose-600/25 text-rose-500 text-[10px] font-bold">ဖျက်မည်</button>
+
+              <div class="flex items-start justify-between gap-2">
+                <div class="space-y-0.5">
+                  <div class="font-bold theme-text-heading text-xs">${tx.custName || 'အမည်မသိ'}</div>
+                  <div class="text-[10px] theme-text-muted">
+                    အမျိုးအစား: <span class="font-semibold">${isTransfer ? '🔺 ငွေလွှဲ (Transfer)' : '🔻 ငွေထုတ် (Cash-Out)'}</span>
+                    • ချန်နယ်: <span class="font-semibold">${tx.channel || 'KPay'}</span>
+                    ${tx.custPhone ? ` • ဖုန်း: <span class="font-mono">${tx.custPhone}</span>` : ''}
+                    ${tx.note ? ` • မှတ်ချက်: ${tx.note}` : ''}
+                  </div>
+                </div>
+                <div class="text-right shrink-0">
+                  <div class="text-xs sm:text-sm font-extrabold font-mono ${isPaid ? 'text-emerald-500' : (isTransfer ? 'text-rose-500' : 'text-amber-500')}">
+                    ${formatMMK(tx.amountMMK)}
+                  </div>
+                  <div class="text-[10px] text-emerald-500 font-mono">
+                    အမြတ်: +${formatMMK(tx.profitMMK || tx.fee || 0)}
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap items-center justify-between gap-1.5 pt-2 border-t">
+                <div>
+                  ${!isPaid ? `
+                    <button type="button" onclick="toggleCashoutPayoutStatus('${tx.id}')" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold shadow flex items-center gap-1 transition">
+                      <span>${isTransfer ? '✓ လက်ငင်းရရှိပြီးကြောင်း မှတ်မည်' : '✓ ယခု ထုတ်ပေးပြီးကြောင်း မှတ်မည်'}</span>
+                    </button>
+                  ` : `
+                    <button type="button" onclick="toggleCashoutPayoutStatus('${tx.id}')" class="px-2.5 py-1 rounded-lg theme-card border text-[10px] theme-text-muted hover:text-amber-500 font-semibold transition">
+                      ${isTransfer ? '⚠️ အကြွေးသို့ ပြန်ပြောင်းရန်' : '⏳ မထုတ်ပေးရသေးသို့ ပြန်ပြောင်းရန်'}
+                    </button>
+                  `}
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <button type="button" onclick="openVoucherModal('${tx.id}')" class="px-2.5 py-1 rounded-lg theme-card border text-[10px] font-semibold">ဘောက်ချာ</button>
+                  <button type="button" onclick="openEditModal('${tx.id}')" class="px-2.5 py-1 rounded-lg bg-blue-600/15 hover:bg-blue-600/25 text-blue-500 text-[10px] font-bold">ပြင်မည်</button>
+                  <button type="button" onclick="deleteTransaction('${tx.id}')" class="px-2 py-1 rounded-lg bg-rose-600/15 hover:bg-rose-600/25 text-rose-500 text-[10px] font-bold">ဖျက်မည်</button>
+                </div>
               </div>
             </div>
-          </div>
-        `;
-      }).join('');
+          `;
+        }
+      });
     };
 
     // --- TAB 4: CREDIT LEDGER ---
@@ -7699,80 +8139,124 @@
       if (tMmk) tMmk.textContent = formatMMK(totalUnpaidMMK);
       if (tThb) tThb.textContent = formatTHB(totalUnpaidTHB);
 
-      if (creditTx.length === 0) {
-        container.innerHTML = `
-          <div class="col-span-full text-center py-10 theme-card rounded-2xl border theme-text-muted text-xs">
-            <svg class="w-10 h-10 mx-auto mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            အကြွေးစာရင်း မရှိပါ (အားလုံး ပြေလည်ပါသည်)
-          </div>
-        `;
-        return;
-      }
+      const emptyHtml = `
+        <div class="text-center py-10 theme-card rounded-2xl border theme-text-muted text-xs">
+          <svg class="w-10 h-10 mx-auto mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          အကြွေးစာရင်း မရှိပါ (အားလုံး ပြေလည်ပါသည်)
+        </div>
+      `;
 
-      container.innerHTML = creditTx.map(tx => {
-        const owedCur = tx.owedCurrency || (tx.type === 'REMIT' && tx.direction !== 'MMK_TO_THB' ? 'THB' : 'MMK');
-        const totalOwed = tx.amountOwed !== undefined ? tx.amountOwed : (owedCur === 'THB' ? tx.customerTHB : tx.amountMMK);
-        const paid = tx.paidAmount || 0;
-        const rem = Math.max(0, (totalOwed || 0) - paid);
-        const isSettled = tx.status === 'PAID' || rem <= 0;
-        const isU9BillCredit = tx.cashoutType === 'U9_BILL' || tx.channel === 'U9 ဖုန်းဘေလ်' || Boolean(tx.u9RecordId);
-
-        return `
-          <div class="theme-card border ${isSettled ? 'border-slate-300 dark:border-slate-700' : (isU9BillCredit ? 'border-cyan-500/60' : 'border-rose-500/50')} rounded-2xl p-3.5 space-y-2.5 shadow-sm">
-            <div class="flex items-center justify-between gap-2">
-              <div class="flex items-center gap-2">
-                <span class="w-8 h-8 rounded-xl ${isSettled ? 'bg-slate-200 dark:bg-slate-700 text-slate-500' : (isU9BillCredit ? 'bg-cyan-500/20 text-cyan-400' : 'bg-rose-500/20 text-rose-500')} flex items-center justify-center font-bold text-xs">
-                  ${isSettled ? '✓' : (isU9BillCredit ? 'U9' : '!')}
-                </span>
-                <div>
-                  <div class="flex flex-wrap items-center gap-1.5">
-                    <h4 class="text-xs font-bold theme-text-heading leading-tight">${tx.custName || 'အမည်မသိ'}</h4>
-                    ${isU9BillCredit ? `<span class="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-cyan-500/20 text-cyan-400 border border-cyan-500/40">📶 U9 ဖုန်းဘေလ်</span>` : ''}
+      container.innerHTML = renderMultiDayGroupedList({
+        listKey: 'credit',
+        items: creditTx,
+        getDateFn: tx => tx.date,
+        getSummaryMetricsFn: tx => {
+          const owedCur = tx.owedCurrency || (tx.type === 'REMIT' && tx.direction !== 'MMK_TO_THB' ? 'THB' : 'MMK');
+          const totalOwed = tx.amountOwed !== undefined ? tx.amountOwed : (owedCur === 'THB' ? tx.customerTHB : tx.amountMMK);
+          const rem = Math.max(0, (totalOwed || 0) - (tx.paidAmount || 0));
+          return {
+            mmk: owedCur === 'MMK' ? (rem || totalOwed || 0) : 0,
+            thb: owedCur === 'THB' ? (rem || totalOwed || 0) : 0,
+            profitMMK: 0,
+            profitTHB: 0
+          };
+        },
+        emptyHtml,
+        renderCompactFn: tx => {
+          const owedCur = tx.owedCurrency || (tx.type === 'REMIT' && tx.direction !== 'MMK_TO_THB' ? 'THB' : 'MMK');
+          const totalOwed = tx.amountOwed !== undefined ? tx.amountOwed : (owedCur === 'THB' ? tx.customerTHB : tx.amountMMK);
+          const paid = tx.paidAmount || 0;
+          const rem = Math.max(0, (totalOwed || 0) - paid);
+          const isSettled = tx.status === 'PAID' || rem <= 0;
+          const isU9BillCredit = tx.cashoutType === 'U9_BILL' || tx.channel === 'U9 ဖုန်းဘေလ်' || Boolean(tx.u9RecordId);
+          return `
+            <div class="theme-card border ${isSettled ? 'border-slate-700' : 'border-rose-500/45'} px-3 py-2 rounded-xl flex items-center justify-between gap-2 text-xs">
+              <div class="flex items-center gap-2 min-w-0">
+                <span class="w-2 h-2 rounded-full shrink-0 ${isSettled ? 'bg-emerald-500' : 'bg-rose-500 animate-pulse'}"></span>
+                <div class="min-w-0">
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    <span class="font-bold theme-text-heading truncate">${tx.custName || 'အမည်မသိ'}</span>
+                    ${isU9BillCredit ? `<span class="text-[9px] px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-400 font-bold">U9</span>` : ''}
                   </div>
-                  <p class="text-[10px] theme-text-muted">${tx.custPhone || 'ဖုန်းမရှိ'} • ${formatDateTime(tx.date)}</p>
+                  <div class="text-[10px] theme-text-muted font-mono">${formatTimeOnly(tx.date)} • ${tx.custPhone || 'ဖုန်းမရှိ'}</div>
                 </div>
               </div>
-              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold shrink-0 ${isSettled ? 'bg-emerald-500/20 text-emerald-500' : 'bg-rose-500/20 text-rose-500 border border-rose-500/30'}">
-                ${isSettled ? 'ပြန်ရပြီး' : 'မဆပ်ရသေး'}
-              </span>
-            </div>
-
-            <div class="theme-card-sub p-2.5 rounded-xl border flex items-center justify-between text-xs font-mono">
-              <div>
-                <span class="text-[10px] theme-text-muted block font-sans">ရရန်ရှိ အကြွေး:</span>
-                <span class="font-bold theme-text-heading">${owedCur === 'THB' ? formatTHB(totalOwed) : formatMMK(totalOwed)}</span>
-              </div>
-              <div class="text-right">
-                <span class="text-[10px] theme-text-muted block font-sans">ကျန်ငွေ (Due):</span>
-                <span class="font-bold text-rose-500 text-sm">${owedCur === 'THB' ? formatTHB(rem) : formatMMK(rem)}</span>
+              <div class="flex items-center gap-1.5 shrink-0">
+                <div class="text-right mr-1">
+                  <div class="font-extrabold font-mono ${isSettled ? 'text-emerald-500' : 'text-rose-500'}">${owedCur === 'THB' ? formatTHB(isSettled ? totalOwed : rem) : formatMMK(isSettled ? totalOwed : rem)}</div>
+                  <div class="text-[9px] theme-text-muted">${isSettled ? 'ပြန်ရပြီး' : 'ရရန်ကျန်'}</div>
+                </div>
+                ${!isSettled ? `<button type="button" onclick="openSettleModal('${tx.id}')" class="px-2 py-1 rounded-lg bg-emerald-600 text-white text-[10px] font-bold">ဆပ်မည်</button>` : ''}
+                <button type="button" onclick="openEditModal('${tx.id}')" class="px-2 py-1 rounded-lg bg-blue-600/15 text-blue-500 text-[10px] font-bold">ပြင်</button>
               </div>
             </div>
+          `;
+        },
+        renderCardFn: tx => {
+          const owedCur = tx.owedCurrency || (tx.type === 'REMIT' && tx.direction !== 'MMK_TO_THB' ? 'THB' : 'MMK');
+          const totalOwed = tx.amountOwed !== undefined ? tx.amountOwed : (owedCur === 'THB' ? tx.customerTHB : tx.amountMMK);
+          const paid = tx.paidAmount || 0;
+          const rem = Math.max(0, (totalOwed || 0) - paid);
+          const isSettled = tx.status === 'PAID' || rem <= 0;
+          const isU9BillCredit = tx.cashoutType === 'U9_BILL' || tx.channel === 'U9 ဖုန်းဘေလ်' || Boolean(tx.u9RecordId);
 
-            ${tx.note ? `<p class="text-[10px] theme-text-muted italic">မှတ်ချက်: ${tx.note}</p>` : ''}
+          return `
+            <div class="theme-card border ${isSettled ? 'border-slate-300 dark:border-slate-700' : (isU9BillCredit ? 'border-cyan-500/60' : 'border-rose-500/50')} rounded-2xl p-3.5 space-y-2.5 shadow-sm">
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  <span class="w-8 h-8 rounded-xl ${isSettled ? 'bg-slate-200 dark:bg-slate-700 text-slate-500' : (isU9BillCredit ? 'bg-cyan-500/20 text-cyan-400' : 'bg-rose-500/20 text-rose-500')} flex items-center justify-center font-bold text-xs">
+                    ${isSettled ? '✓' : (isU9BillCredit ? 'U9' : '!')}
+                  </span>
+                  <div>
+                    <div class="flex flex-wrap items-center gap-1.5">
+                      <h4 class="text-xs font-bold theme-text-heading leading-tight">${tx.custName || 'အမည်မသိ'}</h4>
+                      ${isU9BillCredit ? `<span class="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-cyan-500/20 text-cyan-400 border border-cyan-500/40">📶 U9 ဖုန်းဘေလ်</span>` : ''}
+                    </div>
+                    <p class="text-[10px] theme-text-muted">${tx.custPhone || 'ဖုန်းမရှိ'} • ${formatDateTime(tx.date)}</p>
+                  </div>
+                </div>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold shrink-0 ${isSettled ? 'bg-emerald-500/20 text-emerald-500' : 'bg-rose-500/20 text-rose-500 border border-rose-500/30'}">
+                  ${isSettled ? 'ပြန်ရပြီး' : 'မဆပ်ရသေး'}
+                </span>
+              </div>
 
-            <div class="flex flex-wrap items-center gap-1.5 pt-1 border-t">
-              ${!isSettled ? `
-                <button type="button" onclick="openSettleModal('${tx.id}')" class="flex-1 min-w-[110px] py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white text-xs font-bold transition flex items-center justify-center gap-1 shadow">
-                  ပြန်ရပြီး (ဆပ်မည်)
+              <div class="theme-card-sub p-2.5 rounded-xl border flex items-center justify-between text-xs font-mono">
+                <div>
+                  <span class="text-[10px] theme-text-muted block font-sans">ရရန်ရှိ အကြွေး:</span>
+                  <span class="font-bold theme-text-heading">${owedCur === 'THB' ? formatTHB(totalOwed) : formatMMK(totalOwed)}</span>
+                </div>
+                <div class="text-right">
+                  <span class="text-[10px] theme-text-muted block font-sans">ကျန်ငွေ (Due):</span>
+                  <span class="font-bold text-rose-500 text-sm">${owedCur === 'THB' ? formatTHB(rem) : formatMMK(rem)}</span>
+                </div>
+              </div>
+
+              ${tx.note ? `<p class="text-[10px] theme-text-muted italic">မှတ်ချက်: ${tx.note}</p>` : ''}
+
+              <div class="flex flex-wrap items-center gap-1.5 pt-1 border-t">
+                ${!isSettled ? `
+                  <button type="button" onclick="openSettleModal('${tx.id}')" class="flex-1 min-w-[110px] py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white text-xs font-bold transition flex items-center justify-center gap-1 shadow">
+                    ပြန်ရပြီး (ဆပ်မည်)
+                  </button>
+                ` : `
+                  <button type="button" onclick="openVoucherModal('${tx.id}')" class="flex-1 min-w-[110px] py-2 rounded-xl theme-card-sub border theme-text-muted text-xs font-semibold">
+                    ပြေစာကြည့်မည်
+                  </button>
+                `}
+                <button type="button" onclick="shareDebtReminder('${tx.id}')" class="px-2.5 py-2 rounded-xl theme-card-sub border text-blue-500 text-xs font-bold active:scale-95 transition flex items-center gap-1">
+                  သတိပေးစာ
                 </button>
-              ` : `
-                <button type="button" onclick="openVoucherModal('${tx.id}')" class="flex-1 min-w-[110px] py-2 rounded-xl theme-card-sub border theme-text-muted text-xs font-semibold">
-                  ပြေစာကြည့်မည်
+                <button type="button" onclick="openEditModal('${tx.id}')" class="px-2.5 py-2 rounded-xl bg-blue-600/15 hover:bg-blue-600/25 text-blue-500 text-xs font-bold active:scale-95 transition">
+                  ပြင်မည်
                 </button>
-              `}
-              <button type="button" onclick="shareDebtReminder('${tx.id}')" class="px-2.5 py-2 rounded-xl theme-card-sub border text-blue-500 text-xs font-bold active:scale-95 transition flex items-center gap-1">
-                သတိပေးစာ
-              </button>
-              <button type="button" onclick="openEditModal('${tx.id}')" class="px-2.5 py-2 rounded-xl bg-blue-600/15 hover:bg-blue-600/25 text-blue-500 text-xs font-bold active:scale-95 transition">
-                ပြင်မည်
-              </button>
-              <button type="button" onclick="deleteTransaction('${tx.id}')" class="px-2.5 py-2 rounded-xl bg-rose-600/15 hover:bg-rose-600/25 text-rose-500 text-xs font-bold active:scale-95 transition">
-                ဖျက်မည်
-              </button>
+                <button type="button" onclick="deleteTransaction('${tx.id}')" class="px-2.5 py-2 rounded-xl bg-rose-600/15 hover:bg-rose-600/25 text-rose-500 text-xs font-bold active:scale-95 transition">
+                  ဖျက်မည်
+                </button>
+              </div>
             </div>
-          </div>
-        `;
-      }).join('');
+          `;
+        }
+      });
     };
 
     // --- Settle Debt Logic ---
@@ -8267,67 +8751,97 @@
         filterTotEl.textContent = '-' + formatMMK(totalFilterMMK) + (totalFilterTHB > 0 ? ` (-${formatTHB(totalFilterTHB)})` : '');
       }
 
-      if (list.length === 0) {
-        container.innerHTML = `
-          <div class="text-center py-8 theme-card-sub rounded-2xl border theme-text-muted text-xs space-y-1">
-            <div class="text-base">💸</div>
-            <div>အသုံးစရိတ် မှတ်တမ်း မရှိပါ</div>
-          </div>
-        `;
-        return;
-      }
+      const emptyHtml = `
+        <div class="text-center py-8 theme-card-sub rounded-2xl border theme-text-muted text-xs space-y-1">
+          <div class="text-base">💸</div>
+          <div>အသုံးစရိတ် မှတ်တမ်း မရှိပါ</div>
+        </div>
+      `;
 
-      container.innerHTML = list.map(exp => {
-        const icon = getExpenseCategoryIcon(exp.category);
-        const catLabel = getExpenseCategoryLabel(exp.category);
-        const isThb = exp.currency === 'THB';
-        const formattedAmt = isThb ? formatTHB(exp.amount) : formatMMK(exp.amount);
-        const accLabel = exp.paidAccount === 'CASH'
-          ? '💵 ငွေသား'
-          : (exp.paidAccount === 'BANK' ? '📱 KPay/ဘဏ်' : '🇹🇭 ဘတ်လက်ကျန်');
-
-        return `
-          <div class="theme-card-sub border hover:border-amber-500/50 p-3 rounded-2xl space-y-2 text-xs transition">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-1.5">
-                <span class="w-6 h-6 rounded-lg bg-amber-500/20 text-amber-500 flex items-center justify-center text-xs font-bold shrink-0">${icon}</span>
-                <span class="font-bold text-amber-500 text-[11px]">${catLabel}</span>
-                <span class="font-mono text-[10px] theme-text-muted">#${exp.id}</span>
-              </div>
-              <span class="text-[10px] theme-text-muted">${formatDateTime(exp.date)}</span>
-            </div>
-
-            <div class="flex items-start justify-between gap-2">
-              <div class="space-y-0.5">
-                <div class="font-bold theme-text-heading text-xs">${exp.title}</div>
-                <div class="text-[10px] theme-text-muted">
-                  ငွေရှင်းအကောင့်: <span class="font-semibold text-blue-400">${accLabel}</span>
-                  ${exp.note ? ` • <span class="italic text-slate-400">"${exp.note}"</span>` : ''}
+      container.innerHTML = renderMultiDayGroupedList({
+        listKey: 'expense',
+        items: list,
+        getDateFn: exp => exp.date,
+        getSummaryMetricsFn: exp => ({
+          mmk: exp.currency === 'THB' ? 0 : (Number(exp.amount) || 0),
+          thb: exp.currency === 'THB' ? (Number(exp.amount) || 0) : 0,
+          profitMMK: 0,
+          profitTHB: 0
+        }),
+        emptyHtml,
+        renderCompactFn: exp => {
+          const icon = getExpenseCategoryIcon(exp.category);
+          const isThb = exp.currency === 'THB';
+          const formattedAmt = isThb ? formatTHB(exp.amount) : formatMMK(exp.amount);
+          return `
+            <div class="theme-card-sub border border-amber-500/25 px-2.5 py-2 rounded-xl flex items-center justify-between gap-2 text-xs">
+              <div class="flex items-center gap-2 min-w-0">
+                <span class="text-xs shrink-0">${icon}</span>
+                <div class="min-w-0">
+                  <div class="font-bold theme-text-heading truncate">${exp.title}</div>
+                  <div class="text-[10px] theme-text-muted font-mono">${formatTimeOnly(exp.date)} • ${getExpenseCategoryLabel(exp.category)}</div>
                 </div>
               </div>
-              <div class="text-right shrink-0">
-                <div class="text-xs sm:text-sm font-extrabold font-mono text-rose-500">
-                  -${formattedAmt}
+              <div class="flex items-center gap-1.5 shrink-0">
+                <span class="font-extrabold font-mono text-rose-500 mr-1">-${formattedAmt}</span>
+                <button type="button" onclick="openEditExpenseModal('${exp.id}')" class="px-2 py-1 rounded-lg bg-blue-600/15 text-blue-500 text-[10px] font-bold">ပြင်</button>
+                <button type="button" onclick="deleteExpense('${exp.id}')" class="px-2 py-1 rounded-lg bg-rose-600/15 text-rose-500 text-[10px] font-bold">✕</button>
+              </div>
+            </div>
+          `;
+        },
+        renderCardFn: exp => {
+          const icon = getExpenseCategoryIcon(exp.category);
+          const catLabel = getExpenseCategoryLabel(exp.category);
+          const isThb = exp.currency === 'THB';
+          const formattedAmt = isThb ? formatTHB(exp.amount) : formatMMK(exp.amount);
+          const accLabel = exp.paidAccount === 'CASH'
+            ? '💵 ငွေသား'
+            : (exp.paidAccount === 'BANK' ? '📱 KPay/ဘဏ်' : '🇹🇭 ဘတ်လက်ကျန်');
+
+          return `
+            <div class="theme-card-sub border hover:border-amber-500/50 p-3 rounded-2xl space-y-2 text-xs transition">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-1.5">
+                  <span class="w-6 h-6 rounded-lg bg-amber-500/20 text-amber-500 flex items-center justify-center text-xs font-bold shrink-0">${icon}</span>
+                  <span class="font-bold text-amber-500 text-[11px]">${catLabel}</span>
+                  <span class="font-mono text-[10px] theme-text-muted">#${exp.id}</span>
+                </div>
+                <span class="text-[10px] theme-text-muted">${formatDateTime(exp.date)}</span>
+              </div>
+
+              <div class="flex items-start justify-between gap-2">
+                <div class="space-y-0.5">
+                  <div class="font-bold theme-text-heading text-xs">${exp.title}</div>
+                  <div class="text-[10px] theme-text-muted">
+                    ငွေရှင်းအကောင့်: <span class="font-semibold text-blue-400">${accLabel}</span>
+                    ${exp.note ? ` • <span class="italic text-slate-400">"${exp.note}"</span>` : ''}
+                  </div>
+                </div>
+                <div class="text-right shrink-0">
+                  <div class="text-xs sm:text-sm font-extrabold font-mono text-rose-500">
+                    -${formattedAmt}
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between gap-1.5 pt-1.5 border-t">
+                <span class="text-[9px] px-2 py-0.5 rounded-full font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                  အသုံးစရိတ်
+                </span>
+                <div class="flex items-center gap-1.5">
+                  <button type="button" onclick="openEditExpenseModal('${exp.id}')" class="px-2.5 py-1 rounded-lg bg-blue-600/15 text-blue-500 text-[10px] font-bold hover:bg-blue-600/25 transition">
+                    ပြင်မည်
+                  </button>
+                  <button type="button" onclick="deleteExpense('${exp.id}')" class="px-2.5 py-1 rounded-lg bg-rose-600/15 text-rose-500 text-[10px] font-bold hover:bg-rose-600/25 transition">
+                    ဖျက်မည်
+                  </button>
                 </div>
               </div>
             </div>
-
-            <div class="flex items-center justify-between gap-1.5 pt-1.5 border-t">
-              <span class="text-[9px] px-2 py-0.5 rounded-full font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                အသုံးစရိတ်
-              </span>
-              <div class="flex items-center gap-1.5">
-                <button type="button" onclick="openEditExpenseModal('${exp.id}')" class="px-2.5 py-1 rounded-lg bg-blue-600/15 text-blue-500 text-[10px] font-bold hover:bg-blue-600/25 transition">
-                  ပြင်မည်
-                </button>
-                <button type="button" onclick="deleteExpense('${exp.id}')" class="px-2.5 py-1 rounded-lg bg-rose-600/15 text-rose-500 text-[10px] font-bold hover:bg-rose-600/25 transition">
-                  ဖျက်မည်
-                </button>
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
+          `;
+        }
+      });
     };
 
     const exportFilteredExpenseCSV = window.exportFilteredExpenseCSV = function() {
@@ -8985,6 +9499,38 @@
       exportUnifiedItemsToCSV(filteredList, `LabShwin_AllHistory_${filterSlug}`);
     };
 
+    function renderUnifiedRecordCompactRow(item, isFromQuickSearchModal = false) {
+      const closeSearchPrefix = isFromQuickSearchModal ? 'closeVoucherSearchModal(); ' : '';
+      const mainAmt = item.amountTHB > 0 ? formatTHB(item.amountTHB) : formatMMK(item.amountMMK);
+      const editHandler = item.source === 'TX'
+        ? `${closeSearchPrefix}openEditModal('${item.id}');`
+        : item.source === 'DEPOSIT'
+        ? `${closeSearchPrefix}openEditDepositModal('${item.id}');`
+        : item.source === 'U9'
+        ? `${closeSearchPrefix}openEditU9Modal('${item.id}');`
+        : `${closeSearchPrefix}openEditExpenseModal('${item.id}');`;
+
+      return `
+        <div class="theme-card-sub border hover:border-blue-500/40 px-2.5 py-2 rounded-xl flex items-center justify-between gap-2 text-xs transition">
+          <div class="flex items-center gap-2 min-w-0">
+            <span class="text-[9px] px-1.5 py-0.5 rounded font-bold shrink-0 ${item.badgeClass}">${item.moduleKey}</span>
+            <div class="min-w-0">
+              <div class="font-bold theme-text-heading truncate">${item.displayTitle}</div>
+              <div class="text-[10px] theme-text-muted font-mono truncate">${formatTimeOnly(item.date)} • #${item.id} • ${item.channelOrAccount}</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5 shrink-0">
+            <div class="text-right mr-1">
+              <div class="font-extrabold font-mono ${item.source === 'EXPENSE' ? 'text-rose-500' : 'theme-text-heading'}">${item.source === 'EXPENSE' ? '-' : ''}${mainAmt}</div>
+              ${(item.profitMMK > 0 || item.profitTHB > 0) ? `<div class="text-[9px] font-mono text-emerald-400">+${item.profitTHB > 0 ? formatTHB(item.profitTHB) : formatMMK(item.profitMMK)}</div>` : ''}
+            </div>
+            ${item.source === 'TX' ? `<button type="button" onclick="${closeSearchPrefix}openVoucherModal('${item.id}');" class="px-2 py-1 rounded-lg bg-blue-600 text-white text-[10px] font-bold">ပြေစာ</button>` : ''}
+            <button type="button" onclick="${editHandler}" class="px-2 py-1 rounded-lg bg-blue-600/15 text-blue-500 text-[10px] font-bold">ပြင်</button>
+          </div>
+        </div>
+      `;
+    }
+
     const renderLedgerList = window.renderLedgerList = function() {
       syncSearchClearButton('ledgerSearchInput', 'ledgerSearchClearBtn');
       const container = document.getElementById('ledgerListContainer');
@@ -8995,12 +9541,20 @@
       const countBadge = document.getElementById('ledgerCountBadge');
       if (countBadge) countBadge.textContent = list.length + ' ခု';
 
-      if (list.length === 0) {
-        container.innerHTML = `<div class="text-center py-6 theme-text-muted text-xs">ကိုက်ညီသော မှတ်တမ်း မရှိပါ</div>`;
-        return;
-      }
-
-      container.innerHTML = list.map(item => renderUnifiedRecordCard(item, false)).join('');
+      container.innerHTML = renderMultiDayGroupedList({
+        listKey: 'ledger',
+        items: list,
+        getDateFn: item => item.date,
+        getSummaryMetricsFn: item => ({
+          mmk: Number(item.amountMMK) || 0,
+          thb: Number(item.amountTHB) || 0,
+          profitMMK: Number(item.profitMMK) || 0,
+          profitTHB: Number(item.profitTHB) || 0
+        }),
+        emptyHtml: `<div class="text-center py-6 theme-text-muted text-xs">ကိုက်ညီသော မှတ်တမ်း မရှိပါ</div>`,
+        renderCompactFn: item => renderUnifiedRecordCompactRow(item, false),
+        renderCardFn: item => renderUnifiedRecordCard(item, false)
+      });
     };
 
     // Helper to compute wallet impact of a transaction (REMIT / CASHOUT)
@@ -9551,18 +10105,28 @@
         sumEl.textContent = parts.length > 0 ? `• စုစုပေါင်း: ${parts.join(' + ')}` : '';
       }
 
-      if (list.length === 0) {
-        container.innerHTML = `
-          <div class="text-center py-10 theme-card-sub rounded-2xl border theme-text-muted text-xs space-y-1">
-            <div class="text-base">🔍</div>
-            <div>ကိုက်ညီသော စာရင်း သို့မဟုတ် ဘောက်ချာ ရှာမတွေ့ပါ</div>
-            <div class="text-[10px]">ငွေလွှဲ၊ KPay၊ အပ်ငွေစာရင်း၊ U9 ဖုန်းဘေလ်၊ အကြွေး နှင့် အသုံးစရိတ် အားလုံးတွင် ရှာဖွေထားပါသည်</div>
-          </div>
-        `;
-        return;
-      }
+      const emptyHtml = `
+        <div class="text-center py-10 theme-card-sub rounded-2xl border theme-text-muted text-xs space-y-1">
+          <div class="text-base">🔍</div>
+          <div>ကိုက်ညီသော စာရင်း သို့မဟုတ် ဘောက်ချာ ရှာမတွေ့ပါ</div>
+          <div class="text-[10px]">ငွေလွှဲ၊ KPay၊ အပ်ငွေစာရင်း၊ U9 ဖုန်းဘေလ်၊ အကြွေး နှင့် အသုံးစရိတ် အားလုံးတွင် ရှာဖွေထားပါသည်</div>
+        </div>
+      `;
 
-      container.innerHTML = list.slice(0, 60).map(item => renderUnifiedRecordCard(item, true)).join('');
+      container.innerHTML = renderMultiDayGroupedList({
+        listKey: 'quickSearch',
+        items: list,
+        getDateFn: item => item.date,
+        getSummaryMetricsFn: item => ({
+          mmk: Number(item.amountMMK) || 0,
+          thb: Number(item.amountTHB) || 0,
+          profitMMK: Number(item.profitMMK) || 0,
+          profitTHB: Number(item.profitTHB) || 0
+        }),
+        emptyHtml,
+        renderCompactFn: item => renderUnifiedRecordCompactRow(item, true),
+        renderCardFn: item => renderUnifiedRecordCard(item, true)
+      });
     };
 
     // --- QUICK RATE MODAL ---
@@ -10136,58 +10700,90 @@
       if (histBadge) histBadge.textContent = `${filtered.length} ခု`;
       if (!histContainer) return;
 
-      if (filtered.length === 0) {
-        histContainer.innerHTML = `<div class="text-center py-8 theme-card-sub rounded-xl border theme-text-muted text-xs">အပ်ငွေ/ထုတ်ငွေ မှတ်တမ်း မရှိသေးပါ</div>`;
-        return;
-      }
+      const emptyHtml = `<div class="text-center py-8 theme-card-sub rounded-xl border theme-text-muted text-xs">အပ်ငွေ/ထုတ်ငွေ မှတ်တမ်း မရှိသေးပါ</div>`;
 
-      histContainer.innerHTML = filtered.map(d => {
-        const isDepIn = d.type === 'DEPOSIT_IN';
-        const isNotice = d.type === 'WITHDRAW_NOTICE';
-        const badgeHtml = isDepIn
-          ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">📥 ငွေလာအပ်သည်</span>`
-          : isNotice
-          ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/40">🔔 ၁ ပတ်ကြိုမှတ် (${d.noticeStatus === 'COMPLETED' ? 'ထုတ်ပေးပြီး' : (d.targetDate || '')})</span>`
-          : `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30">📤 ငွေပြန်ထုတ်ပေးသည်</span>`;
-
-        const amtFormatted = d.currency === 'THB' ? formatTHB(d.amount) : formatMMK(d.amount);
-        const amtColor = isDepIn ? 'text-emerald-400' : isNotice ? 'text-amber-400' : 'text-rose-400';
-        const sign = isDepIn ? '+' : isNotice ? '⏳ ' : '-';
-        const accText = d.account === 'CASH' ? 'ငွေသား' : d.account === 'BANK' ? 'KPay/Bank' : 'ထိုင်းဘတ်';
-
-        return `
-          <div class="theme-card-sub border p-3 rounded-xl space-y-1.5 text-xs">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-1.5">
-                <span class="font-mono text-[10px] text-purple-400 font-bold">#${d.id}</span>
-                <span class="text-[10px] theme-text-muted">• ${formatDateTime(d.date)}</span>
-              </div>
-              ${badgeHtml}
-            </div>
-            <div class="flex items-start justify-between gap-2">
-              <div>
-                <div class="font-bold theme-text-heading">${d.custName}</div>
-                <div class="text-[10px] theme-text-muted">
-                  အကောင့်: <span class="font-semibold">${accText}</span>
-                  ${d.custPhone ? ` • ဖုန်း: <span class="font-mono">${d.custPhone}</span>` : ''}
-                  ${d.targetDate ? ` • ထုတ်မည့်ရက်: <span class="font-mono text-amber-400 font-bold">${d.targetDate}</span>` : ''}
-                  ${d.note ? ` • မှတ်ချက်: ${d.note}` : ''}
+      histContainer.innerHTML = renderMultiDayGroupedList({
+        listKey: 'deposits',
+        items: filtered,
+        getDateFn: d => d.date,
+        getSummaryMetricsFn: d => ({
+          mmk: d.currency === 'THB' ? 0 : (Number(d.amount) || 0),
+          thb: d.currency === 'THB' ? (Number(d.amount) || 0) : 0,
+          profitMMK: 0,
+          profitTHB: 0
+        }),
+        emptyHtml,
+        renderCompactFn: d => {
+          const isDepIn = d.type === 'DEPOSIT_IN';
+          const isNotice = d.type === 'WITHDRAW_NOTICE';
+          const amtFormatted = d.currency === 'THB' ? formatTHB(d.amount) : formatMMK(d.amount);
+          const amtColor = isDepIn ? 'text-emerald-400' : isNotice ? 'text-amber-400' : 'text-rose-400';
+          const sign = isDepIn ? '+' : isNotice ? '⏳ ' : '-';
+          return `
+            <div class="theme-card-sub border border-purple-500/30 px-2.5 py-2 rounded-xl flex items-center justify-between gap-2 text-xs">
+              <div class="flex items-center gap-2 min-w-0">
+                <span class="text-xs shrink-0">${isDepIn ? '📥' : isNotice ? '🔔' : '📤'}</span>
+                <div class="min-w-0">
+                  <div class="font-bold theme-text-heading truncate">${d.custName}</div>
+                  <div class="text-[10px] theme-text-muted font-mono">${formatTimeOnly(d.date)} • #${d.id}</div>
                 </div>
               </div>
-              <div class="text-right shrink-0">
-                <div class="text-sm font-extrabold font-mono ${amtColor}">${sign}${amtFormatted}</div>
+              <div class="flex items-center gap-1.5 shrink-0">
+                <span class="font-extrabold font-mono ${amtColor} mr-1">${sign}${amtFormatted}</span>
+                ${isNotice && d.noticeStatus !== 'COMPLETED' ? `<button type="button" onclick="fulfillDepositNotice('${d.id}')" class="px-2 py-1 rounded-lg bg-emerald-600 text-white text-[10px] font-bold">ထုတ်မည်</button>` : ''}
+                <button type="button" onclick="openEditDepositModal('${d.id}')" class="px-2 py-1 rounded-lg bg-blue-600/15 text-blue-400 text-[10px] font-bold">ပြင်</button>
               </div>
             </div>
-            <div class="flex items-center justify-end gap-2 pt-1.5 border-t border-slate-700/40">
-              ${isNotice && d.noticeStatus !== 'COMPLETED' ? `
-                <button type="button" onclick="fulfillDepositNotice('${d.id}')" class="px-2.5 py-1 rounded-lg bg-emerald-600 text-white text-[10px] font-bold">✓ ယခု ထုတ်ပေးမည်</button>
-              ` : ''}
-              <button type="button" onclick="openEditDepositModal('${d.id}')" class="px-2.5 py-1 rounded-lg bg-blue-600/15 hover:bg-blue-600/25 text-blue-400 text-[10px] font-bold">ပြင်မည်</button>
-              <button type="button" onclick="deleteDepositRecord('${d.id}')" class="px-2 py-1 rounded-lg theme-card border text-[10px] text-rose-400 hover:bg-rose-500/10 font-semibold">ဖျက်မည်</button>
+          `;
+        },
+        renderCardFn: d => {
+          const isDepIn = d.type === 'DEPOSIT_IN';
+          const isNotice = d.type === 'WITHDRAW_NOTICE';
+          const badgeHtml = isDepIn
+            ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">📥 ငွေလာအပ်သည်</span>`
+            : isNotice
+            ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/40">🔔 ၁ ပတ်ကြိုမှတ် (${d.noticeStatus === 'COMPLETED' ? 'ထုတ်ပေးပြီး' : (d.targetDate || '')})</span>`
+            : `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30">📤 ငွေပြန်ထုတ်ပေးသည်</span>`;
+
+          const amtFormatted = d.currency === 'THB' ? formatTHB(d.amount) : formatMMK(d.amount);
+          const amtColor = isDepIn ? 'text-emerald-400' : isNotice ? 'text-amber-400' : 'text-rose-400';
+          const sign = isDepIn ? '+' : isNotice ? '⏳ ' : '-';
+          const accText = d.account === 'CASH' ? 'ငွေသား' : d.account === 'BANK' ? 'KPay/Bank' : 'ထိုင်းဘတ်';
+
+          return `
+            <div class="theme-card-sub border p-3 rounded-xl space-y-1.5 text-xs">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-1.5">
+                  <span class="font-mono text-[10px] text-purple-400 font-bold">#${d.id}</span>
+                  <span class="text-[10px] theme-text-muted">• ${formatDateTime(d.date)}</span>
+                </div>
+                ${badgeHtml}
+              </div>
+              <div class="flex items-start justify-between gap-2">
+                <div>
+                  <div class="font-bold theme-text-heading">${d.custName}</div>
+                  <div class="text-[10px] theme-text-muted">
+                    အကောင့်: <span class="font-semibold">${accText}</span>
+                    ${d.custPhone ? ` • ဖုန်း: <span class="font-mono">${d.custPhone}</span>` : ''}
+                    ${d.targetDate ? ` • ထုတ်မည့်ရက်: <span class="font-mono text-amber-400 font-bold">${d.targetDate}</span>` : ''}
+                    ${d.note ? ` • မှတ်ချက်: ${d.note}` : ''}
+                  </div>
+                </div>
+                <div class="text-right shrink-0">
+                  <div class="text-sm font-extrabold font-mono ${amtColor}">${sign}${amtFormatted}</div>
+                </div>
+              </div>
+              <div class="flex items-center justify-end gap-2 pt-1.5 border-t border-slate-700/40">
+                ${isNotice && d.noticeStatus !== 'COMPLETED' ? `
+                  <button type="button" onclick="fulfillDepositNotice('${d.id}')" class="px-2.5 py-1 rounded-lg bg-emerald-600 text-white text-[10px] font-bold">✓ ယခု ထုတ်ပေးမည်</button>
+                ` : ''}
+                <button type="button" onclick="openEditDepositModal('${d.id}')" class="px-2.5 py-1 rounded-lg bg-blue-600/15 hover:bg-blue-600/25 text-blue-400 text-[10px] font-bold">ပြင်မည်</button>
+                <button type="button" onclick="deleteDepositRecord('${d.id}')" class="px-2 py-1 rounded-lg theme-card border text-[10px] text-rose-400 hover:bg-rose-500/10 font-semibold">ဖျက်မည်</button>
+              </div>
             </div>
-          </div>
-        `;
-      }).join('');
+          `;
+        }
+      });
     };
 
     // --- Edit Deposit Modal Functions ---
@@ -11091,121 +11687,148 @@
       if (histBadge) histBadge.textContent = `${filtered.length} ခု`;
       if (!histContainer) return;
 
-      if (filtered.length === 0) {
-        histContainer.innerHTML = `<div class="text-center py-8 theme-card-sub rounded-xl border theme-text-muted text-xs">ရွေးချယ်ထားသော ကာလအတွင်း U9 မှတ်တမ်း မရှိသေးပါ</div>`;
-        return;
-      }
+      const emptyHtml = `<div class="text-center py-8 theme-card-sub rounded-xl border theme-text-muted text-xs">ရွေးချယ်ထားသော ကာလအတွင်း U9 မှတ်တမ်း မရှိသေးပါ</div>`;
 
-      histContainer.innerHTML = filtered.map(r => {
-        if (r.type === 'BUY_PRIMARY') {
+      histContainer.innerHTML = renderMultiDayGroupedList({
+        listKey: 'u9',
+        items: filtered,
+        getDateFn: r => r.date,
+        getSummaryMetricsFn: r => ({
+          mmk: Number(r.sellingPrice || r.billAmount || r.purchaseAmount || r.withdrawAmount) || 0,
+          thb: 0,
+          profitMMK: Number(r.commissionAmount || r.extraProfit) || 0,
+          profitTHB: 0
+        }),
+        emptyHtml,
+        renderCompactFn: r => {
+          const isPrimary = r.type === 'BUY_PRIMARY';
+          const isWithdraw = r.type === 'WITHDRAW_COMM';
+          const title = isPrimary ? '📦 Primary ဘေလ်အဝယ်' : isWithdraw ? '💵 ကော်မရှင်ထုတ်ယူ' : `📲 ${r.custName || 'Customer'}`;
+          const amt = formatMMK(r.sellingPrice || r.billAmount || r.purchaseAmount || r.withdrawAmount || 0);
           return `
-            <div class="theme-card-sub border border-indigo-500/40 p-3 rounded-xl space-y-1.5 text-xs">
+            <div class="theme-card-sub border border-cyan-500/30 px-2.5 py-2 rounded-xl flex items-center justify-between gap-2 text-xs">
+              <div class="min-w-0">
+                <div class="font-bold theme-text-heading truncate">${title}</div>
+                <div class="text-[10px] theme-text-muted font-mono">${formatTimeOnly(r.date)} • #${r.id}</div>
+              </div>
+              <div class="flex items-center gap-1.5 shrink-0">
+                <span class="font-extrabold font-mono text-cyan-400 mr-1">${amt}</span>
+                <button type="button" onclick="openEditU9Modal('${r.id}')" class="px-2 py-1 rounded-lg bg-blue-600/15 text-blue-400 text-[10px] font-bold">ပြင်</button>
+              </div>
+            </div>
+          `;
+        },
+        renderCardFn: r => {
+          if (r.type === 'BUY_PRIMARY') {
+            return `
+              <div class="theme-card-sub border border-indigo-500/40 p-3 rounded-xl space-y-1.5 text-xs">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-1.5">
+                    <span class="font-mono text-[10px] text-indigo-400 font-bold">#${r.id}</span>
+                    <span class="text-[10px] theme-text-muted">• ${formatDateTime(r.date)}</span>
+                  </div>
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">📦 Primary ဘေလ်အဝယ် (${r.commRate || 0}%)</span>
+                </div>
+                <div class="flex items-start justify-between gap-2">
+                  <div>
+                    <div class="font-bold theme-text-heading">Primary ဝယ်ယူငွေ: ${formatMMK(r.purchaseAmount)}</div>
+                    <div class="text-[10px] theme-text-muted">
+                      ရရှိသည့်ဘေလ်: <span class="font-mono font-bold text-cyan-400">+${formatMMK(r.stockReceived)}</span>
+                      ${r.note ? ` • မှတ်ချက်: ${r.note}` : ''}
+                    </div>
+                  </div>
+                  <div class="text-right shrink-0">
+                    <div class="text-sm font-extrabold font-mono text-emerald-400">+${formatMMK(r.commissionAmount)}</div>
+                    <div class="text-[10px] theme-text-muted">ကော်မရှင်အမြတ်</div>
+                  </div>
+                </div>
+                <div class="flex justify-end gap-1.5 pt-1 border-t border-slate-700/40">
+                  <button type="button" onclick="openEditU9Modal('${r.id}')" class="px-2.5 py-0.5 rounded-lg bg-blue-600/15 hover:bg-blue-600/25 text-blue-400 text-[10px] font-bold">ပြင်မည်</button>
+                  <button type="button" onclick="deleteU9Record('${r.id}')" class="px-2 py-0.5 rounded-lg theme-card border text-[10px] text-rose-400 hover:bg-rose-500/10 font-semibold">ဖျက်မည်</button>
+                </div>
+              </div>
+            `;
+          }
+
+          if (r.type === 'WITHDRAW_COMM') {
+            const chText = r.channel === 'CASH' ? '💵 ငွေသား (Cash)' : '📱 KPay';
+            return `
+              <div class="theme-card-sub border border-amber-500/40 p-3 rounded-xl space-y-1.5 text-xs">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-1.5">
+                    <span class="font-mono text-[10px] text-amber-400 font-bold">#${r.id}</span>
+                    <span class="text-[10px] theme-text-muted">• ${formatDateTime(r.date)}</span>
+                  </div>
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">💵 ကော်မရှင်အမြတ် ထုတ်ယူခြင်း</span>
+                </div>
+                <div class="flex items-start justify-between gap-2">
+                  <div>
+                    <div class="font-bold theme-text-heading">ထုတ်ယူသည့်နည်းလမ်း: ${chText}</div>
+                    <div class="text-[10px] theme-text-muted">
+                      ${r.note ? `မှတ်ချက်: ${r.note}` : 'ကော်မရှင်အမြတ်ထဲမှ ထုတ်ယူသည်'}
+                    </div>
+                  </div>
+                  <div class="text-right shrink-0">
+                    <div class="text-sm font-extrabold font-mono text-amber-400">-${formatMMK(r.withdrawAmount)}</div>
+                  </div>
+                </div>
+                <div class="flex justify-end gap-1.5 pt-1 border-t border-slate-700/40">
+                  <button type="button" onclick="openEditU9Modal('${r.id}')" class="px-2.5 py-0.5 rounded-lg bg-blue-600/15 hover:bg-blue-600/25 text-blue-400 text-[10px] font-bold">ပြင်မည်</button>
+                  <button type="button" onclick="deleteU9Record('${r.id}')" class="px-2 py-0.5 rounded-lg theme-card border text-[10px] text-rose-400 hover:bg-rose-500/10 font-semibold">ဖျက်မည်</button>
+                </div>
+              </div>
+            `;
+          }
+
+          // SELL_BILL
+          const isCredit = r.paymentType === 'CREDIT';
+          const isUnpaid = r.status === 'UNPAID';
+          const payBadge = r.paymentType === 'CASH'
+            ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400">💵 လက်ငင်း (ငွေသား)</span>`
+            : r.paymentType === 'KPAY'
+            ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/20 text-blue-400">📱 လက်ငင်း (KPay)</span>`
+            : isUnpaid
+            ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/20 text-rose-400 border border-rose-500/40">⚠️ အကြွေး (မဆပ်ရသေး)</span>`
+            : `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400">✓ အကြွေး (ပြန်ရပြီး)</span>`;
+
+          return `
+            <div class="theme-card-sub border ${isCredit && isUnpaid ? 'border-rose-500/50' : 'border-cyan-500/30'} p-3 rounded-xl space-y-1.5 text-xs">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-1.5">
-                  <span class="font-mono text-[10px] text-indigo-400 font-bold">#${r.id}</span>
+                  <span class="font-mono text-[10px] text-cyan-400 font-bold">#${r.id}</span>
                   <span class="text-[10px] theme-text-muted">• ${formatDateTime(r.date)}</span>
                 </div>
-                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">📦 Primary ဘေလ်အဝယ် (${r.commRate || 0}%)</span>
+                ${payBadge}
               </div>
               <div class="flex items-start justify-between gap-2">
                 <div>
-                  <div class="font-bold theme-text-heading">Primary ဝယ်ယူငွေ: ${formatMMK(r.purchaseAmount)}</div>
+                  <div class="font-bold theme-text-heading">📲 ${r.custName || 'Customer'}</div>
                   <div class="text-[10px] theme-text-muted">
-                    ရရှိသည့်ဘေလ်: <span class="font-mono font-bold text-cyan-400">+${formatMMK(r.stockReceived)}</span>
+                    ရောင်းသည့်ဘေလ်: <span class="font-mono font-bold text-cyan-400">${formatMMK(r.billAmount)}</span>
+                    ${r.custPhone ? ` • ဖုန်း: <span class="font-mono">${r.custPhone}</span>` : ''}
                     ${r.note ? ` • မှတ်ချက်: ${r.note}` : ''}
                   </div>
                 </div>
                 <div class="text-right shrink-0">
-                  <div class="text-sm font-extrabold font-mono text-emerald-400">+${formatMMK(r.commissionAmount)}</div>
-                  <div class="text-[10px] theme-text-muted">ကော်မရှင်အမြတ်</div>
+                  <div class="text-sm font-extrabold font-mono theme-text-heading">${formatMMK(r.sellingPrice || r.billAmount)}</div>
+                  ${r.extraProfit > 0 ? `<div class="text-[10px] font-mono text-emerald-400">အပိုအမြတ်: +${formatMMK(r.extraProfit)}</div>` : ''}
                 </div>
               </div>
-              <div class="flex justify-end gap-1.5 pt-1 border-t border-slate-700/40">
-                <button type="button" onclick="openEditU9Modal('${r.id}')" class="px-2.5 py-0.5 rounded-lg bg-blue-600/15 hover:bg-blue-600/25 text-blue-400 text-[10px] font-bold">ပြင်မည်</button>
-                <button type="button" onclick="deleteU9Record('${r.id}')" class="px-2 py-0.5 rounded-lg theme-card border text-[10px] text-rose-400 hover:bg-rose-500/10 font-semibold">ဖျက်မည်</button>
-              </div>
-            </div>
-          `;
-        }
-
-        if (r.type === 'WITHDRAW_COMM') {
-          const chText = r.channel === 'CASH' ? '💵 ငွေသား (Cash)' : '📱 KPay';
-          return `
-            <div class="theme-card-sub border border-amber-500/40 p-3 rounded-xl space-y-1.5 text-xs">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-1.5">
-                  <span class="font-mono text-[10px] text-amber-400 font-bold">#${r.id}</span>
-                  <span class="text-[10px] theme-text-muted">• ${formatDateTime(r.date)}</span>
-                </div>
-                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">💵 ကော်မရှင်အမြတ် ထုတ်ယူခြင်း</span>
-              </div>
-              <div class="flex items-start justify-between gap-2">
+              <div class="flex items-center justify-between pt-1.5 border-t border-slate-700/40">
                 <div>
-                  <div class="font-bold theme-text-heading">ထုတ်ယူသည့်နည်းလမ်း: ${chText}</div>
-                  <div class="text-[10px] theme-text-muted">
-                    ${r.note ? `မှတ်ချက်: ${r.note}` : 'ကော်မရှင်အမြတ်ထဲမှ ထုတ်ယူသည်'}
-                  </div>
+                  ${isCredit && isUnpaid && r.linkedTxId ? `
+                    <button type="button" onclick="openSettleModal('${r.linkedTxId}')" class="px-2.5 py-1 rounded-lg bg-emerald-600 text-white text-[10px] font-bold">✓ အကြွေးဆပ်မည်</button>
+                  ` : ''}
                 </div>
-                <div class="text-right shrink-0">
-                  <div class="text-sm font-extrabold font-mono text-amber-400">-${formatMMK(r.withdrawAmount)}</div>
+                <div class="flex items-center gap-1.5">
+                  <button type="button" onclick="openEditU9Modal('${r.id}')" class="px-2.5 py-0.5 rounded-lg bg-blue-600/15 hover:bg-blue-600/25 text-blue-400 text-[10px] font-bold">ပြင်မည်</button>
+                  <button type="button" onclick="deleteU9Record('${r.id}')" class="px-2 py-0.5 rounded-lg theme-card border text-[10px] text-rose-400 hover:bg-rose-500/10 font-semibold">ဖျက်မည်</button>
                 </div>
-              </div>
-              <div class="flex justify-end gap-1.5 pt-1 border-t border-slate-700/40">
-                <button type="button" onclick="openEditU9Modal('${r.id}')" class="px-2.5 py-0.5 rounded-lg bg-blue-600/15 hover:bg-blue-600/25 text-blue-400 text-[10px] font-bold">ပြင်မည်</button>
-                <button type="button" onclick="deleteU9Record('${r.id}')" class="px-2 py-0.5 rounded-lg theme-card border text-[10px] text-rose-400 hover:bg-rose-500/10 font-semibold">ဖျက်မည်</button>
               </div>
             </div>
           `;
         }
-
-        // SELL_BILL
-        const isCredit = r.paymentType === 'CREDIT';
-        const isUnpaid = r.status === 'UNPAID';
-        const payBadge = r.paymentType === 'CASH'
-          ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400">💵 လက်ငင်း (ငွေသား)</span>`
-          : r.paymentType === 'KPAY'
-          ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/20 text-blue-400">📱 လက်ငင်း (KPay)</span>`
-          : isUnpaid
-          ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/20 text-rose-400 border border-rose-500/40">⚠️ အကြွေး (မဆပ်ရသေး)</span>`
-          : `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400">✓ အကြွေး (ပြန်ရပြီး)</span>`;
-
-        return `
-          <div class="theme-card-sub border ${isCredit && isUnpaid ? 'border-rose-500/50' : 'border-cyan-500/30'} p-3 rounded-xl space-y-1.5 text-xs">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-1.5">
-                <span class="font-mono text-[10px] text-cyan-400 font-bold">#${r.id}</span>
-                <span class="text-[10px] theme-text-muted">• ${formatDateTime(r.date)}</span>
-              </div>
-              ${payBadge}
-            </div>
-            <div class="flex items-start justify-between gap-2">
-              <div>
-                <div class="font-bold theme-text-heading">📲 ${r.custName || 'Customer'}</div>
-                <div class="text-[10px] theme-text-muted">
-                  ရောင်းသည့်ဘေလ်: <span class="font-mono font-bold text-cyan-400">${formatMMK(r.billAmount)}</span>
-                  ${r.custPhone ? ` • ဖုန်း: <span class="font-mono">${r.custPhone}</span>` : ''}
-                  ${r.note ? ` • မှတ်ချက်: ${r.note}` : ''}
-                </div>
-              </div>
-              <div class="text-right shrink-0">
-                <div class="text-sm font-extrabold font-mono theme-text-heading">${formatMMK(r.sellingPrice || r.billAmount)}</div>
-                ${r.extraProfit > 0 ? `<div class="text-[10px] font-mono text-emerald-400">အပိုအမြတ်: +${formatMMK(r.extraProfit)}</div>` : ''}
-              </div>
-            </div>
-            <div class="flex items-center justify-between pt-1.5 border-t border-slate-700/40">
-              <div>
-                ${isCredit && isUnpaid && r.linkedTxId ? `
-                  <button type="button" onclick="openSettleModal('${r.linkedTxId}')" class="px-2.5 py-1 rounded-lg bg-emerald-600 text-white text-[10px] font-bold">✓ အကြွေးဆပ်မည်</button>
-                ` : ''}
-              </div>
-              <div class="flex items-center gap-1.5">
-                <button type="button" onclick="openEditU9Modal('${r.id}')" class="px-2.5 py-0.5 rounded-lg bg-blue-600/15 hover:bg-blue-600/25 text-blue-400 text-[10px] font-bold">ပြင်မည်</button>
-                <button type="button" onclick="deleteU9Record('${r.id}')" class="px-2 py-0.5 rounded-lg theme-card border text-[10px] text-rose-400 hover:bg-rose-500/10 font-semibold">ဖျက်မည်</button>
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
+      });
     };
 
     const exportU9HistoryCSV = window.exportU9HistoryCSV = function() {
