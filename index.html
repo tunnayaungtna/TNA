@@ -21,10 +21,10 @@
   <link rel="icon" type="image/svg+xml" id="appFavicon" href="icon.svg">
   <link rel="apple-touch-icon" id="appleTouchIconLink" href="icon.svg">
 
-  <!-- Google Fonts: Noto Sans Myanmar & Inter -->
+  <!-- Google Fonts: Noto Sans Myanmar, Plus Jakarta Sans & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Myanmar:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700;800&family=Noto+Sans+Myanmar:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -34,8 +34,9 @@
       theme: {
         extend: {
           fontFamily: {
-            myanmar: ['"Noto Sans Myanmar"', 'sans-serif'],
-            sans: ['Inter', '"Noto Sans Myanmar"', 'sans-serif'],
+            myanmar: ['"Noto Sans Myanmar"', '"Plus Jakarta Sans"', 'sans-serif'],
+            sans: ['"Plus Jakarta Sans"', '"Noto Sans Myanmar"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
           },
           screens: {
             sm: '640px',
@@ -59,6 +60,61 @@
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 
   <style>
+    /* ==========================================================================
+       PREMIUM NEUMORPHISM (SOFT TACTILE UI) DESIGN SYSTEM - LAB SHWIN
+       ========================================================================== */
+    :root {
+      /* Light Mode: Alabaster Pearl Soft UI Palette */
+      --neu-bg: #e6ecf5;
+      --neu-bg-grad: linear-gradient(145deg, #edf3fc 0%, #dfe6f0 100%);
+      --neu-surface: linear-gradient(145deg, #f2f7ff, #dde4ef);
+      --neu-surface-flat: #e6ecf5;
+      --neu-surface-sub: linear-gradient(145deg, #ebf1fa, #dfe6f1);
+      --neu-input-bg: #e1e8f2;
+      --neu-text-heading: #152238;
+      --neu-text-body: #293850;
+      --neu-text-muted: #5b6d88;
+      --neu-border: rgba(255, 255, 255, 0.72);
+      --neu-border-subtle: rgba(176, 190, 212, 0.45);
+      --neu-divider: rgba(163, 177, 198, 0.35);
+
+      /* Dual-Direction Soft Extruded & Recessed Shadows (Light) */
+      --neu-shadow-card: 9px 9px 18px #c3cad6, -9px -9px 18px #ffffff, inset 1px 1px 1px rgba(255, 255, 255, 0.85);
+      --neu-shadow-card-hover: 12px 12px 24px #bcc4d1, -10px -10px 22px #ffffff, inset 1px 1px 2px rgba(255, 255, 255, 0.95);
+      --neu-shadow-sub: 5px 5px 11px #c5cdd9, -5px -5px 11px #ffffff, inset 1px 1px 0px rgba(255, 255, 255, 0.75);
+      --neu-shadow-btn: 4px 4px 9px #c2cad6, -4px -4px 9px #ffffff, inset 1px 1px 0px rgba(255, 255, 255, 0.88);
+      --neu-shadow-inset: inset 5px 5px 10px #c3cad6, inset -5px -5px 10px #ffffff;
+      --neu-shadow-inset-sm: inset 3px 3px 6px #c4ccd8, inset -3px -3px 6px #ffffff;
+      --neu-shadow-header: 0 8px 20px rgba(175, 188, 208, 0.55), inset 0 -1px 0 rgba(255, 255, 255, 0.8);
+      --neu-shadow-nav: 10px 10px 24px #bbc3d0, -8px -8px 20px #ffffff, inset 1px 1px 1px rgba(255, 255, 255, 0.9);
+    }
+
+    html.dark {
+      /* Dark Mode: Obsidian Slate Tactile Matte Palette */
+      --neu-bg: #1a212e;
+      --neu-bg-grad: linear-gradient(145deg, #1d2534 0%, #161c27 100%);
+      --neu-surface: linear-gradient(145deg, #202838, #171d29);
+      --neu-surface-flat: #1c2331;
+      --neu-surface-sub: linear-gradient(145deg, #1e2635, #171d28);
+      --neu-input-bg: #151b26;
+      --neu-text-heading: #f1f5f9;
+      --neu-text-body: #e2e8f0;
+      --neu-text-muted: #93a4be;
+      --neu-border: rgba(255, 255, 255, 0.065);
+      --neu-border-subtle: rgba(255, 255, 255, 0.045);
+      --neu-divider: rgba(255, 255, 255, 0.07);
+
+      /* Dual-Direction Soft Extruded & Recessed Shadows (Dark) */
+      --neu-shadow-card: 8px 8px 18px #0f131b, -6px -6px 16px #252f42, inset 1px 1px 0px rgba(255, 255, 255, 0.06);
+      --neu-shadow-card-hover: 10px 10px 22px #0c1017, -7px -7px 18px #283347, inset 1px 1px 0px rgba(255, 255, 255, 0.09);
+      --neu-shadow-sub: 5px 5px 11px #10141d, -4px -4px 10px #242e40, inset 1px 1px 0px rgba(255, 255, 255, 0.045);
+      --neu-shadow-btn: 4px 4px 9px #0f131b, -3px -3px 8px #252f42, inset 1px 1px 0px rgba(255, 255, 255, 0.07);
+      --neu-shadow-inset: inset 5px 5px 11px #0e121a, inset -4px -4px 9px #242e41;
+      --neu-shadow-inset-sm: inset 3px 3px 7px #0f131b, inset -3px -3px 7px #242e40;
+      --neu-shadow-header: 0 8px 22px rgba(8, 11, 17, 0.65), inset 0 -1px 0 rgba(255, 255, 255, 0.06);
+      --neu-shadow-nav: 10px 10px 24px #0c0f16, -6px -6px 16px #263044, inset 1px 1px 0px rgba(255, 255, 255, 0.08);
+    }
+
     @keyframes pinShake {
       0%, 100% { transform: translateX(0); }
       20%, 60% { transform: translateX(-8px); }
@@ -67,35 +123,49 @@
     .pin-shake {
       animation: pinShake 0.35s ease-in-out;
     }
+
     body {
-      font-family: 'Noto Sans Myanmar', Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: 'Noto Sans Myanmar', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background-color: var(--neu-bg);
+      background-image: var(--neu-bg-grad);
+      background-attachment: fixed;
+      color: var(--neu-text-body);
       -webkit-font-smoothing: antialiased;
       -webkit-tap-highlight-color: transparent;
       user-select: none;
-      transition: background-color 0.3s ease, color 0.3s ease;
+      transition: background-color 0.25s ease, color 0.25s ease;
     }
+
+    .font-mono {
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.01em;
+    }
+
     input, textarea, select {
       user-select: text;
     }
+
     ::-webkit-scrollbar {
-      width: 5px;
-      height: 5px;
+      width: 6px;
+      height: 6px;
     }
     ::-webkit-scrollbar-track {
       background: transparent;
     }
     ::-webkit-scrollbar-thumb {
-      background: rgba(148, 163, 184, 0.25);
-      border-radius: 6px;
+      background: rgba(148, 163, 184, 0.32);
+      border-radius: 9999px;
     }
+
     .safe-bottom {
-      padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 5.5rem);
+      padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 5.8rem);
     }
     @media (min-width: 768px) {
       .safe-bottom {
-        padding-bottom: 6rem;
+        padding-bottom: 6.5rem;
       }
     }
+
     @media print {
       body * {
         visibility: hidden;
@@ -114,112 +184,229 @@
       }
     }
 
-    /* Light Mode Custom Styling Overrides */
-    html:not(.dark) body {
-      background-color: #f1f5f9;
-      color: #0f172a;
-    }
-    html:not(.dark) .theme-header {
-      background-color: rgba(255, 255, 255, 0.95);
-      border-color: #e2e8f0;
-    }
-    html:not(.dark) .theme-card {
-      background-color: #ffffff;
-      border-color: #e2e8f0;
-      color: #1e293b;
-      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03);
-    }
-    html:not(.dark) .theme-card-sub {
-      background-color: #f8fafc;
-      border-color: #e2e8f0;
-    }
-    html:not(.dark) .theme-input {
-      background-color: #f8fafc;
-      border-color: #cbd5e1;
-      color: #0f172a;
-    }
-    html:not(.dark) .theme-input:focus {
-      background-color: #ffffff;
-      border-color: #2563eb;
-    }
-    html:not(.dark) .theme-nav {
-      background-color: rgba(255, 255, 255, 0.96);
-      border-color: #e2e8f0;
-    }
-    html:not(.dark) .theme-text-muted {
-      color: #64748b;
-    }
-    html:not(.dark) .theme-text-heading {
-      color: #0f172a;
-    }
-    html:not(.dark) .theme-tag-bg {
-      background-color: #e2e8f0;
-      color: #334155;
+    /* ==========================================================================
+       NEUMORPHIC SURFACES, CARDS, WELLS & INPUTS
+       ========================================================================== */
+    .theme-header {
+      background: var(--neu-surface);
+      border-bottom: 1px solid var(--neu-border) !important;
+      box-shadow: var(--neu-shadow-header) !important;
     }
 
-    /* Dark Mode Defaults */
-    html.dark body {
-      background-color: #090d16;
-      color: #f8fafc;
-    }
-    html.dark .theme-header {
-      background-color: rgba(15, 23, 42, 0.95);
-      border-color: #1e293b;
-    }
-    html.dark .theme-card {
-      background-color: rgba(30, 41, 59, 0.85);
-      border-color: rgba(51, 65, 85, 0.8);
-      color: #f8fafc;
-    }
-    html.dark .theme-card-sub {
-      background-color: rgba(15, 23, 42, 0.7);
-      border-color: rgba(51, 65, 85, 0.6);
-    }
-    html.dark .theme-input {
-      background-color: #0f172a;
-      border-color: #334155;
-      color: #ffffff;
-    }
-    html.dark .theme-input:focus {
-      border-color: #3b82f6;
-    }
-    html.dark .theme-nav {
-      background-color: rgba(15, 23, 42, 0.95);
-      border-color: #1e293b;
-    }
-    html.dark .theme-text-muted {
-      color: #94a3b8;
-    }
-    html.dark .theme-text-heading {
-      color: #ffffff;
-    }
-    html.dark .theme-tag-bg {
-      background-color: #1e293b;
-      color: #94a3b8;
+    /* Extruded 3D Soft-Molded Primary Card */
+    .theme-card {
+      background: var(--neu-surface);
+      border: 1px solid var(--neu-border) !important;
+      box-shadow: var(--neu-shadow-card) !important;
+      color: var(--neu-text-body);
+      border-radius: 1.35rem;
+      transition: box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    /* Official Google Sign In Button */
+    .theme-card.cursor-pointer:hover {
+      box-shadow: var(--neu-shadow-card-hover) !important;
+      transform: translateY(-1px);
+    }
+
+    .theme-card.cursor-pointer:active,
+    button.theme-card:active {
+      box-shadow: var(--neu-shadow-inset-sm) !important;
+      transform: scale(0.99);
+    }
+
+    /* Secondary Sculpted Tactile Surface */
+    .theme-card-sub {
+      background: var(--neu-surface-sub);
+      border: 1px solid var(--neu-border-subtle) !important;
+      box-shadow: var(--neu-shadow-sub);
+      border-radius: 1rem;
+      transition: box-shadow 0.18s ease, transform 0.12s ease, border-color 0.18s ease;
+    }
+
+    /* Segmented Filter Bars & Pill Tracks become Recessed Carved Grooves */
+    .theme-card.p-1,
+    .theme-card.p-1\.5,
+    .theme-card.p-0\.5,
+    .theme-card-sub.p-1,
+    .theme-card-sub.p-1\.5,
+    .theme-card-sub.p-0\.5 {
+      background: var(--neu-input-bg) !important;
+      box-shadow: var(--neu-shadow-inset-sm) !important;
+      border-color: var(--neu-border-subtle) !important;
+    }
+
+    /* Interactive Sub-Cards & Buttons press into the surface on tap */
+    .theme-card-sub.cursor-pointer:hover,
+    button.theme-card-sub:hover {
+      box-shadow: var(--neu-shadow-card);
+    }
+
+    .theme-card-sub.cursor-pointer:active,
+    button.theme-card-sub:active {
+      box-shadow: var(--neu-shadow-inset-sm) !important;
+      transform: scale(0.98);
+    }
+
+    /* Deep Carved Neumorphic Input Wells */
+    .theme-input {
+      background-color: var(--neu-input-bg) !important;
+      border: 1px solid var(--neu-border-subtle) !important;
+      box-shadow: var(--neu-shadow-inset) !important;
+      color: var(--neu-text-heading) !important;
+      border-radius: 0.9rem;
+      transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .theme-input::placeholder {
+      color: var(--neu-text-muted);
+      opacity: 0.72;
+    }
+
+    .theme-input:focus {
+      outline: none !important;
+      border-color: rgba(59, 130, 246, 0.65) !important;
+      box-shadow: var(--neu-shadow-inset), 0 0 0 3px rgba(59, 130, 246, 0.2) !important;
+    }
+
+    /* Radio & Checkbox Peer Cards: Raised when unselected, Carved/Illuminated when checked */
+    input.peer + div.theme-card-sub {
+      box-shadow: var(--neu-shadow-btn);
+    }
+    input.peer:checked + div.theme-card-sub {
+      box-shadow: var(--neu-shadow-inset-sm), 0 0 12px rgba(59, 130, 246, 0.18) !important;
+      transform: translateY(0.5px);
+    }
+
+    /* Tactile Jewel Bevel on Primary Colored & Gradient Action Buttons */
+    button[class*="bg-gradient-to-r"],
+    button[class*="bg-blue-600"],
+    button[class*="bg-emerald-600"],
+    button[class*="bg-amber-500"],
+    button[class*="bg-amber-600"],
+    button[class*="bg-rose-600"],
+    button[class*="bg-purple-600"],
+    button[class*="bg-cyan-600"],
+    label[class*="bg-emerald-600"] {
+      box-shadow: var(--neu-shadow-btn), inset 0 1px 1px rgba(255, 255, 255, 0.35), inset 0 -2px 3px rgba(0, 0, 0, 0.2) !important;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      transition: transform 0.12s ease, box-shadow 0.15s ease, filter 0.15s ease;
+    }
+
+    button[class*="bg-gradient-to-r"]:active,
+    button[class*="bg-blue-600"]:active,
+    button[class*="bg-emerald-600"]:active,
+    button[class*="bg-amber-500"]:active,
+    button[class*="bg-amber-600"]:active,
+    button[class*="bg-rose-600"]:active,
+    button[class*="bg-purple-600"]:active,
+    button[class*="bg-cyan-600"]:active {
+      box-shadow: inset 3px 3px 7px rgba(0, 0, 0, 0.45), inset -2px -2px 5px rgba(255, 255, 255, 0.15) !important;
+      transform: scale(0.975);
+    }
+
+    /* Floating Neumorphic Bottom Navigation Dock */
+    .theme-nav {
+      background: var(--neu-surface);
+      border-top: 1px solid var(--neu-border) !important;
+      box-shadow: var(--neu-shadow-nav) !important;
+    }
+
+    .theme-nav button {
+      border-radius: 0.95rem;
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .theme-nav button[class*="font-bold"] {
+      box-shadow: var(--neu-shadow-inset-sm) !important;
+      border: 1px solid var(--neu-border-subtle);
+    }
+
+    /* Typography & Tag Tokens */
+    .theme-text-muted {
+      color: var(--neu-text-muted);
+    }
+    .theme-text-heading {
+      color: var(--neu-text-heading);
+    }
+    .theme-tag-bg {
+      background: var(--neu-input-bg);
+      color: var(--neu-text-muted);
+      box-shadow: var(--neu-shadow-inset-sm);
+      border: 1px solid var(--neu-border-subtle);
+    }
+
+    /* Subtle Neumorphic Dividers */
+    .theme-card .border-b,
+    .theme-card .border-t,
+    .theme-card-sub .border-b,
+    .theme-card-sub .border-t {
+      border-color: var(--neu-divider) !important;
+    }
+
+    /* Neumorphic PIN Lock Screen Vault Keypad */
+    .neu-lock-overlay {
+      background-color: var(--neu-bg);
+      background-image: var(--neu-bg-grad);
+      color: var(--neu-text-heading);
+    }
+    .neu-lock-card {
+      background: var(--neu-surface);
+      border: 1px solid var(--neu-border);
+      box-shadow: var(--neu-shadow-card);
+    }
+    .neu-pin-well {
+      background: var(--neu-input-bg);
+      border: 1px solid var(--neu-border-subtle);
+      box-shadow: var(--neu-shadow-inset);
+    }
+    .neu-pin-dot-empty {
+      background: var(--neu-input-bg);
+      box-shadow: var(--neu-shadow-inset-sm);
+      border: 1px solid var(--neu-border-subtle);
+    }
+    .neu-pin-dot-filled {
+      background: linear-gradient(145deg, #fcd34d, #f59e0b);
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.7), inset 0 1px 2px rgba(255, 255, 255, 0.85);
+      border: 1px solid #fbbf24;
+    }
+    .pin-key-btn {
+      background: var(--neu-surface-sub);
+      color: var(--neu-text-heading);
+      border: 1px solid var(--neu-border) !important;
+      box-shadow: var(--neu-shadow-sub) !important;
+      transition: transform 60ms ease, box-shadow 60ms ease, color 60ms ease !important;
+    }
+    .pin-key-btn:hover {
+      box-shadow: var(--neu-shadow-card) !important;
+    }
+    .pin-key-btn:active {
+      box-shadow: var(--neu-shadow-inset) !important;
+      transform: scale(0.95);
+      color: #f59e0b !important;
+    }
+
+    /* Official Google Sign In Button - Neumorphic Tactile Finish */
     .gsi-button {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      background-color: #ffffff;
-      color: #1f1f1f;
-      border: 1px solid #747775;
-      border-radius: 12px;
-      padding: 7px 14px;
+      background: linear-gradient(145deg, #ffffff, #eef2f8);
+      color: #152238;
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      border-radius: 14px;
+      padding: 8px 16px;
       font-size: 12px;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
-      transition: background-color 0.2s, box-shadow 0.2s, transform 0.1s;
+      box-shadow: var(--neu-shadow-btn);
+      transition: box-shadow 0.2s ease, transform 0.1s ease;
       gap: 8px;
     }
     .gsi-button:hover {
-      background-color: #f8f9fa;
-      box-shadow: 0 1px 3px 0 rgba(60,64,67,.3);
+      box-shadow: var(--neu-shadow-card);
     }
     .gsi-button:active {
-      background-color: #eeeeee;
+      box-shadow: var(--neu-shadow-inset-sm);
       transform: scale(0.98);
     }
   </style>
@@ -3658,12 +3845,12 @@
   </div>
 
   <!-- 14. FULL-SCREEN APPLICATION NUMBER PASSWORD (PIN) LOCK SCREEN OVERLAY -->
-  <div id="appLockOverlay" style="touch-action: manipulation; -webkit-tap-highlight-color: transparent;" class="fixed inset-0 z-[90] bg-slate-950 flex flex-col items-center justify-center p-4 hidden select-none">
-    <div id="appLockCard" style="will-change: transform;" class="w-full max-w-xs sm:max-w-sm rounded-3xl bg-slate-900 border border-amber-500/30 p-5 sm:p-6 shadow-2xl text-center space-y-4">
+  <div id="appLockOverlay" style="touch-action: manipulation; -webkit-tap-highlight-color: transparent;" class="fixed inset-0 z-[90] neu-lock-overlay flex flex-col items-center justify-center p-4 hidden select-none">
+    <div id="appLockCard" style="will-change: transform;" class="w-full max-w-xs sm:max-w-sm rounded-3xl neu-lock-card p-5 sm:p-6 text-center space-y-4">
       <div class="space-y-1.5">
         <div class="w-16 h-16 mx-auto rounded-2xl overflow-hidden shadow-md border-2 border-amber-400/60" id="lockScreenAppIcon"></div>
-        <h2 class="text-base sm:text-lg font-extrabold text-white tracking-tight">လာဘ်ရွှင် (Lab Shwin)</h2>
-        <p id="lockScreenSubtitle" class="text-xs text-amber-400 font-bold flex items-center justify-center gap-1">
+        <h2 class="text-base sm:text-lg font-extrabold theme-text-heading tracking-tight">လာဘ်ရွှင် (Lab Shwin)</h2>
+        <p id="lockScreenSubtitle" class="text-xs text-amber-500 dark:text-amber-400 font-bold flex items-center justify-center gap-1">
           <span>🔒</span>
           <span>ဂဏန်းစကားဝှက် (Number Password) ရိုက်ထည့်ပါ</span>
         </p>
@@ -3685,32 +3872,32 @@
         <p class="text-[10px] text-rose-200/90 leading-snug">သတ်မှတ်အချိန် ပြည့်သွားပါက ဂဏန်းခလုတ်များ အလိုအလျောက် ပြန်ပွင့်လာပါမည်</p>
       </div>
 
-      <!-- PIN Dots Display -->
+      <!-- PIN Dots Display (Carved Neumorphic Trough) -->
       <div class="space-y-1.5">
-        <div id="pinDotsContainer" class="flex items-center justify-center gap-3 min-h-[44px] py-2 px-4 rounded-2xl bg-slate-950 border border-slate-800">
+        <div id="pinDotsContainer" class="flex items-center justify-center gap-3.5 min-h-[48px] py-2.5 px-4 rounded-2xl neu-pin-well">
           <!-- Populated dynamically -->
         </div>
-        <p id="pinErrorMsg" class="text-[11px] text-rose-400 font-bold min-h-[16px] leading-snug"></p>
+        <p id="pinErrorMsg" class="text-[11px] text-rose-500 dark:text-rose-400 font-bold min-h-[16px] leading-snug"></p>
       </div>
 
-      <!-- Numeric Keypad (0-9) - Instant PointerDown Response -->
-      <div id="pinKeypadGrid" class="grid grid-cols-3 gap-2.5 text-white font-mono transition-opacity duration-200" style="touch-action: manipulation;">
-        <button type="button" data-pin-digit-slot="0" onpointerdown="handlePinSlotPointer(event, 0)" onclick="handlePinSlotClick(event, 0)" class="pin-key-btn h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-xl font-extrabold shadow-sm transition-colors duration-75">1</button>
-        <button type="button" data-pin-digit-slot="1" onpointerdown="handlePinSlotPointer(event, 1)" onclick="handlePinSlotClick(event, 1)" class="pin-key-btn h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-xl font-extrabold shadow-sm transition-colors duration-75">2</button>
-        <button type="button" data-pin-digit-slot="2" onpointerdown="handlePinSlotPointer(event, 2)" onclick="handlePinSlotClick(event, 2)" class="pin-key-btn h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-xl font-extrabold shadow-sm transition-colors duration-75">3</button>
-        <button type="button" data-pin-digit-slot="3" onpointerdown="handlePinSlotPointer(event, 3)" onclick="handlePinSlotClick(event, 3)" class="pin-key-btn h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-xl font-extrabold shadow-sm transition-colors duration-75">4</button>
-        <button type="button" data-pin-digit-slot="4" onpointerdown="handlePinSlotPointer(event, 4)" onclick="handlePinSlotClick(event, 4)" class="pin-key-btn h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-xl font-extrabold shadow-sm transition-colors duration-75">5</button>
-        <button type="button" data-pin-digit-slot="5" onpointerdown="handlePinSlotPointer(event, 5)" onclick="handlePinSlotClick(event, 5)" class="pin-key-btn h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-xl font-extrabold shadow-sm transition-colors duration-75">6</button>
-        <button type="button" data-pin-digit-slot="6" onpointerdown="handlePinSlotPointer(event, 6)" onclick="handlePinSlotClick(event, 6)" class="pin-key-btn h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-xl font-extrabold shadow-sm transition-colors duration-75">7</button>
-        <button type="button" data-pin-digit-slot="7" onpointerdown="handlePinSlotPointer(event, 7)" onclick="handlePinSlotClick(event, 7)" class="pin-key-btn h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-xl font-extrabold shadow-sm transition-colors duration-75">8</button>
-        <button type="button" data-pin-digit-slot="8" onpointerdown="handlePinSlotPointer(event, 8)" onclick="handlePinSlotClick(event, 8)" class="pin-key-btn h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-xl font-extrabold shadow-sm transition-colors duration-75">9</button>
-        <button type="button" onpointerdown="handlePinKeyPointer(event, 'CLEAR')" onclick="handlePinKeyClick(event, 'CLEAR')" class="pin-key-btn h-14 rounded-2xl bg-rose-500/15 hover:bg-rose-500/25 active:bg-rose-500 active:text-white border border-rose-500/30 text-rose-400 text-xs font-sans font-extrabold shadow-sm transition-colors duration-75">ရှင်းမည်</button>
-        <button type="button" data-pin-digit-slot="9" onpointerdown="handlePinSlotPointer(event, 9)" onclick="handlePinSlotClick(event, 9)" class="pin-key-btn h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-xl font-extrabold shadow-sm transition-colors duration-75">0</button>
-        <button type="button" onpointerdown="handlePinKeyPointer(event, 'BACK')" onclick="handlePinKeyClick(event, 'BACK')" class="pin-key-btn h-14 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 border border-slate-700 text-amber-400 text-lg font-extrabold shadow-sm transition-colors duration-75 flex items-center justify-center">⌫</button>
+      <!-- Numeric Keypad (0-9) - Sculpted Neumorphic Keys with Instant PointerDown Response -->
+      <div id="pinKeypadGrid" class="grid grid-cols-3 gap-3 font-mono transition-opacity duration-200" style="touch-action: manipulation;">
+        <button type="button" data-pin-digit-slot="0" onpointerdown="handlePinSlotPointer(event, 0)" onclick="handlePinSlotClick(event, 0)" class="pin-key-btn h-14 rounded-2xl text-xl font-extrabold">1</button>
+        <button type="button" data-pin-digit-slot="1" onpointerdown="handlePinSlotPointer(event, 1)" onclick="handlePinSlotClick(event, 1)" class="pin-key-btn h-14 rounded-2xl text-xl font-extrabold">2</button>
+        <button type="button" data-pin-digit-slot="2" onpointerdown="handlePinSlotPointer(event, 2)" onclick="handlePinSlotClick(event, 2)" class="pin-key-btn h-14 rounded-2xl text-xl font-extrabold">3</button>
+        <button type="button" data-pin-digit-slot="3" onpointerdown="handlePinSlotPointer(event, 3)" onclick="handlePinSlotClick(event, 3)" class="pin-key-btn h-14 rounded-2xl text-xl font-extrabold">4</button>
+        <button type="button" data-pin-digit-slot="4" onpointerdown="handlePinSlotPointer(event, 4)" onclick="handlePinSlotClick(event, 4)" class="pin-key-btn h-14 rounded-2xl text-xl font-extrabold">5</button>
+        <button type="button" data-pin-digit-slot="5" onpointerdown="handlePinSlotPointer(event, 5)" onclick="handlePinSlotClick(event, 5)" class="pin-key-btn h-14 rounded-2xl text-xl font-extrabold">6</button>
+        <button type="button" data-pin-digit-slot="6" onpointerdown="handlePinSlotPointer(event, 6)" onclick="handlePinSlotClick(event, 6)" class="pin-key-btn h-14 rounded-2xl text-xl font-extrabold">7</button>
+        <button type="button" data-pin-digit-slot="7" onpointerdown="handlePinSlotPointer(event, 7)" onclick="handlePinSlotClick(event, 7)" class="pin-key-btn h-14 rounded-2xl text-xl font-extrabold">8</button>
+        <button type="button" data-pin-digit-slot="8" onpointerdown="handlePinSlotPointer(event, 8)" onclick="handlePinSlotClick(event, 8)" class="pin-key-btn h-14 rounded-2xl text-xl font-extrabold">9</button>
+        <button type="button" onpointerdown="handlePinKeyPointer(event, 'CLEAR')" onclick="handlePinKeyClick(event, 'CLEAR')" class="pin-key-btn h-14 rounded-2xl text-rose-500 dark:text-rose-400 text-xs font-sans font-extrabold">ရှင်းမည်</button>
+        <button type="button" data-pin-digit-slot="9" onpointerdown="handlePinSlotPointer(event, 9)" onclick="handlePinSlotClick(event, 9)" class="pin-key-btn h-14 rounded-2xl text-xl font-extrabold">0</button>
+        <button type="button" onpointerdown="handlePinKeyPointer(event, 'BACK')" onclick="handlePinKeyClick(event, 'BACK')" class="pin-key-btn h-14 rounded-2xl text-amber-500 dark:text-amber-400 text-lg font-extrabold flex items-center justify-center">⌫</button>
       </div>
 
-      <div class="flex items-center gap-2">
-        <button type="button" id="pinScrambleQuickBtn" onclick="toggleQuickKeypadScramble()" class="py-3 px-3 rounded-2xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[11px] font-bold text-slate-300 transition shrink-0" title="ဂဏန်းခလုတ် နေရာရောရန်">
+      <div class="flex items-center gap-2.5 pt-1">
+        <button type="button" id="pinScrambleQuickBtn" onclick="toggleQuickKeypadScramble()" class="py-3 px-3.5 rounded-2xl theme-card-sub border text-[11px] font-bold theme-text-heading transition shrink-0" title="ဂဏန်းခလုတ် နေရာရောရန်">
           🔀 ရောမည်
         </button>
         <button type="button" id="pinUnlockSubmitBtn" onpointerdown="handlePinKeyPointer(event, 'SUBMIT')" onclick="handlePinKeyClick(event, 'SUBMIT')" class="flex-1 py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 text-xs sm:text-sm font-extrabold shadow-lg transition-colors duration-75">
@@ -4157,12 +4344,12 @@
         htmlEl.classList.remove('dark');
         if (sunIcon) sunIcon.classList.add('hidden');
         if (moonIcon) moonIcon.classList.remove('hidden');
-        if (metaTheme) metaTheme.setAttribute('content', '#ffffff');
+        if (metaTheme) metaTheme.setAttribute('content', '#e6ecf5');
       } else {
         htmlEl.classList.add('dark');
         if (sunIcon) sunIcon.classList.remove('hidden');
         if (moonIcon) moonIcon.classList.add('hidden');
-        if (metaTheme) metaTheme.setAttribute('content', '#0945b8');
+        if (metaTheme) metaTheme.setAttribute('content', '#1a212e');
       }
     }
 
@@ -12823,8 +13010,8 @@
       const quickBtn = document.getElementById('pinScrambleQuickBtn');
       if (quickBtn) {
         quickBtn.className = appLockConfig.scrambleKeypad
-          ? 'py-3 px-3 rounded-2xl bg-amber-500/20 border border-amber-500/50 text-[11px] font-extrabold text-amber-300 transition shrink-0'
-          : 'py-3 px-3 rounded-2xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[11px] font-bold text-slate-300 transition shrink-0';
+          ? 'py-3 px-3.5 rounded-2xl bg-amber-500/20 border border-amber-500/50 text-[11px] font-extrabold text-amber-500 dark:text-amber-300 transition shrink-0'
+          : 'py-3 px-3.5 rounded-2xl theme-card-sub border text-[11px] font-bold theme-text-heading transition shrink-0';
         quickBtn.textContent = appLockConfig.scrambleKeypad ? '🔀 ရောထားသည်' : '🔀 ရောမည်';
       }
     }
@@ -13205,7 +13392,7 @@
       if (currentChildren.length !== targetLen) {
         let html = '';
         for (let i = 0; i < targetLen; i++) {
-          html += `<span class="w-4 h-4 rounded-full bg-slate-700 border border-slate-600"></span>`;
+          html += `<span class="w-4 h-4 rounded-full neu-pin-dot-empty transition-transform duration-75"></span>`;
         }
         container.innerHTML = html;
       }
@@ -13216,8 +13403,8 @@
         if (!dot) continue;
         const filled = i < filledLen;
         dot.className = filled
-          ? 'w-4 h-4 rounded-full bg-amber-400 scale-110 shadow-sm'
-          : 'w-4 h-4 rounded-full bg-slate-700 border border-slate-600';
+          ? 'w-4 h-4 rounded-full neu-pin-dot-filled scale-110 transition-transform duration-75'
+          : 'w-4 h-4 rounded-full neu-pin-dot-empty transition-transform duration-75';
       }
     }
 
