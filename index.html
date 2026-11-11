@@ -141,6 +141,65 @@
       letter-spacing: -0.01em;
     }
 
+    /* ==========================================================================
+       MOBILE EYE-FRIENDLY READABILITY & FONT SCALE SYSTEM
+       (ဖုန်းတွင် စာလုံးနှင့် ဂဏန်းများ ကြီးမားရှင်းလင်းစေခြင်း - Normal / Large / Extra Large)
+       ========================================================================== */
+    html[data-font-scale="normal"] {
+      font-size: 16px;
+    }
+    html[data-font-scale="large"],
+    html:not([data-font-scale]) {
+      font-size: 17.5px;
+    }
+    html[data-font-scale="xlarge"] {
+      font-size: 19px;
+    }
+
+    /* Upgrade hardcoded tiny arbitrary pixel font classes so they never look small on mobile */
+    html[data-font-scale="normal"] .text-\[9px\] { font-size: 0.72rem !important; line-height: 1.35 !important; }
+    html[data-font-scale="normal"] .text-\[10px\] { font-size: 0.78rem !important; line-height: 1.4 !important; }
+    html[data-font-scale="normal"] .text-\[11px\] { font-size: 0.84rem !important; line-height: 1.42 !important; }
+
+    html[data-font-scale="large"] .text-\[9px\],
+    html:not([data-font-scale]) .text-\[9px\] { font-size: 0.76rem !important; line-height: 1.4 !important; }
+    html[data-font-scale="large"] .text-\[10px\],
+    html:not([data-font-scale]) .text-\[10px\] { font-size: 0.82rem !important; line-height: 1.44 !important; }
+    html[data-font-scale="large"] .text-\[11px\],
+    html:not([data-font-scale]) .text-\[11px\] { font-size: 0.88rem !important; line-height: 1.46 !important; }
+
+    html[data-font-scale="xlarge"] .text-\[9px\] { font-size: 0.82rem !important; line-height: 1.42 !important; }
+    html[data-font-scale="xlarge"] .text-\[10px\] { font-size: 0.88rem !important; line-height: 1.46 !important; }
+    html[data-font-scale="xlarge"] .text-\[11px\] { font-size: 0.94rem !important; line-height: 1.48 !important; }
+
+    /* Clean, Uncluttered Transaction Review Card & Amount Well */
+    .tx-review-card {
+      background: var(--neu-surface-sub);
+      border: 1px solid var(--neu-border) !important;
+      box-shadow: var(--neu-shadow-sub);
+      border-radius: 1.2rem;
+      padding: 0.9rem 1rem;
+      transition: box-shadow 0.18s ease, transform 0.12s ease;
+    }
+    .tx-amount-well {
+      background: var(--neu-input-bg);
+      border: 1px solid var(--neu-border-subtle);
+      box-shadow: var(--neu-shadow-inset-sm);
+      border-radius: 0.95rem;
+      padding: 0.65rem 0.85rem;
+    }
+    .tx-action-btn {
+      min-height: 2.35rem;
+      padding: 0.45rem 0.85rem;
+      border-radius: 0.8rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      transition: transform 0.1s ease, box-shadow 0.15s ease;
+    }
+
     input, textarea, select {
       user-select: text;
     }
@@ -158,11 +217,11 @@
     }
 
     .safe-bottom {
-      padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 5.8rem);
+      padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 6.4rem);
     }
     @media (min-width: 768px) {
       .safe-bottom {
-        padding-bottom: 6.5rem;
+        padding-bottom: 7rem;
       }
     }
 
@@ -456,6 +515,12 @@
           <span id="headerRateBadge" class="font-mono font-bold text-blue-500">755 / 780</span>
         </button>
 
+        <!-- Quick Font Size / Eye Readability Cycler Button (AA) -->
+        <button onclick="cycleAppFontScale()" id="headerFontScaleBtn" title="စာလုံးအရွယ်အစား ချိန်ညှိရန် (ပုံမှန် / အကြီး / အထူးအကြီး)" class="px-2.5 py-1.5 rounded-xl theme-card-sub border hover:opacity-90 active:scale-95 transition flex items-center gap-1 text-emerald-500 font-extrabold text-xs">
+          <span>AA</span>
+          <span id="headerFontScaleLabel" class="text-[10px] font-bold">အကြီး</span>
+        </button>
+
         <!-- Day / Night Mode Switcher Toggle Button -->
         <button onclick="toggleThemeMode()" id="themeToggleBtn" title="Day/Night Mode ပြောင်းရန်" class="p-2 rounded-xl theme-card-sub border hover:opacity-90 active:scale-95 transition flex items-center justify-center text-amber-400">
           <svg id="sunIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
@@ -701,12 +766,23 @@
             <div class="space-y-1.5 text-[11px]">
               <div class="flex items-center justify-between py-1 border-b border-slate-700/20">
                 <div>
-                  <span class="font-semibold theme-text-heading">🇹🇭⇄🇲🇲 ထိုင်း-မြန်မာ ငွေလွှဲအမြတ်</span>
+                  <span class="font-semibold theme-text-heading">🇹🇭⇄🇲🇲 ပင်မ ထိုင်း-မြန်မာ ငွေလွှဲအမြတ်</span>
                   <span id="msRemitCountText" class="text-[10px] theme-text-muted block">0 ကြိမ် • ပမာဏ 0 Ks</span>
                 </div>
                 <div class="text-right font-mono">
                   <span id="msRemitProfitMMK" class="font-bold text-sky-400">+0 Ks</span>
                   <span id="msRemitProfitTHB" class="text-[10px] text-emerald-400 block">+0 THB</span>
+                </div>
+              </div>
+
+              <div onclick="switchTab('subagent')" class="cursor-pointer flex items-center justify-between py-1 border-b border-slate-700/20 hover:opacity-90 transition">
+                <div>
+                  <span class="font-semibold text-indigo-400">🤝 လက်ခွဲ (Sub-Agent) ငွေလွှဲအမြတ်</span>
+                  <span id="msSubAgentCountText" class="text-[10px] theme-text-muted block">0 ကြိမ် • ပမာဏ 0 Ks</span>
+                </div>
+                <div class="text-right font-mono">
+                  <span id="msSubAgentProfitMMK" class="font-bold text-indigo-400">+0 Ks</span>
+                  <span id="msSubAgentProfitTHB" class="text-[10px] text-emerald-400 block">+0 THB</span>
                 </div>
               </div>
 
@@ -810,20 +886,23 @@
       </div>
 
       <!-- Quick Action Buttons -->
-      <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
-        <button onclick="switchTab('remit')" class="py-2.5 px-2.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 active:scale-98 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-blue-900/20 transition">
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
+        <button onclick="switchTab('remit')" class="py-3 px-2.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 active:scale-98 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-blue-900/20 transition">
           <span>⇄ + ငွေလွှဲသစ်</span>
         </button>
-        <button onclick="switchTab('cashout')" class="py-2.5 px-2.5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 active:scale-98 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-emerald-900/20 transition">
+        <button onclick="switchTab('subagent')" class="py-3 px-2.5 rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 active:scale-98 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-indigo-900/20 transition">
+          <span>🤝 + လက်ခွဲစာရင်း</span>
+        </button>
+        <button onclick="switchTab('cashout')" class="py-3 px-2.5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 active:scale-98 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-emerald-900/20 transition">
           <span>📱 + KPay ငွေထုတ်</span>
         </button>
-        <button onclick="switchTab('deposits')" class="py-2.5 px-2.5 rounded-2xl bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-500 hover:to-fuchsia-500 active:scale-98 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-purple-900/20 transition">
+        <button onclick="switchTab('deposits')" class="py-3 px-2.5 rounded-2xl bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-500 hover:to-fuchsia-500 active:scale-98 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-purple-900/20 transition">
           <span>🏦 + အပ်ငွေစာရင်း</span>
         </button>
-        <button onclick="switchTab('u9')" class="py-2.5 px-2.5 rounded-2xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 active:scale-98 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-cyan-900/20 transition">
+        <button onclick="switchTab('u9')" class="py-3 px-2.5 rounded-2xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 active:scale-98 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-cyan-900/20 transition">
           <span>📶 + U9 ဖုန်းဘေလ်</span>
         </button>
-        <button onclick="switchTab('expense')" class="col-span-2 sm:col-span-1 py-2.5 px-2.5 rounded-2xl bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 active:scale-98 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-amber-900/20 transition">
+        <button onclick="switchTab('expense')" class="py-3 px-2.5 rounded-2xl bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 active:scale-98 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-amber-900/20 transition">
           <span>💸 + အသုံးစရိတ်</span>
         </button>
       </div>
@@ -915,13 +994,16 @@
 
     <!-- ================= TAB 2: ထိုင်း-မြန်မာ ငွေလွှဲ ================= -->
     <section id="tab-remit" class="space-y-4 hidden">
-      <!-- Top Sub-Navigation Switcher: ငွေလွှဲ vs KPay ငွေထုတ်/လွှဲ -->
-      <div class="grid grid-cols-2 gap-1.5 p-1 theme-card rounded-2xl border text-xs font-bold shadow-sm">
-        <button type="button" onclick="switchTab('remit')" class="py-2 px-3 rounded-xl bg-blue-600 text-white shadow flex items-center justify-center gap-1.5 transition">
-          <span>🇹🇭 ⇄ 🇲🇲 ထိုင်း-မြန်မာ ငွေလွှဲ</span>
+      <!-- Top Sub-Navigation Switcher: ပင်မ ငွေလွှဲ vs လက်ခွဲစာရင်း vs KPay ငွေထုတ်/လွှဲ -->
+      <div class="grid grid-cols-3 gap-1.5 p-1 theme-card rounded-2xl border text-xs font-bold shadow-sm">
+        <button type="button" onclick="switchTab('remit')" class="py-2.5 px-2 rounded-xl bg-blue-600 text-white shadow flex items-center justify-center gap-1 transition">
+          <span>🇹🇭⇄🇲🇲 ပင်မ ငွေလွှဲ</span>
         </button>
-        <button type="button" onclick="switchTab('cashout')" class="py-2 px-3 rounded-xl theme-text-muted hover:text-emerald-500 flex items-center justify-center gap-1.5 transition">
-          <span>📱 KPay / Wave ငွေထုတ် & လွှဲ</span>
+        <button type="button" onclick="switchTab('subagent')" class="py-2.5 px-2 rounded-xl theme-text-muted hover:text-indigo-400 flex items-center justify-center gap-1 transition">
+          <span>🤝 လက်ခွဲစာရင်း</span>
+        </button>
+        <button type="button" onclick="switchTab('cashout')" class="py-2.5 px-2 rounded-xl theme-text-muted hover:text-emerald-500 flex items-center justify-center gap-1 transition">
+          <span>📱 KPay ငွေထုတ်</span>
         </button>
       </div>
 
@@ -1185,15 +1267,329 @@
       </div>
     </section>
 
+    <!-- ================= TAB 2B: လက်ခွဲစာရင်း (SUB-AGENT / PARTNER THB ⇄ MMK WHOLESALE LEDGER) ================= -->
+    <section id="tab-subagent" class="space-y-4 hidden">
+      <!-- Top Sub-Navigation Switcher: ပင်မ ငွေလွှဲ vs လက်ခွဲစာရင်း vs KPay ငွေထုတ်/လွှဲ -->
+      <div class="grid grid-cols-3 gap-1.5 p-1 theme-card rounded-2xl border text-xs font-bold shadow-sm">
+        <button type="button" onclick="switchTab('remit')" class="py-2.5 px-2 rounded-xl theme-text-muted hover:text-blue-500 flex items-center justify-center gap-1 transition">
+          <span>🇹🇭⇄🇲🇲 ပင်မ ငွေလွှဲ</span>
+        </button>
+        <button type="button" onclick="switchTab('subagent')" class="py-2.5 px-2 rounded-xl bg-indigo-600 text-white shadow flex items-center justify-center gap-1 transition">
+          <span>🤝 လက်ခွဲစာရင်း</span>
+        </button>
+        <button type="button" onclick="switchTab('cashout')" class="py-2.5 px-2 rounded-xl theme-text-muted hover:text-emerald-500 flex items-center justify-center gap-1 transition">
+          <span>📱 KPay ငွေထုတ်</span>
+        </button>
+      </div>
+
+      <!-- Header Card -->
+      <div class="bg-gradient-to-r from-indigo-900/35 via-violet-900/20 to-transparent theme-card border border-indigo-500/40 rounded-2xl p-4 sm:p-5 shadow-sm">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h2 class="text-sm sm:text-base font-extrabold theme-text-heading flex items-center gap-2">
+              <span class="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center text-sm shadow">🤝</span>
+              <span>လက်ခွဲစာရင်း (Sub-Agent THB ⇄ MMK Wholesale Ledger)</span>
+            </h2>
+            <p class="text-xs theme-text-muted mt-1">
+              မိမိမှ တခြားသူ (လက်ခွဲအေးဂျင့်) သို့ ထိုင်းဘတ် ➔ မြန်မာကျပ် နှင့် မြန်မာကျပ် ➔ ထိုင်းဘတ် လက်ခွဲပေါက်ဈေးဖြင့် ပေးထားသော စာရင်းသီးသန့်
+            </p>
+          </div>
+          <button type="button" onclick="exportSubAgentCSV()" class="px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white text-xs font-extrabold shadow flex items-center gap-1.5 transition">
+            <span>📥 လက်ခွဲ CSV ထုတ်မည်</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 4 KPI Summary Cards for Sub-Agent Wholesale -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3">
+        <div class="theme-card border border-indigo-500/35 rounded-2xl p-3.5 shadow-sm">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-indigo-400">၁။ လက်ခွဲဦးရေ & အကြိမ်ရေ</span>
+            <span id="subKpiAgentCount" class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-400 font-bold">0 ဦး</span>
+          </div>
+          <div id="subKpiTxCount" class="text-base sm:text-lg font-extrabold font-mono theme-text-heading mt-1">0 ကြိမ်</div>
+          <div class="text-[11px] theme-text-muted mt-0.5">လက်ခွဲ အရောင်းအဝယ် စုစုပေါင်း</div>
+        </div>
+
+        <div class="theme-card border border-blue-500/35 rounded-2xl p-3.5 shadow-sm">
+          <span class="text-xs font-bold text-blue-400 block">၂။ လက်ခွဲ ငွေလွှဲပမာဏ စုစုပေါင်း</span>
+          <div id="subKpiTotalMMK" class="text-base sm:text-lg font-extrabold font-mono theme-text-heading mt-1">0 Ks</div>
+          <div id="subKpiTotalTHB" class="text-[11px] font-mono font-bold text-blue-400 mt-0.5">0 THB</div>
+        </div>
+
+        <div class="theme-card border border-emerald-500/35 rounded-2xl p-3.5 shadow-sm">
+          <span class="text-xs font-bold text-emerald-400 block">၃။ လက်ခွဲမှ ရရှိသော အမြတ်</span>
+          <div id="subKpiProfitMMK" class="text-base sm:text-lg font-extrabold font-mono text-emerald-400 mt-1">+0 Ks</div>
+          <div id="subKpiProfitTHB" class="text-[11px] font-mono font-bold text-emerald-500 mt-0.5">+0 THB (ဈေးကွာဟချက်အမြတ်)</div>
+        </div>
+
+        <div onclick="setSubAgentStatusFilter('UNPAID')" class="cursor-pointer theme-card border border-amber-500/45 hover:border-amber-500 rounded-2xl p-3.5 shadow-sm transition">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-amber-400">၄။ လက်ခွဲ စာရင်းမရှင်းရသေး</span>
+            <span id="subKpiUnpaidCount" class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-bold">0 ခု</span>
+          </div>
+          <div id="subKpiUnpaidMMK" class="text-base sm:text-lg font-extrabold font-mono text-amber-400 mt-1">0 Ks</div>
+          <div id="subKpiUnpaidTHB" class="text-[11px] font-mono font-bold text-rose-400 mt-0.5">0 THB (နှိပ်၍ စစ်ဆေးရန် ➔)</div>
+        </div>
+      </div>
+
+      <!-- Per-Sub-Agent Summary Cards (လက်ခွဲ တစ်ဦးချင်းစီအလိုက် စာရင်းချုပ်) -->
+      <div class="theme-card border border-indigo-500/30 rounded-2xl p-4 sm:p-5 space-y-3 shadow-sm">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b pb-2.5">
+          <div>
+            <h3 class="text-xs sm:text-sm font-extrabold theme-text-heading flex items-center gap-1.5">
+              <span>👥 လက်ခွဲ တစ်ဦးချင်းစီအလိုက် စာရင်းချုပ် (Sub-Agent Wise Summary)</span>
+            </h3>
+            <p class="text-[11px] theme-text-muted mt-0.5">လက်ခွဲအမည်ပေါ် နှိပ်၍ ၎င်းလက်ခွဲ၏ စာရင်းသီးသန့်ကို စစ်ဆေးနိုင်ပါသည်</p>
+          </div>
+          <button type="button" id="subAgentClearPartnerFilterBtn" onclick="selectSubAgentPartnerFilter('')" class="hidden px-3 py-1.5 rounded-xl bg-rose-500/20 text-rose-400 border border-rose-500/40 text-xs font-bold transition">
+            ✕ လက်ခွဲအားလုံး ပြန်ပြမည်
+          </button>
+        </div>
+
+        <div id="subAgentPartnerSummaryGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Direction Switcher: THB ➔ MMK vs MMK ➔ THB Wholesale -->
+      <div class="grid grid-cols-2 gap-2 p-1.5 theme-card rounded-2xl border text-xs sm:text-sm font-bold">
+        <button type="button" id="subagent-dir-thb2mmk" onclick="setSubAgentDirection('THB_TO_MMK')" class="py-3 px-3 rounded-xl bg-indigo-600 text-white font-bold transition flex items-center justify-center gap-1.5 shadow">
+          <span>🇹🇭 ထိုင်းဘတ် ➔ 🇲🇲 မြန်မာကျပ် (လက်ခွဲ)</span>
+        </button>
+        <button type="button" id="subagent-dir-mmk2thb" onclick="setSubAgentDirection('MMK_TO_THB')" class="py-3 px-3 rounded-xl theme-text-muted hover:text-indigo-400 transition flex items-center justify-center gap-1.5">
+          <span>🇲🇲 မြန်မာကျပ် ➔ 🇹🇭 ထိုင်းဘတ် (လက်ခွဲ)</span>
+        </button>
+      </div>
+
+      <!-- Sub-Agent Entry Form & Live Spread Calculator -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+        <form id="subAgentForm" onsubmit="handleSaveSubAgent(event)" class="md:col-span-7 theme-card border border-indigo-500/30 rounded-2xl p-4 sm:p-5 space-y-3.5 shadow-sm">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-xs font-semibold theme-text-heading mb-1">ရက်စွဲနှင့် အချိန်</label>
+              <input type="datetime-local" id="subAgentDate" required class="w-full theme-input border rounded-xl px-3 py-2.5 text-xs font-mono">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold theme-text-heading mb-1">
+                🤝 လက်ခွဲအမည် (Sub-Agent Name) <span class="text-rose-500">*</span>
+              </label>
+              <input type="text" id="subAgentName" list="subAgentNamesDatalist" required placeholder="ဥပမာ - ကိုဇော် (မဲဆောက် လက်ခွဲ)" class="w-full theme-input border rounded-xl px-3 py-2.5 text-xs font-bold">
+              <datalist id="subAgentNamesDatalist"></datalist>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div>
+              <label id="subAgentClientLabel" class="block text-xs font-semibold theme-text-heading mb-1">
+                လက်ခွဲ၏ Customer / ထုတ်ယူသူအမည် (Optional)
+              </label>
+              <input type="text" id="subAgentClientName" placeholder="ဥပမာ - မသီတာ (ရန်ကုန်)" class="w-full theme-input border rounded-xl px-3 py-2.5 text-xs">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold theme-text-heading mb-1">
+                ဖုန်းနံပါတ် / KPay / ဘဏ်အကောင့် (Optional)
+              </label>
+              <input type="text" id="subAgentPhone" placeholder="09xxxxxxx သို့မဟုတ် ဘဏ်အကောင့်" class="w-full theme-input border rounded-xl px-3 py-2.5 text-xs">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold theme-text-heading mb-1">ငွေပေးချေ / လွှဲပေးသည့် ချန်နယ်</label>
+            <div class="grid grid-cols-4 gap-1.5 text-xs">
+              <label class="cursor-pointer">
+                <input type="radio" name="subAgentChannel" value="KPay" checked class="peer sr-only">
+                <div class="p-2.5 rounded-xl border theme-card-sub peer-checked:border-blue-500 peer-checked:bg-blue-600/20 peer-checked:text-blue-400 text-center font-bold transition">KPay</div>
+              </label>
+              <label class="cursor-pointer">
+                <input type="radio" name="subAgentChannel" value="WavePay" class="peer sr-only">
+                <div class="p-2.5 rounded-xl border theme-card-sub peer-checked:border-amber-500 peer-checked:bg-amber-500/20 peer-checked:text-amber-400 text-center font-bold transition">Wave</div>
+              </label>
+              <label class="cursor-pointer">
+                <input type="radio" name="subAgentChannel" value="THB_Bank" class="peer sr-only">
+                <div class="p-2.5 rounded-xl border theme-card-sub peer-checked:border-indigo-500 peer-checked:bg-indigo-600/20 peer-checked:text-indigo-400 text-center font-bold transition">ထိုင်းဘဏ်</div>
+              </label>
+              <label class="cursor-pointer">
+                <input type="radio" name="subAgentChannel" value="Cash" class="peer sr-only">
+                <div class="p-2.5 rounded-xl border theme-card-sub peer-checked:border-emerald-500 peer-checked:bg-emerald-600/20 peer-checked:text-emerald-400 text-center font-bold transition">ငွေသား</div>
+              </label>
+            </div>
+          </div>
+
+          <div class="theme-card-sub p-3.5 rounded-xl border space-y-2.5">
+            <div class="flex items-center justify-between">
+              <label id="subAgentAmountMMKLabel" class="text-xs font-bold theme-text-heading">
+                🇲🇲 လက်ခွဲသို့ ပေး/ယူသည့် မြန်မာကျပ် ပမာဏ (MMK) <span class="text-rose-500">*</span>
+              </label>
+              <span id="subAgentCalculatedMMKText" class="text-xs font-bold text-indigo-400 font-mono">0 Ks (0 သိန်း)</span>
+            </div>
+
+            <div class="relative">
+              <input type="number" step="any" min="1" id="subAgentAmountMMK" placeholder="မြန်မာကျပ် ပမာဏ ရိုက်ထည့်ပါ" required oninput="onSubAgentMMKInput()" class="w-full theme-input border rounded-xl px-3.5 py-2.5 text-base font-bold font-mono pr-16">
+              <span class="absolute right-3 top-3 text-xs theme-text-muted font-bold pointer-events-none">ကျပ် (Ks)</span>
+            </div>
+
+            <div class="flex items-center gap-2 pt-0.5">
+              <span class="text-xs theme-text-muted whitespace-nowrap">သိန်းဖြင့်ထည့်ရန်:</span>
+              <div class="relative flex-1">
+                <input type="number" step="any" min="0.00001" id="subAgentLakhs" placeholder="ဥပမာ - 5 သို့မဟုတ် 10" oninput="onSubAgentLakhsInput()" class="w-full theme-input border rounded-lg px-2.5 py-1.5 text-xs font-bold font-mono pr-14">
+                <span class="absolute right-2.5 top-2 text-[10px] theme-text-muted font-bold pointer-events-none">သိန်းကျပ်</span>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap gap-1.5 pt-1">
+              <button type="button" onclick="setSubAgentMMK(100000)" class="px-2.5 py-1 theme-card rounded-lg text-xs font-mono border hover:border-indigo-500">၁ သိန်း</button>
+              <button type="button" onclick="setSubAgentMMK(300000)" class="px-2.5 py-1 theme-card rounded-lg text-xs font-mono border hover:border-indigo-500">၃ သိန်း</button>
+              <button type="button" onclick="setSubAgentMMK(500000)" class="px-2.5 py-1 theme-card rounded-lg text-xs font-mono border hover:border-indigo-500">၅ သိန်း</button>
+              <button type="button" onclick="setSubAgentMMK(1000000)" class="px-2.5 py-1 theme-card rounded-lg text-xs font-mono border hover:border-indigo-500">၁၀ သိန်း</button>
+              <button type="button" onclick="setSubAgentMMK(3000000)" class="px-2.5 py-1 theme-card rounded-lg text-xs font-mono border hover:border-indigo-500">၃၀ သိန်း</button>
+              <button type="button" onclick="setSubAgentMMK(5000000)" class="px-2.5 py-1 theme-card rounded-lg text-xs font-mono border hover:border-indigo-500">၅၀ သိန်း</button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <div class="theme-card-sub p-3 rounded-xl border space-y-1">
+              <label id="subAgentRateLabel" class="text-xs font-bold text-indigo-400">လက်ခွဲ ပေးဈေး (Sub-Agent Rate) <span class="text-rose-500">*</span></label>
+              <div class="relative">
+                <input type="number" step="any" id="subAgentRate" value="768" required oninput="calcSubAgentLive()" class="w-full theme-input border rounded-lg px-2.5 py-2 text-sm font-bold font-mono pr-10">
+                <span class="absolute right-2.5 top-2.5 text-[10px] theme-text-muted font-bold">THB</span>
+              </div>
+              <p id="subAgentRateHint" class="text-[10px] theme-text-muted">၁ သိန်းကျပ်လျှင် လက်ခွဲနှင့် တွက်သည့်ဘတ်ဈေး</p>
+            </div>
+
+            <div class="theme-card-sub p-3 rounded-xl border space-y-1">
+              <label id="subAgentDealerRateLabel" class="text-xs font-bold text-cyan-400">မူရင်း ဒိုင်ပေါက်ဈေး <span class="text-rose-500">*</span></label>
+              <div class="relative">
+                <input type="number" step="any" id="subAgentDealerRate" value="755" required oninput="calcSubAgentLive()" class="w-full theme-input border rounded-lg px-2.5 py-2 text-sm font-bold font-mono pr-10">
+                <span class="absolute right-2.5 top-2.5 text-[10px] theme-text-muted font-bold">THB</span>
+              </div>
+              <p id="subAgentDealerRateHint" class="text-[10px] theme-text-muted">၁ သိန်းကျပ်လျှင် မိမိ၏ မူရင်းဒိုင်ဘတ်ဈေး</p>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold theme-text-heading mb-1">လက်ခွဲ စာရင်းရှင်းလင်းမှု အခြေအနေ</label>
+            <div class="grid grid-cols-2 gap-2">
+              <label class="cursor-pointer">
+                <input type="radio" name="subAgentStatus" value="PAID" checked class="peer sr-only">
+                <div class="p-2.5 rounded-xl border theme-card-sub peer-checked:border-emerald-500 peer-checked:bg-emerald-600/20 peer-checked:text-emerald-400 text-center font-bold text-xs flex items-center justify-center gap-1.5 transition">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+                  <span>ရှင်းပြီး / လက်ငင်း</span>
+                </div>
+              </label>
+              <label class="cursor-pointer">
+                <input type="radio" name="subAgentStatus" value="UNPAID" class="peer sr-only">
+                <div class="p-2.5 rounded-xl border theme-card-sub peer-checked:border-amber-500 peer-checked:bg-amber-500/20 peer-checked:text-amber-400 text-center font-bold text-xs flex items-center justify-center gap-1.5 transition">
+                  <span class="w-2 h-2 rounded-full bg-amber-500 shrink-0"></span>
+                  <span>မရှင်းရသေး (လက်ခွဲစာရင်းမှတ်)</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold theme-text-heading mb-1">မှတ်ချက် (Optional)</label>
+            <input type="text" id="subAgentNote" placeholder="ဥပမာ - ညနေစာရင်းချုပ်ရှင်းမည် / KPay လွှဲပြီး" class="w-full theme-input border rounded-xl px-3 py-2.5 text-xs">
+          </div>
+
+          <div class="flex gap-2 pt-2">
+            <button type="button" onclick="resetSubAgentForm()" class="flex-1 py-3 px-3 rounded-xl theme-card-sub border theme-text-muted hover:text-rose-500 text-xs font-bold transition">
+              ဖျက်ပြီး ပြန်စမည်
+            </button>
+            <button type="submit" class="flex-[2] py-3 px-4 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 active:scale-98 text-white text-xs font-extrabold shadow-md flex items-center justify-center gap-1.5 transition">
+              <span>🤝 လက်ခွဲစာရင်း သိမ်းမည်</span>
+            </button>
+          </div>
+        </form>
+
+        <!-- Right Column: Live Wholesale Profit Preview -->
+        <div class="md:col-span-5 space-y-3">
+          <div class="theme-card border border-indigo-500/40 rounded-2xl p-4 sm:p-5 space-y-3.5 shadow-md md:sticky md:top-20">
+            <div class="text-xs font-bold text-indigo-400 flex items-center justify-between border-b pb-2">
+              <span>⚡ လက်ခွဲ ဈေးကွာဟချက် နှင့် အမြတ်တွက်ချက်မှု</span>
+              <span id="subLiveDirBadge" class="text-[11px] theme-text-muted">ထိုင်းဘတ် ➔ မြန်မာကျပ်</span>
+            </div>
+
+            <div class="space-y-2 text-xs font-mono">
+              <div class="p-3 rounded-xl theme-card-sub border flex justify-between items-center">
+                <span id="subLiveRow1Label" class="theme-text-muted text-xs font-sans">🤝 လက်ခွဲမှ ပေးသွင်းရမည့်ဘတ်:</span>
+                <span id="subLiveAgentTHB" class="text-sm font-extrabold text-indigo-400">0 THB</span>
+              </div>
+              <div class="p-3 rounded-xl theme-card-sub border flex justify-between items-center">
+                <span id="subLiveRow2Label" class="theme-text-muted text-xs font-sans">🏦 မူရင်းဒိုင်သို့ ပေးရမည့်ဘတ်:</span>
+                <span id="subLiveDealerTHB" class="text-sm font-bold text-cyan-400">0 THB</span>
+              </div>
+              <div class="p-3 rounded-xl theme-card-sub border flex justify-between items-center">
+                <span id="subLiveRow3Label" class="theme-text-muted text-xs font-sans">🇲🇲 မြန်မာကျပ် ပမာဏ:</span>
+                <span id="subLiveAmountMMK" class="text-sm font-bold text-amber-400">0 Ks</span>
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-center space-y-1">
+              <span class="text-[11px] text-emerald-400 font-bold block">လက်ခွဲမှ ရရှိသည့် အသားတင်အမြတ်</span>
+              <div id="subLiveProfitTHB" class="text-xl font-black text-emerald-400 font-mono">+0 THB</div>
+              <div id="subLiveProfitMMK" class="text-xs text-emerald-300 font-mono font-bold">(~ 0 Ks)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sub-Agent History & Settlement Review Section -->
+      <div class="theme-card border border-indigo-500/30 rounded-2xl p-4 sm:p-5 space-y-3.5 shadow-sm">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b pb-2.5">
+          <div>
+            <h3 class="text-xs sm:text-sm font-extrabold theme-text-heading flex items-center gap-1.5">
+              <span>📋 လက်ခွဲစာရင်း မှတ်တမ်းများ စစ်ဆေးရန် (Sub-Agent Ledger)</span>
+            </h3>
+            <p class="text-[11px] theme-text-muted mt-0.5">ထိုင်းဘတ် ➔ မြန်မာကျပ် နှင့် မြန်မာကျပ် ➔ ထိုင်းဘတ် လက်ခွဲစာရင်းများကို သီးသန့်စီ စစ်ဆေးနိုင်ပါသည်</p>
+          </div>
+          <span id="subAgentListCountBadge" class="text-xs px-2.5 py-1 rounded-full theme-tag-bg font-bold">0 ခု</span>
+        </div>
+
+        <!-- Status & Direction Filter Tabs -->
+        <div class="flex flex-wrap gap-1.5 theme-card-sub p-1.5 rounded-xl border text-xs">
+          <button type="button" onclick="setSubAgentStatusFilter('ALL')" id="subagent-filter-all" class="flex-1 min-w-[75px] py-2 px-2 rounded-lg font-bold bg-indigo-600 text-white transition text-center shadow">
+            အားလုံး
+          </button>
+          <button type="button" onclick="setSubAgentStatusFilter('UNPAID')" id="subagent-filter-unpaid" class="flex-1 min-w-[100px] py-2 px-2 rounded-lg font-semibold theme-text-muted hover:text-amber-400 transition text-center">
+            ⏳ မရှင်းရသေး
+          </button>
+          <button type="button" onclick="setSubAgentStatusFilter('PAID')" id="subagent-filter-paid" class="flex-1 min-w-[90px] py-2 px-2 rounded-lg font-semibold theme-text-muted hover:text-emerald-400 transition text-center">
+            ✓ ရှင်းပြီး
+          </button>
+          <button type="button" onclick="setSubAgentStatusFilter('THB_TO_MMK')" id="subagent-filter-thb2mmk" class="flex-1 min-w-[90px] py-2 px-2 rounded-lg font-semibold theme-text-muted hover:text-blue-400 transition text-center">
+            🇹🇭➔🇲🇲 ဘတ်➔ကျပ်
+          </button>
+          <button type="button" onclick="setSubAgentStatusFilter('MMK_TO_THB')" id="subagent-filter-mmk2thb" class="flex-1 min-w-[90px] py-2 px-2 rounded-lg font-semibold theme-text-muted hover:text-cyan-400 transition text-center">
+            🇲🇲➔🇹🇭 ကျပ်➔ဘတ်
+          </button>
+        </div>
+
+        <!-- Search Input -->
+        <div class="relative">
+          <input type="text" id="subAgentSearchInput" oninput="renderSubAgentModule()" placeholder="လက်ခွဲအမည်၊ Customer အမည်၊ ဖုန်းနံပါတ်၊ ပမာဏဖြင့် ရှာရန်..." class="w-full theme-input border rounded-xl px-3.5 py-2.5 pl-9 pr-8 text-xs">
+          <svg class="w-4 h-4 theme-text-muted absolute left-3 top-3 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          <button type="button" id="subAgentSearchClearBtn" onclick="clearSearchInput('subAgentSearchInput')" class="hidden absolute right-2.5 top-2.5 w-5 h-5 rounded-full bg-slate-500/20 hover:bg-rose-500/20 theme-text-muted hover:text-rose-500 flex items-center justify-center text-[11px] font-bold transition">✕</button>
+        </div>
+
+        <div id="subAgentListContainer" class="space-y-3 max-h-[720px] overflow-y-auto pr-1">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </section>
+
     <!-- ================= TAB 3: ပြည်တွင်း KPAY / ငွေထုတ် ================= -->
     <section id="tab-cashout" class="space-y-4 hidden">
-      <!-- Top Sub-Navigation Switcher: ငွေလွှဲ vs KPay ငွေထုတ်/လွှဲ -->
-      <div class="grid grid-cols-2 gap-1.5 p-1 theme-card rounded-2xl border text-xs font-bold shadow-sm">
-        <button type="button" onclick="switchTab('remit')" class="py-2 px-3 rounded-xl theme-text-muted hover:text-blue-500 flex items-center justify-center gap-1.5 transition">
-          <span>🇹🇭 ⇄ 🇲🇲 ထိုင်း-မြန်မာ ငွေလွှဲ</span>
+      <!-- Top Sub-Navigation Switcher: ပင်မ ငွေလွှဲ vs လက်ခွဲစာရင်း vs KPay ငွေထုတ်/လွှဲ -->
+      <div class="grid grid-cols-3 gap-1.5 p-1 theme-card rounded-2xl border text-xs font-bold shadow-sm">
+        <button type="button" onclick="switchTab('remit')" class="py-2.5 px-2 rounded-xl theme-text-muted hover:text-blue-500 flex items-center justify-center gap-1 transition">
+          <span>🇹🇭⇄🇲🇲 ပင်မ ငွေလွှဲ</span>
         </button>
-        <button type="button" onclick="switchTab('cashout')" class="py-2 px-3 rounded-xl bg-emerald-600 text-white shadow flex items-center justify-center gap-1.5 transition">
-          <span>📱 KPay / Wave ငွေထုတ် & လွှဲ</span>
+        <button type="button" onclick="switchTab('subagent')" class="py-2.5 px-2 rounded-xl theme-text-muted hover:text-indigo-400 flex items-center justify-center gap-1 transition">
+          <span>🤝 လက်ခွဲစာရင်း</span>
+        </button>
+        <button type="button" onclick="switchTab('cashout')" class="py-2.5 px-2 rounded-xl bg-emerald-600 text-white shadow flex items-center justify-center gap-1 transition">
+          <span>📱 KPay ငွေထုတ်</span>
         </button>
       </div>
 
@@ -2328,7 +2724,36 @@
           <span class="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center text-xs">⚙️</span>
           Setting (လုပ်ငန်းချိန်ညှိချက်၊ အရင်းစာရင်း & Cloud Backup)
         </h2>
-        <p class="text-xs theme-text-muted mt-0.5">မတည်ရင်းနှီးငွေ၊ ပေါက်ဈေးများ၊ ဖုန်းပြောင်းဒေတာပြန်ယူခြင်းနှင့် Google Drive Auto-Backup စီမံမှု</p>
+        <p class="text-xs theme-text-muted mt-0.5">မတည်ရင်းနှီးငွေ၊ ပေါက်ဈေးများ၊ စာလုံးအရွယ်အစား၊ ဖုန်းပြောင်းဒေတာပြန်ယူခြင်းနှင့် Google Drive Auto-Backup စီမံမှု</p>
+      </div>
+
+      <!-- Subsection 0: Mobile Eye-Friendly Font Scale & Readability Selector -->
+      <div class="theme-card border border-emerald-500/40 rounded-2xl p-4 sm:p-5 space-y-3 shadow-sm">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b pb-2.5">
+          <div class="flex items-center gap-2.5">
+            <span class="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-sm font-black">AA</span>
+            <div>
+              <h3 class="text-xs sm:text-sm font-extrabold theme-text-heading">ဖုန်းမျက်နှာပြင် စာလုံးအရွယ်အစား ချိန်ညှိရန် (Font Size & Readability)</h3>
+              <p class="text-[11px] theme-text-muted">ဖုန်းဖြင့်ကြည့်ရာတွင် မျက်စိရှင်းလင်းပြီး ဂဏန်းများ ကြီးမားပြတ်သားစေရန် စိတ်ကြိုက်ရွေးချယ်နိုင်ပါသည်</p>
+            </div>
+          </div>
+          <span id="settingsFontScaleBadge" class="text-xs px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 font-bold">အကြီး (Large)</span>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2.5 text-xs">
+          <button type="button" id="font-scale-btn-normal" onclick="setAppFontScale('normal')" class="py-3 px-3 rounded-xl theme-card-sub border theme-text-muted font-bold transition text-center">
+            <div class="text-sm font-extrabold">A ပုံမှန်</div>
+            <div class="text-[10px] opacity-80 mt-0.5">Normal (100%)</div>
+          </button>
+          <button type="button" id="font-scale-btn-large" onclick="setAppFontScale('large')" class="py-3 px-3 rounded-xl bg-emerald-600 text-white font-extrabold shadow transition text-center">
+            <div class="text-base font-black">AA အကြီး (Default)</div>
+            <div class="text-[10px] opacity-90 mt-0.5">ဖုန်းအတွက် အသင့်တော်ဆုံး</div>
+          </button>
+          <button type="button" id="font-scale-btn-xlarge" onclick="setAppFontScale('xlarge')" class="py-3 px-3 rounded-xl theme-card-sub border theme-text-muted font-bold transition text-center">
+            <div class="text-lg font-black">AAA အထူးအကြီး</div>
+            <div class="text-[10px] opacity-80 mt-0.5">အကြီးဆုံး (Extra Large)</div>
+          </button>
+        </div>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -2743,10 +3168,10 @@
         <span class="text-[9px] sm:text-[10px] mt-0.5 leading-tight">၁။ ပင်မ</span>
       </button>
 
-      <!-- 2. ငွေလွှဲ/KPay -->
+      <!-- 2. ငွေလွှဲ/လက်ခွဲ/KPay -->
       <button onclick="switchTab('remit')" id="nav-remit" class="flex flex-col items-center justify-center py-1.5 px-0.5 sm:px-1 rounded-xl transition theme-text-muted hover:text-blue-500">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
-        <span class="text-[9px] sm:text-[10px] mt-0.5 leading-tight">၂။ ငွေလွှဲ/KPay</span>
+        <span class="text-[9px] sm:text-[10px] mt-0.5 leading-tight">၂။ ငွေလွှဲ/လက်ခွဲ</span>
       </button>
 
       <!-- 3. အပ်ငွေစာရင်း -->
@@ -3362,6 +3787,107 @@
         <div class="flex gap-2 pt-2">
           <button type="button" onclick="closeEditU9Modal()" class="flex-1 py-2.5 rounded-xl theme-card-sub border theme-text-muted font-bold">မလုပ်တော့ပါ</button>
           <button type="submit" class="flex-1 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold shadow">ပြင်ဆင်ချက် သိမ်းမည်</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 5A-SUB. EDIT SUB-AGENT TRANSACTION MODAL -->
+  <div id="editSubAgentModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="theme-card border w-full max-w-md rounded-3xl p-4 sm:p-5 shadow-2xl space-y-3 max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b pb-2">
+        <h3 class="text-xs sm:text-sm font-bold text-indigo-400 flex items-center gap-1.5">
+          <span>🤝 လက်ခွဲစာရင်း ပြင်ဆင်ရန် (Edit Sub-Agent Record)</span>
+        </h3>
+        <button onclick="closeEditSubAgentModal()" class="theme-text-muted hover:text-rose-500 p-1">✕</button>
+      </div>
+
+      <form id="editSubAgentForm" onsubmit="handleSaveEditedSubAgent(event)" class="space-y-2.5 text-xs">
+        <input type="hidden" id="editSubId">
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-semibold theme-text-heading mb-1">ရက်စွဲနှင့် အချိန်</label>
+            <input type="datetime-local" id="editSubDate" required class="w-full theme-input border rounded-xl px-2.5 py-2 text-xs font-mono">
+          </div>
+          <div>
+            <label class="block font-semibold theme-text-heading mb-1">လမ်းကြောင်း</label>
+            <select id="editSubDirection" onchange="calcEditSubAgentModalLive()" class="w-full theme-input border rounded-xl px-2.5 py-2 text-xs font-bold">
+              <option value="THB_TO_MMK">🇹🇭 ထိုင်းဘတ် ➔ 🇲🇲 မြန်မာကျပ်</option>
+              <option value="MMK_TO_THB">🇲🇲 မြန်မာကျပ် ➔ 🇹🇭 ထိုင်းဘတ်</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-semibold theme-text-heading mb-1">🤝 လက်ခွဲအမည် <span class="text-rose-500">*</span></label>
+            <input type="text" id="editSubAgentName" required class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-bold">
+          </div>
+          <div>
+            <label class="block font-semibold theme-text-heading mb-1">Customer / ထုတ်သူအမည်</label>
+            <input type="text" id="editSubClientName" class="w-full theme-input border rounded-xl px-3 py-2 text-xs">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-semibold theme-text-heading mb-1">ဖုန်း / အကောင့်</label>
+            <input type="text" id="editSubPhone" class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-mono">
+          </div>
+          <div>
+            <label class="block font-semibold theme-text-heading mb-1">ချန်နယ်</label>
+            <input type="text" id="editSubChannel" class="w-full theme-input border rounded-xl px-3 py-2 text-xs font-bold">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2">
+          <div>
+            <label class="block font-semibold theme-text-heading mb-1">ကျပ်ပမာဏ (MMK)</label>
+            <input type="number" step="any" id="editSubAmountMMK" required oninput="calcEditSubAgentModalLive()" class="w-full theme-input border rounded-xl px-2.5 py-2 text-xs font-mono font-bold">
+          </div>
+          <div>
+            <label class="block font-semibold text-indigo-400 mb-1">လက်ခွဲပေးဈေး</label>
+            <input type="number" step="any" id="editSubAgentRate" required oninput="calcEditSubAgentModalLive()" class="w-full theme-input border rounded-xl px-2.5 py-2 text-xs font-mono font-bold">
+          </div>
+          <div>
+            <label class="block font-semibold text-cyan-400 mb-1">မူရင်းဒိုင်ဈေး</label>
+            <input type="number" step="any" id="editSubDealerRate" required oninput="calcEditSubAgentModalLive()" class="w-full theme-input border rounded-xl px-2.5 py-2 text-xs font-mono font-bold">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2">
+          <div>
+            <label class="block font-semibold theme-text-heading mb-1">လက်ခွဲဘတ် (THB)</label>
+            <input type="number" step="any" id="editSubAgentTHB" class="w-full theme-input border rounded-xl px-2.5 py-2 text-xs font-mono font-bold text-indigo-400">
+          </div>
+          <div>
+            <label class="block font-semibold text-emerald-400 mb-1">ဘတ်အမြတ် (THB)</label>
+            <input type="number" step="any" id="editSubProfitTHB" class="w-full theme-input border rounded-xl px-2.5 py-2 text-xs font-mono font-bold text-emerald-400">
+          </div>
+          <div>
+            <label class="block font-semibold text-emerald-400 mb-1">ကျပ်အမြတ် (MMK)</label>
+            <input type="number" step="any" id="editSubProfitMMK" class="w-full theme-input border rounded-xl px-2.5 py-2 text-xs font-mono font-bold text-emerald-400">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-semibold theme-text-heading mb-1">အခြေအနေ</label>
+            <select id="editSubStatus" class="w-full theme-input border rounded-xl px-2.5 py-2 text-xs font-bold">
+              <option value="PAID">✓ ရှင်းပြီး (PAID)</option>
+              <option value="UNPAID">⏳ မရှင်းရသေး (UNPAID)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-semibold theme-text-heading mb-1">မှတ်ချက်</label>
+            <input type="text" id="editSubNote" class="w-full theme-input border rounded-xl px-2.5 py-2 text-xs">
+          </div>
+        </div>
+
+        <div class="flex gap-2 pt-2">
+          <button type="button" onclick="closeEditSubAgentModal()" class="flex-1 py-2.5 rounded-xl theme-card-sub border theme-text-muted font-bold">မလုပ်တော့ပါ</button>
+          <button type="submit" class="flex-1 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold shadow">ပြင်ဆင်ချက် သိမ်းမည်</button>
         </div>
       </form>
     </div>
@@ -4120,16 +4646,19 @@
 
     // --- State Storage Keys ---
     const STORAGE_KEY_TRANSACTIONS = 'thb_mmk_transactions_v2';
+    const STORAGE_KEY_SUBAGENTS = 'thb_mmk_subagents_v1';
     const STORAGE_KEY_EXPENSES = 'thb_mmk_expenses_v2';
     const STORAGE_KEY_DEPOSITS = 'thb_mmk_deposits_v2';
     const STORAGE_KEY_U9 = 'thb_mmk_u9_v2';
     const STORAGE_KEY_CAPITAL = 'thb_mmk_capital_v2';
     const STORAGE_KEY_SETTINGS = 'thb_mmk_settings_v2';
     const STORAGE_KEY_THEME = 'thb_mmk_theme';
+    const STORAGE_KEY_FONT_SCALE = 'thb_mmk_font_scale';
     const BACKUP_FILE_NAME = 'LabShwin_AutoBackup.json';
 
     // --- State Variables ---
     let transactions = [];
+    let subAgents = [];
     let expenses = [];
     let deposits = [];
     let u9Data = {
@@ -4140,6 +4669,7 @@
     let capital = { cashMMK: 2500000, bankMMK: 5000000, thbBalance: 40000 };
     let settings = { dealerRate: 755, customerRate: 780 };
     let currentTheme = localStorage.getItem(STORAGE_KEY_THEME) || 'dark';
+    let currentFontScale = localStorage.getItem(STORAGE_KEY_FONT_SCALE) || 'large';
 
     let activeTab = 'dashboard';
     let tabHistoryStack = ['dashboard'];
@@ -4151,6 +4681,7 @@
       'directCreditModal',
       'rateModal',
       'editModal',
+      'editSubAgentModal',
       'editExpenseModal',
       'editDepositModal',
       'editU9Modal',
@@ -4171,6 +4702,9 @@
     let customSelectedDate = new Date().toISOString().split('T')[0];
     let remitDirection = 'THB_TO_MMK';
     let remitPayoutFilter = 'UNPAID';
+    let subAgentDirection = 'THB_TO_MMK';
+    let subAgentStatusFilter = 'ALL';
+    let subAgentPartnerFilter = '';
     let cashoutType = 'CASHOUT';
     let cashoutPayoutFilter = 'UNPAID';
     let creditFilter = 'UNPAID';
@@ -4229,6 +4763,7 @@
       deferredBootPending = false;
       initDefaultDateTimeInputs();
       calcRemittanceLive();
+      calcSubAgentLive();
       calcCashoutLive();
       updateAllUI();
       initFirebaseAuth();
@@ -4240,18 +4775,51 @@
 
     function bootApplication() {
       applyTheme(currentTheme);
+      applyAppFontScale(currentFontScale);
       loadStorageData();
       initAppLockSystem();
       injectAppIcons();
 
       if (isAppLocked) {
-        // Defer heavy DOM rendering & Firebase network initialization until AFTER unlock (or idle)
-        // so the PIN keypad has 100% of CPU/GPU resources with zero main-thread jank.
         deferredBootPending = true;
       } else {
         deferredBootPending = true;
         completeBackgroundAppBoot();
       }
+    }
+
+    // --- Font Scale (Mobile Readability) ---
+    const setAppFontScale = window.setAppFontScale = function(scale) {
+      const valid = ['normal', 'large', 'xlarge'].includes(scale) ? scale : 'large';
+      currentFontScale = valid;
+      localStorage.setItem(STORAGE_KEY_FONT_SCALE, valid);
+      applyAppFontScale(valid);
+      const labelMap = { normal: 'ပုံမှန် (Normal)', large: 'ကြီး (Large)', xlarge: 'အထူးကြီး (X-Large)' };
+      showToast(`စာလုံးအရွယ်အစား: ${labelMap[valid]} ပြောင်းပြီးပါပြီ`, 'info');
+    };
+
+    const cycleAppFontScale = window.cycleAppFontScale = function() {
+      const order = ['normal', 'large', 'xlarge'];
+      const nextIdx = (order.indexOf(currentFontScale) + 1) % order.length;
+      setAppFontScale(order[nextIdx]);
+    };
+
+    function applyAppFontScale(scale) {
+      const valid = ['normal', 'large', 'xlarge'].includes(scale) ? scale : 'large';
+      document.documentElement.setAttribute('data-font-scale', valid);
+      const hLbl = document.getElementById('headerFontScaleLabel');
+      if (hLbl) {
+        hLbl.textContent = valid === 'xlarge' ? 'အထူးကြီး' : valid === 'normal' ? 'ပုံမှန်' : 'စာလုံးကြီး';
+      }
+      ['normal', 'large', 'xlarge'].forEach(s => {
+        const btn = document.getElementById(`font-scale-btn-${s}`);
+        if (!btn) return;
+        if (s === valid) {
+          btn.className = 'py-2.5 px-2 rounded-xl border border-indigo-500/40 bg-indigo-600 text-white font-bold text-xs shadow transition text-center';
+        } else {
+          btn.className = 'py-2.5 px-2 rounded-xl border theme-card-sub font-bold text-xs transition text-center theme-text-muted hover:text-indigo-400';
+        }
+      });
     }
 
     function injectAppIcons() {
@@ -5503,11 +6071,12 @@
         if (cachedAccessToken) {
           const payload = {
             app: 'လာဘ်ရွှင် (Lab Shwin)',
-            version: '2.1',
+            version: '2.2',
             savedAt: new Date().toISOString(),
             capital,
             settings,
             transactions,
+            subAgents,
             expenses,
             deposits,
             u9Data
@@ -5593,6 +6162,10 @@
 
         if (confirm(`အရင်ဖုန်းမှ Backup မှတ်တမ်း (${restoredData.transactions.length} ခု) တွေ့ရှိပါသည်။ ဤဖုန်းအသစ်ထဲသို့ အစားထိုး ပြန်လည်ရယူရန် သေချာပါသလား?`)) {
           transactions = restoredData.transactions;
+          if (Array.isArray(restoredData.subAgents)) {
+            subAgents = restoredData.subAgents;
+            saveSubAgentsToStorage();
+          }
           if (Array.isArray(restoredData.expenses)) {
             expenses = restoredData.expenses;
             saveExpensesToStorage();
@@ -5636,6 +6209,18 @@
           }
         } else {
           initDemoData();
+        }
+
+        const storedSub = localStorage.getItem(STORAGE_KEY_SUBAGENTS);
+        if (storedSub) {
+          try {
+            subAgents = JSON.parse(storedSub);
+          } catch (e) {
+            subAgents = [];
+          }
+        } else {
+          subAgents = initDemoSubAgents();
+          localStorage.setItem(STORAGE_KEY_SUBAGENTS, JSON.stringify(subAgents));
         }
 
         const storedExp = localStorage.getItem(STORAGE_KEY_EXPENSES);
@@ -5694,6 +6279,11 @@
       queueAutoDriveBackup();
     }
 
+    function saveSubAgentsToStorage() {
+      localStorage.setItem(STORAGE_KEY_SUBAGENTS, JSON.stringify(subAgents));
+      queueAutoDriveBackup();
+    }
+
     function saveExpensesToStorage() {
       localStorage.setItem(STORAGE_KEY_EXPENSES, JSON.stringify(expenses));
       queueAutoDriveBackup();
@@ -5717,6 +6307,60 @@
     function saveSettingsToStorage() {
       localStorage.setItem(STORAGE_KEY_SETTINGS, JSON.stringify(settings));
       queueAutoDriveBackup();
+    }
+
+    function initDemoSubAgents() {
+      const now = new Date();
+      return [
+        {
+          id: 'SUB-' + (now.getTime() - 3600000 * 3).toString().slice(-6),
+          type: 'SUBAGENT',
+          direction: 'THB_TO_MMK',
+          date: new Date(now.getTime() - 3600000 * 3).toISOString(),
+          partnerName: 'ကိုအောင် (မဲဆောက် လက်ခွဲ)',
+          partnerPhone: '0891122334',
+          recipientName: 'မသီတာ (ရန်ကုန် KPay)',
+          custName: 'ကိုအောင် (မဲဆောက် လက်ခွဲ) ➔ မသီတာ (ရန်ကုန် KPay)',
+          custPhone: '0891122334',
+          channel: 'KPay',
+          lakhs: 20,
+          amountMMK: 2000000,
+          dealerRate: 755,
+          subAgentRate: 768,
+          customerRate: 768,
+          dealerTHB: 15100,
+          subAgentTHB: 15360,
+          customerTHB: 15360,
+          profitTHB: 260,
+          profitMMK: 34437,
+          status: 'PAID',
+          note: 'မဲဆောက် လက်ခွဲအေးဂျင့်မှ ၂၀ သိန်း လွှဲခိုင်းသည်'
+        },
+        {
+          id: 'SUB-' + (now.getTime() - 3600000 * 8).toString().slice(-6),
+          type: 'SUBAGENT',
+          direction: 'MMK_TO_THB',
+          date: new Date(now.getTime() - 3600000 * 8).toISOString(),
+          partnerName: 'မချို (ဘန်ကောက် လက်ခွဲ)',
+          partnerPhone: '0814455667',
+          recipientName: 'Somchai (SCB Bank)',
+          custName: 'မချို (ဘန်ကောက် လက်ခွဲ) ➔ Somchai (SCB Bank)',
+          custPhone: '0814455667',
+          channel: 'Thai Bank',
+          lakhs: 10,
+          amountMMK: 1000000,
+          dealerRate: 775,
+          subAgentRate: 762,
+          customerRate: 762,
+          dealerTHB: 7750,
+          subAgentTHB: 7620,
+          customerTHB: 7620,
+          profitTHB: 130,
+          profitMMK: 16774,
+          status: 'PAID',
+          note: 'မြန်မာကျပ် ၁၀ သိန်းမှ ထိုင်းဘတ် လက်ခွဲဈေးဖြင့် လဲပေးသည်'
+        }
+      ];
     }
 
     function initDemoDeposits() {
@@ -5908,6 +6552,7 @@
       const currentMonthStr = now.toISOString().slice(0, 7);
       
       const rDate = document.getElementById('remitDate');
+      const saDate = document.getElementById('subAgentDate');
       const cDate = document.getElementById('cashoutDate');
       const expDate = document.getElementById('expenseDate');
       const depDate = document.getElementById('depositDate');
@@ -5922,6 +6567,7 @@
       const customD = document.getElementById('customFilterDate');
 
       if (rDate) rDate.value = localIso;
+      if (saDate) saDate.value = localIso;
       if (cDate) cDate.value = localIso;
       if (expDate) expDate.value = localIso;
       if (depDate) depDate.value = localIso;
@@ -5937,6 +6583,10 @@
 
       document.getElementById('remitDealerRate').value = settings.dealerRate;
       document.getElementById('remitCustRate').value = settings.customerRate;
+      const saDealerEl = document.getElementById('subAgentDealerRate');
+      const saRateEl = document.getElementById('subAgentRate');
+      if (saDealerEl) saDealerEl.value = settings.dealerRate;
+      if (saRateEl) saRateEl.value = Math.round((Number(settings.dealerRate) + Number(settings.customerRate)) / 2);
       document.getElementById('mDealerRate').value = settings.dealerRate;
       document.getElementById('mCustRate').value = settings.customerRate;
     }
@@ -6085,7 +6735,7 @@
       }
 
       activeTab = tabId;
-      const tabs = ['dashboard', 'remit', 'cashout', 'deposits', 'u9', 'credit', 'expense', 'capital'];
+      const tabs = ['dashboard', 'remit', 'subagent', 'cashout', 'deposits', 'u9', 'credit', 'expense', 'capital'];
       tabs.forEach(t => {
         const el = document.getElementById(`tab-${t}`);
         if (el) {
@@ -6097,7 +6747,7 @@
       // Highlight the 5 Bottom Nav Items accurately
       const navMapping = {
         'nav-dashboard': tabId === 'dashboard',
-        'nav-remit': tabId === 'remit' || tabId === 'cashout',
+        'nav-remit': tabId === 'remit' || tabId === 'subagent' || tabId === 'cashout',
         'nav-deposits': tabId === 'deposits',
         'nav-u9': tabId === 'u9',
         'nav-credit': tabId === 'credit' || tabId === 'expense' || tabId === 'capital'
@@ -6125,6 +6775,7 @@
 
       if (tabId === 'dashboard') updateDashboardUI();
       else if (tabId === 'remit') renderRemitPayoutList();
+      else if (tabId === 'subagent') renderSubAgentModule();
       else if (tabId === 'cashout') renderCashoutPayoutList();
       else if (tabId === 'deposits') renderDepositsModule();
       else if (tabId === 'u9') renderU9Module();
@@ -6188,6 +6839,7 @@
 
     const multiDayState = {
       remit: { dateFilter: 'ALL', customDate: '', limit: 60, collapsedDays: {}, forceMode: 'AUTO' },
+      subagent: { dateFilter: 'ALL', customDate: '', limit: 60, collapsedDays: {}, forceMode: 'AUTO' },
       cashout: { dateFilter: 'ALL', customDate: '', limit: 60, collapsedDays: {}, forceMode: 'AUTO' },
       credit: { dateFilter: 'ALL', customDate: '', limit: 60, collapsedDays: {}, forceMode: 'AUTO' },
       expense: { dateFilter: 'ALL', customDate: '', limit: 60, collapsedDays: {}, forceMode: 'AUTO' },
@@ -6255,6 +6907,7 @@
 
     function refreshListKeyView(listKey) {
       if (listKey === 'remit') renderRemitPayoutList();
+      else if (listKey === 'subagent') renderSubAgentModule();
       else if (listKey === 'cashout') renderCashoutPayoutList();
       else if (listKey === 'credit') renderCreditList();
       else if (listKey === 'expense') renderExpenseList();
@@ -6447,7 +7100,6 @@
 
       groupsMap.forEach((dayItems, dayKey) => {
         const info = formatDayHeaderInfo(dayKey);
-        // Smart default: keep first 5 days expanded, auto-collapse older days when there are > 5 days so user isn't overwhelmed
         const defaultCollapsed = totalDaysCount > 5 && dayIndex >= 5;
         const isCollapsed = st.collapsedDays[dayKey] !== undefined
           ? st.collapsedDays[dayKey]
@@ -6488,27 +7140,27 @@
 
         const rowsHtml = isCollapsed
           ? ''
-          : `<div class="${listDisplayMode === 'COMPACT' ? 'space-y-1' : 'space-y-2'} pt-1.5">
+          : `<div class="${listDisplayMode === 'COMPACT' ? 'space-y-1.5' : 'space-y-2.5'} pt-2">
               ${dayItems.map(it => (listDisplayMode === 'COMPACT' && renderCompactFn) ? renderCompactFn(it) : renderCardFn(it)).join('')}
              </div>`;
 
         groupsHtml.push(`
           <div class="space-y-1">
             <!-- Sticky Collapsible Day Header -->
-            <div onclick="toggleDayGroupCollapse('${listKey}', '${dayKey}', ${defaultCollapsed})" class="sticky top-0 z-10 cursor-pointer select-none border ${headerBorder} backdrop-blur-md px-3 py-2 rounded-xl flex flex-wrap items-center justify-between gap-2 shadow-sm hover:border-blue-500/60 transition">
-              <div class="flex items-center gap-2">
-                <span class="w-5 h-5 rounded-lg ${badgeColor} flex items-center justify-center text-[10px] font-black transition-transform ${isCollapsed ? '' : 'rotate-90'}">
+            <div onclick="toggleDayGroupCollapse('${listKey}', '${dayKey}', ${defaultCollapsed})" class="sticky top-0 z-10 cursor-pointer select-none border ${headerBorder} backdrop-blur-md px-3.5 py-2.5 rounded-xl flex flex-wrap items-center justify-between gap-2 shadow-sm hover:border-blue-500/60 transition">
+              <div class="flex items-center gap-2.5">
+                <span class="w-6 h-6 rounded-lg ${badgeColor} flex items-center justify-center text-[10px] font-black transition-transform ${isCollapsed ? '' : 'rotate-90'}">
                   ▶
                 </span>
                 <div>
-                  <div class="flex items-center gap-1.5 flex-wrap">
-                    <span class="text-xs font-extrabold theme-text-heading">${info.mainTitle}</span>
-                    <span class="text-[10px] px-2 py-0.2 rounded-full ${badgeColor} font-bold font-mono">${dayItems.length} ကြိမ်</span>
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <span class="text-xs sm:text-sm font-extrabold theme-text-heading">${info.mainTitle}</span>
+                    <span class="text-[10px] px-2 py-0.5 rounded-full ${badgeColor} font-bold font-mono">${dayItems.length} ကြိမ်</span>
                   </div>
                   ${info.subLabel ? `<div class="text-[10px] theme-text-muted leading-tight">${info.subLabel}</div>` : ''}
                 </div>
               </div>
-              <div class="text-right text-[11px] flex flex-wrap items-center gap-2">
+              <div class="text-right text-xs flex flex-wrap items-center gap-2">
                 ${summaryParts.join(' <span class="theme-text-muted">•</span> ')}
                 <span class="text-[10px] theme-text-muted font-semibold ml-1">${isCollapsed ? 'ဖွင့်ကြည့်ရန် ▾' : 'ချုံ့ရန် ▴'}</span>
               </div>
@@ -6535,8 +7187,8 @@
 
     // Helper to extract sender & receiver names cleanly for both new and legacy transactions
     function getTxNames(tx) {
-      let senderName = (tx.senderName || '').trim();
-      let receiverName = (tx.receiverName || '').trim();
+      let senderName = (tx.senderName || tx.partnerName || '').trim();
+      let receiverName = (tx.receiverName || tx.recipientName || '').trim();
       const rawCust = (tx.custName || '').trim();
 
       if (!senderName && !receiverName && rawCust) {
@@ -6550,8 +7202,8 @@
       }
 
       const isMmkToThb = tx.direction === 'MMK_TO_THB';
-      const senderLabel = isMmkToThb ? '🇲🇲 မြန်မာမှ လွှဲသူ' : '🇹🇭 ထိုင်းမှ လွှဲသူ';
-      const receiverLabel = isMmkToThb ? '🇹🇭 ထိုင်းမှ ထုတ်သူ' : '🇲🇲 မြန်မာမှ ထုတ်သူ';
+      const senderLabel = tx.type === 'SUBAGENT' ? '🤝 လက်ခွဲအေးဂျင့်' : (isMmkToThb ? '🇲🇲 မြန်မာမှ လွှဲသူ' : '🇹🇭 ထိုင်းမှ လွှဲသူ');
+      const receiverLabel = tx.type === 'SUBAGENT' ? '👤 လက်ခံသူ' : (isMmkToThb ? '🇹🇭 ထိုင်းမှ ထုတ်သူ' : '🇲🇲 မြန်မာမှ ထုတ်သူ');
       const displayTitle = (senderName && receiverName)
         ? `${senderName} ➔ ${receiverName}`
         : (rawCust || senderName || receiverName || 'အမည်မသိ');
@@ -6573,8 +7225,8 @@
         };
       }
       return {
-        text: isPaid ? 'လက်ငင်း' : 'အကြွေး',
-        shortText: isPaid ? 'လက်ငင်း' : 'အကြွေး',
+        text: isPaid ? 'ရှင်းပြီး (Paid)' : 'အကြွေး (Unpaid)',
+        shortText: isPaid ? 'ရှင်းပြီး' : 'အကြွေး',
         badgeClass: isPaid
           ? 'bg-emerald-500/20 text-emerald-500 border border-emerald-500/30'
           : 'bg-rose-500/20 text-rose-500 border border-rose-500/30'
@@ -6584,6 +7236,7 @@
     function updateAllUI() {
       updateDashboardUI();
       renderRemitPayoutList();
+      renderSubAgentModule();
       renderCashoutPayoutList();
       renderDepositsModule();
       renderU9Module();
@@ -6965,6 +7618,7 @@
     function computeMasterSettlement(period = dashboardPeriod) {
       const rateForConversion = settings.dealerRate > 0 ? (100000 / settings.dealerRate) : 130;
       const periodTx = filterTransactionsByPeriod(transactions, period);
+      const periodSub = filterTransactionsByPeriod(subAgents, period);
       const periodExp = filterExpensesByPeriod(expenses, period);
       const periodU9 = filterU9RecordsByPeriod(u9Data.records || [], period);
 
@@ -6974,12 +7628,17 @@
       let remitProfitMMK = 0;
       let remitProfitTHB = 0;
 
+      let subAgentCount = 0;
+      let subAgentVolumeMMK = 0;
+      let subAgentVolumeTHB = 0;
+      let subAgentProfitMMK = 0;
+      let subAgentProfitTHB = 0;
+
       let cashoutCount = 0;
       let cashoutVolumeMMK = 0;
       let cashoutProfitMMK = 0;
 
       periodTx.forEach(tx => {
-        // Skip U9 credit records here since U9 profits are counted in periodU9
         if (tx.u9RecordId || tx.cashoutType === 'U9_BILL') return;
 
         if (tx.type === 'REMIT') {
@@ -6993,6 +7652,14 @@
           cashoutVolumeMMK += Number(tx.amountMMK) || 0;
           cashoutProfitMMK += Number(tx.profitMMK) || 0;
         }
+      });
+
+      periodSub.forEach(sa => {
+        subAgentCount++;
+        subAgentVolumeMMK += Number(sa.amountMMK) || 0;
+        subAgentVolumeTHB += Number(sa.subAgentTHB || sa.customerTHB) || 0;
+        subAgentProfitMMK += Number(sa.profitMMK) || 0;
+        subAgentProfitTHB += Number(sa.profitTHB) || 0;
       });
 
       let u9PrimaryCount = 0;
@@ -7018,8 +7685,8 @@
       });
 
       const u9ProfitMMK = u9PrimaryCommMMK + u9RetailExtraMMK;
-      const totalGrossProfitMMK = remitProfitMMK + cashoutProfitMMK + u9ProfitMMK;
-      const totalGrossProfitTHB = remitProfitTHB;
+      const totalGrossProfitMMK = remitProfitMMK + subAgentProfitMMK + cashoutProfitMMK + u9ProfitMMK;
+      const totalGrossProfitTHB = remitProfitTHB + subAgentProfitTHB;
 
       let totalExpenseMMK = 0;
       let totalExpenseTHB = 0;
@@ -7071,6 +7738,15 @@
         }
       });
 
+      subAgents.forEach(sa => {
+        if (sa.status === 'UNPAID') {
+          unpaidCount++;
+          const owedCur = sa.direction === 'THB_TO_MMK' ? 'THB' : 'MMK';
+          if (owedCur === 'THB') unpaidDebtTHB += Number(sa.subAgentTHB || sa.customerTHB) || 0;
+          else unpaidDebtMMK += Number(sa.amountMMK) || 0;
+        }
+      });
+
       const totalUnpaidMMKCombined = unpaidDebtMMK + (unpaidDebtTHB * rateForConversion);
 
       const depStats = computeDepositStats();
@@ -7106,6 +7782,11 @@
         remitVolumeTHB,
         remitProfitMMK,
         remitProfitTHB,
+        subAgentCount,
+        subAgentVolumeMMK,
+        subAgentVolumeTHB,
+        subAgentProfitMMK,
+        subAgentProfitTHB,
         cashoutCount,
         cashoutVolumeMMK,
         cashoutProfitMMK,
@@ -7149,7 +7830,8 @@
 
     function updateDashboardUI() {
       const ms = computeMasterSettlement(dashboardPeriod);
-      const periodTx = filterTransactionsByPeriod(transactions, dashboardPeriod);
+      const periodTx = filterTransactionsByPeriod([...transactions, ...subAgents], dashboardPeriod)
+        .sort((a, b) => new Date(b.date) - new Date(a.date));
 
       document.getElementById('dashTotalCapitalMMK').textContent = formatMMK(ms.totalWorkingMMK);
       document.getElementById('dashCashBalance').textContent = formatMMK(ms.cashInHand);
@@ -7238,6 +7920,9 @@
       setElText('msRemitCountText', `${ms.remitCount} ကြိမ် • ပမာဏ ${formatMMK(ms.remitVolumeMMK)}`);
       setElText('msRemitProfitMMK', `+${formatMMK(ms.remitProfitMMK)}`);
       setElText('msRemitProfitTHB', `+${formatTHB(ms.remitProfitTHB)}`);
+      setElText('msSubAgentCountText', `${ms.subAgentCount} ကြိမ် • ပမာဏ ${formatMMK(ms.subAgentVolumeMMK)}`);
+      setElText('msSubAgentProfitMMK', `+${formatMMK(ms.subAgentProfitMMK)}`);
+      setElText('msSubAgentProfitTHB', `+${formatTHB(ms.subAgentProfitTHB)}`);
       setElText('msCashoutCountText', `${ms.cashoutCount} ကြိမ် • ပမာဏ ${formatMMK(ms.cashoutVolumeMMK)}`);
       setElText('msCashoutProfitMMK', `+${formatMMK(ms.cashoutProfitMMK)}`);
       setElText('msU9ProfitSubText', `Primary ကော်မရှင်: +${formatMMK(ms.u9PrimaryCommMMK)} • လက်လီ: +${formatMMK(ms.u9RetailExtraMMK)}`);
@@ -7292,49 +7977,55 @@
       }
 
       container.innerHTML = list.map(tx => {
-        const isRemit = tx.type === 'REMIT';
+        const isSubAgent = tx.type === 'SUBAGENT';
+        const isRemit = tx.type === 'REMIT' || isSubAgent;
         const names = getTxNames(tx);
         const stDisp = getTxStatusDisplay(tx);
-        const subNamesHtml = (isRemit && names.senderName && names.receiverName)
-          ? `<div class="text-[10px] theme-text-muted mt-0.5">လွှဲသူ: <span class="font-semibold theme-text-heading">${names.senderName}</span> • ထုတ်သူ: <span class="font-semibold text-emerald-500">${names.receiverName}</span></div>`
-          : '';
+        const editCall = isSubAgent ? `openEditSubAgentModal('${tx.id}')` : `openEditModal('${tx.id}')`;
 
+        const thbAmt = tx.subAgentTHB || tx.customerTHB || 0;
         const mainAmtDisplay = (isRemit && tx.direction === 'MMK_TO_THB')
-          ? `${formatMMK(tx.amountMMK)} ➔ ${formatTHB(tx.customerTHB)}`
-          : formatMMK(tx.amountMMK);
+          ? `${formatMMK(tx.amountMMK)} ➔ ${formatTHB(thbAmt)}`
+          : (isRemit ? `${formatTHB(thbAmt)} ➔ ${formatMMK(tx.amountMMK)}` : formatMMK(tx.amountMMK));
 
         return `
-          <div onclick="openVoucherModal('${tx.id}')" class="cursor-pointer theme-card-sub hover:opacity-95 active:scale-[0.99] border p-2.5 sm:p-3 rounded-xl flex items-center justify-between gap-2 transition group">
-            <div class="flex items-center gap-2.5 min-w-0">
-              <div class="w-9 h-9 rounded-xl ${isRemit ? 'bg-blue-600/20 text-blue-500' : 'bg-emerald-600/20 text-emerald-500'} flex items-center justify-center font-bold text-xs shrink-0">
-                ${isRemit ? '⇄' : (tx.cashoutType === 'TRANSFER' ? '🔺' : '🔻')}
-              </div>
-              <div class="min-w-0">
-                <div class="flex items-center gap-1.5 flex-wrap">
-                  <h4 class="text-xs font-bold theme-text-heading group-hover:text-blue-500 transition leading-tight">${names.displayTitle}</h4>
-                  <span class="text-[9px] px-1.5 py-0.2 rounded font-bold ${stDisp.badgeClass}">
-                    ${stDisp.text}
-                  </span>
+          <div onclick="openVoucherModal('${tx.id}')" class="tx-review-card cursor-pointer hover:opacity-95 active:scale-[0.99] transition group">
+            <div class="flex items-start justify-between gap-2">
+              <div class="flex items-start gap-2.5 min-w-0">
+                <div class="w-10 h-10 rounded-xl ${isSubAgent ? 'bg-indigo-600/20 text-indigo-400' : isRemit ? 'bg-blue-600/20 text-blue-500' : 'bg-emerald-600/20 text-emerald-500'} flex items-center justify-center font-bold text-sm shrink-0">
+                  ${isSubAgent ? '🤝' : isRemit ? '⇄' : (tx.cashoutType === 'TRANSFER' ? '🔺' : '🔻')}
                 </div>
-                ${subNamesHtml}
-                <div class="text-[10px] theme-text-muted mt-0.5 flex items-center gap-1.5 flex-wrap">
-                  <span>${formatDateTime(tx.date)}</span>
-                  <span>•</span>
-                  <span>${isRemit ? (tx.direction === 'MMK_TO_THB' ? '🇲🇲➔🇹🇭' : '🇹🇭➔🇲🇲') + ' • ' : ''}${tx.channel || 'KPay'}</span>
+                <div class="min-w-0">
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    ${isSubAgent ? '<span class="text-[10px] px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-400 font-extrabold">လက်ခွဲ</span>' : ''}
+                    <h4 class="text-sm font-extrabold theme-text-heading group-hover:text-blue-500 transition leading-snug">${names.displayTitle}</h4>
+                    <span class="text-[10px] px-2 py-0.5 rounded-md font-bold ${stDisp.badgeClass}">
+                      ${stDisp.shortText}
+                    </span>
+                  </div>
+                  <div class="text-[11px] theme-text-muted mt-1 flex items-center gap-1.5 flex-wrap font-medium">
+                    <span>🕐 ${formatDateTime(tx.date)}</span>
+                    <span>•</span>
+                    <span class="font-bold text-blue-400">${isRemit ? (tx.direction === 'MMK_TO_THB' ? '🇲🇲 ကျပ် ➔ 🇹🇭 ဘတ်' : '🇹🇭 ဘတ် ➔ 🇲🇲 ကျပ်') + ' • ' : ''}${tx.channel || 'KPay'}</span>
+                  </div>
                 </div>
               </div>
+              <button type="button" onclick="event.stopPropagation(); ${editCall}" class="tx-action-btn bg-blue-600/15 hover:bg-blue-600/25 text-blue-400 border border-blue-500/30 shrink-0">
+                ✏️ ပြင်မည်
+              </button>
             </div>
 
-            <div class="flex items-center gap-2 shrink-0">
+            <div class="tx-amount-well mt-2.5 flex items-center justify-between gap-2">
+              <div>
+                <div class="text-[10px] theme-text-muted font-bold">ပမာဏ (Amount)</div>
+                <div class="text-sm font-black font-mono theme-text-heading">${mainAmtDisplay}</div>
+              </div>
               <div class="text-right">
-                <div class="text-xs font-bold font-mono theme-text-heading">${mainAmtDisplay}</div>
-                <div class="text-[10px] text-emerald-500 font-mono font-bold">
-                  ${tx.profitTHB ? `+${formatTHB(tx.profitTHB)}` : `+${formatMMK(tx.profitMMK)}`}
+                <div class="text-[10px] theme-text-muted font-bold">အမြတ် (Profit)</div>
+                <div class="text-xs sm:text-sm text-emerald-400 font-mono font-extrabold">
+                  ${tx.profitTHB ? `+${formatTHB(tx.profitTHB)} (+${formatMMK(tx.profitMMK)})` : `+${formatMMK(tx.profitMMK)}`}
                 </div>
               </div>
-              <button type="button" onclick="event.stopPropagation(); openEditModal('${tx.id}')" class="px-2.5 py-1.5 rounded-lg bg-blue-600/15 hover:bg-blue-600/25 text-blue-500 text-[10px] font-bold transition shrink-0" title="ပြင်ဆင်ရန်">
-                ပြင်မည်
-              </button>
             </div>
           </div>
         `;
@@ -7679,6 +8370,7 @@
       inp.value = '';
       inp.focus();
       if (inputId === 'remitPayoutSearchInput') renderRemitPayoutList();
+      else if (inputId === 'subAgentSearchInput') renderSubAgentModule();
       else if (inputId === 'cashoutPayoutSearchInput') renderCashoutPayoutList();
       else if (inputId === 'creditSearchInput') renderCreditList();
       else if (inputId === 'ledgerSearchInput') renderLedgerList();
@@ -7774,11 +8466,11 @@
           return `
             <div class="theme-card-sub border ${isPaid ? 'border-emerald-500/25' : 'border-amber-500/45'} px-2.5 py-2 rounded-xl flex items-center justify-between gap-2 text-xs hover:border-blue-500/50 transition">
               <div class="flex items-center gap-2 min-w-0">
-                <span class="w-2 h-2 rounded-full shrink-0 ${isPaid ? 'bg-emerald-500' : 'bg-amber-500 animate-pulse'}"></span>
+                <span class="w-2.5 h-2.5 rounded-full shrink-0 ${isPaid ? 'bg-emerald-500' : 'bg-amber-500 animate-pulse'}"></span>
                 <div class="min-w-0">
                   <div class="flex items-center gap-1.5 flex-wrap">
                     <span class="font-bold theme-text-heading truncate">${names.displayTitle}</span>
-                    <span class="text-[9px] px-1.5 py-0.2 rounded font-semibold theme-card border">${tx.channel || 'KPay'}</span>
+                    <span class="text-[9px] px-1.5 py-0.5 rounded font-semibold theme-card border">${tx.channel || 'KPay'}</span>
                   </div>
                   <div class="text-[10px] theme-text-muted font-mono">
                     ${formatTimeOnly(tx.date)} • #${tx.id} ${tx.custPhone ? `• ${tx.custPhone}` : ''}
@@ -7788,9 +8480,9 @@
               <div class="flex items-center gap-1.5 shrink-0">
                 <div class="text-right mr-1">
                   <div class="font-extrabold font-mono ${isPaid ? 'text-emerald-500' : 'text-amber-500'}">${isMmkToThb ? formatTHB(tx.customerTHB) : formatMMK(tx.amountMMK)}</div>
-                  <div class="text-[9px] font-mono theme-text-muted">${isMmkToThb ? formatMMK(tx.amountMMK) : formatTHB(tx.customerTHB)}</div>
+                  <div class="text-[10px] font-mono theme-text-muted">${isMmkToThb ? formatMMK(tx.amountMMK) : formatTHB(tx.customerTHB)}</div>
                 </div>
-                <button type="button" onclick="toggleRemitPayoutStatus('${tx.id}')" class="px-2 py-1 rounded-lg ${isPaid ? 'theme-card border theme-text-muted hover:text-amber-400' : 'bg-emerald-600 text-white'} text-[10px] font-bold" title="${isPaid ? 'မထုတ်ပေးရသေးသို့ ပြန်ပြောင်းရန်' : 'ထုတ်ပေးပြီးမှတ်ရန်'}">
+                <button type="button" onclick="toggleRemitPayoutStatus('${tx.id}')" class="px-2.5 py-1 rounded-lg ${isPaid ? 'theme-card border theme-text-muted hover:text-amber-400' : 'bg-emerald-600 text-white'} text-[10px] font-bold">
                   ${isPaid ? '✓' : 'ထုတ်မည်'}
                 </button>
                 <button type="button" onclick="openVoucherModal('${tx.id}')" class="px-2 py-1 rounded-lg theme-card border text-[10px] font-semibold">ပြေစာ</button>
@@ -7805,63 +8497,683 @@
           const isMmkToThb = tx.direction === 'MMK_TO_THB';
 
           return `
-            <div class="theme-card-sub border ${isPaid ? 'border-emerald-500/30' : 'border-amber-500/50'} p-3 rounded-xl space-y-2 text-xs">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-1.5">
-                  <span class="font-mono text-[10px] text-blue-500 font-bold">${tx.id}</span>
-                  <span class="text-[10px] theme-text-muted">• ${formatDateTime(tx.date)}</span>
+            <div class="tx-review-card ${isPaid ? 'border-emerald-500/35' : 'border-amber-500/55'} space-y-2.5 text-xs">
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="px-2 py-0.5 rounded-md bg-blue-500/15 text-blue-400 font-mono text-[10px] font-extrabold">#${tx.id}</span>
+                  <span class="text-[11px] font-bold ${isMmkToThb ? 'text-amber-400' : 'text-sky-400'}">${isMmkToThb ? '🇲🇲 ကျပ် ➔ 🇹🇭 ဘတ်' : '🇹🇭 ဘတ် ➔ 🇲🇲 ကျပ်'}</span>
+                  <span class="text-[10px] theme-text-muted">• 🕐 ${formatDateTime(tx.date)}</span>
                 </div>
-                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isPaid ? 'bg-emerald-500/20 text-emerald-500 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-500 border border-amber-500/40'}">
-                  ${isPaid ? '✓ လက်ငင်းထုတ်ပေးပြီး' : '⏳ မထုတ်ပေးရသေးဘူး'}
+                <span class="px-2.5 py-1 rounded-lg text-[10px] font-extrabold ${isPaid ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-400 border border-amber-500/40'}">
+                  ${isPaid ? '✓ ထုတ်ပေးပြီး' : '⏳ မထုတ်ပေးရသေး'}
                 </span>
               </div>
 
-              <div class="flex items-start justify-between gap-2">
-                <div class="space-y-0.5">
-                  <div class="font-bold theme-text-heading text-xs">${names.displayTitle}</div>
-                  <div class="text-[11px] theme-text-muted">
-                    <span>${names.senderLabel}: <strong class="theme-text-heading">${names.senderName || '-'}</strong></span>
-                    <span class="mx-1">➔</span>
-                    <span>${names.receiverLabel}: <strong class="text-emerald-500">${names.receiverName || '-'}</strong></span>
-                  </div>
-                  <div class="text-[10px] theme-text-muted">
-                    ချန်နယ်: <span class="font-semibold">${tx.channel || 'KPay'}</span>
-                    ${tx.custPhone ? ` • ဖုန်း/အကောင့်: <span class="font-mono">${tx.custPhone}</span>` : ''}
-                    ${tx.note ? ` • မှတ်ချက်: ${tx.note}` : ''}
-                  </div>
+              <div class="space-y-1">
+                <div class="font-extrabold theme-text-heading text-sm leading-snug">${names.displayTitle}</div>
+                <div class="text-[11px] theme-text-muted flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                  <span>${names.senderLabel}: <strong class="theme-text-heading">${names.senderName || '-'}</strong></span>
+                  <span>➔</span>
+                  <span>${names.receiverLabel}: <strong class="text-emerald-400">${names.receiverName || '-'}</strong></span>
                 </div>
-                <div class="text-right shrink-0">
-                  <div class="text-xs sm:text-sm font-extrabold font-mono ${isPaid ? 'text-emerald-500' : 'text-amber-500'}">
-                    ${isMmkToThb ? formatTHB(tx.customerTHB) : formatMMK(tx.amountMMK)}
-                  </div>
-                  <div class="text-[10px] theme-text-muted font-mono">
-                    ${isMmkToThb ? `ပေးငွေ: ${formatMMK(tx.amountMMK)}` : `ဘတ်: ${formatTHB(tx.customerTHB)}`}
-                  </div>
+                <div class="text-[11px] theme-text-muted flex flex-wrap items-center gap-2">
+                  <span class="px-2 py-0.5 rounded theme-card border font-bold text-blue-400">${tx.channel || 'KPay'}</span>
+                  ${tx.custPhone ? `<span>📞 <strong class="font-mono theme-text-heading">${tx.custPhone}</strong></span>` : ''}
+                  ${tx.customerRate ? `<span>နှုန်း: <strong class="font-mono">${tx.customerRate}</strong> (ဒိုင် ${tx.dealerRate || '-'})</span>` : ''}
+                  ${tx.note ? `<span>📝 ${tx.note}</span>` : ''}
                 </div>
               </div>
 
-              <div class="flex flex-wrap items-center justify-between gap-1.5 pt-2 border-t">
+              <div class="tx-amount-well grid grid-cols-3 gap-2 items-center">
+                <div>
+                  <div class="text-[10px] theme-text-muted font-bold">${isMmkToThb ? 'ပေးသွင်းငွေ (MMK)' : 'ထုတ်ပေးငွေ (MMK)'}</div>
+                  <div class="text-sm font-black font-mono ${isPaid ? 'text-emerald-400' : 'text-amber-400'}">${formatMMK(tx.amountMMK)}</div>
+                </div>
+                <div class="text-center border-x border-slate-700/40 px-1">
+                  <div class="text-[10px] theme-text-muted font-bold">ထိုင်းဘတ် (THB)</div>
+                  <div class="text-xs sm:text-sm font-extrabold font-mono text-blue-400">${formatTHB(tx.customerTHB)}</div>
+                </div>
+                <div class="text-right">
+                  <div class="text-[10px] theme-text-muted font-bold">အမြတ် (Profit)</div>
+                  <div class="text-xs sm:text-sm font-extrabold font-mono text-emerald-400">+${formatTHB(tx.profitTHB || 0)}</div>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap items-center justify-between gap-2 pt-1.5 border-t border-slate-700/30">
                 <div>
                   ${!isPaid ? `
-                    <button type="button" onclick="toggleRemitPayoutStatus('${tx.id}')" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold shadow flex items-center gap-1 transition">
-                      <span>✓ ယခု ထုတ်ပေးပြီးကြောင်း မှတ်မည်</span>
+                    <button type="button" onclick="toggleRemitPayoutStatus('${tx.id}')" class="tx-action-btn bg-emerald-600 hover:bg-emerald-500 text-white shadow">
+                      ✓ ယခု ထုတ်ပေးပြီးမှတ်မည်
                     </button>
                   ` : `
-                    <button type="button" onclick="toggleRemitPayoutStatus('${tx.id}')" class="px-2.5 py-1 rounded-lg theme-card border text-[10px] theme-text-muted hover:text-amber-500 font-semibold transition">
-                      ⏳ မထုတ်ပေးရသေးသို့ ပြန်ပြောင်းရန်
+                    <button type="button" onclick="toggleRemitPayoutStatus('${tx.id}')" class="tx-action-btn theme-card border theme-text-muted hover:text-amber-400">
+                      ⏳ မထုတ်ပေးရသေးသို့ ပြန်ပြောင်း
                     </button>
                   `}
                 </div>
                 <div class="flex items-center gap-1.5">
-                  <button type="button" onclick="openVoucherModal('${tx.id}')" class="px-2.5 py-1 rounded-lg theme-card border text-[10px] font-semibold">ဘောက်ချာ</button>
-                  <button type="button" onclick="openEditModal('${tx.id}')" class="px-2.5 py-1 rounded-lg bg-blue-600/15 hover:bg-blue-600/25 text-blue-500 text-[10px] font-bold">ပြင်မည်</button>
-                  <button type="button" onclick="deleteTransaction('${tx.id}')" class="px-2 py-1 rounded-lg bg-rose-600/15 hover:bg-rose-600/25 text-rose-500 text-[10px] font-bold">ဖျက်မည်</button>
+                  <button type="button" onclick="openVoucherModal('${tx.id}')" class="tx-action-btn theme-card border theme-text-heading hover:text-blue-400">📄 ပြေစာ</button>
+                  <button type="button" onclick="openEditModal('${tx.id}')" class="tx-action-btn bg-blue-600/15 hover:bg-blue-600/25 text-blue-400 border border-blue-500/30">✏️ ပြင်မည်</button>
+                  <button type="button" onclick="deleteTransaction('${tx.id}')" class="tx-action-btn bg-rose-600/15 hover:bg-rose-600/25 text-rose-400 border border-rose-500/30">ဖျက်</button>
                 </div>
               </div>
             </div>
           `;
         }
       });
+    };
+
+    // ============================================================================
+    // TAB 2B: SUB-AGENT / WHOLESALE PARTNER EXCHANGE LEDGER (🤝 လက်ခွဲစာရင်း)
+    // ============================================================================
+    const setSubAgentDirection = window.setSubAgentDirection = function(dir) {
+      subAgentDirection = dir === 'MMK_TO_THB' ? 'MMK_TO_THB' : 'THB_TO_MMK';
+      const b1 = document.getElementById('subagent-dir-thb2mmk');
+      const b2 = document.getElementById('subagent-dir-mmk2thb');
+      const dHint = document.getElementById('subAgentDealerRateHint');
+      const sHint = document.getElementById('subAgentRateHint');
+      const thbTitle = document.getElementById('subAgentCalcThbTitle');
+
+      if (subAgentDirection === 'THB_TO_MMK') {
+        if (b1) b1.className = 'py-3 px-2 rounded-xl font-bold text-xs border transition flex flex-col items-center justify-center gap-1 bg-indigo-600 text-white border-indigo-400 shadow-lg';
+        if (b2) b2.className = 'py-3 px-2 rounded-xl font-bold text-xs border transition flex flex-col items-center justify-center gap-1 theme-card theme-text-muted';
+        if (dHint) dHint.textContent = 'ဥပမာ - 755 THB';
+        if (sHint) sHint.textContent = 'ဥပမာ - 768 THB (ဒိုင်ဈေးထက် ပိုယူ)';
+        if (thbTitle) thbTitle.textContent = 'လက်ခွဲမှ ပေးသွင်းရမည့် ဘတ်ငွေ';
+      } else {
+        if (b2) b2.className = 'py-3 px-2 rounded-xl font-bold text-xs border transition flex flex-col items-center justify-center gap-1 bg-indigo-600 text-white border-indigo-400 shadow-lg';
+        if (b1) b1.className = 'py-3 px-2 rounded-xl font-bold text-xs border transition flex flex-col items-center justify-center gap-1 theme-card theme-text-muted';
+        if (dHint) dHint.textContent = 'ဥပမာ - 775 THB (ဒိုင်မှ ကိုယ်ရသည့်ဘတ်)';
+        if (sHint) sHint.textContent = 'ဥပမာ - 762 THB (လက်ခွဲသို့ ကိုယ်ပေးသည့်ဘတ်)';
+        if (thbTitle) thbTitle.textContent = 'လက်ခွဲသို့ ထုတ်ပေးရမည့် ဘတ်ငွေ';
+      }
+      calcSubAgentLive();
+    };
+
+    const setSubAgentMMK = window.setSubAgentMMK = function(mmkVal) {
+      const mmkEl = document.getElementById('subAgentAmountMMK');
+      const lakhsEl = document.getElementById('subAgentLakhs');
+      if (mmkEl) mmkEl.value = mmkVal;
+      if (lakhsEl) lakhsEl.value = Number((mmkVal / 100000).toFixed(4));
+      calcSubAgentLive();
+    };
+
+    const onSubAgentMMKInput = window.onSubAgentMMKInput = function() {
+      const mmk = parseFloat(document.getElementById('subAgentAmountMMK')?.value) || 0;
+      const lakhsEl = document.getElementById('subAgentLakhs');
+      if (lakhsEl) {
+        lakhsEl.value = mmk > 0 ? Number((mmk / 100000).toFixed(4)) : '';
+      }
+      calcSubAgentLive();
+    };
+
+    const onSubAgentLakhsInput = window.onSubAgentLakhsInput = function() {
+      const lakhs = parseFloat(document.getElementById('subAgentLakhs')?.value) || 0;
+      const mmkEl = document.getElementById('subAgentAmountMMK');
+      if (mmkEl) {
+        mmkEl.value = lakhs > 0 ? Math.round(lakhs * 100000) : '';
+      }
+      calcSubAgentLive();
+    };
+
+    const calcSubAgentLive = window.calcSubAgentLive = function() {
+      const mmk = parseFloat(document.getElementById('subAgentAmountMMK')?.value) || 0;
+      const lakhs = mmk / 100000;
+      const dealerRate = parseFloat(document.getElementById('subAgentDealerRate')?.value) || 0;
+      const subRate = parseFloat(document.getElementById('subAgentRate')?.value) || 0;
+
+      const dealerTHB = lakhs * dealerRate;
+      const subAgentTHB = lakhs * subRate;
+      const spreadPerLakh = subAgentDirection === 'THB_TO_MMK'
+        ? (subRate - dealerRate)
+        : (dealerRate - subRate);
+      const profitTHB = subAgentDirection === 'THB_TO_MMK'
+        ? (subAgentTHB - dealerTHB)
+        : (dealerTHB - subAgentTHB);
+      const profitMMK = dealerRate > 0 ? (profitTHB / dealerRate) * 100000 : 0;
+
+      const setTxt = (id, t) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = t;
+      };
+      setTxt('subAgentLakhsBadge', `${Number(lakhs.toFixed(2))} သိန်း`);
+      setTxt('subAgentCalcTHB', formatTHB(subAgentTHB));
+      setTxt('subAgentCalcDealerTHB', `မူရင်းဒိုင်ဘတ်: ${formatTHB(dealerTHB)}`);
+      setTxt('subAgentSpreadBadge', `၁ သိန်းကွာဟချက်: ${spreadPerLakh >= 0 ? '+' : ''}${Number(spreadPerLakh.toFixed(2))} THB`);
+
+      const pThbEl = document.getElementById('subAgentCalcProfitTHB');
+      if (pThbEl) {
+        pThbEl.textContent = (profitTHB >= 0 ? '+' : '') + formatTHB(profitTHB);
+        pThbEl.className = profitTHB >= 0
+          ? 'text-lg font-black text-emerald-400 font-mono'
+          : 'text-lg font-black text-rose-400 font-mono';
+      }
+      setTxt('subAgentCalcProfitMMK', `≈ ${profitMMK >= 0 ? '+' : ''}${formatMMK(Math.round(profitMMK))}`);
+    };
+
+    const handleSaveSubAgent = window.handleSaveSubAgent = function(e) {
+      e.preventDefault();
+      const partnerName = (document.getElementById('subAgentPartnerName')?.value || '').trim();
+      const partnerPhone = (document.getElementById('subAgentPartnerPhone')?.value || '').trim();
+      const recipientName = (document.getElementById('subAgentRecipientName')?.value || '').trim();
+      const channel = document.getElementById('subAgentChannel')?.value || 'KPay';
+      const dateRaw = document.getElementById('subAgentDate')?.value;
+      const amountMMK = parseFloat(document.getElementById('subAgentAmountMMK')?.value) || 0;
+      const dealerRate = parseFloat(document.getElementById('subAgentDealerRate')?.value) || 0;
+      const subAgentRate = parseFloat(document.getElementById('subAgentRate')?.value) || 0;
+      const status = document.querySelector('input[name="subAgentStatus"]:checked')?.value || 'PAID';
+      const note = (document.getElementById('subAgentNote')?.value || '').trim();
+
+      if (!partnerName) {
+        showToast('လက်ခွဲအေးဂျင့်အမည် ထည့်သွင်းပေးပါ', 'warning');
+        return;
+      }
+      if (amountMMK <= 0 || dealerRate <= 0 || subAgentRate <= 0) {
+        showToast('ကျပ်ငွေပမာဏ နှင့် လက်ခွဲပေါက်ဈေးများကို မှန်ကန်စွာ ထည့်ပါ', 'warning');
+        return;
+      }
+
+      const lakhs = amountMMK / 100000;
+      const dealerTHB = Number((lakhs * dealerRate).toFixed(2));
+      const subAgentTHB = Number((lakhs * subAgentRate).toFixed(2));
+      const profitTHB = Number((subAgentDirection === 'THB_TO_MMK' ? (subAgentTHB - dealerTHB) : (dealerTHB - subAgentTHB)).toFixed(2));
+      const profitMMK = dealerRate > 0 ? Math.round((profitTHB / dealerRate) * 100000) : 0;
+
+      const rec = {
+        id: 'SUB-' + Date.now().toString().slice(-6),
+        type: 'SUBAGENT',
+        direction: subAgentDirection,
+        date: dateRaw ? new Date(dateRaw).toISOString() : new Date().toISOString(),
+        partnerName,
+        partnerPhone,
+        recipientName,
+        custName: recipientName ? `${partnerName} ➔ ${recipientName}` : partnerName,
+        custPhone: partnerPhone,
+        channel,
+        lakhs: Number(lakhs.toFixed(4)),
+        amountMMK,
+        dealerRate,
+        subAgentRate,
+        customerRate: subAgentRate,
+        dealerTHB,
+        subAgentTHB,
+        customerTHB: subAgentTHB,
+        profitTHB,
+        profitMMK,
+        status,
+        note
+      };
+
+      if (status === 'PAID' || subAgentDirection === 'THB_TO_MMK') {
+        capital.thbBalance = (Number(capital.thbBalance) || 0) + profitTHB;
+        saveCapitalToStorage();
+      }
+
+      subAgents.unshift(rec);
+      localStorage.setItem('thb_mmk_has_user_data', 'true');
+      saveSubAgentsToStorage();
+      resetSubAgentForm();
+      updateAllUI();
+      showToast(`🤝 လက်ခွဲစာရင်း (${partnerName}) ကို သိမ်းဆည်းပြီးပါပြီ!`, 'success');
+    };
+
+    const resetSubAgentForm = window.resetSubAgentForm = function() {
+      const fields = ['subAgentPartnerPhone', 'subAgentRecipientName', 'subAgentAmountMMK', 'subAgentLakhs', 'subAgentNote'];
+      fields.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+      initDefaultDateTimeInputs();
+      calcSubAgentLive();
+    };
+
+    const setSubAgentStatusFilter = window.setSubAgentStatusFilter = function(filter) {
+      subAgentStatusFilter = filter;
+      const map = { ALL: 'subagent-filter-all', UNPAID: 'subagent-filter-unpaid', PAID: 'subagent-filter-paid' };
+      Object.entries(map).forEach(([k, id]) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (k === filter) {
+          el.className = k === 'UNPAID'
+            ? 'flex-1 py-2 px-2 rounded-lg font-bold bg-amber-500 text-slate-950 transition text-center shadow'
+            : k === 'PAID'
+            ? 'flex-1 py-2 px-2 rounded-lg font-bold bg-emerald-600 text-white transition text-center shadow'
+            : 'flex-1 py-2 px-2 rounded-lg font-bold bg-indigo-600 text-white transition text-center shadow';
+        } else {
+          el.className = 'flex-1 py-2 px-2 rounded-lg font-semibold theme-text-muted hover:text-indigo-400 transition text-center';
+        }
+      });
+      renderSubAgentModule();
+    };
+
+    const selectSubAgentPartnerFilter = window.selectSubAgentPartnerFilter = function(partnerName) {
+      subAgentPartnerFilter = subAgentPartnerFilter === partnerName ? '' : partnerName;
+      const sInput = document.getElementById('subAgentSearchInput');
+      if (sInput) sInput.value = subAgentPartnerFilter;
+      renderSubAgentModule();
+    };
+
+    const toggleSubAgentStatus = window.toggleSubAgentStatus = function(subId) {
+      const rec = subAgents.find(s => s.id === subId);
+      if (!rec) return;
+      if (rec.status === 'UNPAID') {
+        rec.status = 'PAID';
+        rec.settledDate = new Date().toISOString();
+        showToast('✓ လက်ခွဲစာရင်း ငွေရှင်းပြီး (Paid) အဖြစ် မှတ်တမ်းတင်ပြီးပါပြီ!', 'success');
+      } else {
+        rec.status = 'UNPAID';
+        rec.settledDate = '';
+        showToast('⏳ လက်ခွဲစာရင်း မရှင်းရသေး (Unpaid) သို့ ပြန်ပြောင်းပြီးပါပြီ', 'warning');
+      }
+      saveSubAgentsToStorage();
+      updateAllUI();
+    };
+
+    const renderSubAgentModule = window.renderSubAgentModule = function() {
+      syncSearchClearButton('subAgentSearchInput', 'subAgentSearchClearBtn');
+      const listContainer = document.getElementById('subAgentListContainer');
+      const partnerCardsContainer = document.getElementById('subAgentPartnerCardsContainer');
+      const datalistEl = document.getElementById('subAgentPartnersDatalist');
+
+      let totalMMK = 0;
+      let totalTHB = 0;
+      let totalProfitTHB = 0;
+      let totalProfitMMK = 0;
+      let unpaidCount = 0;
+      let unpaidTHB = 0;
+      let unpaidMMK = 0;
+
+      const partnerMap = new Map();
+
+      subAgents.forEach(s => {
+        const mmk = Number(s.amountMMK) || 0;
+        const thb = Number(s.subAgentTHB || s.customerTHB) || 0;
+        const pThb = Number(s.profitTHB) || 0;
+        const pMmk = Number(s.profitMMK) || 0;
+
+        totalMMK += mmk;
+        totalTHB += thb;
+        totalProfitTHB += pThb;
+        totalProfitMMK += pMmk;
+
+        if (s.status === 'UNPAID') {
+          unpaidCount++;
+          if (s.direction === 'MMK_TO_THB') unpaidMMK += mmk;
+          else unpaidTHB += thb;
+        }
+
+        const pName = (s.partnerName || s.custName || 'လက်ခွဲ').trim();
+        if (!partnerMap.has(pName)) {
+          partnerMap.set(pName, {
+            name: pName,
+            phone: s.partnerPhone || s.custPhone || '',
+            count: 0,
+            thb2mmkCount: 0,
+            mmk2thbCount: 0,
+            volumeMMK: 0,
+            volumeTHB: 0,
+            profitTHB: 0,
+            profitMMK: 0,
+            unpaidCount: 0,
+            unpaidTHB: 0,
+            unpaidMMK: 0
+          });
+        }
+        const st = partnerMap.get(pName);
+        st.count++;
+        if (s.direction === 'MMK_TO_THB') st.mmk2thbCount++;
+        else st.thb2mmkCount++;
+        st.volumeMMK += mmk;
+        st.volumeTHB += thb;
+        st.profitTHB += pThb;
+        st.profitMMK += pMmk;
+        if (s.status === 'UNPAID') {
+          st.unpaidCount++;
+          if (s.direction === 'MMK_TO_THB') st.unpaidMMK += mmk;
+          else st.unpaidTHB += thb;
+        }
+      });
+
+      const setTxt = (id, t) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = t;
+      };
+      setTxt('subAgentKpiPartnersCount', `${partnerMap.size} ဦး`);
+      setTxt('subAgentKpiTxCountSub', `စုစုပေါင်း အကြိမ်ရေ: ${subAgents.length} ကြိမ်`);
+      setTxt('subAgentKpiTotalMMK', formatMMK(totalMMK));
+      setTxt('subAgentKpiTotalTHB', formatTHB(totalTHB));
+      setTxt('subAgentKpiProfitTHB', `+${formatTHB(totalProfitTHB)}`);
+      setTxt('subAgentKpiProfitMMK', `+${formatMMK(totalProfitMMK)}`);
+      setTxt('subAgentKpiUnpaidCount', `${unpaidCount} ခု`);
+      setTxt('subAgentKpiUnpaidSub', unpaidTHB > 0 || unpaidMMK > 0 ? `${formatTHB(unpaidTHB)} / ${formatMMK(unpaidMMK)}` : 'အားလုံးရှင်းပြီး');
+      setTxt('subAgentPartnerSummaryBadge', `${partnerMap.size} ဦး`);
+
+      if (datalistEl) {
+        datalistEl.innerHTML = Array.from(partnerMap.keys())
+          .map(name => `<option value="${name.replace(/"/g, '&quot;')}"></option>`)
+          .join('');
+      }
+
+      if (partnerCardsContainer) {
+        if (partnerMap.size === 0) {
+          partnerCardsContainer.innerHTML = `<div class="col-span-full text-center py-4 theme-text-muted text-xs">လက်ခွဲအေးဂျင့် စာရင်း မရှိသေးပါ</div>`;
+        } else {
+          partnerCardsContainer.innerHTML = Array.from(partnerMap.values()).map(p => {
+            const safeName = p.name.replace(/'/g, "\\'");
+            const isSelected = subAgentPartnerFilter === p.name;
+            return `
+              <div onclick="selectSubAgentPartnerFilter('${safeName}')" class="cursor-pointer theme-card-sub border ${isSelected ? 'border-indigo-400 ring-2 ring-indigo-500/30' : 'border-indigo-500/25 hover:border-indigo-400'} p-3 rounded-xl space-y-2 transition">
+                <div class="flex items-start justify-between gap-2">
+                  <div>
+                    <div class="text-xs sm:text-sm font-extrabold theme-text-heading flex items-center gap-1.5">
+                      <span>🤝 ${p.name}</span>
+                    </div>
+                    <div class="text-[10px] theme-text-muted mt-0.5">
+                      ${p.phone ? `📞 ${p.phone} • ` : ''}🇹🇭➔🇲🇲 ${p.thb2mmkCount} ကြိမ် • 🇲🇲➔🇹🇭 ${p.mmk2thbCount} ကြိမ်
+                    </div>
+                  </div>
+                  <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold ${p.unpaidCount > 0 ? 'bg-amber-500/20 text-amber-400 border border-amber-500/40' : 'bg-emerald-500/20 text-emerald-400'}">
+                    ${p.unpaidCount > 0 ? `မရှင်းရသေး ${p.unpaidCount} ခု` : '✓ အားလုံးရှင်းပြီး'}
+                  </span>
+                </div>
+                <div class="tx-amount-well grid grid-cols-3 gap-1.5 text-[11px]">
+                  <div>
+                    <div class="text-[9px] theme-text-muted">စုစုပေါင်းကျပ်</div>
+                    <div class="font-mono font-bold theme-text-heading">${formatCompactMMK(p.volumeMMK)}</div>
+                  </div>
+                  <div>
+                    <div class="text-[9px] theme-text-muted">စုစုပေါင်းဘတ်</div>
+                    <div class="font-mono font-bold text-indigo-400">${formatTHB(p.volumeTHB)}</div>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-[9px] theme-text-muted">လက်ခွဲအမြတ်</div>
+                    <div class="font-mono font-extrabold text-emerald-400">+${formatTHB(p.profitTHB)}</div>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+      }
+
+      if (!listContainer) return;
+
+      const search = (document.getElementById('subAgentSearchInput')?.value || '').toLowerCase().trim();
+      let filtered = [...subAgents];
+      if (subAgentStatusFilter === 'UNPAID') filtered = filtered.filter(s => s.status === 'UNPAID');
+      else if (subAgentStatusFilter === 'PAID') filtered = filtered.filter(s => s.status === 'PAID');
+
+      if (search) {
+        filtered = filtered.filter(s => (
+          (s.partnerName && s.partnerName.toLowerCase().includes(search)) ||
+          (s.recipientName && s.recipientName.toLowerCase().includes(search)) ||
+          (s.custName && s.custName.toLowerCase().includes(search)) ||
+          (s.partnerPhone && s.partnerPhone.toLowerCase().includes(search)) ||
+          (s.channel && s.channel.toLowerCase().includes(search)) ||
+          (s.id && s.id.toLowerCase().includes(search)) ||
+          (s.note && s.note.toLowerCase().includes(search)) ||
+          String(s.amountMMK || '').includes(search) ||
+          String(s.subAgentTHB || '').includes(search)
+        ));
+      }
+
+      const emptyHtml = `
+        <div class="text-center py-8 theme-card-sub rounded-xl border theme-text-muted text-xs">
+          လက်ခွဲ (Sub-Agent) ငွေလွှဲမှတ်တမ်း မရှိသေးပါ
+        </div>
+      `;
+
+      listContainer.innerHTML = renderMultiDayGroupedList({
+        listKey: 'subagent',
+        items: filtered,
+        getDateFn: s => s.date,
+        getSummaryMetricsFn: s => ({
+          mmk: Number(s.amountMMK) || 0,
+          thb: Number(s.subAgentTHB || s.customerTHB) || 0,
+          profitMMK: Number(s.profitMMK) || 0,
+          profitTHB: Number(s.profitTHB) || 0
+        }),
+        emptyHtml,
+        renderCompactFn: s => {
+          const isPaid = s.status === 'PAID';
+          const isMmkToThb = s.direction === 'MMK_TO_THB';
+          return `
+            <div class="theme-card-sub border ${isPaid ? 'border-indigo-500/30' : 'border-amber-500/50'} px-3 py-2 rounded-xl flex items-center justify-between gap-2 text-xs">
+              <div class="min-w-0">
+                <div class="font-extrabold theme-text-heading truncate">🤝 ${s.partnerName || s.custName} ${s.recipientName ? `➔ ${s.recipientName}` : ''}</div>
+                <div class="text-[10px] theme-text-muted font-mono">${formatTimeOnly(s.date)} • ${isMmkToThb ? '🇲🇲➔🇹🇭' : '🇹🇭➔🇲🇲'} • ဒိုင် ${s.dealerRate} / လက်ခွဲ ${s.subAgentRate}</div>
+              </div>
+              <div class="flex items-center gap-1.5 shrink-0">
+                <div class="text-right">
+                  <div class="font-extrabold font-mono text-indigo-400">${formatTHB(s.subAgentTHB || s.customerTHB)}</div>
+                  <div class="text-[10px] font-mono text-emerald-400">+${formatTHB(s.profitTHB)}</div>
+                </div>
+                <button type="button" onclick="openVoucherModal('${s.id}')" class="px-2 py-1 rounded-lg theme-card border text-[10px] font-bold">ပြေစာ</button>
+                <button type="button" onclick="openEditSubAgentModal('${s.id}')" class="px-2 py-1 rounded-lg bg-blue-600/15 text-blue-400 text-[10px] font-bold">ပြင်</button>
+              </div>
+            </div>
+          `;
+        },
+        renderCardFn: s => {
+          const isPaid = s.status === 'PAID';
+          const isMmkToThb = s.direction === 'MMK_TO_THB';
+          const thbVal = s.subAgentTHB || s.customerTHB || 0;
+
+          return `
+            <div class="tx-review-card ${isPaid ? 'border-indigo-500/35' : 'border-amber-500/55'} space-y-2.5 text-xs">
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="px-2 py-0.5 rounded-md bg-indigo-500/20 text-indigo-400 font-mono text-[10px] font-extrabold">#${s.id}</span>
+                  <span class="text-[11px] font-extrabold ${isMmkToThb ? 'text-amber-400' : 'text-sky-400'}">
+                    ${isMmkToThb ? '🇲🇲 ကျပ် ➔ 🇹🇭 ဘတ် (လက်ခွဲ)' : '🇹🇭 ဘတ် ➔ 🇲🇲 ကျပ် (လက်ခွဲ)'}
+                  </span>
+                  <span class="text-[10px] theme-text-muted">• 🕐 ${formatDateTime(s.date)}</span>
+                </div>
+                <span class="px-2.5 py-1 rounded-lg text-[10px] font-extrabold ${isPaid ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-400 border border-amber-500/40'}">
+                  ${isPaid ? '✓ ရှင်းပြီး (Paid)' : '⏳ မရှင်းရသေး (Unpaid)'}
+                </span>
+              </div>
+
+              <div class="space-y-1">
+                <div class="text-sm font-extrabold theme-text-heading">
+                  🤝 လက်ခွဲ: <span class="text-indigo-400">${s.partnerName || s.custName}</span>
+                  ${s.recipientName ? ` <span class="theme-text-muted">➔</span> လက်ခံသူ: <span class="text-emerald-400">${s.recipientName}</span>` : ''}
+                </div>
+                <div class="text-[11px] theme-text-muted flex flex-wrap items-center gap-2">
+                  <span class="px-2 py-0.5 rounded theme-card border font-bold text-indigo-400">${s.channel || 'KPay'}</span>
+                  <span>ဒိုင်ဈေး: <strong class="font-mono theme-text-heading">${s.dealerRate}</strong></span>
+                  <span>• လက်ခွဲပေးဈေး: <strong class="font-mono text-indigo-400">${s.subAgentRate || s.customerRate}</strong></span>
+                  ${s.partnerPhone ? `<span>• 📞 <strong class="font-mono">${s.partnerPhone}</strong></span>` : ''}
+                  ${s.note ? `<span>• 📝 ${s.note}</span>` : ''}
+                </div>
+              </div>
+
+              <div class="tx-amount-well grid grid-cols-3 gap-2 items-center">
+                <div>
+                  <div class="text-[10px] theme-text-muted font-bold">မြန်မာကျပ် (${s.lakhs || (s.amountMMK / 100000)} သိန်း)</div>
+                  <div class="text-sm font-black font-mono theme-text-heading">${formatMMK(s.amountMMK)}</div>
+                </div>
+                <div class="text-center border-x border-slate-700/40 px-1">
+                  <div class="text-[10px] theme-text-muted font-bold">လက်ခွဲဘတ် (ဒိုင် ${formatTHB(s.dealerTHB)})</div>
+                  <div class="text-xs sm:text-sm font-extrabold font-mono text-indigo-400">${formatTHB(thbVal)}</div>
+                </div>
+                <div class="text-right">
+                  <div class="text-[10px] theme-text-muted font-bold">လက်ခွဲအမြတ် (Spread)</div>
+                  <div class="text-xs sm:text-sm font-extrabold font-mono text-emerald-400">+${formatTHB(s.profitTHB)}</div>
+                  <div class="text-[10px] font-mono text-emerald-500/80">+${formatMMK(s.profitMMK)}</div>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap items-center justify-between gap-2 pt-1.5 border-t border-slate-700/30">
+                <div>
+                  <button type="button" onclick="toggleSubAgentStatus('${s.id}')" class="tx-action-btn ${isPaid ? 'theme-card border theme-text-muted hover:text-amber-400' : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow'}">
+                    ${isPaid ? '⏳ မရှင်းရသေးသို့ ပြောင်းရန်' : '✓ ယခု ငွေရှင်းပြီးမှတ်မည်'}
+                  </button>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <button type="button" onclick="openVoucherModal('${s.id}')" class="tx-action-btn theme-card border theme-text-heading hover:text-indigo-400">📄 ပြေစာ</button>
+                  <button type="button" onclick="openEditSubAgentModal('${s.id}')" class="tx-action-btn bg-blue-600/15 hover:bg-blue-600/25 text-blue-400 border border-blue-500/30">✏️ ပြင်မည်</button>
+                  <button type="button" onclick="deleteSubAgentRecord('${s.id}')" class="tx-action-btn bg-rose-600/15 hover:bg-rose-600/25 text-rose-400 border border-rose-500/30">ဖျက်</button>
+                </div>
+              </div>
+            </div>
+          `;
+        }
+      });
+    };
+
+    const calcEditSubAgentModalLive = window.calcEditSubAgentModalLive = function() {
+      const dir = document.getElementById('editSubAgentDirection')?.value || 'THB_TO_MMK';
+      const amtMMK = parseFloat(document.getElementById('editSubAgentAmountMMK')?.value) || 0;
+      const dRate = parseFloat(document.getElementById('editSubAgentDealerRate')?.value) || 0;
+      const sRate = parseFloat(document.getElementById('editSubAgentRate')?.value) || 0;
+      const lakhs = amtMMK / 100000;
+
+      if (dRate > 0 && sRate > 0) {
+        const dThb = Number((lakhs * dRate).toFixed(2));
+        const sThb = Number((lakhs * sRate).toFixed(2));
+        const pThb = Number((dir === 'THB_TO_MMK' ? (sThb - dThb) : (dThb - sThb)).toFixed(2));
+        const pMmk = Math.round((pThb / dRate) * 100000);
+
+        const thbEl = document.getElementById('editSubAgentTHB');
+        const profThbEl = document.getElementById('editSubAgentProfitTHB');
+        const profMmkEl = document.getElementById('editSubAgentProfitMMK');
+        if (thbEl) thbEl.value = sThb;
+        if (profThbEl) profThbEl.value = pThb;
+        if (profMmkEl) profMmkEl.value = pMmk;
+      }
+    };
+
+    const openEditSubAgentModal = window.openEditSubAgentModal = function(subId) {
+      const rec = subAgents.find(s => s.id === subId);
+      if (!rec) return;
+
+      document.getElementById('editSubAgentId').value = rec.id;
+      document.getElementById('editSubAgentDirection').value = rec.direction || 'THB_TO_MMK';
+      document.getElementById('editSubAgentPartnerName').value = rec.partnerName || rec.custName || '';
+      document.getElementById('editSubAgentRecipientName').value = rec.recipientName || '';
+      document.getElementById('editSubAgentPhone').value = rec.partnerPhone || rec.custPhone || '';
+      document.getElementById('editSubAgentChannel').value = rec.channel || 'KPay';
+      document.getElementById('editSubAgentAmountMMK').value = rec.amountMMK || 0;
+      document.getElementById('editSubAgentDealerRate').value = rec.dealerRate || settings.dealerRate;
+      document.getElementById('editSubAgentRate').value = rec.subAgentRate || rec.customerRate || settings.customerRate;
+      document.getElementById('editSubAgentTHB').value = rec.subAgentTHB || rec.customerTHB || 0;
+      document.getElementById('editSubAgentProfitTHB').value = rec.profitTHB || 0;
+      document.getElementById('editSubAgentProfitMMK').value = rec.profitMMK || 0;
+      document.getElementById('editSubAgentStatus').value = rec.status || 'PAID';
+      document.getElementById('editSubAgentNote').value = rec.note || '';
+
+      const dtEl = document.getElementById('editSubAgentDate');
+      if (dtEl && rec.date) {
+        const d = new Date(rec.date);
+        dtEl.value = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+      }
+
+      document.getElementById('editSubAgentModal').classList.remove('hidden');
+      armBackTrap();
+    };
+
+    const closeEditSubAgentModal = window.closeEditSubAgentModal = function() {
+      document.getElementById('editSubAgentModal').classList.add('hidden');
+    };
+
+    const handleSaveEditedSubAgent = window.handleSaveEditedSubAgent = function(e) {
+      e.preventDefault();
+      const subId = document.getElementById('editSubAgentId').value;
+      const rec = subAgents.find(s => s.id === subId);
+      if (!rec) return;
+
+      const oldProfThb = (rec.status === 'PAID' || rec.direction === 'THB_TO_MMK') ? (Number(rec.profitTHB) || 0) : 0;
+
+      rec.direction = document.getElementById('editSubAgentDirection').value;
+      rec.partnerName = document.getElementById('editSubAgentPartnerName').value.trim() || 'လက်ခွဲ';
+      rec.recipientName = document.getElementById('editSubAgentRecipientName').value.trim();
+      rec.custName = rec.recipientName ? `${rec.partnerName} ➔ ${rec.recipientName}` : rec.partnerName;
+      rec.partnerPhone = document.getElementById('editSubAgentPhone').value.trim();
+      rec.custPhone = rec.partnerPhone;
+      rec.channel = document.getElementById('editSubAgentChannel').value.trim() || 'KPay';
+      const dtVal = document.getElementById('editSubAgentDate').value;
+      if (dtVal) rec.date = new Date(dtVal).toISOString();
+      rec.amountMMK = parseFloat(document.getElementById('editSubAgentAmountMMK').value) || 0;
+      rec.lakhs = Number((rec.amountMMK / 100000).toFixed(4));
+      rec.dealerRate = parseFloat(document.getElementById('editSubAgentDealerRate').value) || 0;
+      rec.subAgentRate = parseFloat(document.getElementById('editSubAgentRate').value) || 0;
+      rec.customerRate = rec.subAgentRate;
+      rec.dealerTHB = Number((rec.lakhs * rec.dealerRate).toFixed(2));
+      rec.subAgentTHB = parseFloat(document.getElementById('editSubAgentTHB').value) || 0;
+      rec.customerTHB = rec.subAgentTHB;
+      rec.profitTHB = parseFloat(document.getElementById('editSubAgentProfitTHB').value) || 0;
+      rec.profitMMK = parseFloat(document.getElementById('editSubAgentProfitMMK').value) || 0;
+      rec.status = document.getElementById('editSubAgentStatus').value;
+      rec.note = document.getElementById('editSubAgentNote').value.trim();
+
+      const newProfThb = (rec.status === 'PAID' || rec.direction === 'THB_TO_MMK') ? (Number(rec.profitTHB) || 0) : 0;
+      capital.thbBalance = (Number(capital.thbBalance) || 0) - oldProfThb + newProfThb;
+      saveCapitalToStorage();
+
+      saveSubAgentsToStorage();
+      closeEditSubAgentModal();
+      updateAllUI();
+      showToast('လက်ခွဲစာရင်းကို အောင်မြင်စွာ ပြင်ဆင်ပြီးပါပြီ!', 'success');
+    };
+
+    const deleteSubAgentRecord = window.deleteSubAgentRecord = function(subId) {
+      const rec = subAgents.find(s => s.id === subId);
+      if (!rec) return;
+      if (!confirm(`ဤလက်ခွဲမှတ်တမ်း (${rec.partnerName}) ကို ဖျက်ပစ်ရန် သေချာပါသလား?`)) return;
+
+      const oldProfThb = (rec.status === 'PAID' || rec.direction === 'THB_TO_MMK') ? (Number(rec.profitTHB) || 0) : 0;
+      if (oldProfThb) {
+        capital.thbBalance = (Number(capital.thbBalance) || 0) - oldProfThb;
+        saveCapitalToStorage();
+      }
+
+      subAgents = subAgents.filter(s => s.id !== subId);
+      saveSubAgentsToStorage();
+      updateAllUI();
+      showToast('လက်ခွဲမှတ်တမ်းကို ဖျက်ပြီးပါပြီ', 'info');
+    };
+
+    const exportSubAgentCSV = window.exportSubAgentCSV = function() {
+      if (subAgents.length === 0) {
+        showToast('ဒေါင်းလုဒ်ဆွဲရန် လက်ခွဲမှတ်တမ်း မရှိသေးပါ', 'warning');
+        return;
+      }
+      const rows = subAgents.map(s => ({
+        'ID': s.id,
+        'ရက်စွဲ': formatDateTime(s.date),
+        'ဦးတည်ချက်': s.direction === 'MMK_TO_THB' ? 'မြန်မာကျပ် ➔ ထိုင်းဘတ်' : 'ထိုင်းဘတ် ➔ မြန်မာကျပ်',
+        'လက်ခွဲအေးဂျင့်အမည်': s.partnerName || '',
+        'လက်ခံသူအမည်': s.recipientName || '',
+        'ဖုန်းနံပါတ်': s.partnerPhone || '',
+        'ချန်နယ်': s.channel || '',
+        'သိန်းပမာဏ': s.lakhs || 0,
+        'ကျပ်ပမာဏ (MMK)': s.amountMMK || 0,
+        'ဒိုင်ပေါက်ဈေး': s.dealerRate || 0,
+        'လက်ခွဲပေးဈေး': s.subAgentRate || 0,
+        'ဒိုင်ဘတ် (THB)': s.dealerTHB || 0,
+        'လက်ခွဲဘတ် (THB)': s.subAgentTHB || 0,
+        'အမြတ် (THB)': s.profitTHB || 0,
+        'အမြတ် (MMK)': s.profitMMK || 0,
+        'အခြေအနေ': s.status === 'PAID' ? 'ရှင်းပြီး' : 'မရှင်းရသေး',
+        'မှတ်ချက်': s.note || ''
+      }));
+      let csvContent = "\uFEFF";
+      const headers = Object.keys(rows[0]);
+      csvContent += headers.join(",") + "\r\n";
+      rows.forEach(r => {
+        csvContent += headers.map(h => `"${String(r[h] ?? '').replace(/"/g, '""')}"`).join(",") + "\r\n";
+      });
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `LabShwin_SubAgents_${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('လက်ခွဲစာရင်း CSV ဖိုင်ကို ဒေါင်းလုဒ်ဆွဲပြီးပါပြီ!', 'success');
     };
 
     // --- TAB 3: LOCAL CASHOUT & TRANSFER ---
@@ -9166,6 +10478,63 @@
         });
       });
 
+      // 1B. Sub-Agent Wholesale Ledger (🤝 လက်ခွဲစာရင်း)
+      (subAgents || []).forEach(sa => {
+        const isPaid = sa.status === 'PAID';
+        const isMmkToThb = sa.direction === 'MMK_TO_THB';
+        const typeLabel = isMmkToThb
+          ? '🤝 လက်ခွဲ (မြန်မာကျပ် ➔ ထိုင်းဘတ်)'
+          : '🤝 လက်ခွဲ (ထိုင်းဘတ် ➔ မြန်မာကျပ်)';
+        const displayTitle = sa.recipientName
+          ? `${sa.partnerName} ➔ ${sa.recipientName}`
+          : (sa.partnerName || sa.custName || 'လက်ခွဲ');
+        const statusText = isPaid ? '✓ လက်ခွဲ ရှင်းပြီး' : '⏳ လက်ခွဲ မရှင်းရသေး';
+        const badgeClass = isPaid
+          ? 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/30'
+          : 'bg-amber-500/20 text-amber-400 border border-amber-500/40';
+
+        const searchBlob = [
+          sa.id,
+          displayTitle,
+          sa.partnerName,
+          sa.recipientName,
+          sa.partnerPhone,
+          sa.channel,
+          sa.amountMMK,
+          sa.subAgentTHB,
+          sa.dealerRate,
+          sa.subAgentRate,
+          sa.note,
+          typeLabel,
+          statusText,
+          sa.date,
+          formatDateTime(sa.date),
+          'လက်ခွဲ subagent wholesale ဘတ် ကျပ်'
+        ].join(' ').toLowerCase();
+
+        items.push({
+          source: 'SUBAGENT',
+          moduleKey: 'REMIT',
+          id: sa.id || '',
+          date: sa.date || '',
+          displayTitle,
+          typeLabel,
+          channelOrAccount: sa.channel || 'KPay',
+          phone: sa.partnerPhone || '',
+          amountMMK: Number(sa.amountMMK) || 0,
+          amountTHB: Number(sa.subAgentTHB || sa.customerTHB) || 0,
+          profitMMK: Number(sa.profitMMK) || 0,
+          profitTHB: Number(sa.profitTHB) || 0,
+          status: sa.status || 'PAID',
+          statusText,
+          badgeClass,
+          note: sa.note || '',
+          isUnpaidOrPending: sa.status === 'UNPAID',
+          raw: sa,
+          searchBlob
+        });
+      });
+
       // 2. Customer Savings / Deposits (အပ်ငွေစာရင်း)
       (deposits || []).forEach(d => {
         const isDepIn = d.type === 'DEPOSIT_IN';
@@ -9470,6 +10839,46 @@
         `;
       }
 
+      if (item.source === 'SUBAGENT') {
+        const sa = item.raw;
+        const isPaid = sa.status === 'PAID';
+        return `
+          <div class="tx-review-card border-indigo-500/40 hover:border-indigo-500 space-y-2 text-xs transition">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="font-mono text-[10px] text-indigo-400 font-bold">#${sa.id}</span>
+                <span class="text-[9px] px-2 py-0.5 rounded-full font-bold ${item.badgeClass}">${item.statusText}</span>
+              </div>
+              <span class="text-[10px] theme-text-muted">${formatDateTime(sa.date)}</span>
+            </div>
+            <div class="flex items-start justify-between gap-2">
+              <div class="space-y-0.5">
+                <div class="font-extrabold theme-text-heading text-sm">🤝 ${item.displayTitle}</div>
+                <div class="text-[11px] theme-text-muted">
+                  <span class="font-semibold text-indigo-400">${item.typeLabel}</span>
+                  • ဒိုင်ဈေး ${sa.dealerRate} / လက်ခွဲဈေး ${sa.subAgentRate}
+                  ${sa.partnerPhone ? ` • 📞 ${sa.partnerPhone}` : ''}
+                </div>
+              </div>
+              <div class="text-right shrink-0">
+                <div class="font-extrabold font-mono text-indigo-400">${formatTHB(sa.subAgentTHB)}</div>
+                <div class="text-[10px] font-mono theme-text-muted">${formatMMK(sa.amountMMK)}</div>
+                <div class="text-[10px] text-emerald-400 font-mono font-bold">အမြတ်: +${formatTHB(sa.profitTHB)}</div>
+              </div>
+            </div>
+            <div class="flex items-center justify-between gap-1.5 pt-1.5 border-t border-slate-700/30">
+              <button type="button" onclick="toggleSubAgentStatus('${sa.id}'); ${refreshAfterToggle}" class="px-2.5 py-1 rounded-lg ${isPaid ? 'theme-card border theme-text-muted' : 'bg-emerald-600 text-white'} text-[10px] font-bold">
+                ${isPaid ? '⏳ မရှင်းရသေးသို့' : '✓ ရှင်းပြီးမှတ်မည်'}
+              </button>
+              <div class="flex items-center gap-1.5">
+                <button type="button" onclick="${closeSearchPrefix}openVoucherModal('${sa.id}');" class="px-2.5 py-1 rounded-lg bg-indigo-600 text-white text-[10px] font-bold">📄 ဘောက်ချာ</button>
+                <button type="button" onclick="${closeSearchPrefix}openEditSubAgentModal('${sa.id}');" class="px-2.5 py-1 rounded-lg bg-blue-600/15 text-blue-400 text-[10px] font-bold">ပြင်မည်</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
       if (item.source === 'DEPOSIT') {
         const d = item.raw;
         const isDepIn = d.type === 'DEPOSIT_IN';
@@ -9691,6 +11100,8 @@
       const mainAmt = item.amountTHB > 0 ? formatTHB(item.amountTHB) : formatMMK(item.amountMMK);
       const editHandler = item.source === 'TX'
         ? `${closeSearchPrefix}openEditModal('${item.id}');`
+        : item.source === 'SUBAGENT'
+        ? `${closeSearchPrefix}openEditSubAgentModal('${item.id}');`
         : item.source === 'DEPOSIT'
         ? `${closeSearchPrefix}openEditDepositModal('${item.id}');`
         : item.source === 'U9'
@@ -9700,7 +11111,7 @@
       return `
         <div class="theme-card-sub border hover:border-blue-500/40 px-2.5 py-2 rounded-xl flex items-center justify-between gap-2 text-xs transition">
           <div class="flex items-center gap-2 min-w-0">
-            <span class="text-[9px] px-1.5 py-0.5 rounded font-bold shrink-0 ${item.badgeClass}">${item.moduleKey}</span>
+            <span class="text-[9px] px-1.5 py-0.5 rounded font-bold shrink-0 ${item.badgeClass}">${item.source === 'SUBAGENT' ? 'လက်ခွဲ' : item.moduleKey}</span>
             <div class="min-w-0">
               <div class="font-bold theme-text-heading truncate">${item.displayTitle}</div>
               <div class="text-[10px] theme-text-muted font-mono truncate">${formatTimeOnly(item.date)} • #${item.id} • ${item.channelOrAccount}</div>
@@ -9711,7 +11122,7 @@
               <div class="font-extrabold font-mono ${item.source === 'EXPENSE' ? 'text-rose-500' : 'theme-text-heading'}">${item.source === 'EXPENSE' ? '-' : ''}${mainAmt}</div>
               ${(item.profitMMK > 0 || item.profitTHB > 0) ? `<div class="text-[9px] font-mono text-emerald-400">+${item.profitTHB > 0 ? formatTHB(item.profitTHB) : formatMMK(item.profitMMK)}</div>` : ''}
             </div>
-            ${item.source === 'TX' ? `<button type="button" onclick="${closeSearchPrefix}openVoucherModal('${item.id}');" class="px-2 py-1 rounded-lg bg-blue-600 text-white text-[10px] font-bold">ပြေစာ</button>` : ''}
+            ${(item.source === 'TX' || item.source === 'SUBAGENT') ? `<button type="button" onclick="${closeSearchPrefix}openVoucherModal('${item.id}');" class="px-2 py-1 rounded-lg bg-blue-600 text-white text-[10px] font-bold">ပြေစာ</button>` : ''}
             <button type="button" onclick="${editHandler}" class="px-2 py-1 rounded-lg bg-blue-600/15 text-blue-500 text-[10px] font-bold">ပြင်</button>
           </div>
         </div>
@@ -10047,11 +11458,12 @@
 
     // --- VOUCHER MODAL ---
     const openVoucherModal = window.openVoucherModal = function(txId) {
-      const tx = transactions.find(t => t.id === txId);
+      const tx = transactions.find(t => t.id === txId) || subAgents.find(s => s.id === txId);
       if (!tx) return;
 
       currentVoucherTx = tx;
-      const isRemit = tx.type === 'REMIT';
+      const isSubAgent = tx.type === 'SUBAGENT';
+      const isRemit = tx.type === 'REMIT' || isSubAgent;
       const names = getTxNames(tx);
 
       document.getElementById('vouchId').textContent = 'ID: #' + tx.id;
@@ -10081,9 +11493,10 @@
       }
 
       const phoneRow = document.getElementById('vouchPhoneRow');
-      if (tx.custPhone) {
+      const phoneVal = tx.custPhone || tx.partnerPhone || '';
+      if (phoneVal) {
         phoneRow.classList.remove('hidden');
-        document.getElementById('vouchPhone').textContent = tx.custPhone;
+        document.getElementById('vouchPhone').textContent = phoneVal;
       } else {
         phoneRow.classList.add('hidden');
       }
@@ -10103,21 +11516,23 @@
         ratesSec.classList.remove('hidden');
         custRateRow.classList.remove('hidden');
         thbRow.classList.remove('hidden');
+        const rateUsed = tx.subAgentRate || tx.customerRate;
+        const thbUsed = tx.subAgentTHB || tx.customerTHB;
 
         if (tx.direction === 'MMK_TO_THB') {
-          typeEl.textContent = '🇲🇲 မြန်မာကျပ် ➔ 🇹🇭 ထိုင်းဘတ် ငွေလွှဲ';
-          if (custRateLbl) custRateLbl.textContent = 'Customer ဘတ်ပေါက်ဈေး:';
-          document.getElementById('vouchCustRate').textContent = `${tx.customerRate} THB / ၁ သိန်း`;
+          typeEl.textContent = isSubAgent ? '🤝 လက်ခွဲ (🇲🇲 ကျပ် ➔ 🇹🇭 ဘတ်)' : '🇲🇲 မြန်မာကျပ် ➔ 🇹🇭 ထိုင်းဘတ် ငွေလွှဲ';
+          if (custRateLbl) custRateLbl.textContent = isSubAgent ? 'လက်ခွဲ ဘတ်ပေါက်ဈေး:' : 'Customer ဘတ်ပေါက်ဈေး:';
+          document.getElementById('vouchCustRate').textContent = `${rateUsed} THB / ၁ သိန်း`;
           if (thbLbl) thbLbl.textContent = '🇲🇲 မြန်မာဘက်မှ ပေးသွင်းငွေ:';
           document.getElementById('vouchThbAmount').textContent = formatMMK(tx.amountMMK);
           totalLbl.textContent = '🇹🇭 ထိုင်းဘက်မှ ရရှိမည့် ထိုင်းဘတ်ပမာဏ';
-          totalAmt.textContent = formatTHB(tx.customerTHB);
+          totalAmt.textContent = formatTHB(thbUsed);
         } else {
-          typeEl.textContent = '🇹🇭 ထိုင်းဘတ် ➔ 🇲🇲 မြန်မာကျပ် ငွေလွှဲ';
-          if (custRateLbl) custRateLbl.textContent = 'Customer ပေးဈေး:';
-          document.getElementById('vouchCustRate').textContent = `${tx.customerRate} THB / ၁ သိန်း`;
+          typeEl.textContent = isSubAgent ? '🤝 လက်ခွဲ (🇹🇭 ဘတ် ➔ 🇲🇲 ကျပ်)' : '🇹🇭 ထိုင်းဘတ် ➔ 🇲🇲 မြန်မာကျပ် ငွေလွှဲ';
+          if (custRateLbl) custRateLbl.textContent = isSubAgent ? 'လက်ခွဲ ပေးဈေး:' : 'Customer ပေးဈေး:';
+          document.getElementById('vouchCustRate').textContent = `${rateUsed} THB / ၁ သိန်း`;
           if (thbLbl) thbLbl.textContent = '🇹🇭 ထိုင်းဘက်မှ ပေးသွင်းသည့်ဘတ်:';
-          document.getElementById('vouchThbAmount').textContent = formatTHB(tx.customerTHB);
+          document.getElementById('vouchThbAmount').textContent = formatTHB(thbUsed);
           totalLbl.textContent = '🇲🇲 မြန်မာဘက်မှ ထုတ်ယူမည့် ကျပ်ပမာဏ';
           totalAmt.textContent = formatMMK(tx.amountMMK);
         }
@@ -10153,10 +11568,13 @@
     };
 
     function buildVoucherPlainText(tx) {
-      const isRemit = tx.type === 'REMIT';
+      const isSubAgent = tx.type === 'SUBAGENT';
+      const isRemit = tx.type === 'REMIT' || isSubAgent;
       const names = getTxNames(tx);
       const stDisp = getTxStatusDisplay(tx);
-      let text = `🏺 လာဘ်ရွှင် (Lab Shwin) - ငွေလွှဲပြေစာ\n` +
+      const rateUsed = tx.subAgentRate || tx.customerRate;
+      const thbUsed = tx.subAgentTHB || tx.customerTHB;
+      let text = `🏺 လာဘ်ရွှင် (Lab Shwin) - ${isSubAgent ? 'လက်ခွဲ ငွေလွှဲပြေစာ' : 'ငွေလွှဲပြေစာ'}\n` +
                  `---------------------------\n` +
                  `Voucher: #${tx.id}\n` +
                  `ရက်စွဲ: ${formatDateTime(tx.date)}\n` +
@@ -10169,16 +11587,16 @@
         text += `Customer: ${tx.custName || 'အမည်မသိ'}\n`;
       }
 
-      if (tx.custPhone) text += `ဖုန်း/အကောင့်: ${tx.custPhone}\n`;
+      if (tx.custPhone || tx.partnerPhone) text += `ဖုန်း/အကောင့်: ${tx.custPhone || tx.partnerPhone}\n`;
       text += `ချန်နယ်: ${tx.channel || 'KPay'}\n`;
 
       if (isRemit) {
-        text += `ပေါက်ဈေး: ${tx.customerRate} THB / ၁ သိန်း\n`;
+        text += `ပေါက်ဈေး: ${rateUsed} THB / ၁ သိန်း\n`;
         if (tx.direction === 'MMK_TO_THB') {
           text += `🇲🇲 မြန်မာဘက်မှ ပေးသွင်းငွေ: ${formatMMK(tx.amountMMK)}\n` +
-                  `🇹🇭 ထိုင်းဘက်မှ ရရှိမည့်ဘတ်: ${formatTHB(tx.customerTHB)}\n`;
+                  `🇹🇭 ထိုင်းဘက်မှ ရရှိမည့်ဘတ်: ${formatTHB(thbUsed)}\n`;
         } else {
-          text += `🇹🇭 ထိုင်းဘက်မှ ပေးသွင်းသည့်ဘတ်: ${formatTHB(tx.customerTHB)}\n` +
+          text += `🇹🇭 ထိုင်းဘက်မှ ပေးသွင်းသည့်ဘတ်: ${formatTHB(thbUsed)}\n` +
                   `🇲🇲 မြန်မာဘက်မှ ထုတ်ယူမည့်ငွေ: ${formatMMK(tx.amountMMK)}\n`;
         }
       } else {
@@ -12059,11 +13477,12 @@
     const exportToGoogleDriveJSON = window.exportToGoogleDriveJSON = async function() {
       const backupData = {
         app: 'လာဘ်ရွှင် (Lab Shwin)',
-        version: '2.1',
+        version: '2.2',
         exportedAt: new Date().toISOString(),
         capital,
         settings,
         transactions,
+        subAgents,
         expenses,
         deposits,
         u9Data
@@ -12100,7 +13519,7 @@
     };
 
     const exportToExcel = window.exportToExcel = function() {
-      if (transactions.length === 0 && expenses.length === 0 && deposits.length === 0 && (!u9Data.records || u9Data.records.length === 0)) {
+      if (transactions.length === 0 && subAgents.length === 0 && expenses.length === 0 && deposits.length === 0 && (!u9Data.records || u9Data.records.length === 0)) {
         showToast('ဒေါင်းလုဒ်ဆွဲရန် မှတ်တမ်း မရှိသေးပါ', 'warning');
         return;
       }
@@ -12125,6 +13544,24 @@
           'မှတ်ချက်': tx.note || ''
         };
       });
+
+      const subAgentRows = subAgents.map(sa => ({
+        'ID': sa.id,
+        'ရက်စွဲ': formatDateTime(sa.date),
+        'ဦးတည်ချက်': sa.direction === 'MMK_TO_THB' ? 'မြန်မာကျပ် ➔ ထိုင်းဘတ်' : 'ထိုင်းဘတ် ➔ မြန်မာကျပ်',
+        'လက်ခွဲအေးဂျင့်': sa.partnerName || '',
+        'လက်ခံသူ': sa.recipientName || '',
+        'ဖုန်း': sa.partnerPhone || '',
+        'ချန်နယ်': sa.channel || '',
+        'ကျပ်ပမာဏ (MMK)': sa.amountMMK || 0,
+        'ဒိုင်ဈေး': sa.dealerRate || 0,
+        'လက်ခွဲဈေး': sa.subAgentRate || 0,
+        'လက်ခွဲဘတ် (THB)': sa.subAgentTHB || 0,
+        'အမြတ် (THB)': sa.profitTHB || 0,
+        'အမြတ် (MMK)': sa.profitMMK || 0,
+        'အခြေအနေ': sa.status === 'PAID' ? 'ရှင်းပြီး' : 'မရှင်းရသေး',
+        'မှတ်ချက်': sa.note || ''
+      }));
 
       const expenseRows = expenses.map(exp => ({
         'ID': exp.id,
@@ -12166,6 +13603,7 @@
       const msAll = computeMasterSettlement(dashboardPeriod);
       const settlementSummaryRows = [
         { 'စာရင်းရှင်းတမ်း အကြောင်းအရာ': `ကာလ (${msAll.periodLabel}) - ထိုင်း-မြန်မာ ငွေလွှဲအမြတ် (${msAll.remitCount} ကြိမ်)`, 'ပမာဏ (MMK)': msAll.remitProfitMMK, 'ပမာဏ (THB)': msAll.remitProfitTHB },
+        { 'စာရင်းရှင်းတမ်း အကြောင်းအရာ': `ကာလ (${msAll.periodLabel}) - လက်ခွဲ (Sub-Agent) ငွေလွှဲအမြတ် (${msAll.subAgentCount} ကြိမ်)`, 'ပမာဏ (MMK)': msAll.subAgentProfitMMK, 'ပမာဏ (THB)': msAll.subAgentProfitTHB },
         { 'စာရင်းရှင်းတမ်း အကြောင်းအရာ': `ကာလ (${msAll.periodLabel}) - KPay / Wave ငွေထုတ် & လွှဲအမြတ် (${msAll.cashoutCount} ကြိမ်)`, 'ပမာဏ (MMK)': msAll.cashoutProfitMMK, 'ပမာဏ (THB)': 0 },
         { 'စာရင်းရှင်းတမ်း အကြောင်းအရာ': `ကာလ (${msAll.periodLabel}) - U9 ဖုန်းဘေလ် ကော်မရှင် + လက်လီအမြတ်`, 'ပမာဏ (MMK)': msAll.u9ProfitMMK, 'ပမာဏ (THB)': 0 },
         { 'စာရင်းရှင်းတမ်း အကြောင်းအရာ': `ကာလ (${msAll.periodLabel}) - စုစုပေါင်း အကြမ်းအမြတ် (Gross Profit)`, 'ပမာဏ (MMK)': msAll.totalGrossProfitMMK, 'ပမာဏ (THB)': msAll.totalGrossProfitTHB },
@@ -12194,6 +13632,10 @@
           if (rows.length > 0) {
             const ws = XLSX.utils.json_to_sheet(rows);
             XLSX.utils.book_append_sheet(wb, ws, "အရောင်းအဝယ်စာရင်း");
+          }
+          if (subAgentRows.length > 0) {
+            const wsSub = XLSX.utils.json_to_sheet(subAgentRows);
+            XLSX.utils.book_append_sheet(wb, wsSub, "လက်ခွဲစာရင်း");
           }
           if (depositRows.length > 0) {
             const wsDep = XLSX.utils.json_to_sheet(depositRows);
@@ -12268,6 +13710,10 @@
           <div class="flex justify-between">
             <span class="theme-text-muted">• ထိုင်း-မြန်မာ ငွေလွှဲအမြတ် (${ms.remitCount} ကြိမ်):</span>
             <span class="font-bold text-sky-400">+${formatMMK(ms.remitProfitMMK)} (${formatTHB(ms.remitProfitTHB)})</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="theme-text-muted">• လက်ခွဲ (Sub-Agent) အမြတ် (${ms.subAgentCount} ကြိမ်):</span>
+            <span class="font-bold text-indigo-400">+${formatMMK(ms.subAgentProfitMMK)} (${formatTHB(ms.subAgentProfitTHB)})</span>
           </div>
           <div class="flex justify-between">
             <span class="theme-text-muted">• KPay/Wave ငွေထုတ်အမြတ် (${ms.cashoutCount} ကြိမ်):</span>
@@ -12356,6 +13802,7 @@
         `============================\n` +
         `💰 [၁] အမြတ်ငွေ စာရင်းချုပ် (Profit Summary)\n` +
         `• ထိုင်း-မြန်မာ ငွေလွှဲအမြတ် (${ms.remitCount} ကြိမ်): +${formatMMK(ms.remitProfitMMK)} (+${formatTHB(ms.remitProfitTHB)})\n` +
+        `• လက်ခွဲ (Sub-Agent) ငွေလွှဲအမြတ် (${ms.subAgentCount} ကြိမ်): +${formatMMK(ms.subAgentProfitMMK)} (+${formatTHB(ms.subAgentProfitTHB)})\n` +
         `• KPay/Wave ငွေထုတ်အမြတ် (${ms.cashoutCount} ကြိမ်): +${formatMMK(ms.cashoutProfitMMK)}\n` +
         `• U9 ဖုန်းဘေလ်အမြတ် (ကော်မရှင်+လက်လီ): +${formatMMK(ms.u9ProfitMMK)}\n` +
         `----------------------------\n` +
