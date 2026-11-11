@@ -143,60 +143,87 @@
 
     /* ==========================================================================
        MOBILE EYE-FRIENDLY READABILITY & FONT SCALE SYSTEM
-       (ဖုန်းတွင် စာလုံးနှင့် ဂဏန်းများ ကြီးမားရှင်းလင်းစေခြင်း - Normal / Large / Extra Large)
+       (ဖုန်းတွင် စာလုံးထပ်ခြင်း လုံးဝမရှိဘဲ ရှင်းလင်းကြီးမားစေခြင်း - Normal / Large / Extra Large)
        ========================================================================== */
     html[data-font-scale="normal"] {
-      font-size: 16px;
+      font-size: 15.5px;
     }
     html[data-font-scale="large"],
     html:not([data-font-scale]) {
-      font-size: 17.5px;
+      font-size: 16.25px;
     }
     html[data-font-scale="xlarge"] {
-      font-size: 19px;
+      font-size: 17px;
     }
 
-    /* Upgrade hardcoded tiny arbitrary pixel font classes so they never look small on mobile */
-    html[data-font-scale="normal"] .text-\[9px\] { font-size: 0.72rem !important; line-height: 1.35 !important; }
-    html[data-font-scale="normal"] .text-\[10px\] { font-size: 0.78rem !important; line-height: 1.4 !important; }
-    html[data-font-scale="normal"] .text-\[11px\] { font-size: 0.84rem !important; line-height: 1.42 !important; }
+    /* Myanmar Unicode Anti-Overlap Line-Height Protection */
+    body, button, input, select, textarea, h1, h2, h3, h4, h5, h6, p, span, div, label {
+      line-height: 1.62;
+    }
+    .leading-tight,
+    .leading-snug,
+    .leading-none {
+      line-height: 1.58 !important;
+      padding-top: 1px;
+      padding-bottom: 1px;
+    }
+    .truncate {
+      line-height: 1.62 !important;
+      padding-top: 1px;
+      padding-bottom: 1px;
+    }
+
+    /* Upgrade hardcoded tiny arbitrary pixel font classes safely without overlapping */
+    html[data-font-scale="normal"] .text-\[9px\] { font-size: 0.72rem !important; line-height: 1.55 !important; }
+    html[data-font-scale="normal"] .text-\[10px\] { font-size: 0.76rem !important; line-height: 1.58 !important; }
+    html[data-font-scale="normal"] .text-\[11px\] { font-size: 0.81rem !important; line-height: 1.6 !important; }
 
     html[data-font-scale="large"] .text-\[9px\],
-    html:not([data-font-scale]) .text-\[9px\] { font-size: 0.76rem !important; line-height: 1.4 !important; }
+    html:not([data-font-scale]) .text-\[9px\] { font-size: 0.74rem !important; line-height: 1.58 !important; }
     html[data-font-scale="large"] .text-\[10px\],
-    html:not([data-font-scale]) .text-\[10px\] { font-size: 0.82rem !important; line-height: 1.44 !important; }
+    html:not([data-font-scale]) .text-\[10px\] { font-size: 0.79rem !important; line-height: 1.6 !important; }
     html[data-font-scale="large"] .text-\[11px\],
-    html:not([data-font-scale]) .text-\[11px\] { font-size: 0.88rem !important; line-height: 1.46 !important; }
+    html:not([data-font-scale]) .text-\[11px\] { font-size: 0.84rem !important; line-height: 1.62 !important; }
 
-    html[data-font-scale="xlarge"] .text-\[9px\] { font-size: 0.82rem !important; line-height: 1.42 !important; }
-    html[data-font-scale="xlarge"] .text-\[10px\] { font-size: 0.88rem !important; line-height: 1.46 !important; }
-    html[data-font-scale="xlarge"] .text-\[11px\] { font-size: 0.94rem !important; line-height: 1.48 !important; }
+    html[data-font-scale="xlarge"] .text-\[9px\] { font-size: 0.77rem !important; line-height: 1.6 !important; }
+    html[data-font-scale="xlarge"] .text-\[10px\] { font-size: 0.82rem !important; line-height: 1.62 !important; }
+    html[data-font-scale="xlarge"] .text-\[11px\] { font-size: 0.87rem !important; line-height: 1.65 !important; }
 
-    /* Clean, Uncluttered Transaction Review Card & Amount Well */
+    /* Clean, Uncluttered Name + Amount Transaction Review Card */
     .tx-review-card {
       background: var(--neu-surface-sub);
       border: 1px solid var(--neu-border) !important;
       box-shadow: var(--neu-shadow-sub);
-      border-radius: 1.2rem;
-      padding: 0.9rem 1rem;
+      border-radius: 1.15rem;
+      padding: 0.85rem 1rem;
       transition: box-shadow 0.18s ease, transform 0.12s ease;
     }
-    .tx-amount-well {
-      background: var(--neu-input-bg);
-      border: 1px solid var(--neu-border-subtle);
-      box-shadow: var(--neu-shadow-inset-sm);
-      border-radius: 0.95rem;
-      padding: 0.65rem 0.85rem;
+    .tx-primary-name {
+      font-size: 1.02rem;
+      font-weight: 800;
+      color: var(--neu-text-heading);
+      line-height: 1.6 !important;
+      word-break: break-word;
+    }
+    .tx-primary-amount {
+      font-size: 1.08rem;
+      font-weight: 900;
+      font-family: 'JetBrains Mono', monospace;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.45 !important;
+      white-space: nowrap;
     }
     .tx-action-btn {
-      min-height: 2.35rem;
-      padding: 0.45rem 0.85rem;
-      border-radius: 0.8rem;
+      min-height: 2.15rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 0.75rem;
+      font-size: 0.76rem;
       font-weight: 700;
+      line-height: 1.45 !important;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 0.35rem;
+      gap: 0.3rem;
       transition: transform 0.1s ease, box-shadow 0.15s ease;
     }
 
@@ -7984,46 +8011,30 @@
         const editCall = isSubAgent ? `openEditSubAgentModal('${tx.id}')` : `openEditModal('${tx.id}')`;
 
         const thbAmt = tx.subAgentTHB || tx.customerTHB || 0;
-        const mainAmtDisplay = (isRemit && tx.direction === 'MMK_TO_THB')
-          ? `${formatMMK(tx.amountMMK)} ➔ ${formatTHB(thbAmt)}`
-          : (isRemit ? `${formatTHB(thbAmt)} ➔ ${formatMMK(tx.amountMMK)}` : formatMMK(tx.amountMMK));
+        const primaryAmt = (isRemit && tx.direction === 'MMK_TO_THB')
+          ? formatTHB(thbAmt)
+          : formatMMK(tx.amountMMK);
+        const subAmt = isRemit
+          ? (tx.direction === 'MMK_TO_THB' ? formatMMK(tx.amountMMK) : formatTHB(thbAmt))
+          : '';
 
         return `
-          <div onclick="openVoucherModal('${tx.id}')" class="tx-review-card cursor-pointer hover:opacity-95 active:scale-[0.99] transition group">
-            <div class="flex items-start justify-between gap-2">
-              <div class="flex items-start gap-2.5 min-w-0">
-                <div class="w-10 h-10 rounded-xl ${isSubAgent ? 'bg-indigo-600/20 text-indigo-400' : isRemit ? 'bg-blue-600/20 text-blue-500' : 'bg-emerald-600/20 text-emerald-500'} flex items-center justify-center font-bold text-sm shrink-0">
-                  ${isSubAgent ? '🤝' : isRemit ? '⇄' : (tx.cashoutType === 'TRANSFER' ? '🔺' : '🔻')}
-                </div>
-                <div class="min-w-0">
-                  <div class="flex items-center gap-1.5 flex-wrap">
-                    ${isSubAgent ? '<span class="text-[10px] px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-400 font-extrabold">လက်ခွဲ</span>' : ''}
-                    <h4 class="text-sm font-extrabold theme-text-heading group-hover:text-blue-500 transition leading-snug">${names.displayTitle}</h4>
-                    <span class="text-[10px] px-2 py-0.5 rounded-md font-bold ${stDisp.badgeClass}">
-                      ${stDisp.shortText}
-                    </span>
-                  </div>
-                  <div class="text-[11px] theme-text-muted mt-1 flex items-center gap-1.5 flex-wrap font-medium">
-                    <span>🕐 ${formatDateTime(tx.date)}</span>
-                    <span>•</span>
-                    <span class="font-bold text-blue-400">${isRemit ? (tx.direction === 'MMK_TO_THB' ? '🇲🇲 ကျပ် ➔ 🇹🇭 ဘတ်' : '🇹🇭 ဘတ် ➔ 🇲🇲 ကျပ်') + ' • ' : ''}${tx.channel || 'KPay'}</span>
-                  </div>
+          <div onclick="openVoucherModal('${tx.id}')" class="tx-review-card cursor-pointer hover:opacity-95 active:scale-[0.99] transition">
+            <div class="flex items-center justify-between gap-3">
+              <div class="min-w-0 flex-1">
+                <div class="tx-primary-name">${names.displayTitle}</div>
+                <div class="flex items-center gap-1.5 flex-wrap mt-0.5">
+                  <span class="text-[10px] px-2 py-0.5 rounded-md font-bold ${stDisp.badgeClass}">${stDisp.shortText}</span>
+                  ${isSubAgent ? '<span class="text-[10px] px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-400 font-bold">လက်ခွဲ</span>' : ''}
                 </div>
               </div>
-              <button type="button" onclick="event.stopPropagation(); ${editCall}" class="tx-action-btn bg-blue-600/15 hover:bg-blue-600/25 text-blue-400 border border-blue-500/30 shrink-0">
-                ✏️ ပြင်မည်
-              </button>
-            </div>
-
-            <div class="tx-amount-well mt-2.5 flex items-center justify-between gap-2">
-              <div>
-                <div class="text-[10px] theme-text-muted font-bold">ပမာဏ (Amount)</div>
-                <div class="text-sm font-black font-mono theme-text-heading">${mainAmtDisplay}</div>
-              </div>
-              <div class="text-right">
-                <div class="text-[10px] theme-text-muted font-bold">အမြတ် (Profit)</div>
-                <div class="text-xs sm:text-sm text-emerald-400 font-mono font-extrabold">
-                  ${tx.profitTHB ? `+${formatTHB(tx.profitTHB)} (+${formatMMK(tx.profitMMK)})` : `+${formatMMK(tx.profitMMK)}`}
+              <div class="text-right shrink-0">
+                <div class="tx-primary-amount theme-text-heading">${primaryAmt}</div>
+                ${subAmt ? `<div class="text-xs font-mono theme-text-muted font-bold">${subAmt}</div>` : ''}
+                <div class="mt-1 flex items-center justify-end gap-1.5">
+                  <button type="button" onclick="event.stopPropagation(); ${editCall}" class="px-2.5 py-1 rounded-lg bg-blue-600/15 hover:bg-blue-600/25 text-blue-400 text-[10px] font-bold">
+                    ပြင်
+                  </button>
                 </div>
               </div>
             </div>
@@ -8464,29 +8475,19 @@
           const isPaid = tx.status === 'PAID';
           const isMmkToThb = tx.direction === 'MMK_TO_THB';
           return `
-            <div class="theme-card-sub border ${isPaid ? 'border-emerald-500/25' : 'border-amber-500/45'} px-2.5 py-2 rounded-xl flex items-center justify-between gap-2 text-xs hover:border-blue-500/50 transition">
-              <div class="flex items-center gap-2 min-w-0">
+            <div onclick="openVoucherModal('${tx.id}')" class="theme-card-sub border ${isPaid ? 'border-emerald-500/25' : 'border-amber-500/45'} px-3 py-2.5 rounded-xl flex items-center justify-between gap-3 cursor-pointer">
+              <div class="flex items-center gap-2 min-w-0 flex-1">
                 <span class="w-2.5 h-2.5 rounded-full shrink-0 ${isPaid ? 'bg-emerald-500' : 'bg-amber-500 animate-pulse'}"></span>
-                <div class="min-w-0">
-                  <div class="flex items-center gap-1.5 flex-wrap">
-                    <span class="font-bold theme-text-heading truncate">${names.displayTitle}</span>
-                    <span class="text-[9px] px-1.5 py-0.5 rounded font-semibold theme-card border">${tx.channel || 'KPay'}</span>
-                  </div>
-                  <div class="text-[10px] theme-text-muted font-mono">
-                    ${formatTimeOnly(tx.date)} • #${tx.id} ${tx.custPhone ? `• ${tx.custPhone}` : ''}
-                  </div>
-                </div>
+                <span class="tx-primary-name truncate">${names.displayTitle}</span>
               </div>
-              <div class="flex items-center gap-1.5 shrink-0">
-                <div class="text-right mr-1">
-                  <div class="font-extrabold font-mono ${isPaid ? 'text-emerald-500' : 'text-amber-500'}">${isMmkToThb ? formatTHB(tx.customerTHB) : formatMMK(tx.amountMMK)}</div>
-                  <div class="text-[10px] font-mono theme-text-muted">${isMmkToThb ? formatMMK(tx.amountMMK) : formatTHB(tx.customerTHB)}</div>
+              <div class="flex items-center gap-2 shrink-0">
+                <div class="text-right">
+                  <div class="tx-primary-amount ${isPaid ? 'text-emerald-500' : 'text-amber-500'}">${isMmkToThb ? formatTHB(tx.customerTHB) : formatMMK(tx.amountMMK)}</div>
+                  <div class="text-xs font-mono theme-text-muted font-bold">${isMmkToThb ? formatMMK(tx.amountMMK) : formatTHB(tx.customerTHB)}</div>
                 </div>
-                <button type="button" onclick="toggleRemitPayoutStatus('${tx.id}')" class="px-2.5 py-1 rounded-lg ${isPaid ? 'theme-card border theme-text-muted hover:text-amber-400' : 'bg-emerald-600 text-white'} text-[10px] font-bold">
+                <button type="button" onclick="event.stopPropagation(); toggleRemitPayoutStatus('${tx.id}')" class="px-2.5 py-1 rounded-lg ${isPaid ? 'theme-card border theme-text-muted' : 'bg-emerald-600 text-white'} text-[11px] font-bold">
                   ${isPaid ? '✓' : 'ထုတ်မည်'}
                 </button>
-                <button type="button" onclick="openVoucherModal('${tx.id}')" class="px-2 py-1 rounded-lg theme-card border text-[10px] font-semibold">ပြေစာ</button>
-                <button type="button" onclick="openEditModal('${tx.id}')" class="px-2 py-1 rounded-lg bg-blue-600/15 text-blue-500 text-[10px] font-bold">ပြင်</button>
               </div>
             </div>
           `;
@@ -8497,64 +8498,34 @@
           const isMmkToThb = tx.direction === 'MMK_TO_THB';
 
           return `
-            <div class="tx-review-card ${isPaid ? 'border-emerald-500/35' : 'border-amber-500/55'} space-y-2.5 text-xs">
-              <div class="flex items-center justify-between gap-2">
-                <div class="flex items-center gap-2 flex-wrap">
-                  <span class="px-2 py-0.5 rounded-md bg-blue-500/15 text-blue-400 font-mono text-[10px] font-extrabold">#${tx.id}</span>
-                  <span class="text-[11px] font-bold ${isMmkToThb ? 'text-amber-400' : 'text-sky-400'}">${isMmkToThb ? '🇲🇲 ကျပ် ➔ 🇹🇭 ဘတ်' : '🇹🇭 ဘတ် ➔ 🇲🇲 ကျပ်'}</span>
-                  <span class="text-[10px] theme-text-muted">• 🕐 ${formatDateTime(tx.date)}</span>
+            <div onclick="openVoucherModal('${tx.id}')" class="tx-review-card ${isPaid ? 'border-emerald-500/35' : 'border-amber-500/55'} cursor-pointer space-y-2">
+              <div class="flex items-center justify-between gap-3">
+                <div class="min-w-0 flex-1">
+                  <div class="tx-primary-name">${names.displayTitle}</div>
+                  <div class="flex items-center gap-1.5 flex-wrap mt-0.5">
+                    <span class="px-2 py-0.5 rounded-md text-[10px] font-extrabold ${isPaid ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'}">
+                      ${isPaid ? '✓ ထုတ်ပေးပြီး' : '⏳ မထုတ်ပေးရသေး'}
+                    </span>
+                  </div>
                 </div>
-                <span class="px-2.5 py-1 rounded-lg text-[10px] font-extrabold ${isPaid ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-400 border border-amber-500/40'}">
-                  ${isPaid ? '✓ ထုတ်ပေးပြီး' : '⏳ မထုတ်ပေးရသေး'}
-                </span>
-              </div>
-
-              <div class="space-y-1">
-                <div class="font-extrabold theme-text-heading text-sm leading-snug">${names.displayTitle}</div>
-                <div class="text-[11px] theme-text-muted flex flex-wrap items-center gap-x-2 gap-y-0.5">
-                  <span>${names.senderLabel}: <strong class="theme-text-heading">${names.senderName || '-'}</strong></span>
-                  <span>➔</span>
-                  <span>${names.receiverLabel}: <strong class="text-emerald-400">${names.receiverName || '-'}</strong></span>
-                </div>
-                <div class="text-[11px] theme-text-muted flex flex-wrap items-center gap-2">
-                  <span class="px-2 py-0.5 rounded theme-card border font-bold text-blue-400">${tx.channel || 'KPay'}</span>
-                  ${tx.custPhone ? `<span>📞 <strong class="font-mono theme-text-heading">${tx.custPhone}</strong></span>` : ''}
-                  ${tx.customerRate ? `<span>နှုန်း: <strong class="font-mono">${tx.customerRate}</strong> (ဒိုင် ${tx.dealerRate || '-'})</span>` : ''}
-                  ${tx.note ? `<span>📝 ${tx.note}</span>` : ''}
+                <div class="text-right shrink-0">
+                  <div class="tx-primary-amount ${isPaid ? 'text-emerald-400' : 'text-amber-400'}">
+                    ${isMmkToThb ? formatTHB(tx.customerTHB) : formatMMK(tx.amountMMK)}
+                  </div>
+                  <div class="text-xs font-mono text-blue-400 font-bold">
+                    ${isMmkToThb ? formatMMK(tx.amountMMK) : formatTHB(tx.customerTHB)}
+                  </div>
                 </div>
               </div>
 
-              <div class="tx-amount-well grid grid-cols-3 gap-2 items-center">
-                <div>
-                  <div class="text-[10px] theme-text-muted font-bold">${isMmkToThb ? 'ပေးသွင်းငွေ (MMK)' : 'ထုတ်ပေးငွေ (MMK)'}</div>
-                  <div class="text-sm font-black font-mono ${isPaid ? 'text-emerald-400' : 'text-amber-400'}">${formatMMK(tx.amountMMK)}</div>
-                </div>
-                <div class="text-center border-x border-slate-700/40 px-1">
-                  <div class="text-[10px] theme-text-muted font-bold">ထိုင်းဘတ် (THB)</div>
-                  <div class="text-xs sm:text-sm font-extrabold font-mono text-blue-400">${formatTHB(tx.customerTHB)}</div>
-                </div>
-                <div class="text-right">
-                  <div class="text-[10px] theme-text-muted font-bold">အမြတ် (Profit)</div>
-                  <div class="text-xs sm:text-sm font-extrabold font-mono text-emerald-400">+${formatTHB(tx.profitTHB || 0)}</div>
-                </div>
-              </div>
-
-              <div class="flex flex-wrap items-center justify-between gap-2 pt-1.5 border-t border-slate-700/30">
-                <div>
-                  ${!isPaid ? `
-                    <button type="button" onclick="toggleRemitPayoutStatus('${tx.id}')" class="tx-action-btn bg-emerald-600 hover:bg-emerald-500 text-white shadow">
-                      ✓ ယခု ထုတ်ပေးပြီးမှတ်မည်
-                    </button>
-                  ` : `
-                    <button type="button" onclick="toggleRemitPayoutStatus('${tx.id}')" class="tx-action-btn theme-card border theme-text-muted hover:text-amber-400">
-                      ⏳ မထုတ်ပေးရသေးသို့ ပြန်ပြောင်း
-                    </button>
-                  `}
-                </div>
+              <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-700/25" onclick="event.stopPropagation()">
+                <button type="button" onclick="toggleRemitPayoutStatus('${tx.id}')" class="tx-action-btn ${isPaid ? 'theme-card border theme-text-muted hover:text-amber-400' : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow'}">
+                  ${isPaid ? '⏳ မထုတ်ရသေးသို့ပြောင်း' : '✓ ထုတ်ပေးပြီးမှတ်မည်'}
+                </button>
                 <div class="flex items-center gap-1.5">
-                  <button type="button" onclick="openVoucherModal('${tx.id}')" class="tx-action-btn theme-card border theme-text-heading hover:text-blue-400">📄 ပြေစာ</button>
-                  <button type="button" onclick="openEditModal('${tx.id}')" class="tx-action-btn bg-blue-600/15 hover:bg-blue-600/25 text-blue-400 border border-blue-500/30">✏️ ပြင်မည်</button>
-                  <button type="button" onclick="deleteTransaction('${tx.id}')" class="tx-action-btn bg-rose-600/15 hover:bg-rose-600/25 text-rose-400 border border-rose-500/30">ဖျက်</button>
+                  <button type="button" onclick="openVoucherModal('${tx.id}')" class="tx-action-btn theme-card border theme-text-heading">ပြေစာ</button>
+                  <button type="button" onclick="openEditModal('${tx.id}')" class="tx-action-btn bg-blue-600/15 text-blue-400 border border-blue-500/30">ပြင်</button>
+                  <button type="button" onclick="deleteTransaction('${tx.id}')" class="tx-action-btn bg-rose-600/15 text-rose-400 border border-rose-500/30">ဖျက်</button>
                 </div>
               </div>
             </div>
@@ -8936,84 +8907,53 @@
         emptyHtml,
         renderCompactFn: s => {
           const isPaid = s.status === 'PAID';
-          const isMmkToThb = s.direction === 'MMK_TO_THB';
+          const thbVal = s.subAgentTHB || s.customerTHB || 0;
+          const displayName = s.recipientName ? `${s.partnerName || s.custName} ➔ ${s.recipientName}` : (s.partnerName || s.custName);
           return `
-            <div class="theme-card-sub border ${isPaid ? 'border-indigo-500/30' : 'border-amber-500/50'} px-3 py-2 rounded-xl flex items-center justify-between gap-2 text-xs">
-              <div class="min-w-0">
-                <div class="font-extrabold theme-text-heading truncate">🤝 ${s.partnerName || s.custName} ${s.recipientName ? `➔ ${s.recipientName}` : ''}</div>
-                <div class="text-[10px] theme-text-muted font-mono">${formatTimeOnly(s.date)} • ${isMmkToThb ? '🇲🇲➔🇹🇭' : '🇹🇭➔🇲🇲'} • ဒိုင် ${s.dealerRate} / လက်ခွဲ ${s.subAgentRate}</div>
+            <div onclick="openVoucherModal('${s.id}')" class="theme-card-sub border ${isPaid ? 'border-indigo-500/30' : 'border-amber-500/50'} px-3 py-2.5 rounded-xl flex items-center justify-between gap-3 cursor-pointer">
+              <div class="min-w-0 flex-1">
+                <div class="tx-primary-name truncate">🤝 ${displayName}</div>
               </div>
-              <div class="flex items-center gap-1.5 shrink-0">
+              <div class="flex items-center gap-2 shrink-0">
                 <div class="text-right">
-                  <div class="font-extrabold font-mono text-indigo-400">${formatTHB(s.subAgentTHB || s.customerTHB)}</div>
-                  <div class="text-[10px] font-mono text-emerald-400">+${formatTHB(s.profitTHB)}</div>
+                  <div class="tx-primary-amount text-indigo-400">${formatTHB(thbVal)}</div>
+                  <div class="text-xs font-mono theme-text-muted font-bold">${formatMMK(s.amountMMK)}</div>
                 </div>
-                <button type="button" onclick="openVoucherModal('${s.id}')" class="px-2 py-1 rounded-lg theme-card border text-[10px] font-bold">ပြေစာ</button>
-                <button type="button" onclick="openEditSubAgentModal('${s.id}')" class="px-2 py-1 rounded-lg bg-blue-600/15 text-blue-400 text-[10px] font-bold">ပြင်</button>
+                <button type="button" onclick="event.stopPropagation(); openEditSubAgentModal('${s.id}')" class="px-2 py-1 rounded-lg bg-blue-600/15 text-blue-400 text-[10px] font-bold">ပြင်</button>
               </div>
             </div>
           `;
         },
         renderCardFn: s => {
           const isPaid = s.status === 'PAID';
-          const isMmkToThb = s.direction === 'MMK_TO_THB';
           const thbVal = s.subAgentTHB || s.customerTHB || 0;
+          const displayName = s.recipientName ? `${s.partnerName || s.custName} ➔ ${s.recipientName}` : (s.partnerName || s.custName);
 
           return `
-            <div class="tx-review-card ${isPaid ? 'border-indigo-500/35' : 'border-amber-500/55'} space-y-2.5 text-xs">
-              <div class="flex items-center justify-between gap-2">
-                <div class="flex items-center gap-2 flex-wrap">
-                  <span class="px-2 py-0.5 rounded-md bg-indigo-500/20 text-indigo-400 font-mono text-[10px] font-extrabold">#${s.id}</span>
-                  <span class="text-[11px] font-extrabold ${isMmkToThb ? 'text-amber-400' : 'text-sky-400'}">
-                    ${isMmkToThb ? '🇲🇲 ကျပ် ➔ 🇹🇭 ဘတ် (လက်ခွဲ)' : '🇹🇭 ဘတ် ➔ 🇲🇲 ကျပ် (လက်ခွဲ)'}
-                  </span>
-                  <span class="text-[10px] theme-text-muted">• 🕐 ${formatDateTime(s.date)}</span>
+            <div onclick="openVoucherModal('${s.id}')" class="tx-review-card ${isPaid ? 'border-indigo-500/35' : 'border-amber-500/55'} cursor-pointer space-y-2">
+              <div class="flex items-center justify-between gap-3">
+                <div class="min-w-0 flex-1">
+                  <div class="tx-primary-name">🤝 ${displayName}</div>
+                  <div class="flex items-center gap-1.5 flex-wrap mt-0.5">
+                    <span class="px-2 py-0.5 rounded-md text-[10px] font-extrabold ${isPaid ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'}">
+                      ${isPaid ? '✓ ရှင်းပြီး' : '⏳ မရှင်းရသေး'}
+                    </span>
+                  </div>
                 </div>
-                <span class="px-2.5 py-1 rounded-lg text-[10px] font-extrabold ${isPaid ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-400 border border-amber-500/40'}">
-                  ${isPaid ? '✓ ရှင်းပြီး (Paid)' : '⏳ မရှင်းရသေး (Unpaid)'}
-                </span>
-              </div>
-
-              <div class="space-y-1">
-                <div class="text-sm font-extrabold theme-text-heading">
-                  🤝 လက်ခွဲ: <span class="text-indigo-400">${s.partnerName || s.custName}</span>
-                  ${s.recipientName ? ` <span class="theme-text-muted">➔</span> လက်ခံသူ: <span class="text-emerald-400">${s.recipientName}</span>` : ''}
-                </div>
-                <div class="text-[11px] theme-text-muted flex flex-wrap items-center gap-2">
-                  <span class="px-2 py-0.5 rounded theme-card border font-bold text-indigo-400">${s.channel || 'KPay'}</span>
-                  <span>ဒိုင်ဈေး: <strong class="font-mono theme-text-heading">${s.dealerRate}</strong></span>
-                  <span>• လက်ခွဲပေးဈေး: <strong class="font-mono text-indigo-400">${s.subAgentRate || s.customerRate}</strong></span>
-                  ${s.partnerPhone ? `<span>• 📞 <strong class="font-mono">${s.partnerPhone}</strong></span>` : ''}
-                  ${s.note ? `<span>• 📝 ${s.note}</span>` : ''}
+                <div class="text-right shrink-0">
+                  <div class="tx-primary-amount text-indigo-400">${formatTHB(thbVal)}</div>
+                  <div class="text-xs font-mono theme-text-heading font-bold">${formatMMK(s.amountMMK)}</div>
                 </div>
               </div>
 
-              <div class="tx-amount-well grid grid-cols-3 gap-2 items-center">
-                <div>
-                  <div class="text-[10px] theme-text-muted font-bold">မြန်မာကျပ် (${s.lakhs || (s.amountMMK / 100000)} သိန်း)</div>
-                  <div class="text-sm font-black font-mono theme-text-heading">${formatMMK(s.amountMMK)}</div>
-                </div>
-                <div class="text-center border-x border-slate-700/40 px-1">
-                  <div class="text-[10px] theme-text-muted font-bold">လက်ခွဲဘတ် (ဒိုင် ${formatTHB(s.dealerTHB)})</div>
-                  <div class="text-xs sm:text-sm font-extrabold font-mono text-indigo-400">${formatTHB(thbVal)}</div>
-                </div>
-                <div class="text-right">
-                  <div class="text-[10px] theme-text-muted font-bold">လက်ခွဲအမြတ် (Spread)</div>
-                  <div class="text-xs sm:text-sm font-extrabold font-mono text-emerald-400">+${formatTHB(s.profitTHB)}</div>
-                  <div class="text-[10px] font-mono text-emerald-500/80">+${formatMMK(s.profitMMK)}</div>
-                </div>
-              </div>
-
-              <div class="flex flex-wrap items-center justify-between gap-2 pt-1.5 border-t border-slate-700/30">
-                <div>
-                  <button type="button" onclick="toggleSubAgentStatus('${s.id}')" class="tx-action-btn ${isPaid ? 'theme-card border theme-text-muted hover:text-amber-400' : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow'}">
-                    ${isPaid ? '⏳ မရှင်းရသေးသို့ ပြောင်းရန်' : '✓ ယခု ငွေရှင်းပြီးမှတ်မည်'}
-                  </button>
-                </div>
+              <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-700/25" onclick="event.stopPropagation()">
+                <button type="button" onclick="toggleSubAgentStatus('${s.id}')" class="tx-action-btn ${isPaid ? 'theme-card border theme-text-muted hover:text-amber-400' : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow'}">
+                  ${isPaid ? '⏳ မရှင်းရသေးသို့ပြောင်း' : '✓ ငွေရှင်းပြီးမှတ်မည်'}
+                </button>
                 <div class="flex items-center gap-1.5">
-                  <button type="button" onclick="openVoucherModal('${s.id}')" class="tx-action-btn theme-card border theme-text-heading hover:text-indigo-400">📄 ပြေစာ</button>
-                  <button type="button" onclick="openEditSubAgentModal('${s.id}')" class="tx-action-btn bg-blue-600/15 hover:bg-blue-600/25 text-blue-400 border border-blue-500/30">✏️ ပြင်မည်</button>
-                  <button type="button" onclick="deleteSubAgentRecord('${s.id}')" class="tx-action-btn bg-rose-600/15 hover:bg-rose-600/25 text-rose-400 border border-rose-500/30">ဖျက်</button>
+                  <button type="button" onclick="openVoucherModal('${s.id}')" class="tx-action-btn theme-card border theme-text-heading">ပြေစာ</button>
+                  <button type="button" onclick="openEditSubAgentModal('${s.id}')" class="tx-action-btn bg-blue-600/15 text-blue-400 border border-blue-500/30">ပြင်</button>
+                  <button type="button" onclick="deleteSubAgentRecord('${s.id}')" class="tx-action-btn bg-rose-600/15 text-rose-400 border border-rose-500/30">ဖျက်</button>
                 </div>
               </div>
             </div>
@@ -9487,29 +9427,16 @@
           const isPaid = tx.status === 'PAID';
           const isTransfer = tx.cashoutType === 'TRANSFER';
           return `
-            <div class="theme-card-sub border ${isPaid ? 'border-emerald-500/25' : (isTransfer ? 'border-rose-500/45' : 'border-amber-500/45')} px-2.5 py-2 rounded-xl flex items-center justify-between gap-2 text-xs hover:border-emerald-500/50 transition">
-              <div class="flex items-center gap-2 min-w-0">
-                <span class="w-2 h-2 rounded-full shrink-0 ${isPaid ? 'bg-emerald-500' : 'bg-amber-500 animate-pulse'}"></span>
-                <div class="min-w-0">
-                  <div class="flex items-center gap-1.5 flex-wrap">
-                    <span class="font-bold theme-text-heading truncate">${tx.custName || 'အမည်မသိ'}</span>
-                    <span class="text-[9px] px-1.5 py-0.2 rounded font-semibold theme-card border">${isTransfer ? '🔺လွှဲ' : '🔻ထုတ်'} • ${tx.channel || 'KPay'}</span>
-                  </div>
-                  <div class="text-[10px] theme-text-muted font-mono">
-                    ${formatTimeOnly(tx.date)} • #${tx.id} ${tx.custPhone ? `• ${tx.custPhone}` : ''}
-                  </div>
-                </div>
+            <div onclick="openVoucherModal('${tx.id}')" class="theme-card-sub border ${isPaid ? 'border-emerald-500/25' : (isTransfer ? 'border-rose-500/45' : 'border-amber-500/45')} px-3 py-2.5 rounded-xl flex items-center justify-between gap-3 cursor-pointer">
+              <div class="flex items-center gap-2 min-w-0 flex-1">
+                <span class="w-2.5 h-2.5 rounded-full shrink-0 ${isPaid ? 'bg-emerald-500' : 'bg-amber-500 animate-pulse'}"></span>
+                <span class="tx-primary-name truncate">${tx.custName || 'အမည်မသိ'}</span>
               </div>
-              <div class="flex items-center gap-1.5 shrink-0">
-                <div class="text-right mr-1">
-                  <div class="font-extrabold font-mono ${isPaid ? 'text-emerald-500' : 'text-amber-500'}">${formatMMK(tx.amountMMK)}</div>
-                  <div class="text-[9px] font-mono text-emerald-400">+${formatMMK(tx.profitMMK || tx.fee || 0)}</div>
-                </div>
-                <button type="button" onclick="toggleCashoutPayoutStatus('${tx.id}')" class="px-2 py-1 rounded-lg ${isPaid ? 'theme-card border theme-text-muted hover:text-amber-400' : 'bg-emerald-600 text-white'} text-[10px] font-bold">
+              <div class="flex items-center gap-2 shrink-0">
+                <div class="tx-primary-amount ${isPaid ? 'text-emerald-500' : 'text-amber-500'}">${formatMMK(tx.amountMMK)}</div>
+                <button type="button" onclick="event.stopPropagation(); toggleCashoutPayoutStatus('${tx.id}')" class="px-2.5 py-1 rounded-lg ${isPaid ? 'theme-card border theme-text-muted' : 'bg-emerald-600 text-white'} text-[11px] font-bold">
                   ${isPaid ? '✓' : 'ထုတ်မည်'}
                 </button>
-                <button type="button" onclick="openVoucherModal('${tx.id}')" class="px-2 py-1 rounded-lg theme-card border text-[10px] font-semibold">ပြေစာ</button>
-                <button type="button" onclick="openEditModal('${tx.id}')" class="px-2 py-1 rounded-lg bg-blue-600/15 text-blue-500 text-[10px] font-bold">ပြင်</button>
               </div>
             </div>
           `;
@@ -9520,53 +9447,29 @@
           const stDisp = getTxStatusDisplay(tx);
 
           return `
-            <div class="theme-card-sub border ${isPaid ? 'border-emerald-500/30' : (isTransfer ? 'border-rose-500/50' : 'border-amber-500/50')} p-3 rounded-xl space-y-2 text-xs">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-1.5">
-                  <span class="font-mono text-[10px] text-emerald-500 font-bold">${tx.id}</span>
-                  <span class="text-[10px] theme-text-muted">• ${formatDateTime(tx.date)}</span>
-                </div>
-                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${stDisp.badgeClass}">
-                  ${isPaid ? '✓ ' + stDisp.text : (isTransfer ? '⚠️ ' + stDisp.text : '⏳ ' + stDisp.text)}
-                </span>
-              </div>
-
-              <div class="flex items-start justify-between gap-2">
-                <div class="space-y-0.5">
-                  <div class="font-bold theme-text-heading text-xs">${tx.custName || 'အမည်မသိ'}</div>
-                  <div class="text-[10px] theme-text-muted">
-                    အမျိုးအစား: <span class="font-semibold">${isTransfer ? '🔺 ငွေလွှဲ (Transfer)' : '🔻 ငွေထုတ် (Cash-Out)'}</span>
-                    • ချန်နယ်: <span class="font-semibold">${tx.channel || 'KPay'}</span>
-                    ${tx.custPhone ? ` • ဖုန်း: <span class="font-mono">${tx.custPhone}</span>` : ''}
-                    ${tx.note ? ` • မှတ်ချက်: ${tx.note}` : ''}
+            <div onclick="openVoucherModal('${tx.id}')" class="tx-review-card ${isPaid ? 'border-emerald-500/35' : (isTransfer ? 'border-rose-500/50' : 'border-amber-500/50')} cursor-pointer space-y-2">
+              <div class="flex items-center justify-between gap-3">
+                <div class="min-w-0 flex-1">
+                  <div class="tx-primary-name">${tx.custName || 'အမည်မသိ'}</div>
+                  <div class="flex items-center gap-1.5 flex-wrap mt-0.5">
+                    <span class="px-2 py-0.5 rounded-md text-[10px] font-bold ${stDisp.badgeClass}">${stDisp.shortText}</span>
                   </div>
                 </div>
                 <div class="text-right shrink-0">
-                  <div class="text-xs sm:text-sm font-extrabold font-mono ${isPaid ? 'text-emerald-500' : (isTransfer ? 'text-rose-500' : 'text-amber-500')}">
+                  <div class="tx-primary-amount ${isPaid ? 'text-emerald-500' : (isTransfer ? 'text-rose-500' : 'text-amber-500')}">
                     ${formatMMK(tx.amountMMK)}
-                  </div>
-                  <div class="text-[10px] text-emerald-500 font-mono">
-                    အမြတ်: +${formatMMK(tx.profitMMK || tx.fee || 0)}
                   </div>
                 </div>
               </div>
 
-              <div class="flex flex-wrap items-center justify-between gap-1.5 pt-2 border-t">
-                <div>
-                  ${!isPaid ? `
-                    <button type="button" onclick="toggleCashoutPayoutStatus('${tx.id}')" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold shadow flex items-center gap-1 transition">
-                      <span>${isTransfer ? '✓ လက်ငင်းရရှိပြီးကြောင်း မှတ်မည်' : '✓ ယခု ထုတ်ပေးပြီးကြောင်း မှတ်မည်'}</span>
-                    </button>
-                  ` : `
-                    <button type="button" onclick="toggleCashoutPayoutStatus('${tx.id}')" class="px-2.5 py-1 rounded-lg theme-card border text-[10px] theme-text-muted hover:text-amber-500 font-semibold transition">
-                      ${isTransfer ? '⚠️ အကြွေးသို့ ပြန်ပြောင်းရန်' : '⏳ မထုတ်ပေးရသေးသို့ ပြန်ပြောင်းရန်'}
-                    </button>
-                  `}
-                </div>
+              <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-700/25" onclick="event.stopPropagation()">
+                <button type="button" onclick="toggleCashoutPayoutStatus('${tx.id}')" class="tx-action-btn ${isPaid ? 'theme-card border theme-text-muted hover:text-amber-500' : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow'}">
+                  ${!isPaid ? (isTransfer ? '✓ လက်ငင်းရရှိမှတ်မည်' : '✓ ထုတ်ပေးပြီးမှတ်မည်') : (isTransfer ? '⚠️ အကြွေးသို့ပြောင်း' : '⏳ မထုတ်ရသေးသို့ပြောင်း')}
+                </button>
                 <div class="flex items-center gap-1.5">
-                  <button type="button" onclick="openVoucherModal('${tx.id}')" class="px-2.5 py-1 rounded-lg theme-card border text-[10px] font-semibold">ဘောက်ချာ</button>
-                  <button type="button" onclick="openEditModal('${tx.id}')" class="px-2.5 py-1 rounded-lg bg-blue-600/15 hover:bg-blue-600/25 text-blue-500 text-[10px] font-bold">ပြင်မည်</button>
-                  <button type="button" onclick="deleteTransaction('${tx.id}')" class="px-2 py-1 rounded-lg bg-rose-600/15 hover:bg-rose-600/25 text-rose-500 text-[10px] font-bold">ဖျက်မည်</button>
+                  <button type="button" onclick="openVoucherModal('${tx.id}')" class="tx-action-btn theme-card border theme-text-heading">ပြေစာ</button>
+                  <button type="button" onclick="openEditModal('${tx.id}')" class="tx-action-btn bg-blue-600/15 text-blue-500 border border-blue-500/30">ပြင်</button>
+                  <button type="button" onclick="deleteTransaction('${tx.id}')" class="tx-action-btn bg-rose-600/15 text-rose-500 border border-rose-500/30">ဖျက်</button>
                 </div>
               </div>
             </div>
@@ -9667,25 +9570,15 @@
           const paid = tx.paidAmount || 0;
           const rem = Math.max(0, (totalOwed || 0) - paid);
           const isSettled = tx.status === 'PAID' || rem <= 0;
-          const isU9BillCredit = tx.cashoutType === 'U9_BILL' || tx.channel === 'U9 ဖုန်းဘေလ်' || Boolean(tx.u9RecordId);
           return `
-            <div class="theme-card border ${isSettled ? 'border-slate-700' : 'border-rose-500/45'} px-3 py-2 rounded-xl flex items-center justify-between gap-2 text-xs">
-              <div class="flex items-center gap-2 min-w-0">
-                <span class="w-2 h-2 rounded-full shrink-0 ${isSettled ? 'bg-emerald-500' : 'bg-rose-500 animate-pulse'}"></span>
-                <div class="min-w-0">
-                  <div class="flex items-center gap-1.5 flex-wrap">
-                    <span class="font-bold theme-text-heading truncate">${tx.custName || 'အမည်မသိ'}</span>
-                    ${isU9BillCredit ? `<span class="text-[9px] px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-400 font-bold">U9</span>` : ''}
-                  </div>
-                  <div class="text-[10px] theme-text-muted font-mono">${formatTimeOnly(tx.date)} • ${tx.custPhone || 'ဖုန်းမရှိ'}</div>
-                </div>
+            <div onclick="openVoucherModal('${tx.id}')" class="theme-card border ${isSettled ? 'border-slate-700' : 'border-rose-500/45'} px-3 py-2.5 rounded-xl flex items-center justify-between gap-3 cursor-pointer">
+              <div class="flex items-center gap-2 min-w-0 flex-1">
+                <span class="w-2.5 h-2.5 rounded-full shrink-0 ${isSettled ? 'bg-emerald-500' : 'bg-rose-500 animate-pulse'}"></span>
+                <span class="tx-primary-name truncate">${tx.custName || 'အမည်မသိ'}</span>
               </div>
-              <div class="flex items-center gap-1.5 shrink-0">
-                <div class="text-right mr-1">
-                  <div class="font-extrabold font-mono ${isSettled ? 'text-emerald-500' : 'text-rose-500'}">${owedCur === 'THB' ? formatTHB(isSettled ? totalOwed : rem) : formatMMK(isSettled ? totalOwed : rem)}</div>
-                  <div class="text-[9px] theme-text-muted">${isSettled ? 'ပြန်ရပြီး' : 'ရရန်ကျန်'}</div>
-                </div>
-                ${!isSettled ? `<button type="button" onclick="openSettleModal('${tx.id}')" class="px-2 py-1 rounded-lg bg-emerald-600 text-white text-[10px] font-bold">ဆပ်မည်</button>` : ''}
+              <div class="flex items-center gap-2 shrink-0" onclick="event.stopPropagation()">
+                <div class="tx-primary-amount ${isSettled ? 'text-emerald-500' : 'text-rose-500'}">${owedCur === 'THB' ? formatTHB(isSettled ? totalOwed : rem) : formatMMK(isSettled ? totalOwed : rem)}</div>
+                ${!isSettled ? `<button type="button" onclick="openSettleModal('${tx.id}')" class="px-2.5 py-1 rounded-lg bg-emerald-600 text-white text-[10px] font-bold">ဆပ်မည်</button>` : ''}
                 <button type="button" onclick="openEditModal('${tx.id}')" class="px-2 py-1 rounded-lg bg-blue-600/15 text-blue-500 text-[10px] font-bold">ပြင်</button>
               </div>
             </div>
@@ -9698,59 +9591,40 @@
           const rem = Math.max(0, (totalOwed || 0) - paid);
           const isSettled = tx.status === 'PAID' || rem <= 0;
           const isU9BillCredit = tx.cashoutType === 'U9_BILL' || tx.channel === 'U9 ဖုန်းဘေလ်' || Boolean(tx.u9RecordId);
+          const displayAmt = owedCur === 'THB' ? formatTHB(isSettled ? totalOwed : rem) : formatMMK(isSettled ? totalOwed : rem);
 
           return `
-            <div class="theme-card border ${isSettled ? 'border-slate-300 dark:border-slate-700' : (isU9BillCredit ? 'border-cyan-500/60' : 'border-rose-500/50')} rounded-2xl p-3.5 space-y-2.5 shadow-sm">
-              <div class="flex items-center justify-between gap-2">
-                <div class="flex items-center gap-2">
-                  <span class="w-8 h-8 rounded-xl ${isSettled ? 'bg-slate-200 dark:bg-slate-700 text-slate-500' : (isU9BillCredit ? 'bg-cyan-500/20 text-cyan-400' : 'bg-rose-500/20 text-rose-500')} flex items-center justify-center font-bold text-xs">
-                    ${isSettled ? '✓' : (isU9BillCredit ? 'U9' : '!')}
-                  </span>
-                  <div>
-                    <div class="flex flex-wrap items-center gap-1.5">
-                      <h4 class="text-xs font-bold theme-text-heading leading-tight">${tx.custName || 'အမည်မသိ'}</h4>
-                      ${isU9BillCredit ? `<span class="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-cyan-500/20 text-cyan-400 border border-cyan-500/40">📶 U9 ဖုန်းဘေလ်</span>` : ''}
-                    </div>
-                    <p class="text-[10px] theme-text-muted">${tx.custPhone || 'ဖုန်းမရှိ'} • ${formatDateTime(tx.date)}</p>
+            <div onclick="openVoucherModal('${tx.id}')" class="tx-review-card ${isSettled ? 'border-slate-500/35' : 'border-rose-500/50'} cursor-pointer space-y-2">
+              <div class="flex items-center justify-between gap-3">
+                <div class="min-w-0 flex-1">
+                  <div class="tx-primary-name">${tx.custName || 'အမည်မသိ'}</div>
+                  <div class="flex items-center gap-1.5 flex-wrap mt-0.5">
+                    <span class="px-2 py-0.5 rounded-md text-[10px] font-bold ${isSettled ? 'bg-emerald-500/20 text-emerald-500' : 'bg-rose-500/20 text-rose-500'}">
+                      ${isSettled ? '✓ ပြန်ရပြီး' : '⏳ မဆပ်ရသေး'}
+                    </span>
+                    ${isU9BillCredit ? `<span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-cyan-500/20 text-cyan-400">U9</span>` : ''}
                   </div>
                 </div>
-                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold shrink-0 ${isSettled ? 'bg-emerald-500/20 text-emerald-500' : 'bg-rose-500/20 text-rose-500 border border-rose-500/30'}">
-                  ${isSettled ? 'ပြန်ရပြီး' : 'မဆပ်ရသေး'}
-                </span>
-              </div>
-
-              <div class="theme-card-sub p-2.5 rounded-xl border flex items-center justify-between text-xs font-mono">
-                <div>
-                  <span class="text-[10px] theme-text-muted block font-sans">ရရန်ရှိ အကြွေး:</span>
-                  <span class="font-bold theme-text-heading">${owedCur === 'THB' ? formatTHB(totalOwed) : formatMMK(totalOwed)}</span>
-                </div>
-                <div class="text-right">
-                  <span class="text-[10px] theme-text-muted block font-sans">ကျန်ငွေ (Due):</span>
-                  <span class="font-bold text-rose-500 text-sm">${owedCur === 'THB' ? formatTHB(rem) : formatMMK(rem)}</span>
+                <div class="text-right shrink-0">
+                  <div class="tx-primary-amount ${isSettled ? 'text-emerald-500' : 'text-rose-500'}">${displayAmt}</div>
                 </div>
               </div>
 
-              ${tx.note ? `<p class="text-[10px] theme-text-muted italic">မှတ်ချက်: ${tx.note}</p>` : ''}
-
-              <div class="flex flex-wrap items-center gap-1.5 pt-1 border-t">
+              <div class="flex flex-wrap items-center justify-between gap-1.5 pt-2 border-t border-slate-700/25" onclick="event.stopPropagation()">
                 ${!isSettled ? `
-                  <button type="button" onclick="openSettleModal('${tx.id}')" class="flex-1 min-w-[110px] py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white text-xs font-bold transition flex items-center justify-center gap-1 shadow">
-                    ပြန်ရပြီး (ဆပ်မည်)
+                  <button type="button" onclick="openSettleModal('${tx.id}')" class="tx-action-btn bg-emerald-600 hover:bg-emerald-500 text-white shadow">
+                    ✓ ပြန်ရပြီး (ဆပ်မည်)
                   </button>
                 ` : `
-                  <button type="button" onclick="openVoucherModal('${tx.id}')" class="flex-1 min-w-[110px] py-2 rounded-xl theme-card-sub border theme-text-muted text-xs font-semibold">
-                    ပြေစာကြည့်မည်
+                  <button type="button" onclick="openVoucherModal('${tx.id}')" class="tx-action-btn theme-card border theme-text-muted">
+                    ပြေစာ
                   </button>
                 `}
-                <button type="button" onclick="shareDebtReminder('${tx.id}')" class="px-2.5 py-2 rounded-xl theme-card-sub border text-blue-500 text-xs font-bold active:scale-95 transition flex items-center gap-1">
-                  သတိပေးစာ
-                </button>
-                <button type="button" onclick="openEditModal('${tx.id}')" class="px-2.5 py-2 rounded-xl bg-blue-600/15 hover:bg-blue-600/25 text-blue-500 text-xs font-bold active:scale-95 transition">
-                  ပြင်မည်
-                </button>
-                <button type="button" onclick="deleteTransaction('${tx.id}')" class="px-2.5 py-2 rounded-xl bg-rose-600/15 hover:bg-rose-600/25 text-rose-500 text-xs font-bold active:scale-95 transition">
-                  ဖျက်မည်
-                </button>
+                <div class="flex items-center gap-1.5">
+                  <button type="button" onclick="shareDebtReminder('${tx.id}')" class="tx-action-btn theme-card border text-blue-500">သတိပေးစာ</button>
+                  <button type="button" onclick="openEditModal('${tx.id}')" class="tx-action-btn bg-blue-600/15 text-blue-500 border border-blue-500/30">ပြင်</button>
+                  <button type="button" onclick="deleteTransaction('${tx.id}')" class="tx-action-btn bg-rose-600/15 text-rose-500 border border-rose-500/30">ဖျက်</button>
+                </div>
               </div>
             </div>
           `;
@@ -10273,18 +10147,14 @@
           const isThb = exp.currency === 'THB';
           const formattedAmt = isThb ? formatTHB(exp.amount) : formatMMK(exp.amount);
           return `
-            <div class="theme-card-sub border border-amber-500/25 px-2.5 py-2 rounded-xl flex items-center justify-between gap-2 text-xs">
-              <div class="flex items-center gap-2 min-w-0">
+            <div class="theme-card-sub border border-amber-500/25 px-3 py-2.5 rounded-xl flex items-center justify-between gap-3">
+              <div class="flex items-center gap-2 min-w-0 flex-1">
                 <span class="text-xs shrink-0">${icon}</span>
-                <div class="min-w-0">
-                  <div class="font-bold theme-text-heading truncate">${exp.title}</div>
-                  <div class="text-[10px] theme-text-muted font-mono">${formatTimeOnly(exp.date)} • ${getExpenseCategoryLabel(exp.category)}</div>
-                </div>
+                <div class="tx-primary-name truncate">${exp.title}</div>
               </div>
-              <div class="flex items-center gap-1.5 shrink-0">
-                <span class="font-extrabold font-mono text-rose-500 mr-1">-${formattedAmt}</span>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="tx-primary-amount text-rose-500">-${formattedAmt}</span>
                 <button type="button" onclick="openEditExpenseModal('${exp.id}')" class="px-2 py-1 rounded-lg bg-blue-600/15 text-blue-500 text-[10px] font-bold">ပြင်</button>
-                <button type="button" onclick="deleteExpense('${exp.id}')" class="px-2 py-1 rounded-lg bg-rose-600/15 text-rose-500 text-[10px] font-bold">✕</button>
               </div>
             </div>
           `;
@@ -10294,48 +10164,24 @@
           const catLabel = getExpenseCategoryLabel(exp.category);
           const isThb = exp.currency === 'THB';
           const formattedAmt = isThb ? formatTHB(exp.amount) : formatMMK(exp.amount);
-          const accLabel = exp.paidAccount === 'CASH'
-            ? '💵 ငွေသား'
-            : (exp.paidAccount === 'BANK' ? '📱 KPay/ဘဏ်' : '🇹🇭 ဘတ်လက်ကျန်');
 
           return `
-            <div class="theme-card-sub border hover:border-amber-500/50 p-3 rounded-2xl space-y-2 text-xs transition">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-1.5">
-                  <span class="w-6 h-6 rounded-lg bg-amber-500/20 text-amber-500 flex items-center justify-center text-xs font-bold shrink-0">${icon}</span>
-                  <span class="font-bold text-amber-500 text-[11px]">${catLabel}</span>
-                  <span class="font-mono text-[10px] theme-text-muted">#${exp.id}</span>
-                </div>
-                <span class="text-[10px] theme-text-muted">${formatDateTime(exp.date)}</span>
-              </div>
-
-              <div class="flex items-start justify-between gap-2">
-                <div class="space-y-0.5">
-                  <div class="font-bold theme-text-heading text-xs">${exp.title}</div>
-                  <div class="text-[10px] theme-text-muted">
-                    ငွေရှင်းအကောင့်: <span class="font-semibold text-blue-400">${accLabel}</span>
-                    ${exp.note ? ` • <span class="italic text-slate-400">"${exp.note}"</span>` : ''}
+            <div class="tx-review-card space-y-2">
+              <div class="flex items-center justify-between gap-3">
+                <div class="min-w-0 flex-1">
+                  <div class="tx-primary-name">${icon} ${exp.title}</div>
+                  <div class="flex items-center gap-1.5 flex-wrap mt-0.5">
+                    <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-500/15 text-amber-500">${catLabel}</span>
                   </div>
                 </div>
                 <div class="text-right shrink-0">
-                  <div class="text-xs sm:text-sm font-extrabold font-mono text-rose-500">
-                    -${formattedAmt}
-                  </div>
+                  <div class="tx-primary-amount text-rose-500">-${formattedAmt}</div>
                 </div>
               </div>
 
-              <div class="flex items-center justify-between gap-1.5 pt-1.5 border-t">
-                <span class="text-[9px] px-2 py-0.5 rounded-full font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                  အသုံးစရိတ်
-                </span>
-                <div class="flex items-center gap-1.5">
-                  <button type="button" onclick="openEditExpenseModal('${exp.id}')" class="px-2.5 py-1 rounded-lg bg-blue-600/15 text-blue-500 text-[10px] font-bold hover:bg-blue-600/25 transition">
-                    ပြင်မည်
-                  </button>
-                  <button type="button" onclick="deleteExpense('${exp.id}')" class="px-2.5 py-1 rounded-lg bg-rose-600/15 text-rose-500 text-[10px] font-bold hover:bg-rose-600/25 transition">
-                    ဖျက်မည်
-                  </button>
-                </div>
+              <div class="flex items-center justify-end gap-1.5 pt-2 border-t border-slate-700/25">
+                <button type="button" onclick="openEditExpenseModal('${exp.id}')" class="tx-action-btn bg-blue-600/15 text-blue-500">ပြင်</button>
+                <button type="button" onclick="deleteExpense('${exp.id}')" class="tx-action-btn bg-rose-600/15 text-rose-500">ဖျက်</button>
               </div>
             </div>
           `;
@@ -10776,62 +10622,43 @@
         const isCashout = tx.type === 'CASHOUT';
         const isDirectCredit = tx.type === 'DIRECT_CREDIT';
         const names = getTxNames(tx);
+        const primaryAmt = isRemit && tx.direction === 'MMK_TO_THB'
+          ? formatTHB(tx.customerTHB)
+          : (tx.owedCurrency === 'THB' ? formatTHB(tx.amountOwed || tx.amountTHB) : formatMMK(tx.amountMMK || tx.amountOwed));
 
         return `
-          <div class="theme-card-sub border hover:border-blue-500/50 p-3 rounded-2xl space-y-1.5 text-xs transition">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-1.5 flex-wrap">
-                <span class="font-mono text-[10px] text-blue-500 font-bold">#${tx.id}</span>
-                <span class="text-[9px] px-2 py-0.5 rounded-full font-bold ${item.badgeClass}">${item.statusText}</span>
-              </div>
-              <span class="text-[10px] theme-text-muted">${formatDateTime(tx.date)}</span>
-            </div>
-
-            <div class="flex items-start justify-between gap-2">
-              <div class="space-y-0.5">
-                <div class="font-bold theme-text-heading text-xs">${names.displayTitle}</div>
-                <div class="text-[10px] theme-text-muted">
-                  <span class="font-semibold text-blue-400">${item.typeLabel}</span>
-                  • ချန်နယ်: <span class="font-semibold">${tx.channel || 'KPay'}</span>
-                  ${tx.custPhone ? ` • ဖုန်း: <span class="font-mono">${tx.custPhone}</span>` : ''}
-                  ${tx.note ? ` • မှတ်ချက်: ${tx.note}` : ''}
+          <div onclick="${closeSearchPrefix}openVoucherModal('${tx.id}');" class="tx-review-card cursor-pointer space-y-2">
+            <div class="flex items-center justify-between gap-3">
+              <div class="min-w-0 flex-1">
+                <div class="tx-primary-name">${names.displayTitle}</div>
+                <div class="flex items-center gap-1.5 flex-wrap mt-0.5">
+                  <span class="text-[10px] px-2 py-0.5 rounded-md font-bold ${item.badgeClass}">${item.statusText}</span>
                 </div>
               </div>
               <div class="text-right shrink-0">
-                <div class="font-extrabold font-mono theme-text-heading">
-                  ${isRemit && tx.direction === 'MMK_TO_THB' ? formatTHB(tx.customerTHB) : (tx.owedCurrency === 'THB' ? formatTHB(tx.amountOwed || tx.amountTHB) : formatMMK(tx.amountMMK || tx.amountOwed))}
-                </div>
-                ${(tx.profitTHB || tx.profitMMK || tx.fee) ? `
-                  <div class="text-[10px] text-emerald-500 font-mono">
-                    အမြတ်: +${tx.profitTHB ? formatTHB(tx.profitTHB) : formatMMK(tx.profitMMK || tx.fee || 0)}
-                  </div>
-                ` : ''}
+                <div class="tx-primary-amount theme-text-heading">${primaryAmt}</div>
               </div>
             </div>
 
-            <div class="flex items-center justify-between gap-1.5 pt-1.5 border-t">
+            <div class="flex items-center justify-between gap-1.5 pt-2 border-t border-slate-700/25" onclick="event.stopPropagation()">
               <div class="flex items-center gap-1">
                 ${tx.status === 'UNPAID' && isRemit ? `
-                  <button type="button" onclick="toggleRemitPayoutStatus('${tx.id}'); ${refreshAfterToggle}" class="px-2.5 py-1 rounded-lg bg-emerald-600 text-white text-[10px] font-bold">✓ ထုတ်ပေးပြီးမှတ်မည်</button>
+                  <button type="button" onclick="toggleRemitPayoutStatus('${tx.id}'); ${refreshAfterToggle}" class="tx-action-btn bg-emerald-600 text-white">✓ ထုတ်ပေးပြီးမှတ်မည်</button>
                 ` : ''}
                 ${tx.status === 'UNPAID' && isCashout ? `
-                  <button type="button" onclick="toggleCashoutPayoutStatus('${tx.id}'); ${refreshAfterToggle}" class="px-2.5 py-1 rounded-lg bg-emerald-600 text-white text-[10px] font-bold">
+                  <button type="button" onclick="toggleCashoutPayoutStatus('${tx.id}'); ${refreshAfterToggle}" class="tx-action-btn bg-emerald-600 text-white">
                     ${tx.cashoutType === 'TRANSFER' ? '✓ လက်ငင်းရရှိမှတ်မည်' : '✓ ထုတ်ပေးပြီးမှတ်မည်'}
                   </button>
                 ` : ''}
                 ${tx.status === 'UNPAID' && isDirectCredit ? `
-                  <button type="button" onclick="${closeSearchPrefix}openSettleModal('${tx.id}');" class="px-2.5 py-1 rounded-lg bg-emerald-600 text-white text-[10px] font-bold">✓ အကြွေးဆပ်မည်</button>
+                  <button type="button" onclick="${closeSearchPrefix}openSettleModal('${tx.id}');" class="tx-action-btn bg-emerald-600 text-white">✓ အကြွေးဆပ်မည်</button>
                 ` : ''}
               </div>
               <div class="flex items-center gap-1.5">
-                <button type="button" onclick="${closeSearchPrefix}openVoucherModal('${tx.id}');" class="px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-bold shadow-sm">
-                  📄 ဘောက်ချာ
-                </button>
-                <button type="button" onclick="${closeSearchPrefix}openEditModal('${tx.id}');" class="px-2.5 py-1 rounded-lg theme-card border text-blue-500 text-[10px] font-bold">
-                  ပြင်မည်
-                </button>
+                <button type="button" onclick="${closeSearchPrefix}openVoucherModal('${tx.id}');" class="tx-action-btn theme-card border theme-text-heading">ပြေစာ</button>
+                <button type="button" onclick="${closeSearchPrefix}openEditModal('${tx.id}');" class="tx-action-btn bg-blue-600/15 text-blue-500 border border-blue-500/30">ပြင်</button>
                 ${!isFromQuickSearchModal ? `
-                  <button type="button" onclick="deleteTransaction('${tx.id}')" class="px-2 py-1 rounded-lg bg-rose-600/15 text-rose-500 text-[10px] font-bold">ဖျက်မည်</button>
+                  <button type="button" onclick="deleteTransaction('${tx.id}')" class="tx-action-btn bg-rose-600/15 text-rose-500 border border-rose-500/30">ဖျက်</button>
                 ` : ''}
               </div>
             </div>
@@ -10843,36 +10670,26 @@
         const sa = item.raw;
         const isPaid = sa.status === 'PAID';
         return `
-          <div class="tx-review-card border-indigo-500/40 hover:border-indigo-500 space-y-2 text-xs transition">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-1.5 flex-wrap">
-                <span class="font-mono text-[10px] text-indigo-400 font-bold">#${sa.id}</span>
-                <span class="text-[9px] px-2 py-0.5 rounded-full font-bold ${item.badgeClass}">${item.statusText}</span>
-              </div>
-              <span class="text-[10px] theme-text-muted">${formatDateTime(sa.date)}</span>
-            </div>
-            <div class="flex items-start justify-between gap-2">
-              <div class="space-y-0.5">
-                <div class="font-extrabold theme-text-heading text-sm">🤝 ${item.displayTitle}</div>
-                <div class="text-[11px] theme-text-muted">
-                  <span class="font-semibold text-indigo-400">${item.typeLabel}</span>
-                  • ဒိုင်ဈေး ${sa.dealerRate} / လက်ခွဲဈေး ${sa.subAgentRate}
-                  ${sa.partnerPhone ? ` • 📞 ${sa.partnerPhone}` : ''}
+          <div onclick="${closeSearchPrefix}openVoucherModal('${sa.id}');" class="tx-review-card border-indigo-500/40 cursor-pointer space-y-2">
+            <div class="flex items-center justify-between gap-3">
+              <div class="min-w-0 flex-1">
+                <div class="tx-primary-name">🤝 ${item.displayTitle}</div>
+                <div class="flex items-center gap-1.5 flex-wrap mt-0.5">
+                  <span class="text-[10px] px-2 py-0.5 rounded-md font-bold ${item.badgeClass}">${item.statusText}</span>
                 </div>
               </div>
               <div class="text-right shrink-0">
-                <div class="font-extrabold font-mono text-indigo-400">${formatTHB(sa.subAgentTHB)}</div>
-                <div class="text-[10px] font-mono theme-text-muted">${formatMMK(sa.amountMMK)}</div>
-                <div class="text-[10px] text-emerald-400 font-mono font-bold">အမြတ်: +${formatTHB(sa.profitTHB)}</div>
+                <div class="tx-primary-amount text-indigo-400">${formatTHB(sa.subAgentTHB)}</div>
+                <div class="text-xs font-mono theme-text-muted font-bold">${formatMMK(sa.amountMMK)}</div>
               </div>
             </div>
-            <div class="flex items-center justify-between gap-1.5 pt-1.5 border-t border-slate-700/30">
-              <button type="button" onclick="toggleSubAgentStatus('${sa.id}'); ${refreshAfterToggle}" class="px-2.5 py-1 rounded-lg ${isPaid ? 'theme-card border theme-text-muted' : 'bg-emerald-600 text-white'} text-[10px] font-bold">
+            <div class="flex items-center justify-between gap-1.5 pt-2 border-t border-slate-700/25" onclick="event.stopPropagation()">
+              <button type="button" onclick="toggleSubAgentStatus('${sa.id}'); ${refreshAfterToggle}" class="tx-action-btn ${isPaid ? 'theme-card border theme-text-muted' : 'bg-emerald-600 text-white'}">
                 ${isPaid ? '⏳ မရှင်းရသေးသို့' : '✓ ရှင်းပြီးမှတ်မည်'}
               </button>
               <div class="flex items-center gap-1.5">
-                <button type="button" onclick="${closeSearchPrefix}openVoucherModal('${sa.id}');" class="px-2.5 py-1 rounded-lg bg-indigo-600 text-white text-[10px] font-bold">📄 ဘောက်ချာ</button>
-                <button type="button" onclick="${closeSearchPrefix}openEditSubAgentModal('${sa.id}');" class="px-2.5 py-1 rounded-lg bg-blue-600/15 text-blue-400 text-[10px] font-bold">ပြင်မည်</button>
+                <button type="button" onclick="${closeSearchPrefix}openVoucherModal('${sa.id}');" class="tx-action-btn theme-card border theme-text-heading">ပြေစာ</button>
+                <button type="button" onclick="${closeSearchPrefix}openEditSubAgentModal('${sa.id}');" class="tx-action-btn bg-blue-600/15 text-blue-400 border border-blue-500/30">ပြင်</button>
               </div>
             </div>
           </div>
@@ -10889,41 +10706,30 @@
         const safeName = (d.custName || '').replace(/'/g, "\\'");
 
         return `
-          <div class="theme-card-sub border border-purple-500/40 hover:border-purple-500 p-3 rounded-2xl space-y-1.5 text-xs transition">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-1.5 flex-wrap">
-                <span class="font-mono text-[10px] text-purple-400 font-bold">#${d.id}</span>
-                <span class="text-[9px] px-2 py-0.5 rounded-full font-bold ${item.badgeClass}">${item.typeLabel}</span>
-              </div>
-              <span class="text-[10px] theme-text-muted">${formatDateTime(d.date)}</span>
-            </div>
-
-            <div class="flex items-start justify-between gap-2">
-              <div class="space-y-0.5">
-                <div class="font-bold theme-text-heading text-xs">${d.custName || 'အပ်နှံသူ'}</div>
-                <div class="text-[10px] theme-text-muted">
-                  အကောင့်: <span class="font-semibold text-purple-400">${item.channelOrAccount}</span>
-                  ${d.custPhone ? ` • ဖုန်း: <span class="font-mono">${d.custPhone}</span>` : ''}
-                  ${d.note ? ` • မှတ်ချက်: ${d.note}` : ''}
+          <div class="tx-review-card border-purple-500/40 space-y-2">
+            <div class="flex items-center justify-between gap-3">
+              <div class="min-w-0 flex-1">
+                <div class="tx-primary-name">${d.custName || 'အပ်နှံသူ'}</div>
+                <div class="flex items-center gap-1.5 flex-wrap mt-0.5">
+                  <span class="text-[10px] px-2 py-0.5 rounded-md font-bold ${item.badgeClass}">${item.typeLabel}</span>
                 </div>
               </div>
               <div class="text-right shrink-0">
-                <div class="font-extrabold font-mono ${amtColor}">${sign}${amtFormatted}</div>
-                <div class="text-[10px] theme-text-muted">${item.statusText}</div>
+                <div class="tx-primary-amount ${amtColor}">${sign}${amtFormatted}</div>
               </div>
             </div>
 
-            <div class="flex items-center justify-between gap-1.5 pt-1.5 border-t">
+            <div class="flex items-center justify-between gap-1.5 pt-2 border-t border-slate-700/25">
               <div>
                 ${isNotice && d.noticeStatus !== 'COMPLETED' ? `
-                  <button type="button" onclick="${closeSearchPrefix}fulfillDepositNotice('${d.id}');" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-bold shadow">✓ ယခု ထုတ်ပေးမည်</button>
+                  <button type="button" onclick="${closeSearchPrefix}fulfillDepositNotice('${d.id}');" class="tx-action-btn bg-emerald-600 text-white shadow">✓ ယခု ထုတ်ပေးမည်</button>
                 ` : `
-                  <button type="button" onclick="${closeSearchPrefix}switchTab('deposits'); selectDepositorForForm('${safeName}', 'DEPOSIT_IN');" class="px-2.5 py-1 rounded-lg bg-purple-600/20 text-purple-400 text-[10px] font-bold">🏦 အပ်ငွေစာရင်းသို့</button>
+                  <button type="button" onclick="${closeSearchPrefix}switchTab('deposits'); selectDepositorForForm('${safeName}', 'DEPOSIT_IN');" class="tx-action-btn bg-purple-600/20 text-purple-400">🏦 အပ်ငွေစာရင်း</button>
                 `}
               </div>
               <div class="flex items-center gap-1.5">
-                <button type="button" onclick="${closeSearchPrefix}openEditDepositModal('${d.id}');" class="px-2.5 py-1 rounded-lg bg-blue-600/15 text-blue-500 text-[10px] font-bold">ပြင်မည်</button>
-                <button type="button" onclick="deleteDepositRecord('${d.id}'); ${refreshAfterToggle}" class="px-2 py-1 rounded-lg bg-rose-600/15 text-rose-500 text-[10px] font-bold">ဖျက်မည်</button>
+                <button type="button" onclick="${closeSearchPrefix}openEditDepositModal('${d.id}');" class="tx-action-btn bg-blue-600/15 text-blue-500">ပြင်</button>
+                <button type="button" onclick="deleteDepositRecord('${d.id}'); ${refreshAfterToggle}" class="tx-action-btn bg-rose-600/15 text-rose-500">ဖျက်</button>
               </div>
             </div>
           </div>
@@ -10932,52 +10738,36 @@
 
       if (item.source === 'U9') {
         const r = item.raw;
-        const isPrimary = r.type === 'BUY_PRIMARY';
-        const isWithdrawComm = r.type === 'WITHDRAW_COMM';
         const isSell = r.type === 'SELL_BILL';
         const isCreditUnpaid = isSell && (r.status === 'UNPAID' || r.paymentType === 'CREDIT') && r.status !== 'PAID';
 
         return `
-          <div class="theme-card-sub border border-cyan-500/40 hover:border-cyan-500 p-3 rounded-2xl space-y-1.5 text-xs transition">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-1.5 flex-wrap">
-                <span class="font-mono text-[10px] text-cyan-400 font-bold">#${r.id}</span>
-                <span class="text-[9px] px-2 py-0.5 rounded-full font-bold ${item.badgeClass}">${item.typeLabel}</span>
-              </div>
-              <span class="text-[10px] theme-text-muted">${formatDateTime(r.date)}</span>
-            </div>
-
-            <div class="flex items-start justify-between gap-2">
-              <div class="space-y-0.5">
-                <div class="font-bold theme-text-heading text-xs">${item.displayTitle}</div>
-                <div class="text-[10px] theme-text-muted">
-                  <span class="font-semibold text-cyan-400">${item.channelOrAccount}</span>
-                  ${isSell ? ` • ဘေလ်ပမာဏ: <span class="font-mono font-bold">${formatMMK(r.billAmount)}</span>` : ''}
-                  ${r.custPhone ? ` • ဖုန်း: <span class="font-mono">${r.custPhone}</span>` : ''}
-                  ${r.note ? ` • မှတ်ချက်: ${r.note}` : ''}
+          <div class="tx-review-card border-cyan-500/40 space-y-2">
+            <div class="flex items-center justify-between gap-3">
+              <div class="min-w-0 flex-1">
+                <div class="tx-primary-name">${item.displayTitle}</div>
+                <div class="flex items-center gap-1.5 flex-wrap mt-0.5">
+                  <span class="text-[10px] px-2 py-0.5 rounded-md font-bold ${item.badgeClass}">${item.typeLabel}</span>
                 </div>
               </div>
               <div class="text-right shrink-0">
-                <div class="font-extrabold font-mono ${isCreditUnpaid ? 'text-rose-400' : 'text-cyan-400'}">
+                <div class="tx-primary-amount ${isCreditUnpaid ? 'text-rose-400' : 'text-cyan-400'}">
                   ${formatMMK(item.amountMMK)}
                 </div>
-                ${item.profitMMK > 0 ? `
-                  <div class="text-[10px] text-emerald-400 font-mono">အမြတ်: +${formatMMK(item.profitMMK)}</div>
-                ` : `<div class="text-[10px] theme-text-muted">${item.statusText}</div>`}
               </div>
             </div>
 
-            <div class="flex items-center justify-between gap-1.5 pt-1.5 border-t">
+            <div class="flex items-center justify-between gap-1.5 pt-2 border-t border-slate-700/25">
               <div>
                 ${isCreditUnpaid && r.linkedTxId ? `
-                  <button type="button" onclick="${closeSearchPrefix}openSettleModal('${r.linkedTxId}');" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-bold shadow">✓ အကြွေးဆပ်မည်</button>
+                  <button type="button" onclick="${closeSearchPrefix}openSettleModal('${r.linkedTxId}');" class="tx-action-btn bg-emerald-600 text-white shadow">✓ အကြွေးဆပ်မည်</button>
                 ` : `
-                  <button type="button" onclick="${closeSearchPrefix}switchTab('u9');" class="px-2.5 py-1 rounded-lg bg-cyan-600/20 text-cyan-400 text-[10px] font-bold">📶 U9 စာရင်းသို့</button>
+                  <button type="button" onclick="${closeSearchPrefix}switchTab('u9');" class="tx-action-btn bg-cyan-600/20 text-cyan-400">📶 U9 စာရင်း</button>
                 `}
               </div>
               <div class="flex items-center gap-1.5">
-                <button type="button" onclick="${closeSearchPrefix}openEditU9Modal('${r.id}');" class="px-2.5 py-1 rounded-lg bg-blue-600/15 text-blue-500 text-[10px] font-bold">ပြင်မည်</button>
-                <button type="button" onclick="deleteU9Record('${r.id}'); ${refreshAfterToggle}" class="px-2 py-1 rounded-lg bg-rose-600/15 text-rose-500 text-[10px] font-bold">ဖျက်မည်</button>
+                <button type="button" onclick="${closeSearchPrefix}openEditU9Modal('${r.id}');" class="tx-action-btn bg-blue-600/15 text-blue-500">ပြင်</button>
+                <button type="button" onclick="deleteU9Record('${r.id}'); ${refreshAfterToggle}" class="tx-action-btn bg-rose-600/15 text-rose-500">ဖျက်</button>
               </div>
             </div>
           </div>
@@ -10988,35 +10778,22 @@
         const exp = item.raw;
         const formattedAmt = exp.currency === 'THB' ? formatTHB(exp.amount) : formatMMK(exp.amount);
         return `
-          <div class="theme-card-sub border border-amber-500/40 hover:border-amber-500 p-3 rounded-2xl space-y-1.5 text-xs transition">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-1.5 flex-wrap">
-                <span class="font-mono text-[10px] text-amber-400 font-bold">#${exp.id}</span>
-                <span class="text-[9px] px-2 py-0.5 rounded-full font-bold ${item.badgeClass}">${item.typeLabel}</span>
-              </div>
-              <span class="text-[10px] theme-text-muted">${formatDateTime(exp.date)}</span>
-            </div>
-
-            <div class="flex items-start justify-between gap-2">
-              <div class="space-y-0.5">
-                <div class="font-bold theme-text-heading text-xs">${exp.title}</div>
-                <div class="text-[10px] theme-text-muted">
-                  ငွေရှင်းအကောင့်: <span class="font-semibold text-amber-400">${item.channelOrAccount}</span>
-                  ${exp.note ? ` • မှတ်ချက်: ${exp.note}` : ''}
+          <div class="tx-review-card border-amber-500/40 space-y-2">
+            <div class="flex items-center justify-between gap-3">
+              <div class="min-w-0 flex-1">
+                <div class="tx-primary-name">${exp.title}</div>
+                <div class="flex items-center gap-1.5 flex-wrap mt-0.5">
+                  <span class="text-[10px] px-2 py-0.5 rounded-md font-bold ${item.badgeClass}">${getExpenseCategoryLabel(exp.category)}</span>
                 </div>
               </div>
               <div class="text-right shrink-0">
-                <div class="font-extrabold font-mono text-rose-500">-${formattedAmt}</div>
-                <div class="text-[10px] theme-text-muted">အသုံးစရိတ်</div>
+                <div class="tx-primary-amount text-rose-500">-${formattedAmt}</div>
               </div>
             </div>
 
-            <div class="flex items-center justify-between gap-1.5 pt-1.5 border-t">
-              <span class="text-[10px] theme-text-muted">${getExpenseCategoryLabel(exp.category)}</span>
-              <div class="flex items-center gap-1.5">
-                <button type="button" onclick="${closeSearchPrefix}openEditExpenseModal('${exp.id}');" class="px-2.5 py-1 rounded-lg bg-blue-600/15 text-blue-500 text-[10px] font-bold">ပြင်မည်</button>
-                <button type="button" onclick="deleteExpense('${exp.id}'); ${refreshAfterToggle}" class="px-2 py-1 rounded-lg bg-rose-600/15 text-rose-500 text-[10px] font-bold">ဖျက်မည်</button>
-              </div>
+            <div class="flex items-center justify-end gap-1.5 pt-2 border-t border-slate-700/25">
+              <button type="button" onclick="${closeSearchPrefix}openEditExpenseModal('${exp.id}');" class="tx-action-btn bg-blue-600/15 text-blue-500">ပြင်</button>
+              <button type="button" onclick="deleteExpense('${exp.id}'); ${refreshAfterToggle}" class="tx-action-btn bg-rose-600/15 text-rose-500">ဖျက်</button>
             </div>
           </div>
         `;
@@ -11109,20 +10886,14 @@
         : `${closeSearchPrefix}openEditExpenseModal('${item.id}');`;
 
       return `
-        <div class="theme-card-sub border hover:border-blue-500/40 px-2.5 py-2 rounded-xl flex items-center justify-between gap-2 text-xs transition">
-          <div class="flex items-center gap-2 min-w-0">
-            <span class="text-[9px] px-1.5 py-0.5 rounded font-bold shrink-0 ${item.badgeClass}">${item.source === 'SUBAGENT' ? 'လက်ခွဲ' : item.moduleKey}</span>
-            <div class="min-w-0">
-              <div class="font-bold theme-text-heading truncate">${item.displayTitle}</div>
-              <div class="text-[10px] theme-text-muted font-mono truncate">${formatTimeOnly(item.date)} • #${item.id} • ${item.channelOrAccount}</div>
-            </div>
+        <div class="theme-card-sub border hover:border-blue-500/40 px-3 py-2.5 rounded-xl flex items-center justify-between gap-3 transition">
+          <div class="flex items-center gap-2 min-w-0 flex-1">
+            <span class="text-[10px] px-1.5 py-0.5 rounded font-bold shrink-0 ${item.badgeClass}">${item.source === 'SUBAGENT' ? 'လက်ခွဲ' : item.moduleKey}</span>
+            <div class="tx-primary-name truncate">${item.displayTitle}</div>
           </div>
-          <div class="flex items-center gap-1.5 shrink-0">
-            <div class="text-right mr-1">
-              <div class="font-extrabold font-mono ${item.source === 'EXPENSE' ? 'text-rose-500' : 'theme-text-heading'}">${item.source === 'EXPENSE' ? '-' : ''}${mainAmt}</div>
-              ${(item.profitMMK > 0 || item.profitTHB > 0) ? `<div class="text-[9px] font-mono text-emerald-400">+${item.profitTHB > 0 ? formatTHB(item.profitTHB) : formatMMK(item.profitMMK)}</div>` : ''}
-            </div>
-            ${(item.source === 'TX' || item.source === 'SUBAGENT') ? `<button type="button" onclick="${closeSearchPrefix}openVoucherModal('${item.id}');" class="px-2 py-1 rounded-lg bg-blue-600 text-white text-[10px] font-bold">ပြေစာ</button>` : ''}
+          <div class="flex items-center gap-2 shrink-0">
+            <div class="tx-primary-amount ${item.source === 'EXPENSE' ? 'text-rose-500' : 'theme-text-heading'}">${item.source === 'EXPENSE' ? '-' : ''}${mainAmt}</div>
+            ${(item.source === 'TX' || item.source === 'SUBAGENT') ? `<button type="button" onclick="${closeSearchPrefix}openVoucherModal('${item.id}');" class="px-2 py-1 rounded-lg theme-card border text-[10px] font-bold">ပြေစာ</button>` : ''}
             <button type="button" onclick="${editHandler}" class="px-2 py-1 rounded-lg bg-blue-600/15 text-blue-500 text-[10px] font-bold">ပြင်</button>
           </div>
         </div>
@@ -12325,17 +12096,14 @@
           const amtColor = isDepIn ? 'text-emerald-400' : isNotice ? 'text-amber-400' : 'text-rose-400';
           const sign = isDepIn ? '+' : isNotice ? '⏳ ' : '-';
           return `
-            <div class="theme-card-sub border border-purple-500/30 px-2.5 py-2 rounded-xl flex items-center justify-between gap-2 text-xs">
-              <div class="flex items-center gap-2 min-w-0">
+            <div class="theme-card-sub border border-purple-500/30 px-3 py-2.5 rounded-xl flex items-center justify-between gap-3">
+              <div class="flex items-center gap-2 min-w-0 flex-1">
                 <span class="text-xs shrink-0">${isDepIn ? '📥' : isNotice ? '🔔' : '📤'}</span>
-                <div class="min-w-0">
-                  <div class="font-bold theme-text-heading truncate">${d.custName}</div>
-                  <div class="text-[10px] theme-text-muted font-mono">${formatTimeOnly(d.date)} • #${d.id}</div>
-                </div>
+                <div class="tx-primary-name truncate">${d.custName}</div>
               </div>
-              <div class="flex items-center gap-1.5 shrink-0">
-                <span class="font-extrabold font-mono ${amtColor} mr-1">${sign}${amtFormatted}</span>
-                ${isNotice && d.noticeStatus !== 'COMPLETED' ? `<button type="button" onclick="fulfillDepositNotice('${d.id}')" class="px-2 py-1 rounded-lg bg-emerald-600 text-white text-[10px] font-bold">ထုတ်မည်</button>` : ''}
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="tx-primary-amount ${amtColor}">${sign}${amtFormatted}</span>
+                ${isNotice && d.noticeStatus !== 'COMPLETED' ? `<button type="button" onclick="fulfillDepositNotice('${d.id}')" class="px-2.5 py-1 rounded-lg bg-emerald-600 text-white text-[10px] font-bold">ထုတ်မည်</button>` : ''}
                 <button type="button" onclick="openEditDepositModal('${d.id}')" class="px-2 py-1 rounded-lg bg-blue-600/15 text-blue-400 text-[10px] font-bold">ပြင်</button>
               </div>
             </div>
@@ -12345,45 +12113,32 @@
           const isDepIn = d.type === 'DEPOSIT_IN';
           const isNotice = d.type === 'WITHDRAW_NOTICE';
           const badgeHtml = isDepIn
-            ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">📥 ငွေလာအပ်သည်</span>`
+            ? `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-500/20 text-emerald-400">📥 ငွေလာအပ်</span>`
             : isNotice
-            ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/40">🔔 ၁ ပတ်ကြိုမှတ် (${d.noticeStatus === 'COMPLETED' ? 'ထုတ်ပေးပြီး' : (d.targetDate || '')})</span>`
-            : `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30">📤 ငွေပြန်ထုတ်ပေးသည်</span>`;
+            ? `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-500/20 text-amber-400">🔔 ကြိုမှတ် (${d.noticeStatus === 'COMPLETED' ? 'ထုတ်ပြီး' : (d.targetDate || '')})</span>`
+            : `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-rose-500/20 text-rose-400">📤 ပြန်ထုတ်</span>`;
 
           const amtFormatted = d.currency === 'THB' ? formatTHB(d.amount) : formatMMK(d.amount);
           const amtColor = isDepIn ? 'text-emerald-400' : isNotice ? 'text-amber-400' : 'text-rose-400';
           const sign = isDepIn ? '+' : isNotice ? '⏳ ' : '-';
-          const accText = d.account === 'CASH' ? 'ငွေသား' : d.account === 'BANK' ? 'KPay/Bank' : 'ထိုင်းဘတ်';
 
           return `
-            <div class="theme-card-sub border p-3 rounded-xl space-y-1.5 text-xs">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-1.5">
-                  <span class="font-mono text-[10px] text-purple-400 font-bold">#${d.id}</span>
-                  <span class="text-[10px] theme-text-muted">• ${formatDateTime(d.date)}</span>
-                </div>
-                ${badgeHtml}
-              </div>
-              <div class="flex items-start justify-between gap-2">
-                <div>
-                  <div class="font-bold theme-text-heading">${d.custName}</div>
-                  <div class="text-[10px] theme-text-muted">
-                    အကောင့်: <span class="font-semibold">${accText}</span>
-                    ${d.custPhone ? ` • ဖုန်း: <span class="font-mono">${d.custPhone}</span>` : ''}
-                    ${d.targetDate ? ` • ထုတ်မည့်ရက်: <span class="font-mono text-amber-400 font-bold">${d.targetDate}</span>` : ''}
-                    ${d.note ? ` • မှတ်ချက်: ${d.note}` : ''}
-                  </div>
+            <div class="tx-review-card space-y-2">
+              <div class="flex items-center justify-between gap-3">
+                <div class="min-w-0 flex-1">
+                  <div class="tx-primary-name">${d.custName}</div>
+                  <div class="flex items-center gap-1.5 flex-wrap mt-0.5">${badgeHtml}</div>
                 </div>
                 <div class="text-right shrink-0">
-                  <div class="text-sm font-extrabold font-mono ${amtColor}">${sign}${amtFormatted}</div>
+                  <div class="tx-primary-amount ${amtColor}">${sign}${amtFormatted}</div>
                 </div>
               </div>
-              <div class="flex items-center justify-end gap-2 pt-1.5 border-t border-slate-700/40">
+              <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-700/25">
                 ${isNotice && d.noticeStatus !== 'COMPLETED' ? `
-                  <button type="button" onclick="fulfillDepositNotice('${d.id}')" class="px-2.5 py-1 rounded-lg bg-emerald-600 text-white text-[10px] font-bold">✓ ယခု ထုတ်ပေးမည်</button>
+                  <button type="button" onclick="fulfillDepositNotice('${d.id}')" class="tx-action-btn bg-emerald-600 text-white">✓ ယခု ထုတ်ပေးမည်</button>
                 ` : ''}
-                <button type="button" onclick="openEditDepositModal('${d.id}')" class="px-2.5 py-1 rounded-lg bg-blue-600/15 hover:bg-blue-600/25 text-blue-400 text-[10px] font-bold">ပြင်မည်</button>
-                <button type="button" onclick="deleteDepositRecord('${d.id}')" class="px-2 py-1 rounded-lg theme-card border text-[10px] text-rose-400 hover:bg-rose-500/10 font-semibold">ဖျက်မည်</button>
+                <button type="button" onclick="openEditDepositModal('${d.id}')" class="tx-action-btn bg-blue-600/15 text-blue-400">ပြင်</button>
+                <button type="button" onclick="deleteDepositRecord('${d.id}')" class="tx-action-btn bg-rose-600/15 text-rose-400">ဖျက်</button>
               </div>
             </div>
           `;
@@ -13311,13 +13066,12 @@
           const title = isPrimary ? '📦 Primary ဘေလ်အဝယ်' : isWithdraw ? '💵 ကော်မရှင်ထုတ်ယူ' : `📲 ${r.custName || 'Customer'}`;
           const amt = formatMMK(r.sellingPrice || r.billAmount || r.purchaseAmount || r.withdrawAmount || 0);
           return `
-            <div class="theme-card-sub border border-cyan-500/30 px-2.5 py-2 rounded-xl flex items-center justify-between gap-2 text-xs">
-              <div class="min-w-0">
-                <div class="font-bold theme-text-heading truncate">${title}</div>
-                <div class="text-[10px] theme-text-muted font-mono">${formatTimeOnly(r.date)} • #${r.id}</div>
+            <div class="theme-card-sub border border-cyan-500/30 px-3 py-2.5 rounded-xl flex items-center justify-between gap-3">
+              <div class="min-w-0 flex-1">
+                <div class="tx-primary-name truncate">${title}</div>
               </div>
-              <div class="flex items-center gap-1.5 shrink-0">
-                <span class="font-extrabold font-mono text-cyan-400 mr-1">${amt}</span>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="tx-primary-amount text-cyan-400">${amt}</span>
                 <button type="button" onclick="openEditU9Modal('${r.id}')" class="px-2 py-1 rounded-lg bg-blue-600/15 text-blue-400 text-[10px] font-bold">ပြင်</button>
               </div>
             </div>
@@ -13326,60 +13080,40 @@
         renderCardFn: r => {
           if (r.type === 'BUY_PRIMARY') {
             return `
-              <div class="theme-card-sub border border-indigo-500/40 p-3 rounded-xl space-y-1.5 text-xs">
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center gap-1.5">
-                    <span class="font-mono text-[10px] text-indigo-400 font-bold">#${r.id}</span>
-                    <span class="text-[10px] theme-text-muted">• ${formatDateTime(r.date)}</span>
-                  </div>
-                  <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">📦 Primary ဘေလ်အဝယ် (${r.commRate || 0}%)</span>
-                </div>
-                <div class="flex items-start justify-between gap-2">
-                  <div>
-                    <div class="font-bold theme-text-heading">Primary ဝယ်ယူငွေ: ${formatMMK(r.purchaseAmount)}</div>
-                    <div class="text-[10px] theme-text-muted">
-                      ရရှိသည့်ဘေလ်: <span class="font-mono font-bold text-cyan-400">+${formatMMK(r.stockReceived)}</span>
-                      ${r.note ? ` • မှတ်ချက်: ${r.note}` : ''}
+              <div class="tx-review-card border-indigo-500/40 space-y-2">
+                <div class="flex items-center justify-between gap-3">
+                  <div class="min-w-0 flex-1">
+                    <div class="tx-primary-name">📦 Primary ဘေလ်အဝယ်</div>
+                    <div class="flex items-center gap-1.5 flex-wrap mt-0.5">
+                      <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-indigo-500/20 text-indigo-400">ကော်မရှင် +${formatMMK(r.commissionAmount)}</span>
                     </div>
                   </div>
                   <div class="text-right shrink-0">
-                    <div class="text-sm font-extrabold font-mono text-emerald-400">+${formatMMK(r.commissionAmount)}</div>
-                    <div class="text-[10px] theme-text-muted">ကော်မရှင်အမြတ်</div>
+                    <div class="tx-primary-amount text-cyan-400">${formatMMK(r.purchaseAmount)}</div>
                   </div>
                 </div>
-                <div class="flex justify-end gap-1.5 pt-1 border-t border-slate-700/40">
-                  <button type="button" onclick="openEditU9Modal('${r.id}')" class="px-2.5 py-0.5 rounded-lg bg-blue-600/15 hover:bg-blue-600/25 text-blue-400 text-[10px] font-bold">ပြင်မည်</button>
-                  <button type="button" onclick="deleteU9Record('${r.id}')" class="px-2 py-0.5 rounded-lg theme-card border text-[10px] text-rose-400 hover:bg-rose-500/10 font-semibold">ဖျက်မည်</button>
+                <div class="flex justify-end gap-1.5 pt-2 border-t border-slate-700/25">
+                  <button type="button" onclick="openEditU9Modal('${r.id}')" class="tx-action-btn bg-blue-600/15 text-blue-400">ပြင်</button>
+                  <button type="button" onclick="deleteU9Record('${r.id}')" class="tx-action-btn bg-rose-600/15 text-rose-400">ဖျက်</button>
                 </div>
               </div>
             `;
           }
 
           if (r.type === 'WITHDRAW_COMM') {
-            const chText = r.channel === 'CASH' ? '💵 ငွေသား (Cash)' : '📱 KPay';
             return `
-              <div class="theme-card-sub border border-amber-500/40 p-3 rounded-xl space-y-1.5 text-xs">
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center gap-1.5">
-                    <span class="font-mono text-[10px] text-amber-400 font-bold">#${r.id}</span>
-                    <span class="text-[10px] theme-text-muted">• ${formatDateTime(r.date)}</span>
-                  </div>
-                  <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">💵 ကော်မရှင်အမြတ် ထုတ်ယူခြင်း</span>
-                </div>
-                <div class="flex items-start justify-between gap-2">
-                  <div>
-                    <div class="font-bold theme-text-heading">ထုတ်ယူသည့်နည်းလမ်း: ${chText}</div>
-                    <div class="text-[10px] theme-text-muted">
-                      ${r.note ? `မှတ်ချက်: ${r.note}` : 'ကော်မရှင်အမြတ်ထဲမှ ထုတ်ယူသည်'}
-                    </div>
+              <div class="tx-review-card border-amber-500/40 space-y-2">
+                <div class="flex items-center justify-between gap-3">
+                  <div class="min-w-0 flex-1">
+                    <div class="tx-primary-name">💵 ကော်မရှင်အမြတ် ထုတ်ယူ</div>
                   </div>
                   <div class="text-right shrink-0">
-                    <div class="text-sm font-extrabold font-mono text-amber-400">-${formatMMK(r.withdrawAmount)}</div>
+                    <div class="tx-primary-amount text-amber-400">-${formatMMK(r.withdrawAmount)}</div>
                   </div>
                 </div>
-                <div class="flex justify-end gap-1.5 pt-1 border-t border-slate-700/40">
-                  <button type="button" onclick="openEditU9Modal('${r.id}')" class="px-2.5 py-0.5 rounded-lg bg-blue-600/15 hover:bg-blue-600/25 text-blue-400 text-[10px] font-bold">ပြင်မည်</button>
-                  <button type="button" onclick="deleteU9Record('${r.id}')" class="px-2 py-0.5 rounded-lg theme-card border text-[10px] text-rose-400 hover:bg-rose-500/10 font-semibold">ဖျက်မည်</button>
+                <div class="flex justify-end gap-1.5 pt-2 border-t border-slate-700/25">
+                  <button type="button" onclick="openEditU9Modal('${r.id}')" class="tx-action-btn bg-blue-600/15 text-blue-400">ပြင်</button>
+                  <button type="button" onclick="deleteU9Record('${r.id}')" class="tx-action-btn bg-rose-600/15 text-rose-400">ဖျက်</button>
                 </div>
               </div>
             `;
@@ -13389,45 +13123,33 @@
           const isCredit = r.paymentType === 'CREDIT';
           const isUnpaid = r.status === 'UNPAID';
           const payBadge = r.paymentType === 'CASH'
-            ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400">💵 လက်ငင်း (ငွေသား)</span>`
+            ? `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-500/20 text-emerald-400">💵 ငွေသား</span>`
             : r.paymentType === 'KPAY'
-            ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/20 text-blue-400">📱 လက်ငင်း (KPay)</span>`
+            ? `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-500/20 text-blue-400">📱 KPay</span>`
             : isUnpaid
-            ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/20 text-rose-400 border border-rose-500/40">⚠️ အကြွေး (မဆပ်ရသေး)</span>`
-            : `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400">✓ အကြွေး (ပြန်ရပြီး)</span>`;
+            ? `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-rose-500/20 text-rose-400">⚠️ အကြွေး</span>`
+            : `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-500/20 text-emerald-400">✓ ပြန်ရပြီး</span>`;
 
           return `
-            <div class="theme-card-sub border ${isCredit && isUnpaid ? 'border-rose-500/50' : 'border-cyan-500/30'} p-3 rounded-xl space-y-1.5 text-xs">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-1.5">
-                  <span class="font-mono text-[10px] text-cyan-400 font-bold">#${r.id}</span>
-                  <span class="text-[10px] theme-text-muted">• ${formatDateTime(r.date)}</span>
-                </div>
-                ${payBadge}
-              </div>
-              <div class="flex items-start justify-between gap-2">
-                <div>
-                  <div class="font-bold theme-text-heading">📲 ${r.custName || 'Customer'}</div>
-                  <div class="text-[10px] theme-text-muted">
-                    ရောင်းသည့်ဘေလ်: <span class="font-mono font-bold text-cyan-400">${formatMMK(r.billAmount)}</span>
-                    ${r.custPhone ? ` • ဖုန်း: <span class="font-mono">${r.custPhone}</span>` : ''}
-                    ${r.note ? ` • မှတ်ချက်: ${r.note}` : ''}
-                  </div>
+            <div class="tx-review-card ${isCredit && isUnpaid ? 'border-rose-500/50' : 'border-cyan-500/35'} space-y-2">
+              <div class="flex items-center justify-between gap-3">
+                <div class="min-w-0 flex-1">
+                  <div class="tx-primary-name">📲 ${r.custName || 'Customer'}</div>
+                  <div class="flex items-center gap-1.5 flex-wrap mt-0.5">${payBadge}</div>
                 </div>
                 <div class="text-right shrink-0">
-                  <div class="text-sm font-extrabold font-mono theme-text-heading">${formatMMK(r.sellingPrice || r.billAmount)}</div>
-                  ${r.extraProfit > 0 ? `<div class="text-[10px] font-mono text-emerald-400">အပိုအမြတ်: +${formatMMK(r.extraProfit)}</div>` : ''}
+                  <div class="tx-primary-amount theme-text-heading">${formatMMK(r.sellingPrice || r.billAmount)}</div>
                 </div>
               </div>
-              <div class="flex items-center justify-between pt-1.5 border-t border-slate-700/40">
+              <div class="flex items-center justify-between pt-2 border-t border-slate-700/25">
                 <div>
                   ${isCredit && isUnpaid && r.linkedTxId ? `
-                    <button type="button" onclick="openSettleModal('${r.linkedTxId}')" class="px-2.5 py-1 rounded-lg bg-emerald-600 text-white text-[10px] font-bold">✓ အကြွေးဆပ်မည်</button>
+                    <button type="button" onclick="openSettleModal('${r.linkedTxId}')" class="tx-action-btn bg-emerald-600 text-white">✓ အကြွေးဆပ်မည်</button>
                   ` : ''}
                 </div>
                 <div class="flex items-center gap-1.5">
-                  <button type="button" onclick="openEditU9Modal('${r.id}')" class="px-2.5 py-0.5 rounded-lg bg-blue-600/15 hover:bg-blue-600/25 text-blue-400 text-[10px] font-bold">ပြင်မည်</button>
-                  <button type="button" onclick="deleteU9Record('${r.id}')" class="px-2 py-0.5 rounded-lg theme-card border text-[10px] text-rose-400 hover:bg-rose-500/10 font-semibold">ဖျက်မည်</button>
+                  <button type="button" onclick="openEditU9Modal('${r.id}')" class="tx-action-btn bg-blue-600/15 text-blue-400">ပြင်</button>
+                  <button type="button" onclick="deleteU9Record('${r.id}')" class="tx-action-btn bg-rose-600/15 text-rose-400">ဖျက်</button>
                 </div>
               </div>
             </div>
